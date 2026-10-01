@@ -5,16 +5,15 @@
 .productVisual.cassette .productCover{z-index:2;box-shadow:0 30px 70px rgba(0,0,0,.36),0 2px 0 rgba(255,255,255,.025) inset;transition:transform .85s cubic-bezier(.16,.8,.18,1),box-shadow .5s ease}
 .productVisual:hover .productCover{box-shadow:0 38px 86px rgba(0,0,0,.46),0 2px 0 rgba(255,255,255,.035) inset}
 
-/* Premium CD / digipak object */
-.productVisual.cd .productCover{inset:7% 7% 7% 12%}
+/* CD / digipak object — same material language as catalogue 001. */
+.productVisual.cd .productCover{inset:7% 7% 7% 12%;background:linear-gradient(145deg,#171719 0%,#101012 72%);box-shadow:0 30px 70px rgba(0,0,0,.36),inset 0 0 0 1px rgba(255,255,255,.018)}
 .productCdObject{position:absolute;z-index:1;width:70%;aspect-ratio:1;right:-1%;top:15%;transition:transform .9s cubic-bezier(.16,.8,.18,1);filter:drop-shadow(0 28px 30px rgba(0,0,0,.42))}
-.productCdDisc{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 18deg,#151518,#76767b 7%,#1a1a1d 14%,#a4a3a0 19%,#29292d 25%,#77777c 31%,#141416 39%,#a7a6a2 46%,#222226 54%,#737378 62%,#171719 71%,#9b9a97 79%,#252529 87%,#151518);border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 0 0 2px rgba(255,255,255,.035),inset 0 0 55px rgba(0,0,0,.42)}
-.productCdDisc:before{content:'';position:absolute;inset:4%;border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 3px,rgba(255,255,255,.05) 4px 5px);mix-blend-mode:screen;opacity:.45}
-.productCdDisc:after{content:'';position:absolute;width:17%;aspect-ratio:1;border-radius:50%;left:41.5%;top:41.5%;background:#0e0e10;box-shadow:0 0 0 7px rgba(180,180,180,.36),0 0 0 13px rgba(18,18,20,.8),inset 0 0 0 2px rgba(255,255,255,.12)}
-.productCdDisc i{position:absolute;inset:13%;border-radius:50%;border:1px solid rgba(255,255,255,.07)}
-.productCdDisc b,.productCdDisc span{position:absolute;z-index:2;color:rgba(15,15,17,.68);font-style:normal;font-weight:500;letter-spacing:.18em;text-shadow:0 1px rgba(255,255,255,.12)}
-.productCdDisc b{left:20%;top:48%;font-size:9px}.productCdDisc span{right:18%;top:48%;font:18px Georgia,serif;letter-spacing:0}
-.productVisual.cd:hover .productCdObject{transform:translateX(35%) rotate(14deg)}
+.productCdDisc{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 18deg,rgba(214,224,232,.96),rgba(247,241,224,.98) 10%,rgba(166,206,220,.92) 18%,rgba(232,217,244,.94) 28%,rgba(244,239,222,.98) 39%,rgba(164,197,211,.94) 52%,rgba(238,224,246,.95) 63%,rgba(247,241,224,.98) 75%,rgba(175,211,220,.93) 87%,rgba(224,229,233,.97));border:1px solid rgba(255,255,255,.18);box-shadow:0 24px 58px rgba(0,0,0,.72),inset 0 0 18px rgba(255,255,255,.7);filter:saturate(.72) contrast(1.04)}
+.productCdDisc:before{content:'';position:absolute;inset:3%;border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 2px,rgba(255,255,255,.11) 3px,transparent 4px 7px),linear-gradient(112deg,transparent 15%,rgba(255,255,255,.48) 31%,transparent 42%,rgba(180,218,232,.24) 58%,transparent 72%);mix-blend-mode:screen;opacity:.75}
+.productCdDisc:after{content:'';position:absolute;width:17%;aspect-ratio:1;left:41.5%;top:41.5%;border-radius:50%;background:radial-gradient(circle,#09090a 0 22%,#d9d9d5 24% 45%,rgba(255,255,255,.65) 47% 56%,transparent 58%);box-shadow:0 0 0 1px rgba(20,20,22,.35),inset 0 0 8px rgba(255,255,255,.5)}
+.productCdDisc i{display:none}
+.productCdDisc b,.productCdDisc span{display:none}
+.productVisual.cd:hover .productCdObject{transform:translateX(35%) rotate(-45deg)}
 .productVisual.cd:hover .productCover{transform:translateX(-2%) rotate(-.7deg)}
 
 /* Cassette release detail */
@@ -33,7 +32,6 @@
 
 @media(max-width:760px){
   .productCdObject{width:67%;top:17%}
-  .productCdDisc b{font-size:7px}.productCdDisc span{font-size:14px}
   .productCassette{width:70%;top:29%}
   .productCassetteWindow i{width:26px;border-width:4px}
 }
