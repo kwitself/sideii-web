@@ -1,6 +1,6 @@
 const releases = [
-  { cat: 'SIDEII—001', no: '01', title: 'FIRST EDITION', artist: 'FORTHCOMING', format: 'CD · PHYSICAL RELEASE' },
-  { cat: 'SIDEII—002', no: '02', title: 'SECOND EDITION', artist: 'FORTHCOMING', format: 'VINYL · PHYSICAL RELEASE' },
+  { cat: 'SIDEII—001', no: '01', title: 'FIRST EDITION', artist: 'FORTHCOMING', format: 'VINYL · PHYSICAL RELEASE', media: 'vinyl' },
+  { cat: 'SIDEII—002', no: '02', title: 'SECOND EDITION', artist: 'FORTHCOMING', format: 'CD · PHYSICAL RELEASE', media: 'cd' },
 ];
 
 export default function Home() {
@@ -29,8 +29,11 @@ export default function Home() {
       <section id="releases" className="section shell">
         <div className="sectionHead"><span>02 / CATALOGUE</span><h2>Selected<br/><i>releases.</i></h2></div>
         <div className="releaseGrid">
-          {releases.map((r) => <article className="release" key={r.cat}>
-            <div className="cover"><span>{r.cat}</span><b>{r.no}</b><div className="disc"/><img className="coverLogo" src="/brand/sideii-logo-flat.png" alt="" /><em>DETAILS FORTHCOMING</em></div>
+          {releases.map((r) => <article className={`release ${r.media}`} key={r.cat}>
+            <div className="mediaStage">
+              <div className="physicalMedia" aria-hidden="true"><i/></div>
+              <div className="cover"><span>{r.cat}</span><b>{r.no}</b><img className="coverLogo" src="/brand/sideii-logo-flat.png" alt="" /><em>DETAILS FORTHCOMING</em></div>
+            </div>
             <div className="releaseMeta"><span>{r.cat}</span><h3>{r.title}</h3><p>{r.artist} · {r.format}</p></div>
           </article>)}
         </div>
@@ -38,7 +41,10 @@ export default function Home() {
       </section>
 
       <section id="imprints" className="imprint">
-        <div className="shell imprintInner"><span>03 / IMPRINT</span><div><small className="imprintKicker">SIDE:II PRESENTS</small><h2>Lethargia<br/><i>Records</i></h2><p>Independent imprint for darker sounds.<br/>Selected physical editions.</p><small>A SIDE:II IMPRINT · EST. MMXXVI</small></div></div>
+        <div className="shell imprintInner">
+          <span>03 / IMPRINT</span>
+          <div className="imprintContent"><small className="imprintKicker">A SIDE:II IMPRINT</small><h2>Lethargia<br/><i>Records</i></h2><div className="imprintRule"/><p>For music that lives in the shadows.<br/>Dark, atmospheric and uncompromising physical editions.</p><div className="imprintMeta"><small>CURATED BY SIDE:II</small><small>EST. MMXXVI</small></div></div>
+        </div>
       </section>
 
       <section id="about" className="section about shell">
