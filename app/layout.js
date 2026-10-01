@@ -1,4 +1,5 @@
 import './globals.css';
+import './physical-formats.css';
 
 export const metadata = {
   title: 'Side:II — The Other Side of Sound',
