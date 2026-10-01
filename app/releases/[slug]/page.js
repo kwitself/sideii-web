@@ -21,11 +21,15 @@ export default async function ReleasePage({ params }) {
   const release = getRelease(slug);
   if (!release) notFound();
   const [titleA, titleB] = release.displayTitle;
+  const isCassette = release.media === 'cassette';
 
   return <main className="productPage">
     <header className="nav shell"><Link className="brand" href="/" aria-label="Side II home"><img src="/brand/sideii-logo-flat.png" alt="Side II" /></Link><nav><Link href="/#releases">Releases</Link><Link href="/#imprints">Imprints</Link><Link href="/#about">About</Link><Link href="/#store">Store</Link></nav></header>
     <section className="productHero shell">
-      <div className="productVisual"><div className={`productDisc ${release.media}`} aria-hidden="true"><i /></div><div className="productCover">{release.cover?<img className="productArtwork" src={release.cover} alt={`${release.artist} — ${release.title}`} />:<><span>{release.catalogue}</span><b>{release.number}</b><img src="/brand/sideii-logo-flat.png" alt="" /><em>{release.title}</em></>}</div></div>
+      <div className={`productVisual ${release.media}`}>
+        {isCassette ? <div className="productCassette" aria-hidden="true"><div className="productCassetteLabel"><span>SIDE:II</span><b>{release.number}</b></div><div className="productCassetteWindow"><i/><i/></div><div className="productCassetteBase"><i/><i/><i/></div></div> : <div className={`productDisc ${release.media}`} aria-hidden="true"><i /></div>}
+        <div className="productCover">{release.cover?<img className="productArtwork" src={release.cover} alt={`${release.artist} — ${release.title}`} />:<><span>{release.catalogue}</span><b>{release.number}</b><img src="/brand/sideii-logo-flat.png" alt="" /><em>{release.title}</em></>}</div>
+      </div>
       <div className="productInfo"><span className="productIndex">{release.number} / RELEASE</span><h1>{titleA}<br/><i>{titleB}</i></h1><p className="productLead">{release.lead}</p><dl><div><dt>ARTIST</dt><dd>{release.artist}</dd></div><div><dt>FORMAT</dt><dd>{release.formatDetail}</dd></div><div><dt>CATALOGUE</dt><dd>{release.catalogue}</dd></div><div><dt>EDITION</dt><dd>{release.edition}</dd></div><div><dt>RELEASE</dt><dd>{release.releaseDate}</dd></div><div><dt>STATUS</dt><dd>{release.status}</dd></div></dl>{release.orderUrl?<a className="productButton" href={release.orderUrl}>ORDER EDITION →</a>:<button className="productButton" disabled>ORDER · COMING SOON</button>}</div>
     </section>
     {release.tracks.length>0&&<section className="trackSection shell"><span>TRACKLIST</span><ol>{release.tracks.map((track,index)=><li key={`${track}-${index}`}><b>{String(index+1).padStart(2,'0')}</b><span>{track}</span></li>)}</ol></section>}
