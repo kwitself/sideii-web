@@ -1,7 +1,12 @@
 /* Side:II catalogue object polish — isolated from the locked global layout */
 .release.cd .cover{background:linear-gradient(145deg,#171719 0%,#101012 72%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.018)}
-.release.cd .physicalMedia{filter:saturate(.72) contrast(1.04);box-shadow:0 24px 58px rgba(0,0,0,.72),inset 0 0 22px rgba(255,255,255,.08)}
-.release.cd .physicalMedia:before{content:'';position:absolute;inset:3%;border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 3px,rgba(255,255,255,.035) 4px 5px);mix-blend-mode:screen;opacity:.55}
+
+/* CD object: deliberately optical-disc, never vinyl. */
+.release.cd .physicalMedia{width:72%;right:8%;top:14%;border-radius:50%;background:conic-gradient(from 18deg,rgba(214,224,232,.96),rgba(247,241,224,.98) 10%,rgba(166,206,220,.92) 18%,rgba(232,217,244,.94) 28%,rgba(244,239,222,.98) 39%,rgba(164,197,211,.94) 52%,rgba(238,224,246,.95) 63%,rgba(247,241,224,.98) 75%,rgba(175,211,220,.93) 87%,rgba(224,229,233,.97));box-shadow:0 24px 58px rgba(0,0,0,.72),inset 0 0 18px rgba(255,255,255,.7);filter:saturate(.72) contrast(1.04)}
+.release.cd .physicalMedia:before{content:'';position:absolute;inset:3%;border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 2px,rgba(255,255,255,.11) 3px,transparent 4px 7px),linear-gradient(112deg,transparent 15%,rgba(255,255,255,.48) 31%,transparent 42%,rgba(180,218,232,.24) 58%,transparent 72%);mix-blend-mode:screen;opacity:.75}
+.release.cd .physicalMedia:after{content:'';position:absolute;width:17%;aspect-ratio:1;left:41.5%;top:41.5%;border-radius:50%;background:radial-gradient(circle,#09090a 0 22%,#d9d9d5 24% 45%,rgba(255,255,255,.65) 47% 56%,transparent 58%);border:0;box-shadow:0 0 0 1px rgba(20,20,22,.35),inset 0 0 8px rgba(255,255,255,.5)}
+.release.cd .physicalMedia i{display:none}
+.release.cd:hover .physicalMedia{transform:translateX(42%) rotate(-45deg)}
 
 /* Homepage cassette uses the same visual language as the release detail object. */
 .release.cassette .mediaStage{background:radial-gradient(circle at 60% 48%,rgba(255,255,255,.025),transparent 58%)}
