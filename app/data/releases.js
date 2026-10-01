@@ -1,0 +1,46 @@
+export const releases = [
+  {
+    slug: '001',
+    catalogue: 'SIDEII—001',
+    number: '01',
+    title: 'FIRST EDITION',
+    displayTitle: ['First', 'Edition.'],
+    artist: 'FORTHCOMING',
+    format: 'VINYL',
+    formatDetail: 'VINYL · PHYSICAL RELEASE',
+    media: 'vinyl',
+    status: 'IN PREPARATION',
+    releaseDate: 'FORTHCOMING',
+    edition: 'FIRST SIDE:II EDITION',
+    price: null,
+    cover: null,
+    orderUrl: null,
+    lead: 'The first physical object in the SIDE:II catalogue.',
+    note: 'Selected music, given physical form. Artwork, edition details and release information will live here as the catalogue takes shape.',
+    tracks: [],
+  },
+  {
+    slug: '002',
+    catalogue: 'SIDEII—002',
+    number: '02',
+    title: 'SECOND EDITION',
+    displayTitle: ['Second', 'Edition.'],
+    artist: 'FORTHCOMING',
+    format: 'CD',
+    formatDetail: 'CD · PHYSICAL RELEASE',
+    media: 'cd',
+    status: 'FORTHCOMING',
+    releaseDate: 'FORTHCOMING',
+    edition: 'SECOND SIDE:II EDITION',
+    price: null,
+    cover: null,
+    orderUrl: null,
+    lead: 'A forthcoming physical edition in the SIDE:II catalogue.',
+    note: 'Release artwork, track information and edition details will be published here when the edition is announced.',
+    tracks: [],
+  },
+];
+
+export function getRelease(slug) {
+  return releases.find((release) => release.slug === slug);
+}
