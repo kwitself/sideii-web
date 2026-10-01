@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <main>
       <header className="nav shell">
-        <a className="brand" href="#top" aria-label="Side II home">side:II</a>
+        <a className="brand" href="#top" aria-label="Side II home"><img src="/brand/sideii-logo-flat.png" alt="Side II" /></a>
         <nav>
           <a href="#releases">Releases</a><a href="#imprints">Imprints</a><a href="#about">About</a><a href="#store">Store</a>
         </nav>
@@ -16,7 +16,7 @@ export default function Home() {
       <section id="top" className="hero shell">
         <div className="heroCore">
           <div className="eyebrow">INDEPENDENT PHYSICAL MUSIC LABEL · EST. MMXXVI</div>
-          <div className="heroLogo" aria-label="Side II">side<span>:</span>II</div>
+          <div className="heroLogo"><img src="/brand/sideii-logo-silver.png" alt="Side II" /></div>
           <p className="tagline">The other side of sound.</p>
         </div>
         <div className="heroFoot"><span>SELECTED RELEASES</span><span>CD · VINYL · CASSETTE · LIMITED EDITIONS</span></div>
@@ -30,7 +30,7 @@ export default function Home() {
       <section id="releases" className="section shell">
         <div className="sectionHead"><span>02 / CATALOGUE</span><h2>Releases</h2></div>
         <div className="releaseGrid">
-          {releases.map((r) => <article className="release" key={r.cat}><div className="cover"><span>{r.cat}</span><strong>side:II</strong></div><div className="releaseMeta"><span>{r.cat}</span><h3>{r.title}</h3><p>{r.artist} · {r.format}</p></div></article>)}
+          {releases.map((r) => <article className="release" key={r.cat}><div className="cover"><span>{r.cat}</span><img className="coverLogo" src="/brand/sideii-logo-flat.png" alt="" /></div><div className="releaseMeta"><span>{r.cat}</span><h3>{r.title}</h3><p>{r.artist} · {r.format}</p></div></article>)}
         </div>
         <p className="forthcoming">First editions forthcoming.</p>
       </section>
@@ -46,7 +46,7 @@ export default function Home() {
 
       <section id="store" className="store shell"><span>05 / STORE</span><h2>The shelf is<br/><em>almost</em> ready.</h2><p>Our first physical editions are in preparation.</p><button disabled>STORE · COMING SOON</button></section>
 
-      <footer className="shell"><div className="footerLogo">side:II</div><div><span>THE OTHER SIDE OF SOUND.</span><span>© MMXXVI SIDE:II</span></div></footer>
+      <footer className="shell"><div className="footerLogo"><img src="/brand/sideii-logo-flat.png" alt="Side II" /></div><div><span>THE OTHER SIDE OF SOUND.</span><span>© MMXXVI SIDE:II</span></div></footer>
     </main>
   );
 }
