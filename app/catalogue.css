@@ -2,12 +2,18 @@
 .release.cd .cover{background:linear-gradient(145deg,#171719 0%,#101012 72%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.018)}
 .release.cd .physicalMedia{filter:saturate(.72) contrast(1.04);box-shadow:0 24px 58px rgba(0,0,0,.72),inset 0 0 22px rgba(255,255,255,.08)}
 .release.cd .physicalMedia:before{content:'';position:absolute;inset:3%;border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 3px,rgba(255,255,255,.035) 4px 5px);mix-blend-mode:screen;opacity:.55}
+
+/* Homepage cassette uses the same visual language as the release detail object. */
 .release.cassette .mediaStage{background:radial-gradient(circle at 60% 48%,rgba(255,255,255,.025),transparent 58%)}
-.release.cassette .physicalMedia{width:72%;height:45%;aspect-ratio:auto;border-radius:7px;right:7%;top:28%;background:linear-gradient(145deg,#29292d,#111114 68%);border:1px solid #45454a;box-shadow:0 24px 55px rgba(0,0,0,.7);transform:translateX(-5%) rotate(-2deg)}
-.release.cassette .physicalMedia:before{content:'';position:absolute;left:12%;right:12%;top:19%;height:37%;border-radius:4px;background:linear-gradient(#0c0c0e,#17171a);border:1px solid #3a3a3f;box-shadow:inset 0 0 0 7px #18181b}
-.release.cassette .physicalMedia:after{content:'';position:absolute;width:16%;aspect-ratio:1;border-radius:50%;left:20%;top:29%;background:radial-gradient(circle,#09090b 0 19%,#77777c 21% 28%,#151518 30% 57%,#626267 59% 63%,#101012 65%);box-shadow:180px 0 0 -1px #111114,180px 0 0 0 #69696e}
-.release.cassette .physicalMedia i{width:42%;height:18%;aspect-ratio:auto;border-radius:2px;left:29%;top:69%;background:#202024;border:1px solid #3d3d42;transform:skewX(-9deg)}
-.release.cassette:hover .physicalMedia{transform:translateX(25%) rotate(4deg)}
+.catalogueCassette{position:absolute;z-index:1;width:72%;aspect-ratio:1.58/1;right:0;top:28%;border:1px solid #55545a;border-radius:12px;background:linear-gradient(145deg,#26262a 0%,#111114 55%,#1b1b1f 100%);box-shadow:0 28px 60px rgba(0,0,0,.55),inset 0 0 0 5px rgba(255,255,255,.025);transition:transform .85s cubic-bezier(.16,.8,.18,1),border-color .35s;overflow:hidden}
+.catalogueCassette:before{content:'';position:absolute;inset:7%;border:1px solid #343439;border-radius:8px;pointer-events:none}
+.catalogueCassetteLabel{position:absolute;left:10%;right:10%;top:10%;height:23%;display:flex;justify-content:space-between;align-items:center;padding:0 5%;border:1px solid #3d3d42;background:#18181b;color:#8f8d87;font-size:7px;letter-spacing:.2em}
+.catalogueCassetteLabel b{font:22px Georgia,serif;font-weight:400;color:#55545a}
+.catalogueCassetteWindow{position:absolute;left:24%;right:24%;top:39%;height:29%;border:1px solid #48484d;border-radius:28px;background:linear-gradient(180deg,#09090b,#1b1b1e);display:flex;align-items:center;justify-content:space-around;padding:0 8%;box-shadow:inset 0 3px 10px #000}
+.catalogueCassetteWindow i{width:35px;aspect-ratio:1;border:5px dotted #8b8984;border-radius:50%;background:#101012;box-shadow:0 0 0 5px #242428}
+.catalogueCassetteBase{position:absolute;left:25%;right:25%;bottom:9%;height:13%;border:1px solid #3b3b40;clip-path:polygon(10% 0,90% 0,100% 100%,0 100%);display:flex;align-items:center;justify-content:space-around;padding:0 14%}
+.catalogueCassetteBase i{width:4px;height:4px;border-radius:50%;background:#6f6d68}
+.release.cassette:hover .catalogueCassette{transform:translateX(34%) rotate(2deg);border-color:#77757a}
 .release.cassette .cover{background:linear-gradient(145deg,#151517,#0f0f11);box-shadow:0 20px 55px rgba(0,0,0,.28)}
 .releaseMeta p{line-height:1.55}
-@media(max-width:760px){.release.cassette .physicalMedia:after{box-shadow:95px 0 0 -1px #111114,95px 0 0 0 #69696e}}
+@media(max-width:760px){.catalogueCassette{width:70%;top:29%}.catalogueCassetteWindow i{width:26px;border-width:4px}}
