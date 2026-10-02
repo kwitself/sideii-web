@@ -11,6 +11,7 @@ export async function generateMetadata({ params }) {
   return {
     title: `${release.catalogue} · ${release.title}`,
     description: `${release.artist} — ${release.title}. ${release.formatDetail}.`,
+    openGraph:{title:`${release.artist} — ${release.title}`,description:release.lead,images:release.cover?[release.cover]:[]},
   };
 }
 
@@ -30,7 +31,8 @@ export default async function ReleasePage({ params }) {
       </div>
       <div className="productInfo"><span className="productIndex">{release.number} / RELEASE</span><h1>{titleA}<br/><i>{titleB}</i></h1><p className="productLead">{release.lead}</p><dl><div><dt>ARTIST</dt><dd>{release.artist}</dd></div><div><dt>FORMAT</dt><dd>{release.formatDetail}</dd></div><div><dt>CATALOGUE</dt><dd>{release.catalogue}</dd></div><div><dt>EDITION</dt><dd>{release.edition}</dd></div><div><dt>RELEASE</dt><dd>{release.releaseDate}</dd></div><div><dt>STATUS</dt><dd>{release.status}</dd></div></dl>{release.status==='FORTHCOMING'?<button className="productButton" disabled>COMING SOON</button>:release.stock<=0?<button className="productButton" disabled>SOLD OUT</button>:<button className="productButton" disabled>ADD TO CART · {release.price?`${Number(release.price).toLocaleString('tr-TR')} ₺`:''}</button>}</div>
     </section>
+    {release.gallery.length>0&&<section className="releaseGallery shell"><span>OBJECT / DETAILS</span><div>{release.gallery.map((img,i)=><img src={img} alt={`${release.title} detail ${i+1}`} key={img}/>)}</div></section>}
     {release.tracks.length>0&&<section className="trackSection shell"><span>TRACKLIST</span><ol>{release.tracks.map((track,index)=><li key={`${track}-${index}`}><b>{String(index+1).padStart(2,'0')}</b><span>{track}</span></li>)}</ol></section>}
-    <section className="productNote shell"><span>THE OBJECT</span><p>{release.note}</p><Link href="/#releases">← BACK TO CATALOGUE</Link></section>
+    <section className="productNote shell"><span>THE OBJECT</span><p>{release.note}</p>{release.credits&&<div className="releaseCredits"><b>CREDITS</b><p>{release.credits}</p></div>}<Link href="/#releases">← BACK TO CATALOGUE</Link></section>
   </main>;
 }
