@@ -10,3 +10,14 @@
 .inventoryRow{display:grid;grid-template-columns:minmax(210px,2fr) repeat(3,minmax(90px,.7fr)) auto auto;gap:14px;align-items:center;padding:16px;border-bottom:1px solid #29292b}
 .inventoryRow:last-child{border-bottom:0}.inventoryRow>div{display:flex;flex-direction:column;gap:5px}.inventoryRow strong{font:17px Georgia,serif}.inventoryRow small,.inventoryRow>span,.inventoryRow label{font-size:8px;letter-spacing:.13em;color:#88857f}.inventoryRow label{display:flex;flex-direction:column;gap:6px}.inventoryRow input{width:100%;min-width:72px;background:#0b0b0c;border:1px solid #333337;color:#eeeae2;padding:9px}.inventoryCard a{font-size:8px;letter-spacing:.16em;color:#aaa69f;text-decoration:none}
 @media(max-width:900px){.inventoryRow{grid-template-columns:1fr 1fr}.inventoryRow>div{grid-column:1/-1}}
+
+/* release artwork / storage */
+.artworkPicker{position:relative;min-height:76px;border:1px dashed #3b393d;background:#0a0a0b;display:flex;align-items:center;padding:14px;gap:16px;overflow:hidden}
+.artworkPicker input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2}
+.artworkPicker:before{content:'＋ ARTWORK';display:grid;place-items:center;width:96px;align-self:stretch;border:1px solid #333236;color:#aaa69f;font-size:8px;letter-spacing:.14em}
+.artworkPicker>div{display:flex;flex-direction:column;gap:7px}.artworkPicker b{font:13px Georgia,serif;font-weight:400;color:#d1cec7}.artworkPicker small{font-size:7px;letter-spacing:.12em;color:#666369}
+.workspaceMessage{font-size:10px;letter-spacing:.08em;color:#aaa69f;margin:0 0 16px;line-height:1.5}
+.previewSleeve.hasArtwork{padding:0;overflow:hidden;background:#09090a}.previewSleeve.hasArtwork img{display:block;width:100%;height:100%;object-fit:cover}
+.adminArtworkThumb{width:42px;height:42px;object-fit:cover;border:1px solid #343337;flex:none}
+.inventoryRow button.ghostButton,.inventoryRow button.saveButton{appearance:none;border:1px solid #37363a;background:#0d0d0f;color:#aaa69f;padding:10px 13px;font:8px Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+.inventoryRow button.saveButton{background:#d7d4cc;color:#0b0b0c;border-color:#d7d4cc}
