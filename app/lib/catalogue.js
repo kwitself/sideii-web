@@ -9,21 +9,22 @@ function titleParts(title){const words=String(title||'Release').trim().split(/\s
 function artworkUrl(sb,path){return path?sb.storage.from('release-artwork').getPublicUrl(path).data.publicUrl:null}
 function mapRelease(sb,p,index=0){
  const v=(p.product_variants||[])[0]||{}; const format=v.format==='cassette'?'CASSETTE':'CD'; const status=p.status==='active'?'AVAILABLE':p.status==='forthcoming'?'FORTHCOMING':'IN PREPARATION';
- return {slug:p.slug,imprint:p.imprint||'sideii',catalogue:p.catalogue_no,number:numberFromCatalogue(p.catalogue_no,index),title:String(p.title||'UNTITLED').toUpperCase(),displayTitle:titleParts(p.title),artist:p.artist_project||'SIDE:II',format,formatDetail:format==='CASSETTE'?'CASSETTE · PHYSICAL EDITION':'CD · PHYSICAL EDITION',media:format.toLowerCase(),status,releaseDate:status==='AVAILABLE'?'AVAILABLE NOW':'FORTHCOMING',edition:v.edition_name||p.title,price:v.price??null,stock:Number(v.stock_qty||0),cover:artworkUrl(sb,p.artwork_path),hasShrinkwrap:!!p.has_shrinkwrap,orderUrl:null,lead:p.description||`${format} edition in the SIDE:II catalogue.`,note:p.description||'Artwork, packaging and edition specifications are managed through the SIDE:II Control Room.',tracks:[]};
+ const dateLabel=p.release_date?new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(p.release_date+'T00:00:00Z')).toUpperCase():null;
+ return {slug:p.slug,imprint:p.imprint||'sideii',catalogue:p.catalogue_no,number:numberFromCatalogue(p.catalogue_no,index),title:String(p.title||'UNTITLED').toUpperCase(),displayTitle:titleParts(p.title),artist:p.artist_project||'SIDE:II',format,formatDetail:format==='CASSETTE'?'CASSETTE · PHYSICAL EDITION':'CD · PHYSICAL EDITION',media:format.toLowerCase(),status,releaseDate:dateLabel||(status==='AVAILABLE'?'AVAILABLE NOW':'FORTHCOMING'),edition:v.edition_details||v.edition_name||p.title,price:v.price??null,stock:Number(v.stock_qty||0),cover:artworkUrl(sb,p.artwork_path),hasShrinkwrap:!!p.has_shrinkwrap,orderUrl:null,lead:p.description||`${format} edition in the SIDE:II catalogue.`,note:p.description||'Artwork, packaging and edition specifications are managed through the SIDE:II Control Room.',tracks:Array.isArray(p.tracklist)?p.tracklist:[],credits:p.credits||null,gallery:(Array.isArray(p.gallery_paths)?p.gallery_paths:[]).map(x=>artworkUrl(sb,x))};
 }
 export async function getDatabaseReleases(){
  const sb=client(); if(!sb)return [];
- const {data,error}=await sb.from('products').select('id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,has_shrinkwrap,status,is_public,created_at,product_variants(format,edition_name,price,currency,stock_qty,active)').eq('imprint','sideii').eq('is_public',true).in('status',['forthcoming','active']).order('created_at',{ascending:false});
+ const {data,error}=await sb.from('products').select('id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,has_shrinkwrap,release_date,credits,tracklist,gallery_paths,status,is_public,created_at,product_variants(format,edition_name,edition_details,price,currency,stock_qty,active)').eq('imprint','sideii').eq('is_public',true).in('status',['forthcoming','active']).order('created_at',{ascending:false});
  if(error)return []; return (data||[]).map((p,i)=>mapRelease(sb,p,i));
 }
 export async function getDatabaseRelease(slug){
  const sb=client(); if(!sb)return null;
- const {data,error}=await sb.from('products').select('id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,has_shrinkwrap,status,is_public,created_at,product_variants(format,edition_name,price,currency,stock_qty,active)').eq('slug',slug).eq('is_public',true).in('status',['forthcoming','active']).maybeSingle();
+ const {data,error}=await sb.from('products').select('id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,has_shrinkwrap,release_date,credits,tracklist,gallery_paths,status,is_public,created_at,product_variants(format,edition_name,edition_details,price,currency,stock_qty,active)').eq('slug',slug).eq('is_public',true).in('status',['forthcoming','active']).maybeSingle();
  return error||!data?null:mapRelease(sb,data,0);
 }
 
 export async function getLethargiaReleases(){
  const sb=client(); if(!sb)return [];
- const {data,error}=await sb.from('products').select('id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,has_shrinkwrap,status,is_public,created_at,product_variants(format,edition_name,price,currency,stock_qty,active)').eq('imprint','lethargia').eq('is_public',true).in('status',['forthcoming','active']).order('created_at',{ascending:false});
+ const {data,error}=await sb.from('products').select('id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,has_shrinkwrap,release_date,credits,tracklist,gallery_paths,status,is_public,created_at,product_variants(format,edition_name,edition_details,price,currency,stock_qty,active)').eq('imprint','lethargia').eq('is_public',true).in('status',['forthcoming','active']).order('created_at',{ascending:false});
  if(error)return []; return (data||[]).map((p,i)=>mapRelease(sb,p,i));
 }
