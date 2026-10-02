@@ -28,6 +28,11 @@ export default async function Lethargia(){
     .lethRelease.release.cd .physicalMedia{position:absolute;z-index:1;width:72%;height:auto;aspect-ratio:1;right:2%;top:8%;opacity:1}
     .lethRelease.release:hover .lethCover.cover{transform:translateY(-4px)}
     .lethRelease.release.cd:hover .physicalMedia{transform:translateX(34%) rotate(-32deg)}
+
+    /* Geometry correction: the CD box must stay square or its radial hub appears off-centre. */
+    .lethRelease.release.cd .physicalMedia{box-sizing:border-box!important;width:72%!important;height:auto!important;aspect-ratio:1/1!important;border-radius:50%!important;right:2%!important;top:8%!important}
+    .lethRelease.release.cd .physicalMedia:before{box-sizing:border-box}
+    .lethRelease.release.cd .physicalMedia:after{box-sizing:border-box;width:24%!important;height:auto!important;aspect-ratio:1/1!important;left:38%!important;top:38%!important}
     @media(max-width:800px){.lethargiaPage .shell{width:calc(100% - 36px)}.lethOrb{right:-35vw!important;width:92vw!important;opacity:.16!important}.lethHero{background:radial-gradient(circle at 95% 50%,rgba(72,24,31,.08),transparent 42%)}.lethBrandLogo{width:min(420px,82vw)}.lethNavLogo{width:112px}}
   `}</style>
   <header className="lethNav shell"><Link href="/" className="lethBack">SIDE:II ↗</Link><div className="lethWord"><img className="lethNavLogo" src="/brand/lethargia/lethargia-logo.png" alt="Lethargia Records" /></div><nav><a href="#releases">Releases</a><a href="#manifesto">Manifesto</a><a href="#store">Store</a></nav></header>
