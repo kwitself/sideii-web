@@ -1,11 +1,11 @@
 /* Side:II catalogue object polish — isolated from the locked global layout */
 .release.cd .cover{background:linear-gradient(145deg,#171719 0%,#101012 72%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.018)}
 
-/* CD object: deliberately optical-disc, never vinyl. */
-.release.cd .physicalMedia{width:72%;right:8%;top:14%;border-radius:50%;background:conic-gradient(from 18deg,rgba(214,224,232,.96),rgba(247,241,224,.98) 10%,rgba(166,206,220,.92) 18%,rgba(232,217,244,.94) 28%,rgba(244,239,222,.98) 39%,rgba(164,197,211,.94) 52%,rgba(238,224,246,.95) 63%,rgba(247,241,224,.98) 75%,rgba(175,211,220,.93) 87%,rgba(224,229,233,.97));box-shadow:0 24px 58px rgba(0,0,0,.72),inset 0 0 18px rgba(255,255,255,.7);filter:saturate(.72) contrast(1.04)}
+/* CD object: optical-disc surface with an actual transparent centre opening. */
+.release.cd .physicalMedia{width:72%;right:8%;top:14%;border-radius:50%;background:conic-gradient(from 18deg,rgba(214,224,232,.96),rgba(247,241,224,.98) 10%,rgba(166,206,220,.92) 18%,rgba(232,217,244,.94) 28%,rgba(244,239,222,.98) 39%,rgba(164,197,211,.94) 52%,rgba(238,224,246,.95) 63%,rgba(247,241,224,.98) 75%,rgba(175,211,220,.93) 87%,rgba(224,229,233,.97));box-shadow:0 24px 58px rgba(0,0,0,.72),inset 0 0 18px rgba(255,255,255,.7);filter:saturate(.72) contrast(1.04);-webkit-mask:radial-gradient(circle,transparent 0 4.7%,#000 5.1% 100%);mask:radial-gradient(circle,transparent 0 4.7%,#000 5.1% 100%)}
 .release.cd .physicalMedia:before{content:'';position:absolute;inset:3%;border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 2px,rgba(255,255,255,.11) 3px,transparent 4px 7px),linear-gradient(112deg,transparent 15%,rgba(255,255,255,.48) 31%,transparent 42%,rgba(180,218,232,.24) 58%,transparent 72%);mix-blend-mode:screen;opacity:.75}
-/* Realistic transparent CD hub: clear inner ring + dark opening. */
-.release.cd .physicalMedia:after{content:'';position:absolute;width:18%;aspect-ratio:1;left:41%;top:41%;border-radius:50%;background:radial-gradient(circle,transparent 0 29%,rgba(10,10,11,.92) 30% 34%,rgba(235,238,238,.88) 35% 48%,rgba(75,77,79,.55) 49% 53%,rgba(244,246,245,.58) 54% 62%,rgba(30,31,32,.28) 63% 66%,transparent 67%);box-shadow:0 0 0 1px rgba(10,10,11,.5),0 0 0 3px rgba(255,255,255,.10),inset 0 0 5px rgba(255,255,255,.55);filter:drop-shadow(0 2px 2px rgba(0,0,0,.45))}
+/* Thin clear polycarbonate hub around the true cut-out; no painted black centre. */
+.release.cd .physicalMedia:after{content:'';position:absolute;width:18%;aspect-ratio:1;left:41%;top:41%;border-radius:50%;background:radial-gradient(circle,transparent 0 28%,rgba(245,248,248,.48) 30% 39%,rgba(80,83,86,.26) 41% 45%,rgba(250,252,250,.40) 47% 58%,rgba(42,44,46,.16) 60% 64%,transparent 66%);box-shadow:0 0 0 1px rgba(255,255,255,.16),inset 0 0 4px rgba(255,255,255,.45);filter:drop-shadow(0 1px 1px rgba(0,0,0,.28))}
 .release.cd .physicalMedia i{display:none}
 .release.cd:hover .physicalMedia{transform:translateX(42%) rotate(-45deg)}
 
