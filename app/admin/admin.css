@@ -25,3 +25,8 @@
 .rowActions .deleteReleaseButton{appearance:none;border:0;background:transparent;color:#77737a;padding:0;font:7px Arial,sans-serif;letter-spacing:.13em;text-transform:uppercase;cursor:pointer}
 .rowActions .deleteReleaseButton:hover{color:#d7d4cc}
 .rowActions .deleteReleaseButton:disabled{opacity:.35;cursor:wait}
+
+.finishToggle{display:flex;align-items:center;gap:13px;border:1px solid #302f33;padding:13px 15px;background:#0a0a0b}.finishToggle input{accent-color:#d7d4cc;width:15px;height:15px}.finishToggle label{display:flex;flex-direction:column;gap:5px;cursor:pointer}.finishToggle b{font-size:8px;letter-spacing:.15em;font-weight:400}.finishToggle small{font-size:7px;letter-spacing:.08em;color:#666369}
+.previewSleeve.shrinkwrap:after{content:'';position:absolute;inset:-18% -35%;z-index:5;pointer-events:none;background:linear-gradient(112deg,transparent 34%,rgba(255,255,255,.035) 42%,rgba(255,255,255,.20) 47%,rgba(255,255,255,.045) 52%,transparent 61%);transform:rotate(-8deg)}
+.statusSelect{appearance:none;background:#0b0b0c;border:1px solid #302f33;color:#8c8983;padding:7px 24px 7px 8px;font-size:7px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+.rowActions .finishMiniButton{appearance:none;border:0;background:transparent;color:#77737a;padding:0;font:7px Arial,sans-serif;letter-spacing:.13em;cursor:pointer}
