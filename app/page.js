@@ -1,8 +1,11 @@
 import Link from 'next/link';
-import { releases } from './data/releases';
+import { getDatabaseReleases } from './lib/catalogue';
 import './catalogue.css';
 
-export default function Home() {
+export const revalidate = 0;
+
+export default async function Home() {
+  const releases = await getDatabaseReleases();
   return <main>
     <header className="nav shell"><a className="brand" href="#top" aria-label="Side II home"><img src="/brand/sideii-logo-flat.png" alt="Side II" /></a><nav><a href="#releases">Releases</a><a href="#imprints">Imprints</a><a href="#about">About</a><a href="#store">Store</a></nav></header>
     <section id="top" className="hero shell"><div className="sideWave" aria-hidden="true"><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/></div><div className="heroCore"><div className="eyebrow">INDEPENDENT PHYSICAL MUSIC LABEL · EST. MMXXVI</div><div className="heroLogo"><img src="/brand/sideii-logo-silver.png" alt="Side II" /></div><p className="tagline">Music, in another form.</p></div><a className="scrollCue" href="#manifesto"><span>EXPLORE</span><b>↓</b></a><div className="heroFoot"><span>SELECTED RELEASES</span><span>CD · CASSETTE · LIMITED EDITIONS</span></div></section>
