@@ -30,3 +30,9 @@
 .previewSleeve.shrinkwrap:after{content:'';position:absolute;inset:-18% -35%;z-index:5;pointer-events:none;background:linear-gradient(112deg,transparent 34%,rgba(255,255,255,.035) 42%,rgba(255,255,255,.20) 47%,rgba(255,255,255,.045) 52%,transparent 61%);transform:rotate(-8deg)}
 .statusSelect{appearance:none;background:#0b0b0c;border:1px solid #302f33;color:#8c8983;padding:7px 24px 7px 8px;font-size:7px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
 .rowActions .finishMiniButton{appearance:none;border:0;background:transparent;color:#77737a;padding:0;font:7px Arial,sans-serif;letter-spacing:.13em;cursor:pointer}
+
+/* UI polish: keep wrap reflection inside preview + compact product status. */
+.previewSleeve{overflow:hidden}
+.previewSleeve.shrinkwrap:after{inset:-8% -18%;transform:translate3d(-2%,0,0) rotate(-8deg);transition:transform 1.05s cubic-bezier(.22,.61,.36,1),opacity .85s ease;will-change:transform}
+.previewSleeve.shrinkwrap:hover:after{transform:translate3d(3%,0,0) rotate(-8deg)}
+.statusSelect{width:132px;max-width:100%;padding:7px 25px 7px 9px}
