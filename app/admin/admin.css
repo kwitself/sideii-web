@@ -21,3 +21,7 @@
 .adminArtworkThumb{width:42px;height:42px;object-fit:cover;border:1px solid #343337;flex:none}
 .inventoryRow button.ghostButton,.inventoryRow button.saveButton{appearance:none;border:1px solid #37363a;background:#0d0d0f;color:#aaa69f;padding:10px 13px;font:8px Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
 .inventoryRow button.saveButton{background:#d7d4cc;color:#0b0b0c;border-color:#d7d4cc}
+
+.rowActions .deleteReleaseButton{appearance:none;border:0;background:transparent;color:#77737a;padding:0;font:7px Arial,sans-serif;letter-spacing:.13em;text-transform:uppercase;cursor:pointer}
+.rowActions .deleteReleaseButton:hover{color:#d7d4cc}
+.rowActions .deleteReleaseButton:disabled{opacity:.35;cursor:wait}
