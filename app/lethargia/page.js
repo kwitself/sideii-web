@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getLethargiaReleases } from '../lib/catalogue';
+import '../catalogue.css';
 
 export const revalidate = 0;
 
@@ -29,12 +30,20 @@ export default async function Lethargia(){
     .lethCover:before{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(145deg,rgba(255,255,255,.025),transparent 24%,transparent 74%,rgba(73,24,32,.10));box-shadow:inset 0 0 30px rgba(0,0,0,.12)}
     .lethCover.shrinkwrap:after{transition:transform 1.15s cubic-bezier(.22,.61,.36,1),opacity .9s ease;opacity:.7;transform:translateX(-2%) rotate(-7deg)}
     .lethRelease:hover .lethCover.shrinkwrap:after{transform:translateX(3%) rotate(-7deg);opacity:.9}
+
+    /* Use the exact Side:II physical-media system inside the Lethargia grid. */
+    .lethRelease .lethDisc{display:none!important}
+    .lethRelease .mediaStage{overflow:visible}
+    .lethRelease.cd .physicalMedia{width:72%;right:8%;top:14%;opacity:1;filter:saturate(.72) contrast(1.04);transform:none}
+    .lethRelease.cd:hover .physicalMedia{transform:translateX(34%) rotate(-32deg);filter:saturate(.76) contrast(1.04) drop-shadow(0 18px 26px rgba(0,0,0,.32))}
+    .lethRelease .lethCover.cover{inset:auto;left:0;top:0;right:auto;bottom:auto;position:absolute;transform:none}
+    .lethRelease:hover .lethCover.cover{transform:translateY(-4px)}
     @media(max-width:800px){.lethargiaPage .shell{width:calc(100% - 36px)}.lethOrb{right:-35vw!important;width:92vw!important;opacity:.16!important}.lethHero{background:radial-gradient(circle at 95% 50%,rgba(72,24,31,.08),transparent 42%)}.lethBrandLogo{width:min(420px,82vw)}.lethNavLogo{width:112px}}
   `}</style>
   <header className="lethNav shell"><Link href="/" className="lethBack">SIDE:II ↗</Link><div className="lethWord"><img className="lethNavLogo" src="/brand/lethargia/lethargia-logo.png" alt="Lethargia Records" /></div><nav><a href="#releases">Releases</a><a href="#manifesto">Manifesto</a><a href="#store">Store</a></nav></header>
   <section className="lethHero shell"><div><small>A SIDE:II IMPRINT · EST. MMXXVI</small><img className="lethBrandLogo" src="/brand/lethargia/lethargia-logo.png" alt="Lethargia Records" /><p>Independent editions.<br/>Defined by each release.</p></div><div className="lethOrb" aria-hidden="true"><span/></div><a href="#releases" className="lethScroll">ENTER THE CATALOGUE ↓</a></section>
   <section id="manifesto" className="lethManifest shell"><span>01 / MANIFESTO</span><h2>Music, artwork, format.<br/><i>One complete edition.</i></h2><p>Lethargia develops physical releases under Side:II with each project treated on its own terms. Sound, artwork and format are considered together rather than fitted to a house style.</p></section>
-  <section id="releases" className="lethReleases shell"><div className="lethSectionHead"><span>02 / CATALOGUE</span><h2>Current <i>editions.</i></h2></div><div className="lethGrid">{releases.length?releases.map(r=><Link href={`/releases/${r.slug}`} className={`lethRelease ${r.media}`} key={r.catalogue}><div className="lethStage"><div className="lethDisc"><i/></div><div className={`lethCover ${r.hasShrinkwrap?'shrinkwrap':''}`}>{r.cover?<img src={r.cover} alt={r.title}/>:<><span>{r.catalogue}</span><b>{r.number}</b><strong>Lethargia</strong><em>Records</em></>}<small>VIEW EDITION</small></div></div><div className="lethMeta"><span>{r.catalogue}</span><h3>{r.title}</h3><p>{r.status} · {r.formatDetail}</p></div></Link>):<div className="lethEmpty">No public Lethargia editions yet.</div>}</div></section>
+  <section id="releases" className="lethReleases shell"><div className="lethSectionHead"><span>02 / CATALOGUE</span><h2>Current <i>editions.</i></h2></div><div className="lethGrid">{releases.length?releases.map(r=><Link href={`/releases/${r.slug}`} className={`lethRelease release ${r.media}`} key={r.catalogue}><div className="lethStage mediaStage">{r.media==='cassette'?<div className="catalogueCassette" aria-hidden="true"><div className="catalogueCassetteLabel"><span>LETHARGIA</span><b>{r.number}</b></div><div className="catalogueCassetteWindow"><i/><i/></div><div className="catalogueCassetteBase"><i/><i/><i/></div></div>:<div className="physicalMedia" aria-hidden="true"><i/></div>}<div className={`lethCover cover ${r.hasShrinkwrap?'shrinkwrap':''}`}>{r.cover?<img className="releaseArtwork" src={r.cover} alt={r.title}/>:<><span>{r.catalogue}</span><b>{r.number}</b><strong>Lethargia</strong><em>Records</em></>}<small>VIEW EDITION</small></div></div><div className="lethMeta releaseMeta"><span>{r.catalogue}</span><h3>{r.title}</h3><p>{r.status} · {r.formatDetail}</p></div></Link>):<div className="lethEmpty">No public Lethargia editions yet.</div>}</div></section>
   <section id="store" className="lethStore"><div className="shell"><span>03 / STORE</span><h2>Records in physical form.<br/><i>Sound, artwork, object.</i></h2><p>Lethargia editions will be available through the Side:II store.</p><Link href="/#store">SIDE:II STORE ↗</Link></div></section>
   <footer className="lethFooter shell"><div><img className="lethFooterLogo" src="/brand/lethargia/lethargia-logo.png" alt="Lethargia Records" /></div><span>A SIDE:II IMPRINT · MMXXVI</span><Link href="/">RETURN TO SIDE:II ↑</Link></footer>
  </main>
