@@ -19,12 +19,13 @@ export default function AdminDashboard(){
  const [message,setMessage]=useState('');
  const [editing,setEditing]=useState(null);
  const [deletingId,setDeletingId]=useState(null);
+ const [statusSaving,setStatusSaving]=useState(null);
 
  const load=useCallback(async()=>{
   if(!supabase)return;
   setLoading(true); setMessage('');
   const [p,o,c]=await Promise.all([
-   supabase.from('products').select('id,catalogue_no,slug,title,artist_project,description,artwork_path,status,is_public,created_at,product_variants(id,sku,format,edition_name,price,currency,manufactured_qty,stock_qty,reserved_qty,low_stock_threshold,active)').order('created_at',{ascending:false}),
+   supabase.from('products').select('id,catalogue_no,slug,title,artist_project,description,artwork_path,has_shrinkwrap,status,is_public,created_at,product_variants(id,sku,format,edition_name,price,currency,manufactured_qty,stock_qty,reserved_qty,low_stock_threshold,active)').order('created_at',{ascending:false}),
    supabase.from('orders').select('id,order_no,email,status,payment_status,total,currency,created_at').order('created_at',{ascending:false}).limit(8),
    supabase.from('customers').select('id,email,full_name,created_at').order('created_at',{ascending:false}).limit(8)
   ]);
@@ -39,6 +40,22 @@ export default function AdminDashboard(){
  const reservedUnits=variants.reduce((s,v)=>s+Number(v.reserved_qty||0),0);
  const openOrders=orders.filter(o=>!['completed','cancelled','refunded'].includes(o.status)).length;
  const revenue=orders.filter(o=>o.payment_status==='paid').reduce((s,o)=>s+Number(o.total||0),0);
+
+ async function changeStatus(p,status){
+  setStatusSaving(p.id); setMessage('');
+  const isPublic=status==='active'||status==='forthcoming';
+  const {error}=await supabase.from('products').update({status,is_public:isPublic}).eq('id',p.id);
+  setStatusSaving(null);
+  if(error){setMessage(`Status update failed: ${error.message}`);return}
+  setMessage(`${p.title} → ${status.toUpperCase()}`);
+  await load();
+ }
+
+ async function toggleWrap(p){
+  const {error}=await supabase.from('products').update({has_shrinkwrap:!p.has_shrinkwrap}).eq('id',p.id);
+  if(error){setMessage(`Finish update failed: ${error.message}`);return}
+  await load();
+ }
 
  async function deleteRelease(p){
   const ok=window.confirm(`Delete "${p.title}"? This permanently removes the release, its variants and artwork. This cannot be undone.`);
@@ -74,7 +91,7 @@ export default function AdminDashboard(){
  {message&&<p className="dbNotice">{message}</p>}<div className="metricGrid"><article><span>CATALOGUE</span><strong>{String(products.length).padStart(2,'0')}</strong><small>database releases</small></article><article><span>INVENTORY</span><strong>{String(stockUnits).padStart(2,'0')}</strong><small>{reservedUnits} units reserved</small></article><article><span>OPEN ORDERS</span><strong>{String(openOrders).padStart(2,'0')}</strong><small>live order records</small></article><article><span>REVENUE</span><strong>{revenue?money(revenue):'—'}</strong><small>paid orders</small></article></div></section>
 
  <section id="products" className="adminSection"><div className="sectionLabel"><span>02 / PRODUCTS</span><p>Physical editions from Supabase.</p></div><div className="adminPanel productPanel"><div className="tableHead"><span>EDITION</span><span>FORMAT</span><span>STATUS</span><span>PRICE</span><span>STOCK</span><span>ACTIONS</span></div>
- {loading?<div className="emptyNote">Loading catalogue…</div>:products.length===0?<div className="emptyNote">No database releases yet.</div>:products.map((p,i)=>{const v=p.product_variants?.[0];return <div className="productRow" key={p.id}><div className="editionCell">{p.artwork_path?<img className="adminArtworkThumb" src={supabase.storage.from('release-artwork').getPublicUrl(p.artwork_path).data.publicUrl} alt=""/>:<b>{String(products.length-i).padStart(2,'0')}</b>}<div><strong>{p.title}</strong><small>{p.catalogue_no}</small></div></div><span className="formatPill">{v?.format?.toUpperCase()||'—'}</span><span className="statusDot"><i/>{p.status}</span><span>{v?money(v.price,v.currency):'—'}</span><span>{v?.stock_qty||0}</span><div className="rowActions">{p.is_public&&<Link href={`/releases/${p.slug}`}>VIEW ↗</Link>}<a href="#inventory">STOCK</a><button type="button" className="deleteReleaseButton" disabled={deletingId===p.id} onClick={()=>deleteRelease(p)}>{deletingId===p.id?'DELETING…':'DELETE'}</button></div></div>})}
+ {loading?<div className="emptyNote">Loading catalogue…</div>:products.length===0?<div className="emptyNote">No database releases yet.</div>:products.map((p,i)=>{const v=p.product_variants?.[0];return <div className="productRow" key={p.id}><div className="editionCell">{p.artwork_path?<img className="adminArtworkThumb" src={supabase.storage.from('release-artwork').getPublicUrl(p.artwork_path).data.publicUrl} alt=""/>:<b>{String(products.length-i).padStart(2,'0')}</b>}<div><strong>{p.title}</strong><small>{p.catalogue_no}</small></div></div><span className="formatPill">{v?.format?.toUpperCase()||'—'}</span><select className="statusSelect" value={p.status} disabled={statusSaving===p.id} onChange={e=>changeStatus(p,e.target.value)}><option value="draft">DRAFT</option><option value="forthcoming">FORTHCOMING</option><option value="active">AVAILABLE</option><option value="archived">ARCHIVED</option></select><span>{v?money(v.price,v.currency):'—'}</span><span>{v?.stock_qty||0}</span><div className="rowActions">{p.is_public&&<Link href={`/releases/${p.slug}`}>VIEW ↗</Link>}<a href="#inventory">STOCK</a><button type="button" className="finishMiniButton" onClick={()=>toggleWrap(p)}>{p.has_shrinkwrap?'WRAP ✓':'WRAP'}</button><button type="button" className="deleteReleaseButton" disabled={deletingId===p.id} onClick={()=>deleteRelease(p)}>{deletingId===p.id?'DELETING…':'DELETE'}</button></div></div>})}
  <div className="panelAction"><a href="#new-release">＋ ADD PHYSICAL EDITION</a></div></div></section>
 
  <ReleaseWorkspace onCreated={load}/>
