@@ -1,14 +1,12 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getRelease, releases } from '../../data/releases';
+import { getDatabaseRelease } from '../../lib/catalogue';
 
-export function generateStaticParams() {
-  return releases.map(({ slug }) => ({ slug }));
-}
+export const revalidate = 0;
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const release = getRelease(slug);
+  const release = await getDatabaseRelease(slug);
   if (!release) return {};
   return {
     title: `${release.catalogue} · ${release.title}`,
@@ -18,7 +16,7 @@ export async function generateMetadata({ params }) {
 
 export default async function ReleasePage({ params }) {
   const { slug } = await params;
-  const release = getRelease(slug);
+  const release = await getDatabaseRelease(slug);
   if (!release) notFound();
   const [titleA, titleB] = release.displayTitle;
   const isCassette = release.media === 'cassette';
