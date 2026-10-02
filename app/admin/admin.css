@@ -40,3 +40,20 @@
 .rowActions .editReleaseButton{appearance:none;border:0;background:transparent;color:#77747a;padding:0;font:7px Arial,sans-serif;letter-spacing:.13em;cursor:pointer}.rowActions .editReleaseButton:hover{color:#dedbd4}
 .editOverlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);display:grid;place-items:center;padding:30px}.editModal{width:min(980px,96vw);max-height:92vh;overflow:auto;border:1px solid #353438;background:#0d0d0f;box-shadow:0 40px 120px #000;padding:28px}.editModal>header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid #29282b;padding-bottom:22px}.editModal header span{font-size:8px;letter-spacing:.22em;color:#706d72}.editModal h2{font:34px Georgia,serif;font-weight:400;margin:8px 0 0}.editModal header button{border:0;background:none;color:#77747a;font-size:8px;letter-spacing:.16em;cursor:pointer}.editBody{display:grid;grid-template-columns:1.45fr .55fr;gap:28px;padding:26px 0}.editFields{display:grid;grid-template-columns:1fr 1fr;gap:17px}.editFields label{display:flex;flex-direction:column;gap:8px;font-size:7px;letter-spacing:.16em;color:#77747a}.editFields input,.editFields select,.editFields textarea{width:100%;border:1px solid #333236;background:#09090a;color:#d7d4cc;padding:12px;outline:none}.editFields textarea{resize:vertical}.editWide{grid-column:1/-1}.editFields .editCheck{flex-direction:row;align-items:center;border:1px solid #333236;padding:13px}.editCheck input{width:15px;height:15px}.editArtwork{display:flex;flex-direction:column;gap:10px}.editArtwork img,.editArtwork>div{width:100%;aspect-ratio:1;object-fit:cover;border:1px solid #343337;background:#09090a}.editArtwork>div{display:grid;place-items:center;font-size:8px;letter-spacing:.15em;color:#555258}.editArtwork small{font-size:7px;letter-spacing:.18em;color:#656268}.editModal>footer{display:flex;justify-content:flex-end;gap:9px;border-top:1px solid #29282b;padding-top:20px}.editModal>footer button{padding:13px 16px;border:1px solid #37363a;background:transparent;color:#aaa69f;font-size:8px;letter-spacing:.15em;cursor:pointer}.editModal>footer .saveButton{background:#d7d4cc;color:#0b0b0c;border-color:#d7d4cc}
 @media(max-width:760px){.editBody{grid-template-columns:1fr}.editFields{grid-template-columns:1fr}.editWide{grid-column:auto}.editArtwork{max-width:240px}}
+
+/* Admin readability pass — preserve the editorial hierarchy, remove micro-type strain. */
+.editModal{width:min(1120px,96vw);padding:36px}
+.editModal header span{font-size:10px;letter-spacing:.2em}
+.editModal h2{font-size:42px;line-height:1.05;margin-top:10px}
+.editModal header button{font-size:10px;padding:5px}
+.editBody{grid-template-columns:minmax(0,1.55fr) minmax(240px,.45fr);gap:34px;padding:32px 0}
+.editFields{gap:21px 20px}
+.editFields label{font-size:10px!important;letter-spacing:.14em!important;line-height:1.35}
+.editFields input,.editFields select,.editFields textarea{font-size:13px!important;min-height:48px!important;padding:13px 14px!important;line-height:1.5!important}
+.editFields textarea{min-height:116px!important}
+.editArtworkPreview small,.editCurrentArtwork small{font-size:9px!important;letter-spacing:.14em!important}
+.editModal .finishToggle b,.editModal .artworkPicker b{font-size:11px!important}
+.editModal .finishToggle small,.editModal .artworkPicker small{font-size:9px!important;line-height:1.45!important}
+.editModal .workspaceMessage{font-size:11px!important}
+.editActions button{font-size:10px!important;letter-spacing:.14em!important;min-height:46px!important;padding:0 18px!important}
+@media(max-width:760px){.editModal{padding:24px}.editBody{grid-template-columns:1fr}.editModal h2{font-size:36px}.editFields{grid-template-columns:1fr}}
