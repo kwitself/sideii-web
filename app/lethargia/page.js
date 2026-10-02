@@ -20,8 +20,8 @@ export default async function Lethargia(){
 
     /* Lethargia physical-object pass: artwork leads, media stays secondary. */
     .lethStage{overflow:visible}
-    .lethRelease .lethCover{inset:5%;box-shadow:0 28px 70px rgba(0,0,0,.58),0 0 0 1px rgba(116,57,68,.08);transform:translateZ(0)}
-    .lethRelease .lethCover>img{filter:saturate(.9) contrast(1.035);transition:filter .8s ease,transform 1s cubic-bezier(.22,.61,.36,1)}
+    .lethRelease .lethCover{inset:5%;position:absolute;box-shadow:0 28px 70px rgba(0,0,0,.58),0 0 0 1px rgba(116,57,68,.08);transform:translateZ(0)}
+    .lethRelease .lethCover>img{display:block!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;z-index:1!important;opacity:1!important;filter:saturate(.9) contrast(1.035);transition:filter .8s ease,transform 1s cubic-bezier(.22,.61,.36,1)}
     .lethRelease .lethDisc{width:70%;right:4%;top:15%;opacity:.82;filter:saturate(.62) brightness(.72);transform:translateX(9%) rotate(-12deg);transition:transform 1.05s cubic-bezier(.22,.61,.36,1),opacity .8s ease,filter .8s ease}
     .lethRelease:hover .lethCover{transform:translateX(-3%);border-color:#583039;box-shadow:0 36px 85px rgba(0,0,0,.68),0 0 0 1px rgba(130,66,78,.12)}
     .lethRelease:hover .lethCover>img{transform:scale(1.008);filter:saturate(.94) contrast(1.045)}
