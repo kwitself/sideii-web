@@ -17,6 +17,18 @@ export default async function Lethargia(){
     .lethNavLogo{display:block;width:150px;max-height:48px;object-fit:contain}
     .lethFooterLogo{display:block;width:154px;height:auto;object-fit:contain}
     .lethRelease{text-decoration:none;color:inherit}.lethCover{position:relative;overflow:hidden}.lethCover>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}.lethCover>small{position:absolute;z-index:4}.lethCover.shrinkwrap:after{content:'';position:absolute;inset:-20%;z-index:3;background:linear-gradient(112deg,transparent 34%,rgba(255,255,255,.12) 46%,rgba(255,255,255,.035) 51%,transparent 60%);transform:rotate(-7deg);pointer-events:none}.lethEmpty{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.1);padding:38px 0;color:#756a6c;font-style:italic}
+
+    /* Lethargia physical-object pass: artwork leads, media stays secondary. */
+    .lethStage{overflow:visible}
+    .lethRelease .lethCover{inset:5%;box-shadow:0 28px 70px rgba(0,0,0,.58),0 0 0 1px rgba(116,57,68,.08);transform:translateZ(0)}
+    .lethRelease .lethCover>img{filter:saturate(.9) contrast(1.035);transition:filter .8s ease,transform 1s cubic-bezier(.22,.61,.36,1)}
+    .lethRelease .lethDisc{width:70%;right:4%;top:15%;opacity:.82;filter:saturate(.62) brightness(.72);transform:translateX(9%) rotate(-12deg);transition:transform 1.05s cubic-bezier(.22,.61,.36,1),opacity .8s ease,filter .8s ease}
+    .lethRelease:hover .lethCover{transform:translateX(-3%);border-color:#583039;box-shadow:0 36px 85px rgba(0,0,0,.68),0 0 0 1px rgba(130,66,78,.12)}
+    .lethRelease:hover .lethCover>img{transform:scale(1.008);filter:saturate(.94) contrast(1.045)}
+    .lethRelease:hover .lethDisc{transform:translateX(27%) rotate(18deg);opacity:.92;filter:saturate(.7) brightness(.8)}
+    .lethCover:before{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(145deg,rgba(255,255,255,.025),transparent 24%,transparent 74%,rgba(73,24,32,.10));box-shadow:inset 0 0 30px rgba(0,0,0,.12)}
+    .lethCover.shrinkwrap:after{transition:transform 1.15s cubic-bezier(.22,.61,.36,1),opacity .9s ease;opacity:.7;transform:translateX(-2%) rotate(-7deg)}
+    .lethRelease:hover .lethCover.shrinkwrap:after{transform:translateX(3%) rotate(-7deg);opacity:.9}
     @media(max-width:800px){.lethargiaPage .shell{width:calc(100% - 36px)}.lethOrb{right:-35vw!important;width:92vw!important;opacity:.16!important}.lethHero{background:radial-gradient(circle at 95% 50%,rgba(72,24,31,.08),transparent 42%)}.lethBrandLogo{width:min(420px,82vw)}.lethNavLogo{width:112px}}
   `}</style>
   <header className="lethNav shell"><Link href="/" className="lethBack">SIDE:II ↗</Link><div className="lethWord"><img className="lethNavLogo" src="/brand/lethargia/lethargia-logo.png" alt="Lethargia Records" /></div><nav><a href="#releases">Releases</a><a href="#manifesto">Manifesto</a><a href="#store">Store</a></nav></header>
