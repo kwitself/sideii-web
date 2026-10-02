@@ -13,7 +13,7 @@ export default function ReleaseWorkspace(){
  const [saving,setSaving]=useState(false); const [message,setMessage]=useState('');
  const set=(k,v)=>setForm(p=>({...p,[k]:v}));
 
- useEffect(()=>{let live=true;(async()=>{const {data}=await supabase.rpc('suggest_catalogue_no',{p_imprint:form.imprint});if(live&&data)set('catalogue_no',data)})();return()=>{live=false}})();},[form.imprint]);
+ useEffect(()=>{let live=true;(async()=>{if(!supabase)return;const {data}=await supabase.rpc('suggest_catalogue_no',{p_imprint:form.imprint});if(live&&data)set('catalogue_no',data)})();return()=>{live=false};},[form.imprint]);
  useEffect(()=>()=>{if(artworkPreview)URL.revokeObjectURL(artworkPreview)},[artworkPreview]);
 
  function chooseArtwork(file){
