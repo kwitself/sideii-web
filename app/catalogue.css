@@ -50,3 +50,8 @@
 .cover.shrinkwrap:after,.productCover.shrinkwrap:after{transform:translate3d(-2%,0,0) rotate(-7deg);transition:transform 1.15s cubic-bezier(.22,.61,.36,1),opacity .9s ease;will-change:transform}
 .release:hover .cover.shrinkwrap:after,.productVisual:hover .productCover.shrinkwrap:after{opacity:.96;transform:translate3d(3%,0,0) rotate(-7deg)}
 @media(prefers-reduced-motion:reduce){.cover.shrinkwrap:after,.productCover.shrinkwrap:after{transition:none}}
+
+/* Release System v2 */
+.releaseCredits{margin-top:34px;padding-top:25px;border-top:1px solid #28272a;max-width:720px}.releaseCredits b,.releaseGallery>span{font:8px Arial,sans-serif;letter-spacing:.2em;color:#77747a}.releaseCredits p{white-space:pre-line;margin-top:12px}
+.releaseGallery{padding-top:55px;padding-bottom:20px}.releaseGallery>div{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}.releaseGallery img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border:1px solid #29282b}
+@media(max-width:760px){.releaseGallery>div{grid-template-columns:1fr 1fr}}
