@@ -8,7 +8,7 @@ const statusMap = { DRAFT:'draft', 'IN PREPARATION':'draft', FORTHCOMING:'forthc
 function slugify(value){return value.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
 
 export default function ReleaseWorkspace(){
- const [form,setForm]=useState({catalogue_no:'SIDEII—003',title:'Third Edition',format:'CD',status:'DRAFT',price:'',stock:'',artist_project:'',description:'',has_shrinkwrap:false});
+ const [form,setForm]=useState({catalogue_no:'SIDEII—003',title:'Third Edition',format:'CD',status:'DRAFT',price:'',stock:'',artist_project:'',description:'',imprint:'sideii',has_shrinkwrap:false});
  const [artwork,setArtwork]=useState(null); const [artworkPreview,setArtworkPreview]=useState('');
  const [saving,setSaving]=useState(false); const [message,setMessage]=useState('');
  const set=(k,v)=>setForm(p=>({...p,[k]:v}));
@@ -29,7 +29,7 @@ export default function ReleaseWorkspace(){
   setSaving(true);setMessage('');
   const dbStatus=draft?'draft':(statusMap[form.status]||'draft');
   const slugBase=slugify(`${form.catalogue_no}-${form.title}`)||`release-${Date.now()}`;
-  const {data:product,error:pErr}=await supabase.from('products').insert({catalogue_no:form.catalogue_no.trim(),slug:slugBase,title:form.title.trim(),artist_project:form.artist_project.trim()||null,description:form.description.trim()||null,has_shrinkwrap:form.has_shrinkwrap,status:dbStatus,is_public:dbStatus==='active'||dbStatus==='forthcoming'}).select('id').single();
+  const {data:product,error:pErr}=await supabase.from('products').insert({catalogue_no:form.catalogue_no.trim(),slug:slugBase,title:form.title.trim(),artist_project:form.artist_project.trim()||null,description:form.description.trim()||null,imprint:form.imprint,has_shrinkwrap:form.has_shrinkwrap,status:dbStatus,is_public:dbStatus==='active'||dbStatus==='forthcoming'}).select('id').single();
   if(pErr){setSaving(false);setMessage(`Product: ${pErr.message}`);return;}
   const stock=Math.max(0,Number.parseInt(form.stock||'0',10)||0); const price=Math.max(0,Number.parseFloat(form.price||'0')||0);
   const sku=`${form.catalogue_no.trim()}-${form.format}`.replace(/\s+/g,'-');
@@ -52,8 +52,8 @@ export default function ReleaseWorkspace(){
   if(!artworkWarning)setTimeout(()=>window.location.reload(),700);
  }
 
- return <section id="new-release" className="adminSection releaseWorkspace"><div className="sectionLabel"><span>NEW / RELEASE WORKSPACE</span><p>Prepare the next physical object.</p></div><div className="releaseGrid"><div className="adminPanel releaseForm"><div className="formIntro"><span>DATABASE + STORAGE CONNECTED</span><h2>New <em>release.</em></h2><p>Release data and optional cover artwork are written to the live Side:II catalogue.</p></div><div className="formGrid">
- <label><span>CATALOGUE NO.</span><input value={form.catalogue_no} onChange={e=>set('catalogue_no',e.target.value)}/></label><label><span>EDITION TITLE</span><input value={form.title} onChange={e=>set('title',e.target.value)}/></label>
+ return <section id="new-release" className="adminSection releaseWorkspace"><div className="sectionLabel"><span>NEW / RELEASE WORKSPACE</span><p>Prepare the next physical object.</p></div><div className="releaseGrid"><div className="adminPanel releaseForm"><div className="formIntro"><span>DATABASE + STORAGE CONNECTED</span><h2>New <em>release.</em></h2><p>Release data and optional cover artwork are written to the selected live imprint catalogue.</p></div><div className="formGrid">
+ <label><span>IMPRINT</span><select value={form.imprint} onChange={e=>set("imprint",e.target.value)}><option value="sideii">SIDE:II</option><option value="lethargia">LETHARGIA RECORDS</option></select></label><label><span>CATALOGUE NO.</span><input value={form.catalogue_no} onChange={e=>set('catalogue_no',e.target.value)}/></label><label><span>EDITION TITLE</span><input value={form.title} onChange={e=>set('title',e.target.value)}/></label>
  <label><span>FORMAT</span><select value={form.format} onChange={e=>set('format',e.target.value)}><option>CD</option><option>CASSETTE</option></select></label><label><span>STATUS</span><select value={form.status} onChange={e=>set('status',e.target.value)}><option>DRAFT</option><option>IN PREPARATION</option><option>FORTHCOMING</option><option>AVAILABLE</option></select></label>
  <label><span>PRICE / TRY</span><input inputMode="decimal" value={form.price} onChange={e=>set('price',e.target.value)} placeholder="0"/></label><label><span>INITIAL STOCK</span><input inputMode="numeric" value={form.stock} onChange={e=>set('stock',e.target.value)} placeholder="0"/></label>
  <label className="wideField"><span>ARTIST / PROJECT</span><input value={form.artist_project} onChange={e=>set('artist_project',e.target.value)} placeholder="Artist or project name"/></label>
