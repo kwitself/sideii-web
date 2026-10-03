@@ -83,3 +83,26 @@
 .shippingTracking input:focus,.shippingTracking select:focus{border-color:#666}
 .shippingTracking input::placeholder{color:#555}
 .shippingTracking .saveButton{position:static;left:auto;bottom:auto;min-height:38px;margin:0;border:1px solid #d7d4cc;background:#e8e4dc;color:#111;padding:0 14px}
+
+/* Order modal readability pass */
+.orderModal{padding:34px 36px;max-width:760px}
+.orderModal header{margin-bottom:24px;padding-bottom:20px}
+.orderModal header span,.orderDetailGrid span,.orderControls label{font-size:10px;letter-spacing:.16em}
+.orderModal header h2{font-size:28px;line-height:1.15;margin-top:8px}
+.orderDetailGrid{gap:32px;margin:22px 0 26px}
+.orderDetailGrid b{font-size:14px;line-height:1.5}
+.orderDetailGrid p{font-size:11px;line-height:1.7;margin-top:7px}
+.orderItems{margin:24px 0}
+.orderItems article{padding:17px 0}
+.orderItems b{font-size:14px;line-height:1.4}
+.orderItems small{display:block;margin-top:6px;font-size:10px;line-height:1.5;letter-spacing:.1em}
+.orderItems strong{font-size:14px}
+.orderTotal{padding:18px 0 22px;margin-bottom:8px}
+.orderTotal span{font-size:10px;letter-spacing:.16em}
+.orderTotal strong{font-size:22px}
+.orderControls{gap:14px;margin-top:16px}
+.orderControls label{gap:8px}
+.orderControls select,.orderControls input{min-height:42px;font-size:11px;padding:0 12px}
+.shippingTracking{margin-top:14px}
+.shippingTracking .saveButton{min-height:42px;font-size:11px;letter-spacing:.08em}
+.orderNotes{margin-top:18px;padding:16px 14px;font-size:10px;line-height:1.65;letter-spacing:.08em}
