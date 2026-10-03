@@ -8,7 +8,7 @@ const fmt=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',maxi
 export default function StoreClient({releases}){
  const [filter,setFilter]=useState('all'),[formatFilter,setFormatFilter]=useState('all');
  const [cart,setCart]=useState([]),[open,setOpen]=useState(false),[checkout,setCheckout]=useState(false),[busy,setBusy]=useState(false),[done,setDone]=useState(null),[error,setError]=useState('');
- useEffect(()=>{setCart(readCart())},[]);
+ useEffect(()=>{setCart(readCart());const q=new URLSearchParams(window.location.search);if(q.get('checkout')==='1'){setDone(null);setOpen(true);setCheckout(true);window.history.replaceState({},'',window.location.pathname)}},[]);
  useEffect(()=>{const fn=e=>setCart(e.detail||readCart());window.addEventListener('sideii-cart',fn);return()=>window.removeEventListener('sideii-cart',fn)},[]);
  const updateCart=next=>{setCart(next);writeCart(next)};
  const [form,setForm]=useState({name:'',email:'',phone:'',address:'',city:'',district:'',postal:'',notes:''});
