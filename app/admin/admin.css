@@ -75,3 +75,11 @@
 
 /* Shipping settings: keep the action in normal form flow (lowerGrid buttons are otherwise absolutely positioned) */
 .shippingSettings .saveButton{position:static;left:auto;bottom:auto;display:inline-flex;align-items:center;justify-content:center;width:auto;margin-top:2px;padding:0 16px;border:1px solid #d7d4cc}
+
+/* Order fulfilment controls */
+.shippingTracking{align-items:end}
+.shippingTracking label{display:flex;flex-direction:column;gap:7px;color:#777;font-size:9px;letter-spacing:.14em}
+.shippingTracking input,.shippingTracking select{width:100%;min-height:38px;background:#0b0b0c;color:#e8e4dc;border:1px solid #2b2b2d;border-radius:0;padding:0 10px;font:inherit;letter-spacing:.08em;outline:none}
+.shippingTracking input:focus,.shippingTracking select:focus{border-color:#666}
+.shippingTracking input::placeholder{color:#555}
+.shippingTracking .saveButton{position:static;left:auto;bottom:auto;min-height:38px;margin:0;border:1px solid #d7d4cc;background:#e8e4dc;color:#111;padding:0 14px}
