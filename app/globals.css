@@ -47,3 +47,28 @@
 .editionDynamicLead{top:24px!important;font:11px/1.4 Georgia,serif!important;color:#6f6c67!important;letter-spacing:.02em}
 .editionPanel{padding-top:58px}
 @media(max-width:760px){.releaseCollab{position:static;grid-column:1;margin:0 0 -22px;white-space:normal;flex-wrap:wrap}.releaseCollab span,.releaseCollab strong{font-size:16px}.editionDynamicLead{position:static!important;grid-column:1;margin:0 0 -18px!important}.editionPanel{padding-top:0}}
+
+/* Release detail composition v3 — generated mockup direction */
+.productHero{padding:46px 0 66px!important}
+.productReleaseLayout{display:block!important}
+.productReleaseLayout>.productInfo{padding:18px 0 26px!important;display:flex;flex-direction:column;align-items:flex-start;border-bottom:1px solid #29282b;margin-left:46%;width:54%}
+.heroReleaseLockup{display:flex;align-items:center;gap:20px;margin-bottom:22px;min-height:72px}
+.heroReleaseLockup img{width:112px;height:58px;object-fit:contain;object-position:left center}
+.heroReleaseLockup b{font:18px Georgia,serif;font-weight:400;color:#5d5a56}
+.heroReleaseLockup em{font:32px/1 Georgia,serif;font-style:normal;color:#d8d3cb;letter-spacing:-.025em}
+.heroReleaseLockup.lethargiaHeroLockup strong{font:italic 31px/1 Georgia,serif;font-weight:400;color:#9b4b59}
+.lethargiaLogoMark{width:54px;height:54px;border:1px solid #63303a;border-radius:50%;display:grid;place-items:center;font:italic 30px Georgia,serif;color:#8d3c4a}
+.productIndex{order:2!important}
+.editionExperience{display:grid!important;grid-template-columns:1.05fr .95fr!important;gap:7vw!important;margin-top:36px!important;align-items:center!important}
+.productVisual{max-width:620px!important}
+.editionPanel{padding-top:0!important;max-width:520px!important}
+.editionPanel .releaseCollab{display:none!important}
+.editionDynamicLead{position:static!important;margin:0 0 22px!important;font:20px/1.15 Georgia,serif!important;color:#d4d0c8!important;white-space:normal!important}
+.editionDynamicLead small{display:block;margin-top:6px;font:8px/1.2 Arial,sans-serif;letter-spacing:.16em;color:#716e68;text-transform:uppercase}
+.editionChooser{padding-top:20px;border-top:1px solid #29282b}
+.editionChooser button{min-width:76px!important;padding:13px 17px!important}
+.editionFacts{margin-top:22px!important}
+.editionFacts div{padding:14px 0!important}
+.productButton{width:100%;padding:18px 24px!important;text-align:center}
+.releaseGallery{margin-top:4px!important}
+@media(max-width:760px){.productHero{padding:28px 0 48px!important}.productReleaseLayout>.productInfo{margin-left:0;width:100%;padding:10px 0 22px!important}.heroReleaseLockup{gap:12px;min-height:54px;margin-bottom:16px}.heroReleaseLockup img{width:82px;height:42px}.heroReleaseLockup em,.heroReleaseLockup.lethargiaHeroLockup strong{font-size:21px}.lethargiaLogoMark{width:38px;height:38px;font-size:21px}.editionExperience{grid-template-columns:1fr!important;margin-top:28px!important;gap:30px!important}.editionDynamicLead{font-size:18px!important;margin-bottom:18px!important}.editionPanel{max-width:none!important}}
