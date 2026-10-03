@@ -72,3 +72,18 @@
 .productButton{width:100%;padding:18px 24px!important;text-align:center}
 .releaseGallery{margin-top:4px!important}
 @media(max-width:760px){.productHero{padding:28px 0 48px!important}.productReleaseLayout>.productInfo{margin-left:0;width:100%;padding:10px 0 22px!important}.heroReleaseLockup{gap:12px;min-height:54px;margin-bottom:16px}.heroReleaseLockup img{width:82px;height:42px}.heroReleaseLockup em,.heroReleaseLockup.lethargiaHeroLockup strong{font-size:21px}.lethargiaLogoMark{width:38px;height:38px;font-size:21px}.editionExperience{grid-template-columns:1fr!important;margin-top:28px!important;gap:30px!important}.editionDynamicLead{font-size:18px!important;margin-bottom:18px!important}.editionPanel{max-width:none!important}}
+
+/* Hero identity — imprint × release, centered as one lockup */
+.releaseHeroIdentity{grid-column:1/-1!important;width:100%!important;padding:28px 0 34px!important;display:flex!important;flex-direction:column!important;align-items:center!important;margin:0!important}
+.releaseHeroPair{display:flex;align-items:center;justify-content:center;gap:34px;width:100%}
+.releaseHeroPair h1{margin:0!important;font-size:clamp(58px,6vw,104px)!important;line-height:.78!important;letter-spacing:-.055em!important}
+.releaseHeroX{font:52px/1 Georgia,serif;font-weight:400;color:#aaa59d}
+.releaseImprintWordmark{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:300px}
+.releaseImprintWordmark img{width:230px;height:112px;object-fit:contain}
+.releaseHeroLethargia .releaseImprintWordmark span{font:italic clamp(48px,5vw,88px)/.7 Georgia,serif;color:#702b35;letter-spacing:-.06em}
+.releaseHeroLethargia .releaseImprintWordmark em{font:italic clamp(42px,4.3vw,76px)/.82 Georgia,serif;color:#d7d2ca;letter-spacing:-.055em}
+.releaseHeroIdentity>.productIndex{margin-top:22px!important;margin-left:calc(300px + 34px + 52px + 34px);align-self:center!important}
+.editionExperience{margin-top:24px!important}
+.editionPanel{padding-top:0!important}
+.editionDynamicLead{position:static!important;margin:0 0 18px!important;white-space:normal!important}
+@media(max-width:760px){.releaseHeroIdentity{padding:18px 0 26px!important}.releaseHeroPair{gap:14px;flex-wrap:wrap}.releaseImprintWordmark{min-width:130px}.releaseImprintWordmark img{width:105px;height:56px}.releaseHeroLethargia .releaseImprintWordmark span{font-size:38px}.releaseHeroLethargia .releaseImprintWordmark em{font-size:34px}.releaseHeroX{font-size:28px}.releaseHeroPair h1{font-size:52px!important}.releaseHeroIdentity>.productIndex{margin:15px 0 0!important}.editionExperience{margin-top:18px!important}}
