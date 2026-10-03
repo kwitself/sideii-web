@@ -22,13 +22,15 @@ export default function AdminDashboard(){
  const [deletingId,setDeletingId]=useState(null);
  const [statusSaving,setStatusSaving]=useState(null);
  const [editRelease,setEditRelease]=useState(null);
+ const [selectedOrder,setSelectedOrder]=useState(null);
+ const [orderSaving,setOrderSaving]=useState(false);
 
  const load=useCallback(async()=>{
   if(!supabase)return;
   setLoading(true); setMessage('');
   const [p,o,c]=await Promise.all([
    supabase.from('products').select('id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,has_shrinkwrap,release_date,credits,tracklist,gallery_paths,status,is_public,created_at,product_variants(id,sku,format,edition_name,edition_details,price,currency,manufactured_qty,stock_qty,reserved_qty,low_stock_threshold,active,digital_formats,audio_specs)').order('created_at',{ascending:false}),
-   supabase.from('orders').select('id,order_no,email,status,payment_status,total,currency,created_at').order('created_at',{ascending:false}).limit(8),
+   supabase.from('orders').select('id,order_no,email,status,payment_status,subtotal,shipping_total,total,currency,shipping_name,shipping_phone,shipping_address,notes,fulfillment_type,created_at,order_items(id,sku,title,format,quantity,unit_price,line_total)').order('created_at',{ascending:false}).limit(8),
    supabase.from('customers').select('id,email,full_name,created_at').order('created_at',{ascending:false}).limit(8)
   ]);
   if(p.error){setMessage(p.error.message);setProducts([])}else setProducts(p.data||[]);
@@ -77,6 +79,12 @@ export default function AdminDashboard(){
   }finally{setDeletingId(null)}
  }
 
+ async function updateOrder(order,status,paymentStatus){
+  setOrderSaving(true);setMessage('');
+  const {error}=await supabase.rpc('admin_update_order',{p_order_id:order.id,p_status:status??null,p_payment_status:paymentStatus??null});
+  setOrderSaving(false);if(error){setMessage(error.message);return}setMessage('Order #SII-'+String(order.order_no).padStart(4,'0')+' updated.');await load();setSelectedOrder(null);
+ }
+
  async function saveStock(v){
   const next=Math.max(0,Number.parseInt(v.stock_qty||'0',10)||0);
   const reserved=Math.max(0,Number.parseInt(v.reserved_qty||'0',10)||0);
@@ -98,11 +106,11 @@ export default function AdminDashboard(){
 
  <ReleaseWorkspace onCreated={load}/>
 
- <section id="orders" className="adminSection twoCol"><div><div className="sectionLabel"><span>03 / ORDERS</span><p>Latest database order activity.</p></div><div className="adminPanel orderList">{orders.length?orders.map(o=><article key={o.id}><div><strong>#SII-{String(o.order_no).padStart(4,'0')}</strong><small>{o.email}</small></div><span>{o.status}</span><b>{money(o.total,o.currency)}</b></article>):<div className="emptyNote">No orders yet. This area is already database-ready.</div>}</div></div>
+ <section id="orders" className="adminSection twoCol"><div><div className="sectionLabel"><span>03 / ORDERS</span><p>Live orders, payment and fulfilment.</p></div><div className="adminPanel orderList">{orders.length?orders.map(o=><article className="orderRow" key={o.id} onClick={()=>setSelectedOrder(o)}><div><strong>#SII-{String(o.order_no).padStart(4,'0')}</strong><small>{o.email} · {o.fulfillment_type?.toUpperCase()}</small></div><span>{o.payment_status} / {o.status}</span><b>{money(o.total,o.currency)}</b></article>):<div className="emptyNote">No orders yet.</div>}</div></div>
  <div id="inventory"><div className="sectionLabel"><span>04 / INVENTORY</span><p>Production and stock readiness.</p></div><div className="adminPanel inventoryCard"><div className="inventoryRing"><strong>{stockUnits}</strong><span>UNITS</span></div><div><b>Live inventory connected.</b><p>{variants.length} physical variant · {reservedUnits} reserved.</p><a href="#inventory-list">MANAGE STOCK ↓</a></div></div></div></section>
 
  <section id="inventory-list" className="adminSection"><div className="sectionLabel"><span>04B / STOCK LEDGER</span><p>Adjust live stock without leaving Control Room.</p></div><div className="adminPanel inventoryList">
  {variants.length===0?<div className="emptyNote">Create a release to start inventory.</div>:variants.map(v=>{const edit=editing?.id===v.id?editing:null;return <div className="inventoryRow" key={v.id}><div><strong>{v.product.title}</strong><small>{v.sku} · {v.format.toUpperCase()}</small></div>{edit?<><label>STOCK<input type="number" min="0" value={edit.stock_qty} onChange={e=>setEditing({...edit,stock_qty:e.target.value})}/></label><label>RESERVED<input type="number" min="0" value={edit.reserved_qty} onChange={e=>setEditing({...edit,reserved_qty:e.target.value})}/></label><label>LOW AT<input type="number" min="0" value={edit.low_stock_threshold} onChange={e=>setEditing({...edit,low_stock_threshold:e.target.value})}/></label><button className="saveButton" onClick={()=>saveStock(edit)}>SAVE</button><button className="ghostButton" onClick={()=>setEditing(null)}>CANCEL</button></>:<><span>{v.stock_qty} IN STOCK</span><span>{v.reserved_qty} RESERVED</span><span>{Number(v.stock_qty)<=Number(v.low_stock_threshold)?'LOW STOCK':'READY'}</span><button className="ghostButton" onClick={()=>setEditing({...v,originalStock:v.stock_qty})}>ADJUST</button></>}</div>})}</div></section>
 
- <section id="customers" className="adminSection lowerGrid"><article><span>05 / CUSTOMERS</span><h2>Audience,<br/><em>{customers.length?'connected.':'when ready.'}</em></h2><p>{customers.length?`${customers.length} customer record(s) in Supabase.`:'Customer records will appear here after commerce is enabled.'}</p></article><article id="settings"><span>06 / SETTINGS</span><h2>Store<br/><em>configuration.</em></h2><p>Payments, shipping, release defaults and artwork storage are the next commerce layer.</p></article></section>{editRelease&&<EditReleaseModal product={editRelease} onClose={()=>setEditRelease(null)} onSaved={load}/>}<footer className="adminFooter"><span>SIDE:II CONTROL ROOM</span><span>SUPABASE / LIVE</span></footer></section>;
+ <section id="customers" className="adminSection lowerGrid"><article><span>05 / CUSTOMERS</span><h2>Audience,<br/><em>{customers.length?'connected.':'when ready.'}</em></h2><p>{customers.length?`${customers.length} customer record(s) in Supabase.`:'Customer records will appear here after commerce is enabled.'}</p></article><article id="settings"><span>06 / SETTINGS</span><h2>Store<br/><em>configuration.</em></h2><p>Payments, shipping, release defaults and artwork storage are the next commerce layer.</p></article></section>{selectedOrder&&<div className="orderOverlay" onMouseDown={e=>{if(e.target===e.currentTarget)setSelectedOrder(null)}}><section className="orderModal"><header><div><span>ORDER / #SII-{String(selectedOrder.order_no).padStart(4,'0')}</span><h2>{selectedOrder.shipping_name||selectedOrder.email}</h2></div><button onClick={()=>setSelectedOrder(null)}>CLOSE ×</button></header><div className="orderDetailGrid"><div><span>CUSTOMER</span><b>{selectedOrder.email}</b><p>{selectedOrder.shipping_phone||'—'}</p></div><div><span>FULFILMENT</span><b>{selectedOrder.fulfillment_type?.toUpperCase()}</b><p>{selectedOrder.shipping_address?Object.values(selectedOrder.shipping_address).filter(Boolean).join(' · '):'Digital delivery'}</p></div></div><div className="orderItems">{(selectedOrder.order_items||[]).map(i=><article key={i.id}><div><b>{i.title}</b><small>{i.sku} · {i.format.toUpperCase()} · QTY {i.quantity}</small></div><strong>{money(i.line_total,selectedOrder.currency)}</strong></article>)}</div><div className="orderTotal"><span>TOTAL</span><strong>{money(selectedOrder.total,selectedOrder.currency)}</strong></div><div className="orderControls"><label>PAYMENT<select value={selectedOrder.payment_status} disabled={orderSaving} onChange={e=>updateOrder(selectedOrder,null,e.target.value)}><option value="unpaid">UNPAID</option><option value="paid">PAID</option><option value="refunded">REFUNDED</option></select></label><label>ORDER STATUS<select value={selectedOrder.status} disabled={orderSaving} onChange={e=>updateOrder(selectedOrder,e.target.value,null)}><option value="pending">PENDING</option><option value="paid">PAID</option><option value="preparing">PREPARING</option><option value="shipped">SHIPPED</option><option value="completed">COMPLETED</option><option value="cancelled">CANCELLED</option><option value="refunded">REFUNDED</option></select></label></div>{selectedOrder.notes&&<p className="orderNotes">{selectedOrder.notes}</p>}</section></div>}{editRelease&&<EditReleaseModal product={editRelease} onClose={()=>setEditRelease(null)} onSaved={load}/>}<footer className="adminFooter"><span>SIDE:II CONTROL ROOM</span><span>SUPABASE / LIVE</span></footer></section>;
 }
