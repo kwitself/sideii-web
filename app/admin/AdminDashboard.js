@@ -23,7 +23,8 @@ export default function AdminDashboard(){
  const [statusSaving,setStatusSaving]=useState(null);
  const [editRelease,setEditRelease]=useState(null);
  const [selectedOrder,setSelectedOrder]=useState(null);
- const [orderSaving,setOrderSaving]=useState(false);\n const [shippingSettings,setShippingSettings]=useState({enabled:true,standard_rate:0,vinyl_rate:0,free_shipping_threshold:''});\n const [shippingSaving,setShippingSaving]=useState(false);
+ const [orderSaving,setOrderSaving]=useState(false);
+ const [shippingSettings,setShippingSettings]=useState({enabled:true,standard_rate:0,vinyl_rate:0,free_shipping_threshold:''});\n const [shippingSaving,setShippingSaving]=useState(false);
 
  const load=useCallback(async()=>{
   if(!supabase)return;
@@ -31,7 +32,8 @@ export default function AdminDashboard(){
   const [p,o,c,s]=await Promise.all([
    supabase.from('products').select('id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,has_shrinkwrap,release_date,credits,tracklist,gallery_paths,status,is_public,product_origin,original_label,original_catalogue_no,barcode,created_at,product_variants(id,sku,format,edition_name,edition_details,price,currency,manufactured_qty,stock_qty,reserved_qty,low_stock_threshold,active,digital_formats,audio_specs,vinyl_size,vinyl_speed,vinyl_weight_g,vinyl_color)').order('created_at',{ascending:false}),
    supabase.from('orders').select('id,order_no,email,status,payment_status,subtotal,shipping_total,total,currency,shipping_name,shipping_phone,shipping_address,notes,fulfillment_type,created_at,order_items(id,sku,title,format,quantity,unit_price,line_total)').order('created_at',{ascending:false}).limit(8),
-   supabase.from('customers').select('id,email,full_name,created_at').order('created_at',{ascending:false}).limit(8)
+   supabase.from('customers').select('id,email,full_name,created_at').order('created_at',{ascending:false}).limit(8),
+   supabase.from('shipping_settings').select('enabled,standard_rate,vinyl_rate,free_shipping_threshold').eq('id',1).maybeSingle()
   ]);
   if(p.error){setMessage(p.error.message);setProducts([])}else setProducts(p.data||[]);
   setOrders(o.error?[]:(o.data||[])); setCustomers(c.error?[]:(c.data||[])); if(!s.error&&s.data)setShippingSettings({...s.data,free_shipping_threshold:s.data.free_shipping_threshold??''}); setLoading(false);
@@ -83,6 +85,18 @@ export default function AdminDashboard(){
   setOrderSaving(true);setMessage('');
   const {error}=await supabase.rpc('admin_update_order',{p_order_id:order.id,p_status:status??null,p_payment_status:paymentStatus??null});
   setOrderSaving(false);if(error){setMessage(error.message);return}setMessage('Order #SII-'+String(order.order_no).padStart(4,'0')+' updated.');await load();setSelectedOrder(null);
+ }
+
+ async function saveShippingSettings(e){
+  e.preventDefault();
+  if(!supabase)return;
+  setShippingSaving(true); setMessage('');
+  const payload={enabled:!!shippingSettings.enabled,standard_rate:Math.max(0,Number(shippingSettings.standard_rate)||0),vinyl_rate:Math.max(0,Number(shippingSettings.vinyl_rate)||0),free_shipping_threshold:shippingSettings.free_shipping_threshold===''?null:Math.max(0,Number(shippingSettings.free_shipping_threshold)||0)};
+  const {error}=await supabase.from('shipping_settings').upsert({id:1,...payload},{onConflict:'id'});
+  setShippingSaving(false);
+  if(error){setMessage('Shipping settings failed: '+error.message);return}
+  setShippingSettings({...payload,free_shipping_threshold:payload.free_shipping_threshold??''});
+  setMessage('Shipping settings saved.');
  }
 
  async function saveStock(v){
