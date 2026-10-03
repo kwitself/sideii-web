@@ -14,3 +14,7 @@
 /* Selected / distribution catalogue identity */
 .selectedBadge{display:inline-block;margin:0 0 12px;padding:7px 9px;border:1px solid #4a474d;color:#aaa69f;font:9px/1 Arial,sans-serif;letter-spacing:.16em}
 .selectedAttribution{max-width:560px;margin:-18px 0 28px;color:#77747a;font:13px/1.55 Georgia,serif}.selectedAttribution b{color:#aaa69f;font-weight:400}.selectedProduct .storeCover{position:relative}.selectedProduct .storeCover:after{content:'SELECTED';position:absolute;left:12px;bottom:12px;padding:6px 8px;background:#09090add;border:1px solid #49464b;color:#aaa69f;font:8px Arial,sans-serif;letter-spacing:.17em}.storeNoResults{padding:70px 0;color:#66636a;font:10px Arial,sans-serif;letter-spacing:.18em}
+
+/* Checkout location field order/readability */
+.checkoutForm .addressLocation{grid-template-columns:1fr 1fr}.checkoutForm .addressNotice{display:block;margin:-4px 0 12px;color:#8d8982;font:10px/1.5 Arial,sans-serif;letter-spacing:.03em}
+@media(max-width:560px){.checkoutForm .addressLocation{grid-template-columns:1fr}}
