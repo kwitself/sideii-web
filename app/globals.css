@@ -109,3 +109,14 @@ button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser butt
 .editionDynamicLead small{font-size:9px!important}
 .editionChooser button{font-size:10px!important}
 .productButton{font-size:10px!important;letter-spacing:.16em!important}
+
+/* Vinyl object — true LP presentation */
+.productVinylObject{position:absolute;z-index:1;width:82%;aspect-ratio:1;right:-1%;top:9%;filter:drop-shadow(0 28px 34px #000c);transition:transform .9s cubic-bezier(.16,.8,.18,1);animation:editionReveal .42s cubic-bezier(.16,.8,.18,1)}
+.productVinylDisc{position:absolute;inset:0;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 43% 38%,#2d2d30 0,#111113 22%,#070708 68%,#171719 100%);box-shadow:inset 0 0 0 1px #3a393c,inset 0 0 38px #000,0 24px 55px #000}
+.vinylGrooves{position:absolute;inset:3%;border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 2px,rgba(255,255,255,.055) 2.5px 3px,transparent 3.5px 6px);opacity:.72}
+.vinylLabel{position:absolute;inset:36%;border-radius:50%;background:radial-gradient(circle,#09090a 0 5%,#6f2834 6% 63%,#3c171e 64% 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 0 0 1px #111}
+.vinylLabel b{font:10px Georgia,serif;font-weight:400;color:#d4cbc5}.vinylLabel span{font:7px Arial,sans-serif;letter-spacing:.15em;color:#9d7378}.vinylLabel i{position:absolute;width:6%;aspect-ratio:1;border-radius:50%;background:#080809}
+.productVisual.vinyl:hover .productVinylObject{transform:translateX(42%) rotate(68deg)}
+.productVisual.vinyl:hover .productCover{transform:translateX(-9%) translateY(-2px)}
+.productVinylDisc.vinyl-white{background:radial-gradient(circle at 40% 36%,#fff,#ddd 35%,#aaa 100%)}.productVinylDisc.vinyl-clear,.productVinylDisc.vinyl-transparent{background:radial-gradient(circle at 40% 36%,rgba(255,255,255,.62),rgba(190,190,200,.22) 50%,rgba(100,100,110,.3));backdrop-filter:blur(2px)}.productVinylDisc.vinyl-red,.productVinylDisc.vinyl-burgundy{background:radial-gradient(circle at 40% 36%,#812c3b,#3e1119 55%,#16090c)}.productVinylDisc.vinyl-blue{background:radial-gradient(circle at 40% 36%,#354c68,#13202e 55%,#090d12)}
+@media(max-width:760px){.productVinylObject{width:78%;right:1%;top:11%}.productVisual.vinyl:hover .productVinylObject{transform:translateX(28%) rotate(45deg)}}
