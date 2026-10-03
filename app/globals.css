@@ -155,3 +155,6 @@ button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser butt
 .checkoutSummaryItem>span{font:13px/1.2 Georgia,serif;color:#d8d4cd}.checkoutSummaryItem>span small{display:block;margin-top:5px;font:9px/1.2 Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#6f6b70}
 .checkoutSummaryItem>strong,.checkoutSummaryRow>strong{font:11px/1.2 Arial,sans-serif;font-weight:400;color:#d8d4cd;text-align:right}
 .checkoutSummaryRow>strong{font-size:9px;letter-spacing:.08em}.checkoutSummaryTotal{border-bottom:0;padding:16px 0}.checkoutSummaryTotal>span,.checkoutSummaryTotal>strong{color:#e2ded6;font-size:11px}
+
+.globalBagQty button:disabled,.cartItems button:disabled{opacity:.28;cursor:not-allowed}
+.checkoutError{margin:10px 0 14px;padding:10px 12px;border:1px solid #5a3034;color:#c79292;font:11px/1.45 Arial,sans-serif;letter-spacing:.03em}
