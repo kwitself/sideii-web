@@ -146,3 +146,12 @@ button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser butt
 .checkoutForm select:focus{border-color:#77737c}
 .checkoutForm select:disabled{color:#625f5b;cursor:not-allowed;opacity:.72}
 .checkoutForm select option{background:#0b0b0d;color:#d8d4cd}
+
+/* Checkout order summary */
+.checkoutSummary{margin:22px 0 16px;border-top:1px solid #343337;border-bottom:1px solid #343337}
+.checkoutSummaryHead,.checkoutSummaryItem,.checkoutSummaryRow{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:12px 0;border-bottom:1px solid #242326}
+.checkoutSummaryHead>span,.checkoutSummaryRow>span{font:10px/1.2 Arial,sans-serif;letter-spacing:.16em;color:#77747a}
+.checkoutSummaryHead>small{font:9px/1.2 Arial,sans-serif;letter-spacing:.14em;color:#8f8b84}
+.checkoutSummaryItem>span{font:13px/1.2 Georgia,serif;color:#d8d4cd}.checkoutSummaryItem>span small{display:block;margin-top:5px;font:9px/1.2 Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#6f6b70}
+.checkoutSummaryItem>strong,.checkoutSummaryRow>strong{font:11px/1.2 Arial,sans-serif;font-weight:400;color:#d8d4cd;text-align:right}
+.checkoutSummaryRow>strong{font-size:9px;letter-spacing:.08em}.checkoutSummaryTotal{border-bottom:0;padding:16px 0}.checkoutSummaryTotal>span,.checkoutSummaryTotal>strong{color:#e2ded6;font-size:11px}
