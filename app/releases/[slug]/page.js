@@ -28,7 +28,7 @@ export default async function ReleasePage({ params }) {
     <section className="productHero shell">
       <div className="productReleaseLayout"><div className={'productInfo releaseHeroIdentity '+(release.imprint==='lethargia'?'releaseHeroLethargia':'releaseHeroSideii')}>
         <div className="releaseHeroPair">
-          <div className="releaseImprintWordmark">{release.imprint==='lethargia'?<><span>lethargia</span><em>records</em></>:<img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/>}</div>
+          <div className="releaseImprintWordmark">{release.imprint==='lethargia'?<img src="/brand/lethargia/lethargia-logo.png" alt="Lethargia Records"/>:<img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/>}</div>
           <b className="releaseHeroX">×</b>
           <h1>{titleA}<br/><i>{titleB}</i></h1>
         </div>
