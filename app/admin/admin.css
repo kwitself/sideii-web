@@ -117,7 +117,6 @@
 .adminBrand img{display:block;width:86px;max-height:42px;object-fit:contain;object-position:left center;margin-bottom:5px}.selectedMiniButton{border:0!important;background:transparent!important;color:#777!important;padding:0!important;font:inherit!important;cursor:pointer}.selectedMiniButton.active{color:#ddd8ce!important;text-decoration:underline;text-underline-offset:4px}
 
 /* Keep Customers and Settings as distinct scroll destinations. */
-.adminSectionStandalone{min-height:72vh;scroll-margin-top:0;display:flex;flex-direction:column;justify-content:center}
+.adminSectionStandalone{min-height:auto;scroll-margin-top:20px;display:block;padding:58px 0}
 .singleAdminCard{grid-template-columns:1fr}
-.singleAdminCard>article{min-height:360px}
-@media(max-width:850px){.adminSectionStandalone{min-height:auto;padding:58px 0}}
+.singleAdminCard>article{min-height:310px}
