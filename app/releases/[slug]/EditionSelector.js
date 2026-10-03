@@ -9,8 +9,10 @@ export default function EditionSelector({release}){
  const variants=release.variants||[]; const [index,setIndex]=useState(0); const v=variants[index]||{};
  const media=v.media||release.media; const isCassette=media==='cassette',isDigital=media==='digital';
  const label=isDigital?'Digital edition':isCassette?'Cassette edition':'CD edition';
+ const imprintName=release.imprint==='lethargia'?'lethargiarecords':'SIDE:II';
  return <div className="editionExperience">
-  <p className="editionDynamicLead">{label} in the {release.imprint==='lethargia'?'LETHARGIA':'SIDE:II'} catalogue.</p>
+  <div className={'releaseCollab '+(release.imprint==='lethargia'?'lethargiaCollab':'sideiiCollab')}><span>{imprintName}</span><b>×</b><strong>{release.title}</strong></div>
+  <p className="editionDynamicLead">{label}</p>
   <div className={`productVisual ${media}`}>
    {isDigital?<DigitalCard variant={v}/>:isCassette?<div className="productCassette" aria-hidden="true"><div className="productCassetteLabel"><span>{release.imprint==='lethargia'?'LETHARGIA':'SIDE:II'}</span><b>{release.number}</b></div><div className="productCassetteWindow"><i/><i/></div><div className="productCassetteBase"><i/><i/><i/></div></div>:<div className="productCdObject" aria-hidden="true"><div className="productCdDisc"><i/><b>{release.imprint==='lethargia'?'LETH':'SIDE:II'}</b><span>{release.number}</span></div></div>}
    <div className={'productCover'+(release.hasShrinkwrap&&!isDigital?' shrinkwrap':'')}>{release.cover?<img className="productArtwork" src={release.cover} alt={`${release.artist} — ${release.title}`}/>:<><span>{release.catalogue}</span><b>{release.number}</b><em>{release.title}</em></>}</div>
