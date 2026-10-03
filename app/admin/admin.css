@@ -151,3 +151,30 @@
 @media(max-width:760px){.editTabs{overflow:auto}.editTabs button{white-space:nowrap}.editionEditor>div{grid-template-columns:1fr 1fr}.editionEditor .editionWide{grid-column:1/-1}.galleryAdminGrid{grid-template-columns:1fr 1fr}.editionManagerHead,.galleryManagerHead{gap:16px;flex-direction:column}}
 
 
+
+
+
+/* Merch workspace V2 — compact editorial composer */
+.merchWorkspace{padding-top:42px!important;padding-bottom:56px!important}
+.merchWorkspace .sectionLabel{align-items:flex-end;margin-bottom:18px}
+.merchWorkspace .sectionLabel p{max-width:420px;text-align:right}
+.merchForm{padding:0!important;overflow:hidden}
+.merchForm .formIntro{padding:28px 30px 26px;border-bottom:1px solid #29282b;display:grid;grid-template-columns:1fr auto;column-gap:28px;align-items:end}
+.merchForm .formIntro>span{grid-column:1/-1;font-size:9px!important;letter-spacing:.2em!important;margin-bottom:12px}
+.merchForm .formIntro h2{margin:0!important;font-size:38px!important;line-height:1!important}
+.merchForm .formIntro p{margin:0!important;max-width:440px;text-align:right;font-size:11px!important;line-height:1.55!important}
+.merchForm .formGrid{padding:28px 30px 8px;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px 20px!important}
+.merchForm .formGrid label{min-width:0;gap:8px!important}
+.merchForm .formGrid label>span{font-size:9px!important;letter-spacing:.16em!important;line-height:1.25}
+.merchForm .formGrid input,.merchForm .formGrid select,.merchForm .formGrid textarea{width:100%;min-height:46px!important;padding:12px 14px!important;font-size:12px!important;border-color:#323136!important}
+.merchForm .formGrid textarea{min-height:104px!important;resize:vertical}
+.merchForm .wideField{grid-column:1/-1!important}
+.merchForm .workspaceMessage{margin:12px 30px 0!important;padding:12px 14px;border:1px solid #333236;background:#0a0a0b}
+.merchForm .formActions{margin-top:20px!important;padding:20px 30px 26px!important;border-top:1px solid #29282b;display:flex!important;justify-content:flex-end!important;align-items:center!important}
+.merchForm .formActions .saveButton{min-width:180px!important;min-height:46px!important;padding:0 22px!important;font-size:9px!important;letter-spacing:.16em!important}
+@media(max-width:760px){
+ .merchWorkspace .sectionLabel{align-items:flex-start}.merchWorkspace .sectionLabel p{text-align:left}
+ .merchForm .formIntro{grid-template-columns:1fr;padding:24px}.merchForm .formIntro p{text-align:left;margin-top:12px!important}
+ .merchForm .formGrid{grid-template-columns:1fr!important;padding:22px 24px 6px}.merchForm .wideField{grid-column:auto!important}
+ .merchForm .formActions{padding:18px 24px 24px!important}.merchForm .formActions .saveButton{width:100%}
+}
