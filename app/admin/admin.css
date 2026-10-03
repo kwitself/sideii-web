@@ -212,3 +212,11 @@
  .merchEditorGrid>.formGrid>.saveButton,.variantBuilder>.saveButton{width:100%}.variantList,.variantBuilder{padding-left:22px!important;padding-right:22px!important}
  .variantList article{grid-template-columns:1fr}.variantList article small{text-align:left}
 }
+
+
+/* New Merch V2 — mirrors product editor */
+.merchCreateGrid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:28px;padding:28px 30px 8px}
+.merchCreateGrid>.formGrid{padding:0!important}
+.merchCreateGrid .merchImagePanel small{font-size:9px;line-height:1.5;color:#66636a}
+.merchCreateV2 .workspaceMessage{margin-left:30px!important;margin-right:30px!important}
+@media(max-width:760px){.merchCreateGrid{grid-template-columns:1fr;padding:22px 24px 6px}.merchCreateGrid .merchImagePanel{max-width:280px}}
