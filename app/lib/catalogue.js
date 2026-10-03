@@ -30,3 +30,9 @@ export async function getLethargiaReleases(){
  const {data,error}=await sb.from('products').select('id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,has_shrinkwrap,release_date,credits,tracklist,gallery_paths,status,is_public,created_at,product_variants(id,sku,format,edition_name,edition_details,price,currency,stock_qty,active,digital_formats,audio_specs)').eq('imprint','lethargia').eq('is_public',true).in('status',['forthcoming','active']).order('created_at',{ascending:false});
  if(error)return []; return (data||[]).map((p,i)=>mapRelease(sb,p,i));
 }
+
+export async function getStoreReleases(){
+ const sb=client(); if(!sb)return [];
+ const {data,error}=await sb.from('products').select('id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,has_shrinkwrap,release_date,credits,tracklist,gallery_paths,status,is_public,created_at,product_variants(id,sku,format,edition_name,edition_details,price,currency,stock_qty,active,digital_formats,audio_specs)').eq('is_public',true).in('status',['forthcoming','active']).order('created_at',{ascending:false});
+ if(error)return []; return (data||[]).map((x,i)=>mapRelease(sb,x,i));
+}
