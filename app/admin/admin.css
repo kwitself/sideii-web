@@ -178,3 +178,37 @@
  .merchForm .formGrid{grid-template-columns:1fr!important;padding:22px 24px 6px}.merchForm .wideField{grid-column:auto!important}
  .merchForm .formActions{padding:18px 24px 24px!important}.merchForm .formActions .saveButton{width:100%}
 }
+
+
+/* Merch Editor V2 */
+.merchEditor{padding:0!important}
+.merchEditor>header{padding:26px 30px 22px!important;margin:0!important;border-bottom:1px solid #29282b!important}
+.merchEditor>header h2{font:32px Georgia,serif!important;font-weight:400!important;margin:7px 0 0!important}
+.merchEditorGrid{display:grid!important;grid-template-columns:300px minmax(0,1fr)!important;gap:28px!important;padding:28px 30px!important;border-bottom:1px solid #29282b}
+.merchImagePanel{display:flex;flex-direction:column;gap:10px}
+.merchImagePanel img,.merchImageEmpty{width:100%;aspect-ratio:1/1;object-fit:cover;border:1px solid #333236;background:#09090a}
+.merchImageEmpty{display:grid;place-items:center;color:#656268;font-size:9px;letter-spacing:.16em}
+.merchImagePanel .uploadButton{display:flex;align-items:center;justify-content:center;min-height:42px;border:1px solid #37363a;background:#0a0a0b;color:#aaa69f;font-size:9px;letter-spacing:.15em;cursor:pointer}
+.merchEditor .formGrid.compact{display:grid!important;grid-template-columns:1fr 1fr!important;gap:18px 20px!important;align-content:start}
+.merchEditor .formGrid.compact label{display:flex;flex-direction:column;gap:8px;min-width:0}
+.merchEditor .formGrid.compact label>span,.variantList>span,.variantBuilder>span{font-size:9px!important;letter-spacing:.16em!important;color:#77747a}
+.merchEditor .formGrid.compact input,.merchEditor .formGrid.compact select,.merchEditor .formGrid.compact textarea{width:100%;min-height:44px;padding:11px 13px;border:1px solid #333236;background:#09090a;color:#d7d4cc;font-size:12px}
+.merchEditor .formGrid.compact textarea{min-height:116px;resize:vertical}
+.merchEditor .formGrid.compact .wideField{grid-column:1/-1}
+.merchEditorGrid>.formGrid>.saveButton{grid-column:2;justify-self:end;min-width:170px;min-height:44px}
+.variantList{padding:24px 30px!important;border-bottom:1px solid #29282b}
+.variantList>span{display:block;margin-bottom:13px}
+.variantList article{display:grid!important;grid-template-columns:1fr auto;align-items:center;gap:18px;padding:13px 0!important;border-top:1px solid #252427!important}
+.variantList article:last-child{border-bottom:1px solid #252427}
+.variantList article b{font:14px Georgia,serif;font-weight:400;color:#d8d5ce}
+.variantList article small{font-size:9px!important;letter-spacing:.1em;color:#77747a;text-align:right}
+.variantBuilder{padding:24px 30px 30px!important}
+.variantBuilder>span{display:block;margin-bottom:16px}
+.variantBuilder>.saveButton{display:block;margin:20px 0 0 auto!important;min-width:170px;min-height:44px}
+.merchEditor>.workspaceMessage{margin:0 30px 28px!important;padding:12px 14px;border:1px solid #333236;background:#09090a;font-size:10px!important}
+@media(max-width:760px){
+ .merchEditorGrid{grid-template-columns:1fr!important;padding:22px!important}.merchImagePanel{max-width:280px}
+ .merchEditor .formGrid.compact{grid-template-columns:1fr!important}.merchEditor .formGrid.compact .wideField,.merchEditorGrid>.formGrid>.saveButton{grid-column:auto}
+ .merchEditorGrid>.formGrid>.saveButton,.variantBuilder>.saveButton{width:100%}.variantList,.variantBuilder{padding-left:22px!important;padding-right:22px!important}
+ .variantList article{grid-template-columns:1fr}.variantList article small{text-align:left}
+}
