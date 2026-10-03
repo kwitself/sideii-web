@@ -26,7 +26,7 @@ export default async function ReleasePage({ params }) {
   return <main className="productPage">
     <header className="nav shell"><Link className="brand" href="/" aria-label="Side II home"><img src="/brand/sideii-logo-flat.png" alt="Side II" /></Link><nav><Link href="/#releases">Releases</Link><Link href="/#imprints">Imprints</Link><Link href="/#about">About</Link><Link href="/#store">Store</Link></nav></header>
     <section className="productHero shell">
-      <div className="productReleaseLayout"><div className="productInfo"><div className={'heroReleaseLockup '+(release.imprint==='lethargia'?'lethargiaHeroLockup':'sideiiHeroLockup')}>{release.imprint==='lethargia'?<><span className="lethargiaLogoMark">ℒ</span><strong>lethargiarecords</strong></>:<img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/>}<b>×</b><em>{release.title}</em></div><span className="productIndex">{release.number} / RELEASE</span></div><EditionSelector release={release}/></div>
+      <div className="productReleaseLayout"><div className="productInfo"><span className="productIndex">{release.number} / RELEASE</span><h1>{titleA}<br/><i>{titleB}</i></h1></div><EditionSelector release={release}/></div>
     </section>
     {release.gallery.length>0&&<section className="releaseGallery shell"><span>OBJECT / DETAILS</span><div>{release.gallery.map((img,i)=><img src={img} alt={`${release.title} detail ${i+1}`} key={img}/>)}</div></section>}
     {release.tracks.length>0&&<section className="trackSection shell"><span>TRACKLIST</span><ol>{release.tracks.map((track,index)=><li key={`${track}-${index}`}><b>{String(index+1).padStart(2,'0')}</b><span>{track}</span></li>)}</ol></section>}
