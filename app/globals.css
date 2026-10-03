@@ -99,3 +99,13 @@
 .storeEntry:hover{color:#eee9e0!important;border-color:#77737c;background:#111113;transform:translateX(3px)}
 .storeEntry:focus-visible{outline:1px solid #aaa69f;outline-offset:4px}
 @media(max-width:760px){.storeEntry{min-width:0;padding:13px 16px}}
+
+/* Interaction/readability pass */
+button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser button:not(:disabled){cursor:pointer!important}
+.productButton:not(:disabled){pointer-events:auto!important}
+.nav nav a{font-size:10px!important}
+.productIndex,.editionChooser>span,.editionFacts dt,.editionFacts dd{font-size:10px!important}
+.editionDynamicLead{font-size:22px!important}
+.editionDynamicLead small{font-size:9px!important}
+.editionChooser button{font-size:10px!important}
+.productButton{font-size:10px!important;letter-spacing:.16em!important}
