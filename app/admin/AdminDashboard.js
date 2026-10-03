@@ -27,7 +27,7 @@ export default function AdminDashboard(){
   if(!supabase)return;
   setLoading(true); setMessage('');
   const [p,o,c]=await Promise.all([
-   supabase.from('products').select('id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,has_shrinkwrap,release_date,credits,tracklist,gallery_paths,status,is_public,created_at,product_variants(id,sku,format,edition_name,edition_details,price,currency,manufactured_qty,stock_qty,reserved_qty,low_stock_threshold,active)').order('created_at',{ascending:false}),
+   supabase.from('products').select('id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,has_shrinkwrap,release_date,credits,tracklist,gallery_paths,status,is_public,created_at,product_variants(id,sku,format,edition_name,edition_details,price,currency,manufactured_qty,stock_qty,reserved_qty,low_stock_threshold,active,digital_formats,audio_specs)').order('created_at',{ascending:false}),
    supabase.from('orders').select('id,order_no,email,status,payment_status,total,currency,created_at').order('created_at',{ascending:false}).limit(8),
    supabase.from('customers').select('id,email,full_name,created_at').order('created_at',{ascending:false}).limit(8)
   ]);
