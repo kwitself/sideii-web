@@ -1,0 +1,10 @@
+'use client';
+import {useEffect,useMemo,useState} from 'react';
+import {readCart,writeCart} from '../lib/cart';
+const fmt=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:0}).format(Number(n||0));
+export default function GlobalBag(){
+ const[cart,setCart]=useState([]),[open,setOpen]=useState(false);
+ useEffect(()=>{const sync=e=>setCart(e?.detail||readCart());sync();window.addEventListener('sideii-cart',sync);window.addEventListener('sideii-open-bag',()=>setOpen(true));return()=>window.removeEventListener('sideii-cart',sync)},[]);
+ const total=useMemo(()=>cart.reduce((s,x)=>s+x.price*x.qty,0),[cart]),update=n=>{setCart(n);writeCart(n)};
+ return <><button className="globalBagTrigger" onClick={()=>setOpen(true)}>BAG · {cart.reduce((s,x)=>s+x.qty,0)}</button><aside className={'globalBagDrawer '+(open?'open':'')}><button className="globalBagClose" onClick={()=>setOpen(false)}>CLOSE ×</button><span>SHOPPING BAG</span>{cart.length===0?<p className="globalBagEmpty">Your bag is empty.</p>:<><div className="globalBagItems">{cart.map(x=><article key={x.key}>{x.cover&&<img src={x.cover} alt=""/>}<div><b>{x.title}</b><small>{x.format}{x.digital?' · DOWNLOAD':''}</small><div className="globalBagQty"><button onClick={()=>update(cart.map(y=>y.key===x.key?{...y,qty:Math.max(1,y.qty-1)}:y))}>−</button><span>{x.qty}</span><button onClick={()=>update(cart.map(y=>y.key===x.key?{...y,qty:y.qty+1}:y))}>＋</button><button onClick={()=>update(cart.filter(y=>y.key!==x.key))}>REMOVE</button></div></div><strong>{fmt(x.price*x.qty)}</strong></article>)}</div><div className="globalBagTotal"><span>SUBTOTAL</span><strong>{fmt(total)}</strong></div><a className="globalBagCheckout" href="/store?checkout=1">CHECKOUT →</a></>}</aside>{open&&<button className="globalBagShade" aria-label="Close bag" onClick={()=>setOpen(false)}/>}</>
+}
