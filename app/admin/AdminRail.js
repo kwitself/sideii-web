@@ -19,15 +19,32 @@ export default function AdminRail(){
   const update=()=>{
    frame=0;
    const marker=Math.min(window.innerHeight*.38,320);
-   const maxScroll=document.documentElement.scrollHeight-window.innerHeight;
-   if(maxScroll>0&&window.scrollY>=maxScroll-4){setActive(items[items.length-1][0]);return}
    const targets=items.map(([id])=>({id,el:document.getElementById(id)})).filter(x=>x.el);
-   let current=targets[0]?.id||'overview';
+   if(!targets.length)return;
+
+   // Near the bottom, choose the section whose heading is closest to the
+   // viewport marker instead of forcing the final item. This keeps short
+   // Customers/Settings sections individually reachable.
+   let best=targets[0];
+   let bestDistance=Infinity;
    for(const target of targets){
     const rect=target.el.getBoundingClientRect();
-    if(rect.top<=marker) current=target.id;
+    const distance=Math.abs(rect.top-marker);
+    if(distance<bestDistance){
+     best=target;
+     bestDistance=distance;
+    }
    }
-   setActive(current);
+
+   // While scrolling through taller sections, keep the last heading that
+   // has crossed the marker active.
+   let crossed=null;
+   for(const target of targets){
+    if(target.el.getBoundingClientRect().top<=marker) crossed=target;
+   }
+   const maxScroll=document.documentElement.scrollHeight-window.innerHeight;
+   const nearBottom=maxScroll>0&&window.scrollY>=maxScroll-12;
+   setActive((nearBottom?best:crossed||best).id);
   };
   const schedule=()=>{if(!frame)frame=requestAnimationFrame(update)};
   update();
