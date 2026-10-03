@@ -92,3 +92,10 @@
 .releaseHeroLethargia .releaseImprintWordmark{min-width:360px}
 .releaseHeroLethargia .releaseImprintWordmark img{width:340px;height:150px;object-fit:contain;object-position:center}
 @media(max-width:760px){.releaseHeroLethargia .releaseImprintWordmark{min-width:150px}.releaseHeroLethargia .releaseImprintWordmark img{width:145px;height:74px}}
+
+/* Store entry — keep the homepage CTA inside the SIDE:II visual system */
+.storeEntry{display:inline-flex;align-items:center;justify-content:center;min-width:142px;padding:14px 18px;border:1px solid #39383b;color:#aaa69f!important;background:transparent;text-decoration:none!important;font:8px/1 Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;transition:color .25s,border-color .25s,background .25s,transform .25s}
+.storeEntry:visited{color:#aaa69f!important}
+.storeEntry:hover{color:#eee9e0!important;border-color:#77737c;background:#111113;transform:translateX(3px)}
+.storeEntry:focus-visible{outline:1px solid #aaa69f;outline-offset:4px}
+@media(max-width:760px){.storeEntry{min-width:0;padding:13px 16px}}
