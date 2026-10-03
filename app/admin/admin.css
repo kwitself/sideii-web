@@ -112,3 +112,6 @@
 
 /* Dedicated merch editor page */
 .merchPage{padding-top:56px}.merchEmbedded{width:100%}.merchEmbedded .merchEditor{position:relative;inset:auto;transform:none;margin:0 auto;max-width:980px;max-height:none;overflow:visible}.rowActions a.editReleaseButton{display:inline-flex;align-items:center;color:#aaa;text-decoration:none;cursor:pointer;pointer-events:auto;position:relative;z-index:5}
+
+/* Control Room brand + homepage selection */
+.adminBrand img{display:block;width:86px;max-height:42px;object-fit:contain;object-position:left center;margin-bottom:5px}.selectedMiniButton{border:0!important;background:transparent!important;color:#777!important;padding:0!important;font:inherit!important;cursor:pointer}.selectedMiniButton.active{color:#ddd8ce!important;text-decoration:underline;text-underline-offset:4px}
