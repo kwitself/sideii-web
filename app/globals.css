@@ -36,3 +36,14 @@
 .productVisual.digital:hover .productCover{transform:translateX(-9%) translateY(-3px)!important}
 .releaseGallery{padding-top:52px!important}
 @media(max-width:760px){.productHero{padding:38px 0 55px!important}.productReleaseLayout>.productInfo{padding-top:0}.editionExperience{margin-top:4px!important;gap:34px!important}.editionDynamicLead{position:static;grid-column:1;margin:0 0 -8px;white-space:normal;font-size:16px}.productVisual{grid-column:1}.editionPanel{grid-column:1}.productVisual.digital:hover .digitalMaster{transform:translateX(24%)!important}.releaseGallery{padding-top:42px!important}}
+
+/* Imprint × release signature */
+.editionExperience{margin-top:8px!important}
+.releaseCollab{position:absolute;left:calc(50% + 3.5vw);top:-12px;display:flex;align-items:baseline;gap:11px;white-space:nowrap;z-index:3}
+.releaseCollab span,.releaseCollab strong{font:18px/1 Georgia,serif;font-weight:400;letter-spacing:-.025em}
+.releaseCollab b{font:10px Arial,sans-serif;font-weight:400;color:#5f5d59}
+.releaseCollab.sideiiCollab span{font-style:normal;color:#e3dfd7}.releaseCollab.sideiiCollab strong{color:#9e9b94}
+.releaseCollab.lethargiaCollab span{font-style:italic;color:#8f3443}.releaseCollab.lethargiaCollab strong{color:#b7aaa6}
+.editionDynamicLead{top:24px!important;font:11px/1.4 Georgia,serif!important;color:#6f6c67!important;letter-spacing:.02em}
+.editionPanel{padding-top:58px}
+@media(max-width:760px){.releaseCollab{position:static;grid-column:1;margin:0 0 -22px;white-space:normal;flex-wrap:wrap}.releaseCollab span,.releaseCollab strong{font-size:16px}.editionDynamicLead{position:static!important;grid-column:1;margin:0 0 -18px!important}.editionPanel{padding-top:0}}
