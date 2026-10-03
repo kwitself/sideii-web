@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabase';
 import ReleaseWorkspace from './ReleaseWorkspace';
 import EditReleaseModal from './EditReleaseModal';
 import MerchWorkspace from './MerchWorkspace';
+import MerchEditor from './MerchEditor';
 
 function money(value,currency='TRY'){
  const n=Number(value||0);
