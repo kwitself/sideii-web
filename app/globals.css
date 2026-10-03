@@ -120,3 +120,9 @@ button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser butt
 .productVisual.vinyl:hover .productCover{transform:translateX(-9%) translateY(-2px)}
 .productVinylDisc.vinyl-white{background:radial-gradient(circle at 40% 36%,#fff,#ddd 35%,#aaa 100%)}.productVinylDisc.vinyl-clear,.productVinylDisc.vinyl-transparent{background:radial-gradient(circle at 40% 36%,rgba(255,255,255,.62),rgba(190,190,200,.22) 50%,rgba(100,100,110,.3));backdrop-filter:blur(2px)}.productVinylDisc.vinyl-red,.productVinylDisc.vinyl-burgundy{background:radial-gradient(circle at 40% 36%,#812c3b,#3e1119 55%,#16090c)}.productVinylDisc.vinyl-blue{background:radial-gradient(circle at 40% 36%,#354c68,#13202e 55%,#090d12)}
 @media(max-width:760px){.productVinylObject{width:78%;right:1%;top:11%}.productVisual.vinyl:hover .productVinylObject{transform:translateX(28%) rotate(45deg)}}
+
+/* Vinyl centre label uses the release artwork */
+.vinylLabel{overflow:hidden;background:#171719!important}
+.vinylLabel>img{position:absolute;inset:-12%;width:124%;height:124%;object-fit:cover;filter:blur(5px) saturate(.78) brightness(.72);transform:scale(1.08)}
+.vinylLabelShade{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,transparent 0 42%,rgba(0,0,0,.08) 58%,rgba(0,0,0,.32) 100%);z-index:1}
+.vinylLabel>i{z-index:3;left:47%;top:47%;width:6%!important;background:#080809!important}
