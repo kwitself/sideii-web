@@ -24,7 +24,7 @@ export default async function ReleasePage({ params }) {
   const isCassette = release.media === 'cassette';
 
   return <main className="productPage">
-    <header className="nav shell"><Link className="brand" href="/" aria-label="Side II home"><img src="/brand/sideii-logo-flat.png" alt="Side II" /></Link><nav><Link href="/#releases">Releases</Link><Link href="/#imprints">Imprints</Link><Link href="/#about">About</Link><Link href="/#store">Store</Link></nav></header>
+    <header className="nav shell"><Link className="brand" href="/" aria-label="Side II home"><img src="/brand/sideii-logo-flat.png" alt="Side II" /></Link><nav><Link href="/#releases">Releases</Link><Link href="/#imprints">Imprints</Link><Link href="/#about">About</Link><Link href="/store">Store</Link></nav></header>
     <section className="productHero shell">
       <div className="productReleaseLayout"><div className={'productInfo releaseHeroIdentity '+(release.imprint==='lethargia'?'releaseHeroLethargia':'releaseHeroSideii')}>
         <div className="releaseHeroPair">
