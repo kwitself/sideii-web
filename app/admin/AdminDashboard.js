@@ -93,10 +93,11 @@ export default function AdminDashboard(){
   if(!supabase)return;
   setShippingSaving(true); setMessage('');
   const payload={enabled:!!shippingSettings.enabled,standard_rate:Math.max(0,Number(shippingSettings.standard_rate)||0),vinyl_rate:Math.max(0,Number(shippingSettings.vinyl_rate)||0),free_shipping_threshold:shippingSettings.free_shipping_threshold===''?null:Math.max(0,Number(shippingSettings.free_shipping_threshold)||0)};
-  const {error}=await supabase.from('shipping_settings').upsert({id:1,...payload},{onConflict:'id'});
+  const {data,error}=await supabase.rpc('admin_save_shipping_settings',{p_enabled:payload.enabled,p_standard_rate:payload.standard_rate,p_vinyl_rate:payload.vinyl_rate,p_free_shipping_threshold:payload.free_shipping_threshold});
   setShippingSaving(false);
   if(error){setMessage('Shipping settings failed: '+error.message);return}
-  setShippingSettings({...payload,free_shipping_threshold:payload.free_shipping_threshold??''});
+  const saved=Array.isArray(data)?data[0]:data;
+  setShippingSettings(saved?{enabled:saved.enabled,standard_rate:saved.standard_rate,vinyl_rate:saved.vinyl_rate,free_shipping_threshold:saved.free_shipping_threshold??''}:{...payload,free_shipping_threshold:payload.free_shipping_threshold??''});
   setMessage('Shipping settings saved.');
  }
 
