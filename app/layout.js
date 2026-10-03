@@ -1,5 +1,6 @@
 import './globals.css';
 import './physical-formats.css';
+import GlobalBag from './components/GlobalBag';
 
 export const metadata = {
   title: 'Side:II — The Other Side of Sound',
@@ -9,7 +10,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>{children}<GlobalBag/></body>
     </html>
   );
 }
