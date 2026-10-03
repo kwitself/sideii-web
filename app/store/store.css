@@ -6,3 +6,7 @@
 .storeVariant div>b{font-size:12px!important}.storeVariant>button,.cartNav,.cartClose,.checkoutButton,.checkoutBack,.cartItems article button{font-size:10px!important}
 .checkoutButton:not(:disabled),.checkoutBack,.cartClose,.cartNav,.storeVariant>button:not(:disabled),.cartItems article button{cursor:pointer!important}
 .checkoutForm input,.checkoutForm textarea{font-size:13px!important}
+
+/* Catalogue filters */
+.storeFilters{display:flex;justify-content:space-between;gap:20px;padding-top:0!important;padding-bottom:30px!important;border-bottom:1px solid #29282b}.storeFilters>div{display:flex;gap:7px;flex-wrap:wrap}.storeFilters button{appearance:none;border:1px solid #343337;background:transparent;color:#77747a;padding:10px 12px;font:10px Arial,sans-serif;letter-spacing:.13em;cursor:pointer;transition:.2s}.storeFilters button:hover,.storeFilters button.active{border-color:#85817a;color:#e0ddd6;background:#111113}
+@media(max-width:760px){.storeFilters{flex-direction:column}.storeFilters>div{overflow:auto;flex-wrap:nowrap}.storeFilters button{white-space:nowrap}}
