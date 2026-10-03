@@ -24,7 +24,8 @@ export default function AdminDashboard(){
  const [editRelease,setEditRelease]=useState(null);
  const [selectedOrder,setSelectedOrder]=useState(null);
  const [orderSaving,setOrderSaving]=useState(false);
- const [shippingSettings,setShippingSettings]=useState({enabled:true,standard_rate:0,vinyl_rate:0,free_shipping_threshold:''});\n const [shippingSaving,setShippingSaving]=useState(false);
+ const [shippingSettings,setShippingSettings]=useState({enabled:true,standard_rate:0,vinyl_rate:0,free_shipping_threshold:''});
+ const [shippingSaving,setShippingSaving]=useState(false);
 
  const load=useCallback(async()=>{
   if(!supabase)return;
