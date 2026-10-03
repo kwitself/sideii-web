@@ -87,3 +87,8 @@
 .editionPanel{padding-top:0!important}
 .editionDynamicLead{position:static!important;margin:0 0 18px!important;white-space:normal!important}
 @media(max-width:760px){.releaseHeroIdentity{padding:18px 0 26px!important}.releaseHeroPair{gap:14px;flex-wrap:wrap}.releaseImprintWordmark{min-width:130px}.releaseImprintWordmark img{width:105px;height:56px}.releaseHeroLethargia .releaseImprintWordmark span{font-size:38px}.releaseHeroLethargia .releaseImprintWordmark em{font-size:34px}.releaseHeroX{font-size:28px}.releaseHeroPair h1{font-size:52px!important}.releaseHeroIdentity>.productIndex{margin:15px 0 0!important}.editionExperience{margin-top:18px!important}}
+
+/* Real imprint artwork in release lockup */
+.releaseHeroLethargia .releaseImprintWordmark{min-width:360px}
+.releaseHeroLethargia .releaseImprintWordmark img{width:340px;height:150px;object-fit:contain;object-position:center}
+@media(max-width:760px){.releaseHeroLethargia .releaseImprintWordmark{min-width:150px}.releaseHeroLethargia .releaseImprintWordmark img{width:145px;height:74px}}
