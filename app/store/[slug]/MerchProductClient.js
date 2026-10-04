@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import {useEffect,useMemo,useState} from 'react';
 import {addCartItem,readCart} from '../../lib/cart';
+import {supabase} from '../../lib/supabase';
 
 const fmt=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:0}).format(Number(n||0));
 
@@ -26,13 +27,14 @@ export default function MerchProductClient({product}){
  const [index,setIndex]=useState(0);
  const [side,setSide]=useState(product.mockups?.front?'front':'back');
  const [added,setAdded]=useState(false);
- const [bagCount,setBagCount]=useState(0);
+ const [bagCount,setBagCount]=useState(0);const[waitEmail,setWaitEmail]=useState(''),[waitMessage,setWaitMessage]=useState(''),[waitBusy,setWaitBusy]=useState(false);
  useEffect(()=>{const sync=()=>setBagCount(readCart().reduce((s,x)=>s+x.qty,0));sync();window.addEventListener('sideii-cart',sync);return()=>window.removeEventListener('sideii-cart',sync)},[]);
  const v=variants[index]||{};
- const unavailable=product.status!=='AVAILABLE'||Number(v.stock||0)<=0;
+ const soldOut=Number(v.stock||0)<=0,canPreorder=soldOut&&v.preorderEnabled;const unavailable=product.status!=='AVAILABLE'||(soldOut&&!canPreorder);
  const hasFront=!!product.mockups?.front,hasBack=!!product.mockups?.back;
  const gallery=useMemo(()=>product.galleryImages?.filter(x=>x?.url&&!x?.mockup)||[],[product.galleryImages]);
  function add(){if(unavailable)return;const next=addCartItem(product,v);setBagCount(next.reduce((s,x)=>s+x.qty,0));setAdded(true);setTimeout(()=>setAdded(false),1300)}
+ async function joinWaitlist(){const email=waitEmail.trim();if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)){setWaitMessage('Enter a valid email.');return}setWaitBusy(true);setWaitMessage('');const {error}=await supabase.rpc('join_stock_waitlist',{p_variant_id:v.id,p_email:email});setWaitBusy(false);setWaitMessage(error?error.message:'You are on the restock list.');}
  return <section className="merchDetail shell">
   <div className="merchDetailVisual">
    <div className="merchDetailSwitch">{hasFront&&<button className={side==='front'?'active':''} onClick={()=>setSide('front')}>FRONT</button>}{hasBack&&<button className={side==='back'?'active':''} onClick={()=>setSide('back')}>BACK</button>}</div>
@@ -45,8 +47,8 @@ export default function MerchProductClient({product}){
    <h1>{product.title}</h1>
    <p>{product.lead}</p>
    <div className="merchDetailFacts"><div><span>PRODUCT</span><b>{product.catalogue}</b></div><div><span>AVAILABILITY</span><b>{product.status}</b></div></div>
-   {variants.length>0&&<div className="merchVariantChooser"><span>CHOOSE SIZE / COLOUR</span><div>{variants.map((x,i)=><button key={x.id||x.sku} className={i===index?'active':''} onClick={()=>setIndex(i)} disabled={x.stock<=0}>{x.formatLabel}<small>{x.stock>0?x.stock+' LEFT':'SOLD OUT'}</small></button>)}</div></div>}
-   <div className="merchBuyRow"><strong>{fmt(v.price)}</strong><button disabled={unavailable} onClick={add}>{product.status!=='AVAILABLE'?'COMING SOON':unavailable?'SOLD OUT':added?'ADDED ✓':'ADD TO BAG'}</button></div>
+   {variants.length>0&&<div className="merchVariantChooser"><span>CHOOSE SIZE / COLOUR</span><div>{variants.map((x,i)=><button key={x.id||x.sku} className={i===index?'active':''} onClick={()=>setIndex(i)} disabled={x.stock<=0&&!x.preorderEnabled}>{x.formatLabel}<small>{x.stock>0?x.stock+' LEFT':x.preorderEnabled?'PRE-ORDER':'SOLD OUT'}{x.editionNumberingEnabled&&x.editionTotal?' · LIMITED '+x.editionTotal:''}</small></button>)}</div></div>}
+   <div className="merchBuyRow"><strong>{fmt(v.price)}</strong><button disabled={unavailable} onClick={add}>{product.status!=='AVAILABLE'?'COMING SOON':soldOut&&!canPreorder?'SOLD OUT':added?'ADDED ✓':canPreorder?'PRE-ORDER':'ADD TO BAG'}</button></div>{soldOut&&!canPreorder&&<div className="merchWaitlist"><input type="email" placeholder="EMAIL FOR RESTOCK ALERT" value={waitEmail} onChange={e=>setWaitEmail(e.target.value)}/><button type="button" disabled={waitBusy} onClick={joinWaitlist}>{waitBusy?'SAVING…':'NOTIFY ME'}</button>{waitMessage&&<small>{waitMessage}</small>}</div>}
    <Link className="merchBagLink" href="/store?checkout=1">BAG · {bagCount}</Link>
   </div>
  </section>
