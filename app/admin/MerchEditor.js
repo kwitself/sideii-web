@@ -4,15 +4,18 @@ import {createPortal} from 'react-dom';
 import {supabase} from '../lib/supabase';
 
 export default function MerchEditor({product,onClose,onSaved,embedded=false}){
- const [meta,setMeta]=useState({title:product.title||'',description:product.description||'',status:product.status||'draft',cover_url:product.cover_url||''});
+ const initialGallery=Array.isArray(product.gallery_images)?product.gallery_images:[];
+ const frontImage=initialGallery.find(item=>(item?.kind||'').toLowerCase()==='front');
+ const initialCover=product.cover_url||frontImage?.url||initialGallery[0]?.url||'';
+ const [meta,setMeta]=useState({title:product.title||'',description:product.description||'',status:product.status||'draft',cover_url:initialCover});
  const base=product.product_variants?.[0]||{};
  const [v,setV]=useState({size:'',color:base.option_color||'BLACK',style:base.option_style||'',price:base.price||'',stock:'',weight_g:base.weight_g||'',sku:''});
  const [msg,setMsg]=useState(''),[busy,setBusy]=useState(false);
- const [gallery,setGallery]=useState(()=>Array.isArray(product.gallery_images)?product.gallery_images:[]);
+ const [gallery,setGallery]=useState(()=>initialGallery);
  const [slot,setSlot]=useState('front');
  const [matrix,setMatrix]=useState({sizes:['S','M','L','XL','XXL'],color:base.option_color||'BLACK',price:base.price||'',stock:'0',style:base.option_style||'',weight_g:base.weight_g||''});
  async function upload(file,kind=slot){if(!file)return;setBusy(true);setMsg('Uploading '+kind+' image…');const ext=file.name.split('.').pop()?.toLowerCase()||'jpg';const path=`merch/${product.id}/${kind}-${Date.now()}.${ext}`;const {error}=await supabase.storage.from('release-artwork').upload(path,file,{upsert:false});if(error){setBusy(false);setMsg(error.message);return}const {data}=supabase.storage.from('release-artwork').getPublicUrl(path);const item={id:Date.now().toString(),kind,url:data.publicUrl};const next=[...gallery,item];setGallery(next);if(!meta.cover_url||kind==='front')setMeta(x=>({...x,cover_url:data.publicUrl}));setBusy(false);setMsg(kind.toUpperCase()+' image ready — save gallery to apply.')}
- async function saveGallery(nextGallery=gallery,nextCover=meta.cover_url){setBusy(true);const {error}=await supabase.rpc('admin_update_merch_gallery',{p_product_id:product.id,p_gallery:nextGallery,p_cover_url:nextCover||null});setBusy(false);if(error){setMsg(error.message);return}setMsg('Gallery saved.');if(onSaved)await onSaved();}
+ async function saveGallery(nextGallery=gallery,nextCover=meta.cover_url){const fallbackCover=nextCover||nextGallery.find(item=>(item?.kind||'').toLowerCase()==='front')?.url||nextGallery[0]?.url||'';if(fallbackCover!==meta.cover_url)setMeta(x=>({...x,cover_url:fallbackCover}));setBusy(true);const {error}=await supabase.rpc('admin_update_merch_gallery',{p_product_id:product.id,p_gallery:nextGallery,p_cover_url:fallbackCover||null});setBusy(false);if(error){setMsg(error.message);return}setMsg('Gallery saved.');if(onSaved)await onSaved();}
  async function makePrimary(item){setMeta(x=>({...x,cover_url:item.url}));await saveGallery(gallery,item.url)}
  async function removeImage(item){const next=gallery.filter(x=>x.id!==item.id);const nextCover=meta.cover_url===item.url?(next[0]?.url||''):meta.cover_url;setGallery(next);setMeta(x=>({...x,cover_url:nextCover}));await saveGallery(next,nextCover)}
  async function saveMeta(){setBusy(true);setMsg('');const {error}=await supabase.rpc('admin_update_merch_product',{p_product_id:product.id,p_title:meta.title,p_description:meta.description||null,p_status:meta.status,p_cover_url:meta.cover_url||null});setBusy(false);if(error){setMsg(error.message);return}setMsg('Product saved.');if(onSaved)await onSaved();}
