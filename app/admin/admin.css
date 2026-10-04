@@ -361,3 +361,26 @@
 .variantInlineEdit input{width:100%;min-height:38px;padding:9px 10px;border:1px solid #333236;background:#09090a;color:#d7d4cc}
 .variantInlineEdit .saveButton,.variantInlineEdit .ghostButton{min-height:38px;padding:0 13px}
 @media(max-width:760px){.variantList .variantSummary{align-items:flex-start;flex-direction:column}.variantList .variantSummary small{margin-left:0}.variantInlineEdit{grid-template-columns:1fr 1fr!important}}
+
+
+/* Variant edit control hard placement */
+.variantList article{position:relative!important;padding-right:126px!important}
+.variantList article:not(.editingVariant) .variantEditButton{
+ position:absolute!important;
+ right:0!important;
+ top:50%!important;
+ transform:translateY(-50%)!important;
+ display:flex!important;
+ visibility:visible!important;
+ opacity:1!important;
+ width:108px!important;
+ min-width:108px!important;
+ height:32px!important;
+ z-index:20!important;
+ border:1px solid #4a494e!important;
+ background:#111113!important;
+ color:#d2cec6!important;
+}
+.variantList article.editingVariant{padding-right:0!important}
+.variantList .variantSummary{min-width:0!important;overflow:hidden}
+.variantList .variantSummary small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
