@@ -220,3 +220,23 @@
 .cartDiscount,.checkoutSummaryDiscount{display:flex;justify-content:space-between;align-items:center;padding:0 0 18px;color:#aaa69f}
 .cartDiscount span{font-size:9px;letter-spacing:.14em}
 .cartDiscount strong,.checkoutSummaryDiscount strong{font-weight:400;color:#b8b3aa}
+
+
+/* Keep shopping bag pinned to viewport while catalogue scrolls */
+.cartDrawer{
+  position:fixed!important;
+  top:0!important;
+  right:0!important;
+  bottom:0!important;
+  height:100dvh!important;
+  max-height:100dvh!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+.cartDrawer.open{transform:translateX(0)!important}
+.cartShade{
+  position:fixed!important;
+  inset:0!important;
+}
