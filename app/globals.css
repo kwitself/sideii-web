@@ -458,3 +458,15 @@ body{
 .accountOrderDetail.closing .accountOrderNote{
   animation:none!important;
 }
+
+
+/* Account wishlist */
+.accountWishlist{margin-top:30px;border-top:1px solid #2d2c2f;padding-top:18px}
+.accountWishlist article{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #252428}
+.accountWishlist article>a{min-width:0;display:grid;grid-template-columns:48px minmax(0,1fr);gap:12px;align-items:center;text-decoration:none;color:#d7d2ca}
+.accountWishlist img,.accountWishlistPlaceholder{width:48px;height:48px;object-fit:cover;border:1px solid #2c2b2e;background:#0b0b0d}
+.accountWishlistPlaceholder{display:grid;place-items:center;color:#55515a;font:8px/1 Arial,sans-serif;letter-spacing:.12em}
+.accountWishlist article b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:13px/1.2 Georgia,serif}
+.accountWishlist article small{display:block;margin-top:5px;color:#68645f;font:7px/1 Arial,sans-serif;letter-spacing:.1em}
+.accountWishlist article>button{border:0;background:none;color:#77736e;font:7px/1 Arial,sans-serif;letter-spacing:.13em;cursor:pointer;padding:8px}
+.accountWishlist article>button:hover{color:#d7d2ca}
