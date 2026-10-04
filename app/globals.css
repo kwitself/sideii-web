@@ -258,3 +258,78 @@ button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser butt
 .mockupDanger:hover:not(:disabled){border-color:#8d4d54;color:#f0d2d2;background:#1b1012}
 .mockupSaveButton{border-color:#4a484d!important;color:#aaa69f!important;background:#111113!important}
 .mockupSaveButton:disabled,.mockupActionButton:disabled{opacity:.35;cursor:not-allowed}
+
+
+/* SIDE:II mockup range controls */
+.mockupControls input[type="range"]{
+  -webkit-appearance:none;
+  appearance:none;
+  width:100%;
+  height:18px;
+  margin:2px 0 10px;
+  background:transparent;
+  cursor:pointer;
+}
+.mockupControls input[type="range"]:focus{outline:none}
+.mockupControls input[type="range"]::-webkit-slider-runnable-track{
+  height:3px;
+  border-radius:999px;
+  background:linear-gradient(90deg,#8f8b84 0%,#5f5c57 42%,#2c2b2e 42%,#2c2b2e 100%);
+  border:1px solid #343337;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+}
+.mockupControls input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  appearance:none;
+  width:13px;
+  height:13px;
+  margin-top:-6px;
+  border-radius:50%;
+  border:1px solid #d7d2ca;
+  background:#0b0b0d;
+  box-shadow:0 0 0 2px #0b0b0d,0 0 0 3px #4a484d;
+  transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease;
+}
+.mockupControls input[type="range"]:hover::-webkit-slider-thumb{
+  transform:scale(1.12);
+  border-color:#f0ebe3;
+  background:#171719;
+  box-shadow:0 0 0 2px #0b0b0d,0 0 0 4px #5a5751;
+}
+.mockupControls input[type="range"]:focus-visible::-webkit-slider-thumb{
+  box-shadow:0 0 0 2px #0b0b0d,0 0 0 5px #6f6b65;
+}
+.mockupControls input[type="range"]::-moz-range-track{
+  height:3px;
+  border-radius:999px;
+  background:#2c2b2e;
+  border:1px solid #343337;
+}
+.mockupControls input[type="range"]::-moz-range-progress{
+  height:3px;
+  border-radius:999px;
+  background:#7d7973;
+}
+.mockupControls input[type="range"]::-moz-range-thumb{
+  width:13px;
+  height:13px;
+  border-radius:50%;
+  border:1px solid #d7d2ca;
+  background:#0b0b0d;
+  box-shadow:0 0 0 2px #0b0b0d,0 0 0 3px #4a484d;
+}
+.mockupControls input[type="range"]:disabled{
+  opacity:.24;
+  cursor:not-allowed;
+}
+.mockupControls>label{
+  position:relative;
+}
+.mockupControls>label>span{
+  display:block;
+  margin-bottom:4px;
+  color:#85817a;
+  font:7px/1 Arial,sans-serif;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
