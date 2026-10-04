@@ -249,3 +249,15 @@ button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser butt
 .mockupSaveState.saved{border-color:#303a33;color:#7f9a86;background:#0c100d}
 .mockupSaveButton:disabled{opacity:.5!important}
 .mockupSaveState.dirty+.mockupSaveButton{border-color:#746048!important;color:#d2b387!important}
+
+
+/* Existing merch variant inline edit */
+.variantList article{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px}
+.variantSummary{min-width:0}
+.variantEditButton{min-width:72px}
+.variantList article.editingVariant{grid-template-columns:1fr}
+.variantInlineEdit{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto auto;gap:10px;align-items:end;margin-top:10px}
+.variantInlineEdit label{display:grid;gap:6px}
+.variantInlineEdit label span{font-size:7px;letter-spacing:.14em;color:#77747a}
+.variantInlineEdit input{width:100%;min-width:0}
+@media(max-width:760px){.variantInlineEdit{grid-template-columns:1fr 1fr}.variantInlineEdit .saveButton,.variantInlineEdit .ghostButton{width:100%}}
