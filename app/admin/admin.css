@@ -273,3 +273,10 @@
 .shirtBody{left:40px;top:32px;width:190px;height:286px;clip-path:polygon(25% 0,38% 0,42% 5%,58% 5%,62% 0,75% 0,100% 13%,90% 30%,82% 25%,82% 100%,18% 100%,18% 25%,10% 30%,0 13%)}
 .shirtNeck{left:111px;top:31px;width:48px;height:24px;border-radius:0 0 26px 26px}
 @media(max-width:760px){.mockupShirt{width:235px;height:292px}.shirtBody{left:35px;top:28px;width:165px;height:252px}.shirtNeck{left:97px;top:27px;width:41px;height:21px}}
+
+/* Mockup Studio V1.2 — unmistakably relaxed / heavyweight tee */
+.mockupCanvas .mockupShirt{width:300px!important;height:330px!important;transform:none!important}
+.mockupCanvas .mockupShirt .shirtBody{left:27px!important;top:30px!important;width:246px!important;height:286px!important;border-radius:2px!important;clip-path:polygon(27% 0,39% 0,43% 5%,57% 5%,61% 0,73% 0,100% 12%,91% 32%,82% 26%,82% 100%,18% 100%,18% 26%,9% 32%,0 12%)!important}
+.mockupCanvas .mockupShirt .shirtNeck{left:126px!important;top:29px!important;width:48px!important;height:24px!important}
+.mockupCanvas .mockupShirt>img{max-width:none!important}
+@media(max-width:760px){.mockupCanvas .mockupShirt{width:260px!important;height:300px!important}.mockupCanvas .mockupShirt .shirtBody{left:23px!important;top:27px!important;width:214px!important;height:260px!important}.mockupCanvas .mockupShirt .shirtNeck{left:109px!important;top:26px!important;width:42px!important;height:22px!important}}
