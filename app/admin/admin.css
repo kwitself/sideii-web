@@ -402,3 +402,74 @@
 .variantList article.variantClickable:hover::after{color:#f0ece4}
 .variantList article.variantClickable:hover{background:#0f0f11}
 .variantList article.variantClickable:focus{outline:1px solid #555158;outline-offset:-1px}
+
+
+/* Permanent merch variant quick editor */
+.variantQuickEditor{
+  margin-top:18px;
+  padding:18px;
+  border:1px solid #27262a;
+  background:#0b0b0d;
+}
+.variantQuickHead{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:14px;
+}
+.variantQuickHead span{
+  color:#d9d5ce;
+  font:9px/1 Arial,sans-serif;
+  letter-spacing:.18em;
+}
+.variantQuickHead small{
+  color:#77747a;
+  font:9px/1.35 Arial,sans-serif;
+}
+.variantQuickEditor>label{
+  display:grid;
+  grid-template-columns:110px minmax(0,1fr);
+  align-items:center;
+  gap:14px;
+}
+.variantQuickEditor>label>span{
+  color:#77747a;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.14em;
+}
+.variantQuickEditor select,
+.variantQuickEditor input{
+  width:100%;
+  min-height:38px;
+  padding:9px 10px;
+  border:1px solid #343338;
+  background:#09090a;
+  color:#d8d4cc;
+  font:10px/1 Arial,sans-serif;
+}
+.variantQuickGrid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  margin-top:14px;
+}
+.variantQuickGrid label{
+  display:grid;
+  gap:7px;
+}
+.variantQuickGrid label span{
+  color:#77747a;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.14em;
+}
+.variantQuickGrid .saveButton,
+.variantQuickGrid .ghostButton{
+  min-height:40px;
+  align-self:end;
+}
+@media(max-width:760px){
+  .variantQuickHead{align-items:flex-start;flex-direction:column}
+  .variantQuickEditor>label{grid-template-columns:1fr}
+  .variantQuickGrid{grid-template-columns:1fr 1fr}
+}
