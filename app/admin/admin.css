@@ -242,3 +242,19 @@
 .gallerySlots{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:8px}.gallerySlots button,.gallerySave{min-height:31px;border:1px solid #302f33;background:#0a0a0b;color:#777;font-size:7px;letter-spacing:.12em;cursor:pointer}.gallerySlots button.active{background:#dedbd3;color:#09090a;border-color:#dedbd3}
 .merchGallery{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:10px}.merchGallery article{position:relative;border:1px solid #29282c;background:#09090a}.merchGallery article.primary{border-color:#a7a39b}.merchGallery article img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}.merchGallery article div{display:flex;align-items:center;gap:5px;padding:6px}.merchGallery article b{margin-right:auto;font-size:7px;letter-spacing:.12em;color:#8e8a84}.merchGallery article button{border:0;background:transparent;color:#777;font-size:7px;cursor:pointer}.merchGallery article.primary b:after{content:' · PRIMARY';color:#d5d1c8}.gallerySave{width:100%;margin-top:8px;color:#bbb}
 @media(max-width:760px){.gallerySlots{grid-template-columns:repeat(2,1fr)}}
+
+
+/* Guided merch setup */
+.merchEditor .setupBanner{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px;align-items:center;padding:18px 30px;border-bottom:1px solid #29282b;background:#0d0d0e}
+.merchEditor .setupBanner>div:first-child{display:flex;flex-direction:column;gap:5px;min-width:0}
+.merchEditor .setupBanner span{font-size:8px;letter-spacing:.18em;color:#77747a}
+.merchEditor .setupBanner b{font:400 13px/1.35 Georgia,serif;color:#d8d5ce}
+.merchEditor .setupSteps{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.merchEditor .setupSteps i{font-style:normal;font-size:7px;letter-spacing:.12em;color:#5f5c62;border:1px solid #302f33;padding:8px 9px}
+.merchEditor .setupSteps i.done{color:#e1ded6;border-color:#817d76;background:#151515}
+.merchEditor .setupFinish{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:28px;padding:22px 30px 26px;border-top:1px solid #29282b;background:#0d0d0e}
+.merchEditor .setupFinish p{margin:6px 0 0;font-size:10px;color:#77747a}
+.merchEditor .setupFinish>div:last-child{display:flex;gap:9px}
+.merchEditor .setupFinish button{min-height:42px;padding:0 18px;border:1px solid #37363a;background:#0a0a0b;color:#aaa69f;font-size:8px;letter-spacing:.13em;cursor:pointer}
+.merchEditor .setupFinish .saveButton{background:#dedbd3;color:#09090a;border-color:#dedbd3;min-width:170px}
+@media(max-width:760px){.merchEditor .setupBanner,.merchEditor .setupFinish{grid-template-columns:1fr;padding:18px 22px}.merchEditor .setupSteps{flex-wrap:wrap}.merchEditor .setupFinish>div:last-child{display:grid;grid-template-columns:1fr}.merchEditor .setupFinish button{width:100%}}
