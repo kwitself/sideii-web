@@ -220,3 +220,28 @@
 .cartDiscount,.checkoutSummaryDiscount{display:flex;justify-content:space-between;align-items:center;padding:0 0 18px;color:#aaa69f}
 .cartDiscount span{font-size:9px;letter-spacing:.14em}
 .cartDiscount strong,.checkoutSummaryDiscount strong{font-weight:400;color:#b8b3aa}
+
+
+/* Store header + BAG use the same pinned chrome as the rest of the site */
+.storePage>.nav{
+  position:sticky!important;
+  top:0!important;
+  z-index:140!important;
+  background:rgba(9,9,10,.96)!important;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+.storePage .cartNav{
+  position:fixed!important;
+  top:25px!important;
+  right:28px!important;
+  z-index:170!important;
+  border:1px solid #343337!important;
+  background:#0b0b0dcc!important;
+  padding:10px 12px!important;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+@media(max-width:760px){
+  .storePage .cartNav{top:14px!important;right:14px!important}
+}
