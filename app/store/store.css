@@ -251,3 +251,31 @@
   backdrop-filter:blur(14px);
   -webkit-backdrop-filter:blur(14px);
 }
+
+
+/* Lock storefront header + BAG trigger to the viewport */
+.storePage{
+  padding-top:88px;
+}
+.storePage>.nav{
+  position:fixed!important;
+  top:0!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  width:min(1400px,calc(100% - 64px))!important;
+  height:88px!important;
+  z-index:120!important;
+  margin:0!important;
+  background:rgba(9,9,10,.96)!important;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+@media(max-width:760px){
+  .storePage{
+    padding-top:76px;
+  }
+  .storePage>.nav{
+    width:calc(100% - 32px)!important;
+    height:76px!important;
+  }
+}
