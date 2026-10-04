@@ -399,3 +399,43 @@ body{
 .accountOrderAddress p,.accountOrderTracking p,.accountOrderNote p{margin:6px 0 0;color:#918c85;font:11px/1.45 Arial,sans-serif}
 .accountOrderTracking small{display:block;margin-top:8px;color:#6f6b66;font:7px/1 Arial,sans-serif;letter-spacing:.1em}
 @media(max-width:560px){.accountOrderRow{grid-template-columns:1fr auto}.accountOrderRow>span{display:none}.accountOrderMeta{grid-template-columns:1fr}}
+
+
+/* Order detail open animation */
+@keyframes accountOrderDetailIn{
+  0%{opacity:0;transform:translateY(-10px) scale(.992);filter:blur(2px)}
+  60%{opacity:1;filter:blur(0)}
+  100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+}
+.accountOrderDetail{
+  transform-origin:top center;
+  animation:accountOrderDetailIn .28s cubic-bezier(.22,.8,.22,1) both;
+}
+.accountOrderDetailHead,
+.accountOrderMeta,
+.accountOrderItems,
+.accountOrderTotals,
+.accountOrderAddress,
+.accountOrderTracking,
+.accountOrderNote{
+  animation:accountOrderDetailContentIn .34s ease both;
+}
+@keyframes accountOrderDetailContentIn{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.accountOrderDetailHead{animation-delay:.03s}
+.accountOrderMeta{animation-delay:.06s}
+.accountOrderItems{animation-delay:.09s}
+.accountOrderTotals{animation-delay:.12s}
+.accountOrderAddress,.accountOrderTracking,.accountOrderNote{animation-delay:.15s}
+@media (prefers-reduced-motion:reduce){
+  .accountOrderDetail,
+  .accountOrderDetailHead,
+  .accountOrderMeta,
+  .accountOrderItems,
+  .accountOrderTotals,
+  .accountOrderAddress,
+  .accountOrderTracking,
+  .accountOrderNote{animation:none!important}
+}
