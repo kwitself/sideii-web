@@ -18,20 +18,35 @@ export default function GlobalAccount(){
 
  async function loadAccount(user){
   if(!supabase||!user)return;
-  const [{data:p},{data:o}]=await Promise.all([
-   supabase.from('customer_accounts').select('full_name,phone,address_line,city,district,postal_code').eq('user_id',user.id).maybeSingle(),
+  const [{data:p,error:profileError},{data:o}]=await Promise.all([
+   supabase.rpc('get_my_customer_account'),
    supabase.rpc('get_my_store_orders')
   ]);
-  const next={full_name:p?.full_name||user.user_metadata?.full_name||'',phone:p?.phone||'',address_line:p?.address_line||'',city:p?.city||'',district:p?.district||'',postal_code:p?.postal_code||''};
+  const row=Array.isArray(p)?p[0]:p;
+  const next={full_name:row?.full_name||user.user_metadata?.full_name||'',phone:row?.phone||'',address_line:row?.address_line||'',city:row?.city||'',district:row?.district||'',postal_code:row?.postal_code||''};
+  if(profileError) setMessage(profileError.message);
   setProfile(next);setOrders(Array.isArray(o)?o:[]);
   window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:{email:user.email||'',...next}}));
  }
 
  useEffect(()=>{
   if(!supabase)return;
-  supabase.auth.getSession().then(({data})=>{setSession(data.session||null);if(data.session?.user)loadAccount(data.session.user)});
-  const {data:sub}=supabase.auth.onAuthStateChange((_event,next)=>{setSession(next||null);setMessage('');if(next?.user)loadAccount(next.user);else{setOrders([]);window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:null}))}});
-  return()=>sub.subscription.unsubscribe();
+  let live=true;
+  const bootstrap=async()=>{
+    const {data}=await supabase.auth.getSession();
+    if(!live)return;
+    const current=data.session||null;
+    setSession(current);
+    if(current?.user) await loadAccount(current.user);
+  };
+  bootstrap();
+  const {data:sub}=supabase.auth.onAuthStateChange((event,next)=>{
+    if(!live)return;
+    setSession(next||null);setMessage('');
+    if(event==='SIGNED_IN'&&next?.user) setTimeout(()=>loadAccount(next.user),0);
+    if(event==='SIGNED_OUT'){setOrders([]);setProfile({full_name:'',phone:'',address_line:'',city:'',district:'',postal_code:''});window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:null}))}
+  });
+  return()=>{live=false;sub.subscription.unsubscribe()};
  },[]);
 
  async function submitAuth(e){
