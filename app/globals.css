@@ -311,3 +311,46 @@ body{
   right:0!important;
   width:100vw!important;
 }
+
+
+/* Customer account */
+.globalAccountTrigger{
+  position:fixed!important;top:25px!important;right:112px!important;z-index:171!important;
+  min-width:58px;height:32px;padding:0 11px;border:1px solid #343337;background:#0b0b0dcc;color:#8d8982;
+  font:7px/1 Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;backdrop-filter:blur(10px);cursor:pointer
+}
+.globalAccountDrawer{
+  position:fixed;z-index:191;top:0;right:0;width:min(430px,100vw);height:100vh;box-sizing:border-box;
+  padding:25px 28px 36px;background:#101012;border-left:1px solid #2c2b2e;transform:translateX(102%);
+  transition:transform .25s ease;overflow:auto;color:#d7d2ca
+}
+.globalAccountDrawer.open{transform:translateX(0)}
+.globalAccountDrawer>span{font:7px/1 Arial,sans-serif;letter-spacing:.18em;color:#aaa69f}
+.globalAccountClose{float:right;border:0;background:none;color:#8c8882;font:7px/1 Arial,sans-serif;letter-spacing:.14em;cursor:pointer}
+.globalAccountShade{position:fixed;z-index:190;inset:0;border:0;background:rgba(0,0,0,.72)}
+.accountAuth h3{margin:48px 0 24px;font:32px/1.05 Georgia,serif;color:#ddd7cf}
+.accountTabs{display:grid;grid-template-columns:1fr 1fr;margin:34px 0 0;border:1px solid #2f2e31}
+.accountTabs button{min-height:38px;border:0;border-right:1px solid #2f2e31;background:#0c0c0e;color:#77736e;font:7px/1 Arial,sans-serif;letter-spacing:.13em}
+.accountTabs button:last-child{border-right:0}.accountTabs button.active{background:#e7e2da;color:#111}
+.accountAuth form,.accountProfile{display:grid;gap:14px}
+.accountAuth label,.accountProfile label{display:grid;gap:7px;color:#77736e;font:7px/1 Arial,sans-serif;letter-spacing:.13em}
+.accountAuth input,.accountProfile input,.accountProfile textarea{
+  width:100%;box-sizing:border-box;border:1px solid #353438;background:#0b0b0d;color:#ded8d0;padding:12px;font:12px/1.3 Arial,sans-serif
+}
+.accountProfile textarea{min-height:74px;resize:vertical}
+.accountPrimary,.accountSignout{min-height:42px;border:1px solid #d6d1c9;background:#e6e1d9;color:#111;font:7px/1 Arial,sans-serif;letter-spacing:.14em;cursor:pointer}
+.accountTextButton{border:0;background:none;color:#77736e;font:7px/1 Arial,sans-serif;letter-spacing:.12em;text-align:left;padding:4px 0;cursor:pointer}
+.accountMessage{padding:10px;border:1px solid #594044;background:#160f10;color:#d5a7aa;font:10px/1.4 Arial,sans-serif}
+.accountIdentity{margin:44px 0 24px;padding-bottom:20px;border-bottom:1px solid #2d2c2f}
+.accountIdentity b{display:block;font:24px/1.1 Georgia,serif}.accountIdentity small{display:block;margin-top:7px;color:#77736e}
+.accountTwo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.accountOrders{margin-top:30px;border-top:1px solid #2d2c2f;padding-top:18px}
+.accountSectionHead{display:flex;justify-content:space-between;color:#77736e;font:7px/1 Arial,sans-serif;letter-spacing:.14em}
+.accountOrders article{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:15px 0;border-bottom:1px solid #252428}
+.accountOrders article b{font:13px/1.1 Georgia,serif}.accountOrders article small{display:block;margin-top:5px;color:#696661;font:7px/1 Arial,sans-serif;letter-spacing:.08em}
+.accountOrders article strong{font:13px/1 Georgia,serif}.accountOrders article em{grid-column:1/-1;color:#8e8a83;font:italic 11px/1.2 Georgia,serif}
+.accountEmpty{color:#6e6a65;font:12px/1.4 Georgia,serif}.accountSignout{width:100%;margin-top:26px;background:#111;color:#aaa69f;border-color:#3a393d}
+@media(max-width:760px){
+  .globalAccountTrigger{top:14px!important;right:88px!important}
+  .globalAccountDrawer{padding:18px 18px 30px}
+}
