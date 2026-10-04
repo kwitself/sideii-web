@@ -543,3 +543,18 @@
 .orderInvoice span{display:block;font-size:8px;letter-spacing:.16em;color:#77747a}
 .orderInvoice b{display:block;margin-top:7px;font:14px/1.2 Georgia,serif;font-weight:400}
 .orderInvoice p{margin:6px 0 0;color:#8b8780;font-size:9px;letter-spacing:.08em}
+
+/* Admin rail: document-flow mode. Do not pin/fly while the long control room scrolls. */
+@media(min-width:901px){
+ .adminApp{align-items:stretch}
+ .adminRail{
+  position:static!important;
+  top:auto!important;
+  bottom:auto!important;
+  height:auto!important;
+  min-height:100%!important;
+  align-self:stretch!important;
+  transform:none!important;
+ }
+ .adminRail .railFoot{margin-top:auto}
+}
