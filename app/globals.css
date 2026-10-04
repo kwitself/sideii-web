@@ -183,3 +183,16 @@ button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser butt
 .mockupBody.mockupFullscreen .mockupCanvasTools{position:sticky;top:0;z-index:3;background:#09090a;padding-top:2px}
 .mockupBody.mockupFullscreen .mockupControls{align-self:center;width:100%;max-width:440px}
 @media(max-width:900px){.mockupBody.mockupFullscreen{inset:8px!important;grid-template-columns:1fr!important;padding:14px!important}.mockupBody.mockupFullscreen .technicalTee{min-height:480px}.mockupCanvasTools button:first-child{margin-right:0}}
+
+
+/* Merch tee viewport + safe printable region */
+.teeZoomStage{position:relative;display:grid;place-items:center;flex:1;min-height:390px;overflow:hidden}
+.teeZoomObject{width:min(420px,72%);transform-origin:center center;transition:transform .18s ease}
+.teeZoomObject .technicalTee{width:100%!important;min-height:0!important;position:relative}
+.teeZoomObject .technicalTee>svg{display:block;width:100%;height:auto}
+.teeZoomObject .teePrintClip{position:absolute!important;left:24.75%!important;top:25%!important;width:50.5%!important;height:60%!important;overflow:hidden!important;box-sizing:border-box;border:1px dashed #4a484d;pointer-events:none}
+.teeZoomObject .teeArtwork{position:absolute;max-width:none}
+.teeZoomReadout{display:inline-grid;place-items:center;min-width:42px;color:#77736d;font:7px/1 Arial,sans-serif;letter-spacing:.12em}
+.mockupBody.mockupFullscreen .teeZoomStage{min-height:calc(100vh - 150px)}
+.mockupBody.mockupFullscreen .teeZoomObject{width:min(540px,60vh)}
+@media(max-width:900px){.mockupBody.mockupFullscreen .teeZoomStage{min-height:520px}.mockupBody.mockupFullscreen .teeZoomObject{width:min(420px,78vw)}}
