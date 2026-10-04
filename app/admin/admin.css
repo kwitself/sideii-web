@@ -558,3 +558,20 @@
  }
  .adminRail .railFoot{margin-top:auto}
 }
+
+/* Admin rail vertical balance */
+@media(min-width:901px){
+ .adminRail{
+  display:grid!important;
+  grid-template-rows:auto minmax(0,1fr) auto!important;
+ }
+ .adminNav{
+  align-self:start!important;
+  padding-top:26px!important;
+  padding-bottom:26px!important;
+ }
+ .railFoot{
+  align-self:end!important;
+  margin-top:0!important;
+ }
+}
