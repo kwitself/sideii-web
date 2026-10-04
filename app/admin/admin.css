@@ -220,3 +220,18 @@
 .merchCreateGrid .merchImagePanel small{font-size:9px;line-height:1.5;color:#66636a}
 .merchCreateV2 .workspaceMessage{margin-left:30px!important;margin-right:30px!important}
 @media(max-width:760px){.merchCreateGrid{grid-template-columns:1fr;padding:22px 24px 6px}.merchCreateGrid .merchImagePanel{max-width:280px}}
+
+
+/* Merch apparel matrix */
+.variantMatrix{padding:24px 30px 28px;border-bottom:1px solid #29282b;background:#0c0c0d}
+.matrixHead{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:16px}
+.matrixHead span{font-size:9px;letter-spacing:.17em;color:#aaa69f}.matrixHead p{margin:6px 0 0;font-size:10px;color:#69666d}
+.matrixHead b{font-size:9px;letter-spacing:.15em;font-weight:400;color:#817e84}
+.sizeChips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.sizeChips button{width:48px;height:38px;border:1px solid #343338;background:#09090a;color:#77747a;font-size:10px;cursor:pointer}
+.sizeChips button.active{background:#dedbd3;color:#09090a;border-color:#dedbd3}
+.matrixFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 20px}
+.matrixFields label{display:flex;flex-direction:column;gap:8px}.matrixFields label>span{font-size:9px;letter-spacing:.15em;color:#77747a}
+.matrixFields input{width:100%;min-height:44px;padding:11px 13px;border:1px solid #333236;background:#09090a;color:#d7d4cc;font-size:12px}
+.matrixFields .wideField{grid-column:1/-1}.variantMatrix>.saveButton{display:block;margin:20px 0 0 auto;min-width:210px;min-height:44px}
+@media(max-width:760px){.variantMatrix{padding:22px}.matrixFields{grid-template-columns:1fr}.matrixFields .wideField{grid-column:auto}.variantMatrix>.saveButton{width:100%}}
