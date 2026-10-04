@@ -196,3 +196,13 @@ button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser butt
 .mockupBody.mockupFullscreen .teeZoomStage{min-height:calc(100vh - 150px)}
 .mockupBody.mockupFullscreen .teeZoomObject{width:min(540px,60vh)}
 @media(max-width:900px){.mockupBody.mockupFullscreen .teeZoomStage{min-height:520px}.mockupBody.mockupFullscreen .teeZoomObject{width:min(420px,78vw)}}
+
+
+/* Mockup viewport correction: one safe area, whole garment always visible */
+.teeZoomStage{padding:28px;box-sizing:border-box;overflow:auto!important}
+.teeZoomObject{width:min(390px,54%);max-width:100%;transform-origin:center center}
+.mockupBody.mockupFullscreen .teeZoomObject{width:min(430px,46vw)!important}
+.teeZoomObject .teePrintClip{left:28%!important;top:29%!important;width:44%!important;height:48%!important;border:1px dashed #4a484d!important;outline:0!important;background:transparent!important}
+.teeZoomObject .technicalTee::before,.teeZoomObject .technicalTee::after{content:none!important;display:none!important}
+.mockupBody.mockupFullscreen .teeZoomStage{overflow:auto!important;scrollbar-width:thin;scrollbar-color:#333 transparent}
+@media(max-width:900px){.teeZoomStage{padding:18px}.mockupBody.mockupFullscreen .teeZoomObject{width:min(390px,68vw)!important}}
