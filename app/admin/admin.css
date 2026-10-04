@@ -347,3 +347,17 @@
 /* Mockup toolbar interaction guard */
 .mockupStudioV2 .mockupToolbar{position:relative;z-index:30;pointer-events:auto}
 .mockupStudioV2 .mockupToolbar button,.mockupStudioV2 .mockupToolbar select,.mockupStudioV2 .mockupToolbar label,.mockupStudioV2 .mockupToolbar input{position:relative;z-index:31;pointer-events:auto}
+
+
+/* Merch variant editor visibility fix */
+.variantList .variantSummary{display:flex;justify-content:space-between;align-items:center;gap:18px;min-width:0}
+.variantList .variantSummary small{margin-left:auto}
+.variantList .variantEditButton{display:inline-flex!important;align-items:center;justify-content:center;min-width:96px;min-height:34px;padding:0 12px;border:1px solid #3b3a3e;background:#0d0d0f;color:#b8b4ad;font-size:8px;letter-spacing:.14em;cursor:pointer}
+.variantList .variantEditButton:hover{border-color:#76726c;color:#e0ddd5}
+.variantList article.editingVariant{grid-template-columns:1fr!important}
+.variantInlineEdit{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr)) auto auto;gap:10px;align-items:end;margin-top:12px}
+.variantInlineEdit label{display:flex;flex-direction:column;gap:7px}
+.variantInlineEdit label span{font-size:8px;letter-spacing:.14em;color:#77747a}
+.variantInlineEdit input{width:100%;min-height:38px;padding:9px 10px;border:1px solid #333236;background:#09090a;color:#d7d4cc}
+.variantInlineEdit .saveButton,.variantInlineEdit .ghostButton{min-height:38px;padding:0 13px}
+@media(max-width:760px){.variantList .variantSummary{align-items:flex-start;flex-direction:column}.variantList .variantSummary small{margin-left:0}.variantInlineEdit{grid-template-columns:1fr 1fr!important}}
