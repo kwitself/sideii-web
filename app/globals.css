@@ -206,3 +206,11 @@ button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser butt
 .teeZoomObject .technicalTee::before,.teeZoomObject .technicalTee::after{content:none!important;display:none!important}
 .mockupBody.mockupFullscreen .teeZoomStage{overflow:auto!important;scrollbar-width:thin;scrollbar-color:#333 transparent}
 @media(max-width:900px){.teeZoomStage{padding:18px}.mockupBody.mockupFullscreen .teeZoomObject{width:min(390px,68vw)!important}}
+
+
+/* Preserve the complete tee silhouette at every editor zoom level */
+.teeZoomStage{overflow:auto!important;place-items:center!important}
+.teeZoomObject{flex:0 0 auto!important;max-width:none!important}
+.mockupBody.mockupFullscreen .teeZoomObject{max-width:none!important}
+.teeZoomObject .technicalTee{overflow:visible!important}
+.teeZoomObject .technicalTee>svg{overflow:visible!important}
