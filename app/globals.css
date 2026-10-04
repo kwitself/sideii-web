@@ -369,3 +369,33 @@ body{
 .accountProfile select option{background:#0b0b0d;color:#d8d4cd}
 .accountProfile .addressNotice{display:block;margin:-5px 0 3px;color:#8d8982;font:10px/1.5 Arial,sans-serif;letter-spacing:.03em}
 @media(max-width:560px){.accountProfile .addressLocation{grid-template-columns:1fr}}
+
+
+/* Account order detail */
+.accountOrderRow{
+  width:100%;display:grid;grid-template-columns:1fr auto auto;gap:4px 12px;align-items:center;
+  padding:15px 0;border:0;border-bottom:1px solid #252428;background:transparent;color:#d7d2ca;text-align:left;cursor:pointer
+}
+.accountOrderRow:hover{background:#131315}
+.accountOrderRow b{font:13px/1.1 Georgia,serif}.accountOrderRow small{display:block;margin-top:5px;color:#696661;font:7px/1 Arial,sans-serif;letter-spacing:.08em}
+.accountOrderRow>strong{font:13px/1 Georgia,serif}.accountOrderRow em{grid-column:1/3;color:#8e8a83;font:italic 11px/1.2 Georgia,serif}
+.accountOrderRow>span{font:7px/1 Arial,sans-serif;letter-spacing:.14em;color:#8d8982}
+.accountOrderDetail{margin-top:26px;padding-top:22px;border-top:1px solid #343337}
+.accountOrderDetailHead{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
+.accountOrderDetailHead small,.accountOrderDetail span{font:7px/1 Arial,sans-serif;letter-spacing:.14em;color:#75716b}
+.accountOrderDetailHead h3{margin:5px 0 0;font:28px/1 Georgia,serif}
+.accountOrderDetailHead button{border:0;background:none;color:#8c8882;font:7px/1 Arial,sans-serif;letter-spacing:.14em;cursor:pointer}
+.accountOrderMeta{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin:20px 0;background:#242326}
+.accountOrderMeta>div{padding:12px;background:#0d0d0f}
+.accountOrderMeta b{display:block;margin-top:5px;font:10px/1.3 Arial,sans-serif;font-weight:400}
+.accountOrderItems article{display:grid;grid-template-columns:1fr auto;gap:12px;padding:14px 0;border-bottom:1px solid #252428}
+.accountOrderItems article b{font:13px/1.1 Georgia,serif}.accountOrderItems article small{display:block;margin-top:4px;color:#6f6b66;font:7px/1 Arial,sans-serif;letter-spacing:.08em}
+.accountOrderItems article strong{font:13px/1 Georgia,serif}
+.accountOrderTotals{margin-top:16px}
+.accountOrderTotals>div{display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px solid #252428}
+.accountOrderTotals>div b{font:12px/1 Georgia,serif}.accountOrderTotals .grand{padding-top:14px}.accountOrderTotals .grand b{font-size:17px}
+.accountOrderAddress,.accountOrderTracking,.accountOrderNote{margin-top:20px;padding:14px;border:1px solid #2b2a2d;background:#0c0c0e}
+.accountOrderAddress b,.accountOrderTracking b{display:block;margin-top:8px;font:13px/1.2 Georgia,serif}
+.accountOrderAddress p,.accountOrderTracking p,.accountOrderNote p{margin:6px 0 0;color:#918c85;font:11px/1.45 Arial,sans-serif}
+.accountOrderTracking small{display:block;margin-top:8px;color:#6f6b66;font:7px/1 Arial,sans-serif;letter-spacing:.1em}
+@media(max-width:560px){.accountOrderRow{grid-template-columns:1fr auto}.accountOrderRow>span{display:none}.accountOrderMeta{grid-template-columns:1fr}}
