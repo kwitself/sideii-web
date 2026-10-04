@@ -12,7 +12,7 @@ const money=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',ma
 export default function GlobalAccount(){
  const pathname=usePathname();
  const [open,setOpen]=useState(false),[session,setSession]=useState(null),[mode,setMode]=useState('signin');
- const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false),[wishlist,setWishlist]=useState([]),[savedCart,setSavedCart]=useState([]),[addresses,setAddresses]=useState([]),[addressEditing,setAddressEditing]=useState(false),[addressBusy,setAddressBusy]=useState(false);
+ const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false),[wishlist,setWishlist]=useState([]),[savedCart,setSavedCart]=useState([]),[addresses,setAddresses]=useState([]),[addressEditing,setAddressEditing]=useState(false),[addressBusy,setAddressBusy]=useState(false),[requestBusy,setRequestBusy]=useState(false),[requestReason,setRequestReason]=useState('');
  const emptyAddress={id:null,label:'',full_name:'',phone:'',address_line:'',city:'',district:'',postal_code:'',is_default:false};
  const [addressForm,setAddressForm]=useState(emptyAddress);
  const [auth,setAuth]=useState({email:'',password:'',full_name:''});
@@ -147,6 +147,16 @@ export default function GlobalAccount(){
   if(selectedOrder?.id===o.id){closeOrderDetail();return}
   setClosingOrder(false);
   setSelectedOrder(o);
+  setRequestReason('');
+ }
+ async function requestOrderAction(type){
+  if(!selectedOrder||requestBusy)return;
+  setRequestBusy(true);setMessage('');
+  const {error}=await supabase.rpc('request_order_action',{p_order_id:selectedOrder.id,p_type:type,p_reason:requestReason||null});
+  setRequestBusy(false);
+  if(error){setMessage(error.message);return}
+  setMessage(type==='cancel'?'Cancellation request sent.':'Return request sent.');
+  if(session?.user)await loadAccount(session.user);
  }
 
  if(pathname?.startsWith('/admin'))return null;
@@ -221,7 +231,7 @@ export default function GlobalAccount(){
        <div><span>ORDERED</span><b>{new Date(selectedOrder.created_at).toLocaleString('tr-TR')}</b></div>
        <div><span>FULFILMENT</span><b>{String(selectedOrder.fulfillment_type||'—').toUpperCase()}</b></div>
       </div>
-      <div className="accountOrderItems">{(selectedOrder.items||[]).map((it,i)=><article key={it.id||i}><div><b>{it.title}</b><small>{it.format||''}{it.sku?' · '+it.sku:''} · QTY {it.quantity}</small></div><strong>{money(it.line_total)}</strong></article>)}</div>
+      <div className="accountOrderItems">{(selectedOrder.items||[]).map((it,i)=><article key={it.id||i}><div><b>{it.title}</b><small>{it.format||''}{it.sku?' · '+it.sku:''} · QTY {it.quantity}{it.preorder?' · PRE-ORDER':''}</small>{Array.isArray(it.edition_numbers)&&it.edition_numbers.length>0&&<small>EDITION · {it.edition_numbers.map(n=>'#'+String(n).padStart(3,'0')).join(' / ')}</small>}{it.download_url&&<a className="accountDownloadLink" href={it.download_url} target="_blank" rel="noreferrer">DOWNLOAD DIGITAL EDITION ↗</a>}</div><strong>{money(it.line_total)}</strong></article>)}</div>
       <div className="accountOrderTotals">
        <div><span>SUBTOTAL</span><b>{money(selectedOrder.subtotal)}</b></div>
        {Number(selectedOrder.discount_total||0)>0&&<div><span>DISCOUNT{selectedOrder.promo_code?' · '+selectedOrder.promo_code:''}</span><b>−{money(selectedOrder.discount_total)}</b></div>}
@@ -232,6 +242,11 @@ export default function GlobalAccount(){
       {selectedOrder.shipping_address&&<div className="accountOrderAddress"><span>DELIVERY</span><b>{selectedOrder.shipping_name||displayName}</b><p>{selectedOrder.shipping_phone||''}</p><p>{selectedOrder.shipping_address.line1||''}</p><p>{[selectedOrder.shipping_address.district,selectedOrder.shipping_address.city,selectedOrder.shipping_address.postal_code].filter(Boolean).join(' · ')}</p></div>}
       {(selectedOrder.shipping_carrier||selectedOrder.tracking_number)&&<div className="accountOrderTracking"><span>TRACKING</span><b>{selectedOrder.shipping_carrier||'CARRIER'}</b><p>{selectedOrder.tracking_number||'Not assigned yet'}</p>{selectedOrder.shipped_at&&<small>SHIPPED · {new Date(selectedOrder.shipped_at).toLocaleString('tr-TR')}</small>}</div>}
       {selectedOrder.notes&&<div className="accountOrderNote"><span>ORDER NOTE</span><p>{selectedOrder.notes}</p></div>}
+      <div className="accountOrderRequest">
+       <span>ORDER REQUESTS</span>
+       {(selectedOrder.return_requests||[]).length>0&&<div className="accountOrderRequestHistory">{selectedOrder.return_requests.map(r=><p key={r.id}>{String(r.request_type).toUpperCase()} · {String(r.status).toUpperCase()} · {new Date(r.created_at).toLocaleDateString('tr-TR')}</p>)}</div>}
+       {['pending','preparing','shipped','completed'].includes(selectedOrder.status)&&<><textarea placeholder="Optional reason / note" value={requestReason} onChange={e=>setRequestReason(e.target.value)}/><div>{['pending','preparing'].includes(selectedOrder.status)&&<button type="button" disabled={requestBusy} onClick={()=>requestOrderAction('cancel')}>REQUEST CANCELLATION</button>}{['shipped','completed'].includes(selectedOrder.status)&&<button type="button" disabled={requestBusy} onClick={()=>requestOrderAction('return')}>REQUEST RETURN</button>}</div></>}
+      </div>
      </section>}
     <button className="accountSignout" onClick={signOut}>SIGN OUT</button>
    </div>}
