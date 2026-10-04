@@ -64,7 +64,7 @@ export default function CommerceOpsPanel({products,onChanged}){
  }
 
  return <section id="commerce-ops" className="adminSection commerceOps">
-  <div className="sectionLabel"><span>08 / COMMERCE OPS</span><p>Sales, shipping, stock, pre-orders and customer requests.</p></div>
+  <div className="sectionLabel"><span>07 / COMMERCE OPS</span><p>Sales, shipping, stock, pre-orders and customer requests.</p></div>
   {message&&<p className="dbNotice">{message}</p>}
 
   <div className="commerceMetricHead"><span>SALES REPORT</span><select value={days} onChange={e=>setDays(Number(e.target.value))}><option value="7">7 DAYS</option><option value="30">30 DAYS</option><option value="90">90 DAYS</option><option value="365">365 DAYS</option></select></div>
