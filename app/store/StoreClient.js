@@ -51,6 +51,27 @@ export default function StoreClient({releases}){
  const [cart,setCart]=useState([]),[open,setOpen]=useState(false),[checkout,setCheckout]=useState(false),[busy,setBusy]=useState(false),[done,setDone]=useState(null),[error,setError]=useState(''),[quote,setQuote]=useState(null);
  useEffect(()=>{const raw=readCart();const hydrated=raw.map(item=>{const product=releases.find(r=>r.variants?.some(v=>(v.id||v.sku)===item.key));if(!product)return item;const variant=product.variants.find(v=>(v.id||v.sku)===item.key)||{};return {...item,title:product.title,catalogue:product.catalogue,cover:product.cover,format:variant.formatLabel||item.format,price:Number(variant.price??item.price??0),stock:variant.format==='digital'?null:Number(variant.stock??item.stock??0),isMerch:!!product.isMerch,merchCategory:product.merchCategory||item.merchCategory||null,size:variant.size||item.size||null,color:variant.color||item.color||null,style:variant.style||item.style||null,mockup:product.isMerch?(product.mockups?.front||product.mockups?.back||item.mockup||null):null};});setCart(hydrated);if(JSON.stringify(hydrated)!==JSON.stringify(raw))writeCart(hydrated);const q=new URLSearchParams(window.location.search);if(q.get('checkout')==='1'){setDone(null);setOpen(true);setCheckout(true);window.history.replaceState({},'',window.location.pathname)}},[releases]);
  useEffect(()=>{const fn=e=>setCart(e.detail||readCart());window.addEventListener('sideii-cart',fn);return()=>window.removeEventListener('sideii-cart',fn)},[]);
+ useEffect(()=>{
+  if(!open)return;
+  const y=window.scrollY;
+  const prev={
+   position:document.body.style.position,
+   top:document.body.style.top,
+   width:document.body.style.width,
+   overflow:document.body.style.overflow
+  };
+  document.body.style.position='fixed';
+  document.body.style.top='-'+y+'px';
+  document.body.style.width='100%';
+  document.body.style.overflow='hidden';
+  return()=>{
+   document.body.style.position=prev.position;
+   document.body.style.top=prev.top;
+   document.body.style.width=prev.width;
+   document.body.style.overflow=prev.overflow;
+   window.scrollTo(0,y);
+  };
+ },[open]);
  const updateCart=next=>{setQuote(null);setQuoteError('');setCart(next);writeCart(next)};
  const [form,setForm]=useState({name:'',email:'',phone:'',address:'',city:'',district:'',postal:'',notes:''});
  const [quoteError,setQuoteError]=useState('');
