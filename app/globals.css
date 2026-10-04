@@ -214,3 +214,30 @@ button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser butt
 .mockupBody.mockupFullscreen .teeZoomObject{max-width:none!important}
 .teeZoomObject .technicalTee{overflow:visible!important}
 .teeZoomObject .technicalTee>svg{overflow:visible!important}
+
+
+/* teeZoomStage is the viewport: never center oversized tees into negative/clipped space */
+.teeZoomStage{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  width:100%!important;
+  min-width:0!important;
+  padding:36px!important;
+  overflow:auto!important;
+  box-sizing:border-box!important;
+  overscroll-behavior:contain;
+}
+.teeZoomStage>.teeZoomObject{
+  display:block!important;
+  flex:0 0 auto!important;
+  margin:auto!important;
+  max-width:none!important;
+}
+.mockupBody.mockupFullscreen .teeZoomStage{
+  min-width:0!important;
+  overflow:auto!important;
+}
+@media(max-width:900px){
+  .teeZoomStage{padding:22px!important}
+}
