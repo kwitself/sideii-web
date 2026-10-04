@@ -241,3 +241,11 @@ button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser butt
   margin-left:auto!important;
   margin-right:auto!important;
 }
+
+
+/* Mockup save state */
+.mockupSaveState{margin:8px 0 7px;padding:8px 10px;border:1px solid #343337;background:#0b0b0d;color:#6f6c67;font:7px/1 Arial,sans-serif;letter-spacing:.15em;text-transform:uppercase}
+.mockupSaveState.dirty{border-color:#66533b;color:#c2a578;background:#13100c}
+.mockupSaveState.saved{border-color:#303a33;color:#7f9a86;background:#0c100d}
+.mockupSaveButton:disabled{opacity:.5!important}
+.mockupSaveState.dirty+.mockupSaveButton{border-color:#746048!important;color:#d2b387!important}
