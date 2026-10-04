@@ -343,3 +343,7 @@
 .mockupStudioV2 .technicalTee .teePrintClip .teeArtwork{
  position:absolute;max-width:none;
 }
+
+/* Mockup toolbar interaction guard */
+.mockupStudioV2 .mockupToolbar{position:relative;z-index:30;pointer-events:auto}
+.mockupStudioV2 .mockupToolbar button,.mockupStudioV2 .mockupToolbar select,.mockupStudioV2 .mockupToolbar label,.mockupStudioV2 .mockupToolbar input{position:relative;z-index:31;pointer-events:auto}
