@@ -23,7 +23,57 @@ export default function GlobalBag(){
  const pathname=usePathname(),[cart,setCart]=useState([]),[open,setOpen]=useState(false),[checkout,setCheckout]=useState(false),[busy,setBusy]=useState(false),[done,setDone]=useState(null),[error,setError]=useState(''),[quote,setQuote]=useState(null),[promoInput,setPromoInput]=useState(''),[promoCode,setPromoCode]=useState(''),[promoBusy,setPromoBusy]=useState(false),[quoteError,setQuoteError]=useState('');
  const[form,setForm]=useState({name:'',email:'',phone:'',address:'',city:'',district:'',postal:'',notes:''});
  const[accountProfile,setAccountProfile]=useState(null);
+ const[cartUser,setCartUser]=useState(null),[cartSyncReady,setCartSyncReady]=useState(false);
  useEffect(()=>{const sync=e=>setCart(e?.detail||readCart());const openBag=()=>setOpen(true);const account=e=>setAccountProfile(e?.detail||null);sync();window.addEventListener('sideii-cart',sync);window.addEventListener('sideii-open-bag',openBag);window.addEventListener('sideii-account-profile',account);return()=>{window.removeEventListener('sideii-cart',sync);window.removeEventListener('sideii-open-bag',openBag);window.removeEventListener('sideii-account-profile',account)}},[]);
+
+ useEffect(()=>{
+  if(!supabase)return;
+  let live=true;
+  const mergeCarts=(local,remote)=>{
+   const map=new Map();
+   for(const item of [...(remote||[]),...(local||[])]){
+    const key=String(item.key||item.variantId||item.sku||'');
+    if(!key)continue;
+    const prev=map.get(key);
+    if(!prev)map.set(key,item);
+    else map.set(key,{...prev,...item,qty:Math.max(Number(prev.qty||1),Number(item.qty||1))});
+   }
+   return [...map.values()];
+  };
+  const load=async()=>{
+   const {data:s}=await supabase.auth.getSession();
+   if(!live)return;
+   const user=s.session?.user||null;
+   setCartUser(user);
+   if(!user){setCartSyncReady(false);return}
+   const local=readCart();
+   const {data:row}=await supabase.from('customer_saved_cart').select('cart').eq('user_id',user.id).maybeSingle();
+   if(!live)return;
+   const merged=mergeCarts(local,Array.isArray(row?.cart)?row.cart:[]);
+   setCart(merged);writeCart(merged);
+   await supabase.from('customer_saved_cart').upsert({user_id:user.id,cart:merged,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+   window.dispatchEvent(new CustomEvent('sideii-saved-cart',{detail:merged}));
+   setCartSyncReady(true);
+  };
+  load();
+  const {data:sub}=supabase.auth.onAuthStateChange((event,s)=>{
+   if(!live)return;
+   const user=s?.user||null;
+   setCartUser(user);
+   if(event==='SIGNED_IN'&&user)setTimeout(load,0);
+   if(event==='SIGNED_OUT'){setCartSyncReady(false);window.dispatchEvent(new CustomEvent('sideii-saved-cart',{detail:readCart()}))}
+  });
+  return()=>{live=false;sub.subscription.unsubscribe()};
+ },[]);
+
+ useEffect(()=>{
+  if(!supabase||!cartUser||!cartSyncReady)return;
+  const timer=setTimeout(async()=>{
+   await supabase.from('customer_saved_cart').upsert({user_id:cartUser.id,cart,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+   window.dispatchEvent(new CustomEvent('sideii-saved-cart',{detail:cart}));
+  },350);
+  return()=>clearTimeout(timer);
+ },[cart,cartUser,cartSyncReady]);
  const localSubtotal=useMemo(()=>cart.reduce((s,x)=>s+x.price*x.qty,0),[cart]),physical=cart.some(x=>!x.digital),digital=cart.some(x=>x.digital),subtotal=quote?Number(quote.subtotal):localSubtotal,discount=quote?Number(quote.discount_total||0):0,shipping=quote?Number(quote.shipping_total):0,total=quote?Number(quote.total):subtotal-discount+shipping,orderType=physical&&digital?'MIXED ORDER':physical?'PHYSICAL ORDER':'DIGITAL ORDER',update=n=>{setCart(n);writeCart(n)};
  useEffect(()=>{let live=true;if(!supabase||cart.length===0){setQuote(null);return()=>{live=false}};const timer=setTimeout(async()=>{const items=cart.map(x=>({variant_id:x.variantId,quantity:x.qty}));const {data,error}=await supabase.rpc('quote_store_order_v3',{p_items:items,p_promo_code:promoCode||null,p_email:form.email.trim()||null});if(!live)return;if(error){const msg=promoErrorMessage(error.message);if(promoCode&&/requires customer email/i.test(String(error.message||''))){const base=await supabase.rpc('quote_store_order_v3',{p_items:items,p_promo_code:null,p_email:form.email.trim()||null});if(!live)return;if(!base.error)setQuote(base.data);setQuoteError(msg);return}setQuote(null);if(promoCode)setQuoteError(msg);return}setQuote(data);setQuoteError('')},120);return()=>{live=false;clearTimeout(timer)}},[cart,promoCode,form.email]);
  async function applyPromo(){
