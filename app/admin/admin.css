@@ -341,5 +341,5 @@
  position:absolute;z-index:4;left:31%;top:26%;width:38%;height:40%;overflow:hidden;pointer-events:none;
 }
 .mockupStudioV2 .technicalTee .teePrintClip .teeArtwork{
- position:absolute;left:50%!important;top:50%!important;max-width:none;
+ position:absolute;max-width:none;
 }
