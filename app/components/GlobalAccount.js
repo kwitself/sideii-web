@@ -9,7 +9,7 @@ const money=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',ma
 export default function GlobalAccount(){
  const pathname=usePathname();
  const [open,setOpen]=useState(false),[session,setSession]=useState(null),[mode,setMode]=useState('signin');
- const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null);
+ const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false);
  const [auth,setAuth]=useState({email:'',password:'',full_name:''});
  const [profile,setProfile]=useState({full_name:'',phone:'',address_line:'',city:'',district:'',postal_code:''});
  const signedIn=!!session?.user;
@@ -78,6 +78,16 @@ export default function GlobalAccount(){
   setMessage(error?error.message:'Password reset email sent.');
  }
  async function signOut(){await supabase.auth.signOut();setOpen(false)}
+ function closeOrderDetail(){
+  if(!selectedOrder||closingOrder)return;
+  setClosingOrder(true);
+  setTimeout(()=>{setSelectedOrder(null);setClosingOrder(false)},220);
+ }
+ function toggleOrder(o){
+  if(selectedOrder?.id===o.id){closeOrderDetail();return}
+  setClosingOrder(false);
+  setSelectedOrder(o);
+ }
 
  if(pathname?.startsWith('/admin'))return null;
  return <>
@@ -107,10 +117,10 @@ export default function GlobalAccount(){
      <button className="accountPrimary" disabled={busy}>{busy?'SAVING…':'SAVE DETAILS'}</button>
     </form>
     <section className="accountOrders"><div className="accountSectionHead"><span>ORDER HISTORY</span><small>{orders.length}</small></div>
-     {orders.length===0?<p className="accountEmpty">No orders yet.</p>:orders.map(o=><button type="button" className="accountOrderRow" key={o.id} onClick={()=>setSelectedOrder(v=>v?.id===o.id?null:o)}><div><b>#SII-{String(o.order_no).padStart(4,'0')}</b><small>{new Date(o.created_at).toLocaleDateString('tr-TR')} · {String(o.status).toUpperCase()}</small></div><strong>{money(o.total)}</strong>{o.tracking_number&&<em>{o.shipping_carrier||'CARRIER'} · {o.tracking_number}</em>}<span>VIEW →</span></button>)}
+     {orders.length===0?<p className="accountEmpty">No orders yet.</p>:orders.map(o=><button type="button" className="accountOrderRow" key={o.id} onClick={()=>toggleOrder(o)}><div><b>#SII-{String(o.order_no).padStart(4,'0')}</b><small>{new Date(o.created_at).toLocaleDateString('tr-TR')} · {String(o.status).toUpperCase()}</small></div><strong>{money(o.total)}</strong>{o.tracking_number&&<em>{o.shipping_carrier||'CARRIER'} · {o.tracking_number}</em>}<span>VIEW →</span></button>)}
     </section>
-    {selectedOrder&&<section className="accountOrderDetail">
-      <div className="accountOrderDetailHead"><div><small>ORDER</small><h3>#SII-{String(selectedOrder.order_no).padStart(4,'0')}</h3></div><button type="button" onClick={()=>setSelectedOrder(null)}>CLOSE ×</button></div>
+    {selectedOrder&&<section className={'accountOrderDetail '+(closingOrder?'closing':'')}>
+      <div className="accountOrderDetailHead"><div><small>ORDER</small><h3>#SII-{String(selectedOrder.order_no).padStart(4,'0')}</h3></div><button type="button" onClick={closeOrderDetail}>CLOSE ×</button></div>
       <div className="accountOrderMeta">
        <div><span>STATUS</span><b>{String(selectedOrder.status||'').toUpperCase()}</b></div>
        <div><span>PAYMENT</span><b>{String(selectedOrder.payment_status||'').toUpperCase()}</b></div>
