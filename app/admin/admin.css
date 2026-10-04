@@ -235,3 +235,10 @@
 .matrixFields input{width:100%;min-height:44px;padding:11px 13px;border:1px solid #333236;background:#09090a;color:#d7d4cc;font-size:12px}
 .matrixFields .wideField{grid-column:1/-1}.variantMatrix>.saveButton{display:block;margin:20px 0 0 auto;min-width:210px;min-height:44px}
 @media(max-width:760px){.variantMatrix{padding:22px}.matrixFields{grid-template-columns:1fr}.matrixFields .wideField{grid-column:auto}.variantMatrix>.saveButton{width:100%}}
+
+
+/* Merch persistent gallery */
+.merchHeroImage{position:relative;aspect-ratio:1/1;border:1px solid #29282c;background:#09090a;overflow:hidden}.merchHeroImage img{width:100%;height:100%;object-fit:cover}.merchHeroImage>span{position:absolute;left:10px;bottom:9px;padding:5px 7px;background:rgba(0,0,0,.75);font-size:7px;letter-spacing:.14em;color:#aaa}
+.gallerySlots{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:8px}.gallerySlots button,.gallerySave{min-height:31px;border:1px solid #302f33;background:#0a0a0b;color:#777;font-size:7px;letter-spacing:.12em;cursor:pointer}.gallerySlots button.active{background:#dedbd3;color:#09090a;border-color:#dedbd3}
+.merchGallery{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:10px}.merchGallery article{position:relative;border:1px solid #29282c;background:#09090a}.merchGallery article.primary{border-color:#a7a39b}.merchGallery article img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}.merchGallery article div{display:flex;align-items:center;gap:5px;padding:6px}.merchGallery article b{margin-right:auto;font-size:7px;letter-spacing:.12em;color:#8e8a84}.merchGallery article button{border:0;background:transparent;color:#777;font-size:7px;cursor:pointer}.merchGallery article.primary b:after{content:' · PRIMARY';color:#d5d1c8}.gallerySave{width:100%;margin-top:8px;color:#bbb}
+@media(max-width:760px){.gallerySlots{grid-template-columns:repeat(2,1fr)}}
