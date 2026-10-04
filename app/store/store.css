@@ -245,3 +245,18 @@
 @media(max-width:760px){
   .storePage .cartNav{top:14px!important;right:14px!important}
 }
+
+
+/* Wishlist */
+.storeProduct{position:relative}
+.storeWishlistButton{
+ position:absolute;z-index:8;top:34px;right:0;width:38px;height:38px;border:1px solid #343337;
+ background:#0b0b0dcc;color:#77747a;display:grid;place-items:center;
+ font:18px/1 Georgia,serif;cursor:pointer;transition:background .18s,border-color .18s,color .18s,transform .18s;
+ backdrop-filter:blur(8px)
+}
+.storeWishlistButton:hover{border-color:#706c66;color:#ddd8d0;transform:translateY(-1px)}
+.storeWishlistButton.active{color:#d7d1c8;border-color:#625e58;background:#171719}
+@media(max-width:760px){
+ .storeWishlistButton{top:18px;right:0;width:40px;height:40px}
+}
