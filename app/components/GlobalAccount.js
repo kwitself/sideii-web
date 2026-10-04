@@ -13,7 +13,7 @@ export default function GlobalAccount(){
  const pathname=usePathname();
  const [open,setOpen]=useState(false),[session,setSession]=useState(null),[mode,setMode]=useState('signin');
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false),[wishlist,setWishlist]=useState([]),[savedCart,setSavedCart]=useState([]),[addresses,setAddresses]=useState([]),[addressEditing,setAddressEditing]=useState(false),[addressBusy,setAddressBusy]=useState(false);
- const emptyAddress={id:null,label:'HOME',full_name:'',phone:'',address_line:'',city:'',district:'',postal_code:'',is_default:false};
+ const emptyAddress={id:null,label:'',full_name:'',phone:'',address_line:'',city:'',district:'',postal_code:'',is_default:false};
  const [addressForm,setAddressForm]=useState(emptyAddress);
  const [auth,setAuth]=useState({email:'',password:'',full_name:''});
  const [profile,setProfile]=useState({full_name:'',phone:'',address_line:'',city:'',district:'',postal_code:''});
@@ -112,7 +112,7 @@ export default function GlobalAccount(){
   setAddressBusy(true);setMessage('');
   const {data,error}=await supabase.rpc('save_my_customer_address',{
    p_id:addressForm.id||null,
-   p_label:addressForm.label||'HOME',
+   p_label:addressForm.label||'ADDRESS',
    p_full_name:addressForm.full_name||profile.full_name||'',
    p_phone:addressForm.phone||profile.phone||'',
    p_address_line:addressForm.address_line,
@@ -180,7 +180,7 @@ export default function GlobalAccount(){
       <div className="accountSectionHead"><span>ADDRESS BOOK</span><small>{addresses.length}</small></div>
       <div className="accountAddressActions"><button type="button" onClick={()=>{setAddressForm({...emptyAddress,full_name:profile.full_name,phone:profile.phone});setAddressEditing(v=>!v)}}>{addressEditing?'CANCEL':'＋ ADD ADDRESS'}</button></div>
       {addressEditing&&<form className="accountAddressForm" onSubmit={saveAddress}>
-        <div className="accountAddressLabelRow">{['HOME','WORK','OTHER'].map(x=><button type="button" key={x} className={addressForm.label===x?'active':''} onClick={()=>setAddressForm({...addressForm,label:x})}>{x}</button>)}</div>
+        <label>ADDRESS NAME<input required maxLength="40" placeholder="e.g. HOME, STUDIO, MOM'S HOUSE" value={addressForm.label} onChange={e=>setAddressForm({...addressForm,label:e.target.value})}/></label>
         <label>FULL NAME<input value={addressForm.full_name} onChange={e=>setAddressForm({...addressForm,full_name:e.target.value})}/></label>
         <label>PHONE<input value={addressForm.phone} onChange={e=>setAddressForm({...addressForm,phone:e.target.value})}/></label>
         <label>ADDRESS<textarea required value={addressForm.address_line} onChange={e=>setAddressForm({...addressForm,address_line:e.target.value})}/></label>
