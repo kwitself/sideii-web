@@ -231,3 +231,13 @@ button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser butt
  .mockupBody.mockupFullscreen .teeZoomStage{min-height:520px}
 }
 
+
+
+/* Center tee in compact mockup view while preserving fullscreen overflow behavior */
+.mockupBody:not(.mockupFullscreen) .teeZoomStage{
+  justify-content:center!important;
+}
+.mockupBody:not(.mockupFullscreen) .teeZoomStage>.teeZoomObject{
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
