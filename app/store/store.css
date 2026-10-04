@@ -279,3 +279,19 @@
     height:76px!important;
   }
 }
+
+
+/* Store uses the same detached BAG trigger as the rest of the site */
+.storeBagTrigger{
+  position:fixed!important;
+  z-index:170!important;
+  right:28px!important;
+  top:25px!important;
+}
+.storePage>.nav nav .cartNav{display:none!important}
+@media(max-width:760px){
+  .storeBagTrigger{
+    right:14px!important;
+    top:14px!important;
+  }
+}
