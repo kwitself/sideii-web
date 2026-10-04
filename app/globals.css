@@ -542,3 +542,15 @@ body{
 .checkoutSavedAddressList b{font:11px/1.2 Georgia,serif;font-weight:400}
 .checkoutSavedAddressList em{font:6px/1 Arial,sans-serif;letter-spacing:.12em;color:#8b8780;font-style:normal}
 .checkoutSavedAddressList small{grid-column:1/-1;font:8px/1.2 Arial,sans-serif;letter-spacing:.08em;color:#66625d}
+
+
+/* Checkout saved address selector — compact */
+.checkoutSavedAddresses{margin:0 0 18px!important;padding:14px!important;border:1px solid #2f2e31!important;background:#0b0b0d!important}
+.checkoutSavedAddressHead{display:flex!important;align-items:center!important;justify-content:space-between!important;margin-bottom:10px!important}
+.checkoutSavedAddressHead span,.checkoutSavedAddressHead small{font:8px/1 Arial,sans-serif!important;letter-spacing:.15em!important;color:#77736e!important}
+.checkoutSavedAddressSelect{width:100%!important;min-height:42px!important;border:1px solid #3b393d!important;background:#101012!important;color:#d8d4cd!important;padding:0 12px!important;font:10px/1 Arial,sans-serif!important;letter-spacing:.08em!important;outline:none!important}
+.checkoutSavedAddressSelect:focus{border-color:#77736e!important}
+.checkoutSavedAddressPreview{margin-top:10px!important;padding:11px 12px!important;border:1px solid #262528!important;background:#0e0e10!important}
+.checkoutSavedAddressPreview b{display:block!important;font:13px/1.2 Georgia,serif!important;font-weight:400!important;color:#d8d4cd!important}
+.checkoutSavedAddressPreview small{display:block!important;margin-top:5px!important;font:8px/1.3 Arial,sans-serif!important;letter-spacing:.08em!important;color:#77736e!important}
+.checkoutSavedAddressPreview p{margin:5px 0 0!important;font:10px/1.45 Arial,sans-serif!important;color:#8b8780!important}
