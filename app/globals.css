@@ -354,3 +354,18 @@ body{
   .globalAccountTrigger{top:14px!important;right:88px!important}
   .globalAccountDrawer{padding:18px 18px 30px}
 }
+
+
+/* Account address fields — match checkout */
+.accountProfile .checkoutSplit{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.accountProfile .addressLocation label{display:flex;flex-direction:column;gap:8px;margin:0;color:#77747a;font:10px Arial,sans-serif;letter-spacing:.14em}
+.accountProfile select{
+  width:100%;min-height:44px;padding:0 12px;box-sizing:border-box;
+  border:1px solid #343337;border-radius:0;background:#0b0b0d;color:#d8d4cd;
+  font:13px Arial,sans-serif;letter-spacing:.04em;outline:none;appearance:none;cursor:pointer
+}
+.accountProfile select:focus{border-color:#77737c}
+.accountProfile select:disabled{color:#625f5b;cursor:not-allowed;opacity:.72}
+.accountProfile select option{background:#0b0b0d;color:#d8d4cd}
+.accountProfile .addressNotice{display:block;margin:-5px 0 3px;color:#8d8982;font:10px/1.5 Arial,sans-serif;letter-spacing:.03em}
+@media(max-width:560px){.accountProfile .addressLocation{grid-template-columns:1fr}}
