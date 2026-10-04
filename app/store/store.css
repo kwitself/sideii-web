@@ -157,3 +157,13 @@
  .merchBuyRow button{min-height:50px}
  .merchBagLink{margin-top:8px;min-height:44px;align-items:center}
 }
+
+
+/* Cart merch thumbnail + totals */
+.cartMerchThumb{position:relative;width:62px;height:62px;display:grid;place-items:center;background:#0b0b0d;border:1px solid #2d2c30;overflow:hidden}
+.cartMerchThumb svg{width:54px;height:54px;display:block}
+.cartMerchPrint{position:absolute;left:28%;top:29%;width:44%;height:48%;overflow:hidden}
+.cartMerchPrint img{position:absolute;max-width:none}
+.cartShipping{display:flex;justify-content:space-between;padding:0 0 20px;color:#77747a;font-size:9px;letter-spacing:.15em}
+.cartShipping strong{color:#aaa69f;font:14px Georgia,serif;font-weight:400}
+@media(max-width:760px){.cartMerchThumb{width:54px;height:54px}.cartMerchThumb svg{width:48px;height:48px}}
