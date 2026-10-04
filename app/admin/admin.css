@@ -538,3 +538,8 @@
 .commerceReturnRow b{font:13px Georgia,serif;font-weight:400}.commerceReturnRow small{display:block;margin-top:5px;color:#77747a;font-size:8px}.commerceReturnRow p{margin:7px 0 0;color:#8b8780;font:12px/1.4 Georgia,serif}
 @media(max-width:1150px){.commerceVariantRow{grid-template-columns:1fr 1fr 1fr 1fr}.commerceVariantTitle{grid-column:1/-1}.commerceVariantRow .commerceWide{grid-column:1/-1}.commerceVariantRow>.saveButton{grid-column:4}}
 @media(max-width:850px){.commerceOpsGrid{grid-template-columns:1fr}.commerceVariantRow{grid-template-columns:1fr 1fr}.commerceVariantRow>.saveButton{grid-column:1/-1}.commerceReturnRow{grid-template-columns:1fr}.commerceRateRow{grid-template-columns:1fr 100px 70px}}
+
+.orderInvoice{margin:16px 0;padding:14px;border:1px solid #302f33;background:#0b0b0d}
+.orderInvoice span{display:block;font-size:8px;letter-spacing:.16em;color:#77747a}
+.orderInvoice b{display:block;margin-top:7px;font:14px/1.2 Georgia,serif;font-weight:400}
+.orderInvoice p{margin:6px 0 0;color:#8b8780;font-size:9px;letter-spacing:.08em}
