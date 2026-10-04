@@ -167,3 +167,19 @@
 .cartShipping{display:flex;justify-content:space-between;padding:0 0 20px;color:#77747a;font-size:9px;letter-spacing:.15em}
 .cartShipping strong{color:#aaa69f;font:14px Georgia,serif;font-weight:400}
 @media(max-width:760px){.cartMerchThumb{width:54px;height:54px}.cartMerchThumb svg{width:48px;height:48px}}
+
+
+/* Keep nested merch artwork proportional inside storefront/card/cart mockups */
+.storeCover .storeMerchPrint img,
+.cartItems .cartMerchPrint img,
+.storeMerchPrint img,
+.cartMerchPrint img{
+  height:auto!important;
+  aspect-ratio:auto!important;
+  object-fit:contain!important;
+  border:0!important;
+  max-width:none!important;
+  min-width:0!important;
+}
+.cartItems .cartMerchThumb>svg{width:54px!important;height:54px!important;aspect-ratio:auto!important;border:0!important}
+@media(max-width:760px){.cartItems .cartMerchThumb>svg{width:48px!important;height:48px!important}}
