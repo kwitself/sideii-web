@@ -139,7 +139,7 @@ export default function AdminDashboard(){
  <div className="panelAction"><a href="#new-release">＋ ADD PHYSICAL EDITION</a></div></div></section>
 
  <ReleaseWorkspace onCreated={load}/>
- <MerchWorkspace onCreated={load}/>
+ <MerchWorkspace onCreated={load} onContinue={product=>setMerchProduct(product)}/>
 
  <section id="orders" className="adminSection twoCol"><div><div className="sectionLabel"><span>03 / ORDERS</span><p>Live orders, payment and fulfilment.</p></div><div className="adminPanel orderList">{orders.length?orders.map(o=><article className="orderRow" key={o.id} onClick={()=>{setSelectedOrder(o);setShippingEdit({carrier:o.shipping_carrier||'',tracking:o.tracking_number||''})}}><div><strong>#SII-{String(o.order_no).padStart(4,'0')}</strong><small>{o.email} · {o.fulfillment_type?.toUpperCase()}</small></div><span>{o.payment_status} / {o.status}</span><b>{money(o.total,o.currency)}</b></article>):<div className="emptyNote">No orders yet.</div>}</div></div>
  <div id="inventory"><div className="sectionLabel"><span>04 / INVENTORY</span><p>Production and stock readiness.</p></div><div className="adminPanel inventoryCard"><div className="inventoryRing"><strong>{stockUnits}</strong><span>UNITS</span></div><div><b>Live inventory connected.</b><p>{variants.length} physical variant · {reservedUnits} reserved.</p><a href="#inventory-list">MANAGE STOCK ↓</a></div></div></div></section>
