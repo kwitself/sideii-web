@@ -5,13 +5,14 @@ import {usePathname} from 'next/navigation';
 import {supabase} from '../lib/supabase';
 import TurkeyAddressFields from './TurkeyAddressFields';
 import {readWishlist,writeWishlist} from '../lib/wishlist';
+import {readCart} from '../lib/cart';
 
 const money=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:0}).format(Number(n||0));
 
 export default function GlobalAccount(){
  const pathname=usePathname();
  const [open,setOpen]=useState(false),[session,setSession]=useState(null),[mode,setMode]=useState('signin');
- const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false),[wishlist,setWishlist]=useState([]);
+ const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false),[wishlist,setWishlist]=useState([]),[savedCart,setSavedCart]=useState([]);
  const [auth,setAuth]=useState({email:'',password:'',full_name:''});
  const [profile,setProfile]=useState({full_name:'',phone:'',address_line:'',city:'',district:'',postal_code:''});
  const signedIn=!!session?.user;
@@ -39,9 +40,12 @@ export default function GlobalAccount(){
 
  useEffect(()=>{
   const syncWishlist=e=>setWishlist(e?.detail||readWishlist());
-  setWishlist(readWishlist());
+  const syncCart=e=>setSavedCart(e?.detail||readCart());
+  setWishlist(readWishlist());setSavedCart(readCart());
   window.addEventListener('sideii-wishlist',syncWishlist);
-  return()=>window.removeEventListener('sideii-wishlist',syncWishlist);
+  window.addEventListener('sideii-saved-cart',syncCart);
+  window.addEventListener('sideii-cart',syncCart);
+  return()=>{window.removeEventListener('sideii-wishlist',syncWishlist);window.removeEventListener('sideii-saved-cart',syncCart);window.removeEventListener('sideii-cart',syncCart)};
  },[]);
 
  useEffect(()=>{
@@ -136,6 +140,12 @@ export default function GlobalAccount(){
      {message&&<p className="accountMessage">{message}</p>}
      <button className="accountPrimary" disabled={busy}>{busy?'SAVING…':'SAVE DETAILS'}</button>
     </form>
+    <section className="accountSavedBag">
+      <div className="accountSectionHead"><span>SAVED BAG</span><small>{savedCart.reduce((s,x)=>s+Number(x.qty||0),0)}</small></div>
+      {savedCart.length===0?<p className="accountEmpty">Your bag is empty.</p>:<button type="button" className="accountSavedBagButton" onClick={()=>{setOpen(false);window.dispatchEvent(new Event('sideii-open-bag'))}}>
+        <span>{savedCart.length} {savedCart.length===1?'ITEM':'ITEMS'} SAVED TO YOUR ACCOUNT</span><b>OPEN BAG →</b>
+      </button>}
+    </section>
     <section className="accountWishlist">
       <div className="accountSectionHead"><span>WISHLIST</span><small>{wishlist.length}</small></div>
       {wishlist.length===0?<p className="accountEmpty">No saved items yet.</p>:wishlist.map(item=><article key={item.product_slug}>
