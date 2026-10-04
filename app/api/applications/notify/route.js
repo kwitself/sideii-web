@@ -1,18 +1,28 @@
+import {createClient} from '@supabase/supabase-js';
+
 export async function POST(request){
  try{
   const body=await request.json();
-  const recipient=process.env.SIDEII_APPLICATION_EMAIL;
+  const url=process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anon=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  let recipient='';
+
+  if(url&&anon){
+   const client=createClient(url,anon,{auth:{persistSession:false}});
+   const {data}=await client.from('application_settings').select('notification_email,sender_name').eq('id',1).maybeSingle();
+   recipient=data?.notification_email||'';
+  }
+
   const apiKey=process.env.RESEND_API_KEY;
   const from=process.env.SIDEII_APPLICATION_FROM||'SIDE:II Applications <onboarding@resend.dev>';
 
   if(!recipient||!apiKey){
-   return Response.json({ok:true,email_sent:false,reason:'email_not_configured'});
+   return Response.json({ok:true,email_sent:false,reason:!recipient?'notification_email_not_configured':'email_provider_not_configured'});
   }
 
   const lines=[
    'NEW SIDE:II PRODUCTION APPLICATION',
    '',
-   'Application ID: '+(body.id||'—'),
    'Name: '+(body.applicant_name||'—'),
    'Email: '+(body.applicant_email||'—'),
    'Phone: '+(body.applicant_phone||'—'),
