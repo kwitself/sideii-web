@@ -23,8 +23,34 @@ export default function GlobalBag(){
  const pathname=usePathname(),[cart,setCart]=useState([]),[open,setOpen]=useState(false),[checkout,setCheckout]=useState(false),[busy,setBusy]=useState(false),[done,setDone]=useState(null),[error,setError]=useState(''),[quote,setQuote]=useState(null),[promoInput,setPromoInput]=useState(''),[promoCode,setPromoCode]=useState(''),[promoBusy,setPromoBusy]=useState(false),[quoteError,setQuoteError]=useState('');
  const[form,setForm]=useState({name:'',email:'',phone:'',address:'',city:'',district:'',postal:'',notes:''});
  const[accountProfile,setAccountProfile]=useState(null);
+ const[savedAddresses,setSavedAddresses]=useState([]),[selectedAddressId,setSelectedAddressId]=useState('');
  const[cartUser,setCartUser]=useState(null),[cartSyncReady,setCartSyncReady]=useState(false);
- useEffect(()=>{const sync=e=>setCart(e?.detail||readCart());const openBag=()=>setOpen(true);const account=e=>setAccountProfile(e?.detail||null);const address=e=>{const a=e?.detail;if(!a)return;setForm(v=>({...v,name:a.full_name||v.name,phone:a.phone||v.phone,address:a.address_line||v.address,city:a.city||v.city,district:a.district||v.district,postal:a.postal_code||v.postal}));setOpen(true);setCheckout(true)};sync();window.addEventListener('sideii-cart',sync);window.addEventListener('sideii-open-bag',openBag);window.addEventListener('sideii-account-profile',account);window.addEventListener('sideii-checkout-address',address);return()=>{window.removeEventListener('sideii-cart',sync);window.removeEventListener('sideii-open-bag',openBag);window.removeEventListener('sideii-account-profile',account);window.removeEventListener('sideii-checkout-address',address)}},[]);
+ async function loadSavedAddresses(){
+  if(!supabase)return;
+  const {data:s}=await supabase.auth.getSession();
+  const user=s.session?.user;
+  if(!user){setSavedAddresses([]);setSelectedAddressId('');return}
+  const {data}=await supabase.from('customer_addresses').select('id,label,full_name,phone,address_line,city,district,postal_code,is_default').eq('user_id',user.id).order('is_default',{ascending:false}).order('created_at',{ascending:true});
+  const rows=Array.isArray(data)?data:[];
+  setSavedAddresses(rows);
+  const def=rows.find(x=>x.is_default)||rows[0];
+  if(def&&!selectedAddressId)setSelectedAddressId(def.id);
+ }
+ function applySavedAddress(a){
+  if(!a)return;
+  setSelectedAddressId(a.id||'');
+  setForm(v=>({...v,
+   name:a.full_name||v.name,
+   phone:a.phone||v.phone,
+   address:a.address_line||v.address,
+   city:a.city||v.city,
+   district:a.district||v.district,
+   postal:a.postal_code||v.postal
+  }));
+ }
+ useEffect(()=>{loadSavedAddresses()},[]);
+
+ useEffect(()=>{const sync=e=>setCart(e?.detail||readCart());const openBag=()=>setOpen(true);const account=e=>{setAccountProfile(e?.detail||null);loadSavedAddresses()};const address=e=>{const a=e?.detail;if(!a)return;setForm(v=>({...v,name:a.full_name||v.name,phone:a.phone||v.phone,address:a.address_line||v.address,city:a.city||v.city,district:a.district||v.district,postal:a.postal_code||v.postal}));setOpen(true);setCheckout(true)};sync();window.addEventListener('sideii-cart',sync);window.addEventListener('sideii-open-bag',openBag);window.addEventListener('sideii-account-profile',account);window.addEventListener('sideii-checkout-address',address);return()=>{window.removeEventListener('sideii-cart',sync);window.removeEventListener('sideii-open-bag',openBag);window.removeEventListener('sideii-account-profile',account);window.removeEventListener('sideii-checkout-address',address)}},[]);
 
  useEffect(()=>{
   if(!supabase)return;
@@ -102,22 +128,34 @@ export default function GlobalBag(){
  async function removePromo(){setPromoCode('');setPromoInput('');setQuoteError('');setQuote(null)}
  function openCheckout(){
   setError('');
-  setForm(v=>accountProfile?{
-   ...v,
-   email:accountProfile.email||v.email,
-   name:accountProfile.full_name||v.name,
-   phone:accountProfile.phone||v.phone,
-   address:accountProfile.address_line||v.address,
-   city:accountProfile.city||v.city,
-   district:accountProfile.district||v.district,
-   postal:accountProfile.postal_code||v.postal
-  }:v);
+  const chosen=savedAddresses.find(x=>x.id===selectedAddressId)||savedAddresses.find(x=>x.is_default)||savedAddresses[0]||null;
+  setForm(v=>{
+   const base=accountProfile?{
+    ...v,
+    email:accountProfile.email||v.email,
+    name:accountProfile.full_name||v.name,
+    phone:accountProfile.phone||v.phone,
+    address:accountProfile.address_line||v.address,
+    city:accountProfile.city||v.city,
+    district:accountProfile.district||v.district,
+    postal:accountProfile.postal_code||v.postal
+   }:v;
+   return chosen?{...base,
+    name:chosen.full_name||base.name,
+    phone:chosen.phone||base.phone,
+    address:chosen.address_line||base.address,
+    city:chosen.city||base.city,
+    district:chosen.district||base.district,
+    postal:chosen.postal_code||base.postal
+   }:base;
+  });
+  if(chosen)setSelectedAddressId(chosen.id);
   setCheckout(true);
  }
  async function placeOrder(e){e.preventDefault();setError('');const email=form.email.trim(),phone=form.phone.replace(/\s|\(|\)|-/g,'');if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return setError('Enter a valid email address.');if(physical&&!/^(?:\+90|0)?5\d{9}$/.test(phone))return setError('Enter a valid Turkish mobile number.');if(physical&&form.address.trim().length<10)return setError('Enter a complete delivery address.');if(physical&&(!form.city||!form.district))return setError('Select city and district.');if(!supabase)return setError('Store connection unavailable.');setBusy(true);const address=physical?{line1:form.address,city:form.city,district:form.district,postal_code:form.postal,country:'TR'}:null;const items=cart.map(x=>({variant_id:x.variantId,quantity:x.qty}));const {data,error:rpcError}=await supabase.rpc('create_store_order_v3',{p_email:email,p_full_name:form.name.trim(),p_phone:physical?phone:null,p_address:address,p_notes:form.notes||null,p_items:items,p_promo_code:promoCode||null});setBusy(false);if(rpcError)return setError(rpcError.message);setDone(data);update([]);setCheckout(false)}
  const close=()=>{setOpen(false);setCheckout(false);setError('')};
  return <>{!open&&<button className="globalBagTrigger" onClick={()=>{setDone(null);setOpen(true)}}>BAG · {cart.reduce((s,x)=>s+x.qty,0)}</button>}<aside className={'globalBagDrawer '+(open?'open':'')}><button className="globalBagClose" onClick={close}>CLOSE ×</button><span>SHOPPING BAG</span>
  {done?<div className="orderDone"><b>ORDER RECEIVED</b><strong>#SII-{String(done.order_no).padStart(4,'0')}</strong><p>{fmt(done.total)}</p><small>Payment is not collected yet.</small></div>
- :checkout?<form className="checkoutForm globalCheckout" onSubmit={placeOrder}><h3>Checkout</h3><label>EMAIL<input type="email" required value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/></label><label>FULL NAME<input required={physical} value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label><label>PHONE<input required={physical} value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/></label>{physical&&<><label>ADDRESS<textarea required value={form.address} onChange={e=>setForm({...form,address:e.target.value})}/></label><TurkeyAddressFields form={form} setForm={setForm}/><label>POSTAL CODE<input value={form.postal} onChange={e=>setForm({...form,postal:e.target.value})}/></label></>}<label>ORDER NOTE<textarea value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})}/></label>{error&&<p className="checkoutError">{error}</p>}<div className="checkoutSummary"><div className="checkoutSummaryHead"><span>ORDER SUMMARY</span><small>{orderType}</small></div>{cart.map(x=><div className="checkoutSummaryItem" key={x.key}><span>{x.title}<small>{x.format} · QTY {x.qty}</small></span><strong>{fmt(x.price*x.qty)}</strong></div>)}<div className="checkoutSummaryRow"><span>SUBTOTAL</span><strong>{fmt(subtotal)}</strong></div>{quote?.campaign_name&&<div className="checkoutSummaryRow checkoutSummaryDiscount"><span>CAMPAIGN · {quote.campaign_name}</span><strong>{Number(quote?.campaign_discount_total||0)>0?'−'+fmt(quote.campaign_discount_total):shipping===0&&physical?'FREE SHIPPING':'APPLIED'}</strong></div>}{Number(quote?.promo_discount_total||0)>0&&<div className="checkoutSummaryRow checkoutSummaryDiscount"><span>DISCOUNT · {promoCode}</span><strong>−{fmt(quote.promo_discount_total)}</strong></div>}<div className="checkoutSummaryRow"><span>SHIPPING</span><strong>{physical?(quote?(shipping>0?fmt(shipping):'FREE'):'CALCULATING…'):'NOT REQUIRED'}</strong></div><div className="checkoutSummaryRow checkoutSummaryTotal"><span>TOTAL</span><strong>{fmt(total)}</strong></div></div><button className="globalBagCheckout" disabled={busy}>{busy?'CREATING ORDER…':'PLACE ORDER'}</button><button type="button" className="checkoutBack" onClick={()=>setCheckout(false)}>← BACK TO BAG</button></form>
+ :checkout?<form className="checkoutForm globalCheckout" onSubmit={placeOrder}><h3>Checkout</h3>{physical&&savedAddresses.length>0&&<div className="checkoutSavedAddresses"><div className="checkoutSavedAddressHead"><span>SAVED ADDRESS</span><small>{savedAddresses.length}</small></div><div className="checkoutSavedAddressList">{savedAddresses.map(a=><button type="button" key={a.id} className={selectedAddressId===a.id?'active':''} onClick={()=>applySavedAddress(a)}><b>{a.label||'ADDRESS'}</b>{a.is_default&&<em>DEFAULT</em>}<small>{[a.district,a.city].filter(Boolean).join(' · ')}</small></button>)}</div></div>}<label>EMAIL<input type="email" required value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/></label><label>FULL NAME<input required={physical} value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label><label>PHONE<input required={physical} value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/></label>{physical&&<><label>ADDRESS<textarea required value={form.address} onChange={e=>setForm({...form,address:e.target.value})}/></label><TurkeyAddressFields form={form} setForm={setForm}/><label>POSTAL CODE<input value={form.postal} onChange={e=>setForm({...form,postal:e.target.value})}/></label></>}<label>ORDER NOTE<textarea value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})}/></label>{error&&<p className="checkoutError">{error}</p>}<div className="checkoutSummary"><div className="checkoutSummaryHead"><span>ORDER SUMMARY</span><small>{orderType}</small></div>{cart.map(x=><div className="checkoutSummaryItem" key={x.key}><span>{x.title}<small>{x.format} · QTY {x.qty}</small></span><strong>{fmt(x.price*x.qty)}</strong></div>)}<div className="checkoutSummaryRow"><span>SUBTOTAL</span><strong>{fmt(subtotal)}</strong></div>{quote?.campaign_name&&<div className="checkoutSummaryRow checkoutSummaryDiscount"><span>CAMPAIGN · {quote.campaign_name}</span><strong>{Number(quote?.campaign_discount_total||0)>0?'−'+fmt(quote.campaign_discount_total):shipping===0&&physical?'FREE SHIPPING':'APPLIED'}</strong></div>}{Number(quote?.promo_discount_total||0)>0&&<div className="checkoutSummaryRow checkoutSummaryDiscount"><span>DISCOUNT · {promoCode}</span><strong>−{fmt(quote.promo_discount_total)}</strong></div>}<div className="checkoutSummaryRow"><span>SHIPPING</span><strong>{physical?(quote?(shipping>0?fmt(shipping):'FREE'):'CALCULATING…'):'NOT REQUIRED'}</strong></div><div className="checkoutSummaryRow checkoutSummaryTotal"><span>TOTAL</span><strong>{fmt(total)}</strong></div></div><button className="globalBagCheckout" disabled={busy}>{busy?'CREATING ORDER…':'PLACE ORDER'}</button><button type="button" className="checkoutBack" onClick={()=>setCheckout(false)}>← BACK TO BAG</button></form>
  :cart.length===0?<p className="globalBagEmpty">Your bag is empty.</p>:<><div className="globalBagItems">{cart.map(x=><article key={x.key}>{x.cover&&<img src={x.cover} alt=""/>}<div><b>{x.title}</b><small>{x.format}{x.digital?' · DOWNLOAD':''}</small><div className="globalBagQty"><button onClick={()=>update(cart.map(y=>y.key===x.key?{...y,qty:Math.max(1,y.qty-1)}:y))}>−</button><span>{x.qty}</span><button disabled={x.stock!=null&&x.qty>=x.stock} onClick={()=>update(cart.map(y=>y.key===x.key?{...y,qty:y.stock==null?y.qty+1:Math.min(y.qty+1,y.stock)}:y))}>＋</button><button onClick={()=>update(cart.filter(y=>y.key!==x.key))}>REMOVE</button></div></div><strong>{fmt(x.price*x.qty)}</strong></article>)}</div><div className="promoBox"><div className="promoLabel"><span>GIFT / PROMO CODE</span>{promoCode&&<button type="button" onClick={removePromo}>REMOVE</button>}</div><div className="promoEntry"><input value={promoInput} placeholder="ENTER CODE" onChange={e=>setPromoInput(e.target.value.toUpperCase())}/><button type="button" disabled={promoBusy||!promoInput.trim()} onClick={applyPromo}>{promoBusy?'CHECKING…':promoCode?'UPDATE':'APPLY'}</button></div>{promoCode&&quote&&!quoteError&&<small>CODE {promoCode} APPLIED</small>}</div><div className="globalBagTotal"><span>SUBTOTAL</span><strong>{fmt(localSubtotal)}</strong></div>{quote?.campaign_name&&<div className="cartDiscount"><span>CAMPAIGN · {quote.campaign_name}</span><strong>{Number(quote?.campaign_discount_total||0)>0?'−'+fmt(quote.campaign_discount_total):shipping===0&&physical?'FREE SHIPPING':'APPLIED'}</strong></div>}{Number(quote?.promo_discount_total||0)>0&&<div className="cartDiscount"><span>DISCOUNT · {promoCode}</span><strong>−{fmt(quote.promo_discount_total)}</strong></div>}{physical&&quote&&<div className="cartShipping"><span>SHIPPING</span><strong>{shipping>0?fmt(shipping):'FREE'}</strong></div>}{quoteError&&<p className="checkoutError">{quoteError}</p>}<button className="globalBagCheckout" disabled={!!quoteError&&!/Enter your email at checkout/i.test(quoteError)} onClick={openCheckout}>{quoteError&&/Enter your email at checkout/i.test(quoteError)?'CONTINUE TO CHECKOUT →':quoteError?'UNAVAILABLE':'CHECKOUT →'}</button></>}</aside>{open&&<button className="globalBagShade" aria-label="Close bag" onClick={close}/>}</>
 }
