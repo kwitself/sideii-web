@@ -295,7 +295,7 @@ button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser butt
 html,body{
   width:100%;
   max-width:100%;
-  overflow-x:hidden!important;
+  overflow-x:clip!important;
 }
 body{
   position:relative;
