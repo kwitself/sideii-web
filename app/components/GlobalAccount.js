@@ -2,6 +2,7 @@
 import {useEffect,useMemo,useState} from 'react';
 import {usePathname} from 'next/navigation';
 import {supabase} from '../lib/supabase';
+import TurkeyAddressFields from './TurkeyAddressFields';
 
 const money=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:0}).format(Number(n||0));
 
@@ -85,7 +86,7 @@ export default function GlobalAccount(){
      <label>FULL NAME<input value={profile.full_name} onChange={e=>setProfile({...profile,full_name:e.target.value})}/></label>
      <label>PHONE<input value={profile.phone} onChange={e=>setProfile({...profile,phone:e.target.value})}/></label>
      <label>ADDRESS<textarea value={profile.address_line} onChange={e=>setProfile({...profile,address_line:e.target.value})}/></label>
-     <div className="accountTwo"><label>CITY<input value={profile.city} onChange={e=>setProfile({...profile,city:e.target.value})}/></label><label>DISTRICT<input value={profile.district} onChange={e=>setProfile({...profile,district:e.target.value})}/></label></div>
+     <TurkeyAddressFields form={profile} setForm={setProfile}/>
      <label>POSTAL CODE<input value={profile.postal_code} onChange={e=>setProfile({...profile,postal_code:e.target.value})}/></label>
      {message&&<p className="accountMessage">{message}</p>}
      <button className="accountPrimary" disabled={busy}>{busy?'SAVING…':'SAVE DETAILS'}</button>
