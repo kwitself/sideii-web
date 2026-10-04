@@ -125,6 +125,10 @@ export default function AdminDashboard(){
   if(error){setMessage('Shipping settings failed: '+error.message);return}
   const saved=Array.isArray(data)?data[0]:data;
   setShippingSettings(saved?{enabled:saved.enabled,standard_rate:saved.standard_rate,vinyl_rate:saved.vinyl_rate,free_shipping_threshold:saved.free_shipping_threshold??''}:{...payload,free_shipping_threshold:payload.free_shipping_threshold??''});
+  await Promise.all([
+   supabase.rpc('admin_save_shipping_class_rate',{p_code:'standard',p_rate:payload.standard_rate,p_active:true}),
+   supabase.rpc('admin_save_shipping_class_rate',{p_code:'vinyl',p_rate:payload.vinyl_rate,p_active:true})
+  ]);
   setMessage('Shipping settings saved.');
  }
 
