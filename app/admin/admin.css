@@ -508,3 +508,33 @@
 .campaignList article{min-height:82px}
 .discountGrid select{width:100%}
 @media(max-width:700px){.campaignDivider{align-items:flex-start;flex-direction:column}}
+
+
+/* Commerce operations */
+.commerceMetricHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.commerceMetricHead>span{font-size:9px;letter-spacing:.18em;color:#88847f}
+.commerceMetricHead select{min-height:36px;border:1px solid #343337;background:#0b0b0d;color:#aaa69f;padding:0 10px;font-size:9px;letter-spacing:.12em}
+.commerceMetrics{margin-bottom:22px}
+.commerceOpsGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.commerceCard,.commerceVariants,.commerceReturns{padding:20px}
+.commerceCard>header,.commerceVariants>header,.commerceReturns>header{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;padding-bottom:14px;border-bottom:1px solid #28272a}
+.commerceCard>header span,.commerceVariants>header span,.commerceReturns>header span{font-size:9px;letter-spacing:.17em;color:#aaa69f}
+.commerceCard>header small,.commerceVariants>header small,.commerceReturns>header small{font-size:9px;color:#67646a}
+.commerceRateRow{display:grid;grid-template-columns:1fr 110px 70px;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #242326}
+.commerceRateRow div{display:flex;flex-direction:column;gap:5px}.commerceRateRow b{font:14px Georgia,serif;font-weight:400}.commerceRateRow small{font-size:7px;letter-spacing:.12em;color:#6c696e}
+.commerceRateRow input,.commerceVariantRow input,.commerceVariantRow select,.commerceReturnRow select{min-height:38px;border:1px solid #343337;background:#09090a;color:#d3cfc8;padding:0 10px;outline:none}
+.commerceRateRow button,.commerceVariantRow>.saveButton{min-height:38px;border:1px solid #d7d4cc;background:#d7d4cc;color:#0b0b0c;font-size:8px;letter-spacing:.12em;cursor:pointer}
+.commerceAlertRow{display:grid;grid-template-columns:1fr auto auto auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #242326}
+.commerceAlertRow div{display:flex;flex-direction:column;gap:5px}.commerceAlertRow b{font:13px Georgia,serif;font-weight:400}.commerceAlertRow small,.commerceAlertRow span,.commerceAlertRow em{font-size:7px;letter-spacing:.1em;color:#77747a;font-style:normal}
+.commerceAlertRow strong{font:22px Georgia,serif;font-weight:400}
+.commerceVariants{margin-top:14px}
+.commerceVariantRow{display:grid;grid-template-columns:1.35fr .75fr .55fr .65fr .7fr .65fr .7fr auto;gap:9px;align-items:end;padding:14px 0;border-bottom:1px solid #242326}
+.commerceVariantTitle{display:flex;flex-direction:column;gap:5px;align-self:center}.commerceVariantTitle b{font:13px Georgia,serif;font-weight:400}.commerceVariantTitle small{font-size:7px;letter-spacing:.1em;color:#666369}
+.commerceVariantRow label{display:flex;flex-direction:column;gap:6px;color:#6f6c71;font-size:7px;letter-spacing:.11em}
+.commerceVariantRow .commerceCheck{flex-direction:row;align-items:center;min-height:38px}.commerceCheck input{width:14px;min-height:14px;height:14px}.commerceCheck span{font-size:7px}
+.commerceVariantRow .commerceWide{grid-column:2/8}
+.commerceReturns{margin-top:14px}
+.commerceReturnRow{display:grid;grid-template-columns:1fr 150px;gap:18px;align-items:center;padding:14px 0;border-bottom:1px solid #242326}
+.commerceReturnRow b{font:13px Georgia,serif;font-weight:400}.commerceReturnRow small{display:block;margin-top:5px;color:#77747a;font-size:8px}.commerceReturnRow p{margin:7px 0 0;color:#8b8780;font:12px/1.4 Georgia,serif}
+@media(max-width:1150px){.commerceVariantRow{grid-template-columns:1fr 1fr 1fr 1fr}.commerceVariantTitle{grid-column:1/-1}.commerceVariantRow .commerceWide{grid-column:1/-1}.commerceVariantRow>.saveButton{grid-column:4}}
+@media(max-width:850px){.commerceOpsGrid{grid-template-columns:1fr}.commerceVariantRow{grid-template-columns:1fr 1fr}.commerceVariantRow>.saveButton{grid-column:1/-1}.commerceReturnRow{grid-template-columns:1fr}.commerceRateRow{grid-template-columns:1fr 100px 70px}}
