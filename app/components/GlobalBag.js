@@ -61,7 +61,12 @@ export default function GlobalBag(){
    const user=s?.user||null;
    setCartUser(user);
    if(event==='SIGNED_IN'&&user)setTimeout(load,0);
-   if(event==='SIGNED_OUT'){setCartSyncReady(false);window.dispatchEvent(new CustomEvent('sideii-saved-cart',{detail:readCart()}))}
+   if(event==='SIGNED_OUT'){
+    setCartSyncReady(false);
+    setCart([]);
+    writeCart([]);
+    window.dispatchEvent(new CustomEvent('sideii-saved-cart',{detail:[]}));
+   }
   });
   return()=>{live=false;sub.subscription.unsubscribe()};
  },[]);
