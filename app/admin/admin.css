@@ -473,3 +473,29 @@
   .variantQuickEditor>label{grid-template-columns:1fr}
   .variantQuickGrid{grid-template-columns:1fr 1fr}
 }
+
+
+/* Discounts / gift codes */
+.discountLayout{display:grid;grid-template-columns:minmax(360px,.8fr) minmax(0,1.2fr);gap:14px}
+.discountForm{padding:28px}
+.discountIntro{padding-bottom:20px;border-bottom:1px solid #29282b}
+.discountIntro>span{font-size:8px;letter-spacing:.22em;color:#6b686d}
+.discountIntro h2{font:38px Georgia,serif;font-weight:400;margin:9px 0 0;color:#dfdcd5}
+.discountIntro h2 em{font-weight:400;color:#817e82}
+.discountGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px 14px;padding:22px 0}
+.discountGrid label{display:flex;flex-direction:column;gap:8px}
+.discountGrid label>span{font-size:8px;letter-spacing:.16em;color:#716e73}
+.discountGrid input,.discountGrid select{min-height:42px;border:1px solid #333236;background:#0a0a0b;color:#d1cec7;padding:0 12px;outline:none}
+.discountGrid input:focus,.discountGrid select:focus{border-color:#69666a}
+.discountToggle{grid-column:1/-1;flex-direction:row!important;align-items:center!important;gap:10px!important}
+.discountToggle input{min-height:auto;width:14px;height:14px}
+.discountListHead{height:48px;padding:0 18px;border-bottom:1px solid #28272a;display:flex;align-items:center;justify-content:space-between}
+.discountListHead span,.discountListHead small{font-size:8px;letter-spacing:.18em;color:#6c696f}
+.discountList article{display:grid;grid-template-columns:minmax(0,1.5fr) .42fr .8fr auto auto;gap:14px;align-items:center;min-height:78px;padding:14px 18px;border-bottom:1px solid #242326}
+.discountList article>div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.discountList strong{font:16px Georgia,serif;font-weight:400;color:#d5d1c9}
+.discountList small{font-size:8px;letter-spacing:.1em;color:#6e6b70}
+.discountList b{font-size:10px;font-weight:400;color:#a8a49d}
+.discountList .ghostButton{min-height:34px;padding:0 11px;border:1px solid #37363a;background:transparent;color:#aaa69f;font-size:8px;letter-spacing:.12em;cursor:pointer}
+@media(max-width:1050px){.discountLayout{grid-template-columns:1fr}.discountList article{grid-template-columns:1fr .35fr .7fr auto auto}}
+@media(max-width:700px){.discountGrid{grid-template-columns:1fr}.discountList article{grid-template-columns:1fr auto}.discountUsage,.discountExpiry{display:none!important}}
