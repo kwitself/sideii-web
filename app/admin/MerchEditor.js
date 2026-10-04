@@ -7,10 +7,10 @@ function TechnicalTee({mockup}){
  const fill=mockup.garmentColor||'#171719';
  const front=mockup.side==='front';
  return <div className={'technicalTee '+mockup.garment}>
-  <svg viewBox="-28 0 476 500" role="img" aria-label={front?'T-shirt front':'T-shirt back'}>
-   <path className="teeFill" fill={fill} d="M82 82 L158 48 Q210 68 262 48 L338 82 L410 151 L365 205 L316 171 L316 438 Q210 447 104 438 L104 171 L55 205 L10 151 Z"/>
-   <path className="teeLine" d="M82 82 L158 48 Q210 68 262 48 L338 82 L410 151 L365 205 L316 171 L316 438 Q210 447 104 438 L104 171 L55 205 L10 151 Z"/>
-   <path className="teeLine seam" d="M104 171 L82 82 M316 171 L338 82 M104 426 Q210 436 316 426 M14 154 L57 201 M406 154 L363 201"/>
+  <svg viewBox="0 0 420 500" role="img" aria-label={front?'T-shirt front':'T-shirt back'}>
+   <path className="teeFill" fill={fill} d="M82 82 L158 48 Q210 68 262 48 L338 82 L392 151 L350 194 L316 171 L316 438 Q210 447 104 438 L104 171 L70 194 L28 151 Z"/>
+   <path className="teeLine" d="M82 82 L158 48 Q210 68 262 48 L338 82 L392 151 L350 194 L316 171 L316 438 Q210 447 104 438 L104 171 L70 194 L28 151 Z"/>
+   <path className="teeLine seam" d="M104 171 L82 82 M316 171 L338 82 M104 426 Q210 436 316 426 M31 154 L72 190 M389 154 L348 190"/>
    {front ? <><path className="teeLine neck" d="M167 48 Q172 98 210 100 Q248 98 253 48"/><path className="teeLine seam" d="M174 55 Q179 88 210 89 Q241 88 246 55"/></> : <><path className="teeLine neck" d="M167 48 Q185 70 210 71 Q235 70 253 48"/><path className="teeLine seam" d="M174 53 Q190 64 210 65 Q230 64 246 53"/></>}
   </svg>
   <div className="teePrintClip">{mockup.designUrl&&<img className="teeArtwork" src={mockup.designUrl} alt="Print artwork" style={{left:mockup.x+'%',top:mockup.y+'%',width:mockup.scale+'%',transform:`translate(-50%,-50%) rotate(${mockup.rotation}deg)`}}/>}</div>
