@@ -38,6 +38,13 @@ export default function GlobalAccount(){
  }
 
  useEffect(()=>{
+  const syncWishlist=e=>setWishlist(e?.detail||readWishlist());
+  setWishlist(readWishlist());
+  window.addEventListener('sideii-wishlist',syncWishlist);
+  return()=>window.removeEventListener('sideii-wishlist',syncWishlist);
+ },[]);
+
+ useEffect(()=>{
   if(!supabase)return;
   let live=true;
   const bootstrap=async()=>{
