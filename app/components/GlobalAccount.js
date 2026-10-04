@@ -107,7 +107,7 @@ export default function GlobalAccount(){
      <button className="accountPrimary" disabled={busy}>{busy?'SAVING…':'SAVE DETAILS'}</button>
     </form>
     <section className="accountOrders"><div className="accountSectionHead"><span>ORDER HISTORY</span><small>{orders.length}</small></div>
-     {orders.length===0?<p className="accountEmpty">No orders yet.</p>:orders.map(o=><button type="button" className="accountOrderRow" key={o.id} onClick={()=>setSelectedOrder(o)}><div><b>#SII-{String(o.order_no).padStart(4,'0')}</b><small>{new Date(o.created_at).toLocaleDateString('tr-TR')} · {String(o.status).toUpperCase()}</small></div><strong>{money(o.total)}</strong>{o.tracking_number&&<em>{o.shipping_carrier||'CARRIER'} · {o.tracking_number}</em>}<span>VIEW →</span></button>)}
+     {orders.length===0?<p className="accountEmpty">No orders yet.</p>:orders.map(o=><button type="button" className="accountOrderRow" key={o.id} onClick={()=>setSelectedOrder(v=>v?.id===o.id?null:o)}><div><b>#SII-{String(o.order_no).padStart(4,'0')}</b><small>{new Date(o.created_at).toLocaleDateString('tr-TR')} · {String(o.status).toUpperCase()}</small></div><strong>{money(o.total)}</strong>{o.tracking_number&&<em>{o.shipping_carrier||'CARRIER'} · {o.tracking_number}</em>}<span>VIEW →</span></button>)}
     </section>
     {selectedOrder&&<section className="accountOrderDetail">
       <div className="accountOrderDetailHead"><div><small>ORDER</small><h3>#SII-{String(selectedOrder.order_no).padStart(4,'0')}</h3></div><button type="button" onClick={()=>setSelectedOrder(null)}>CLOSE ×</button></div>
