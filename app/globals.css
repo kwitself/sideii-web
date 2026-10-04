@@ -261,3 +261,31 @@ button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser butt
 .variantInlineEdit label span{font-size:7px;letter-spacing:.14em;color:#77747a}
 .variantInlineEdit input{width:100%;min-width:0}
 @media(max-width:760px){.variantInlineEdit{grid-template-columns:1fr 1fr}.variantInlineEdit .saveButton,.variantInlineEdit .ghostButton{width:100%}}
+
+
+/* Persistent public header + BAG */
+.nav{
+  position:sticky!important;
+  top:0!important;
+  z-index:140!important;
+  background:rgba(9,9,10,.96)!important;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+.globalBagTrigger{
+  position:fixed!important;
+  top:25px!important;
+  right:28px!important;
+  z-index:170!important;
+}
+.lethNav{
+  position:sticky!important;
+  top:0!important;
+  z-index:140!important;
+  background:rgba(11,8,9,.96)!important;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+@media(max-width:760px){
+  .globalBagTrigger{top:14px!important;right:14px!important}
+}
