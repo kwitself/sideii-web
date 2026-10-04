@@ -499,3 +499,12 @@
 .discountList .ghostButton{min-height:34px;padding:0 11px;border:1px solid #37363a;background:transparent;color:#aaa69f;font-size:8px;letter-spacing:.12em;cursor:pointer}
 @media(max-width:1050px){.discountLayout{grid-template-columns:1fr}.discountList article{grid-template-columns:1fr .35fr .7fr auto auto}}
 @media(max-width:700px){.discountGrid{grid-template-columns:1fr}.discountList article{grid-template-columns:1fr auto}.discountUsage,.discountExpiry{display:none!important}}
+
+
+/* Campaign engine */
+.campaignDivider{margin:34px 0 14px;padding:18px 2px 10px;border-top:1px solid #29282b;display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
+.campaignDivider span{font-size:8px;letter-spacing:.2em;color:#8f8a84}
+.campaignDivider p{margin:0;font:italic 14px Georgia,serif;color:#706c70}
+.campaignList article{min-height:82px}
+.discountGrid select{width:100%}
+@media(max-width:700px){.campaignDivider{align-items:flex-start;flex-direction:column}}
