@@ -309,3 +309,28 @@
 .mockupStudioV2 .technicalTee.regular{width:min(84%,350px)}
 .mockupStudioV2 .mockupCanvas{padding:24px}
 @media(max-width:760px){.mockupStudioV2 .technicalTee{width:min(94%,330px)}.mockupStudioV2 .technicalTee.regular{width:min(88%,300px)}}
+
+
+/* Mockup Studio — printable chest area */
+.mockupStudioV2 .technicalTee::after{
+  content:"PRINT AREA";
+  position:absolute;
+  z-index:3;
+  left:50%;
+  top:26%;
+  width:38%;
+  height:40%;
+  transform:translateX(-50%);
+  border:1px dashed rgba(235,232,225,.32);
+  background:rgba(255,255,255,.018);
+  color:rgba(235,232,225,.34);
+  font:500 7px/1 var(--font-sans,Arial,sans-serif);
+  letter-spacing:.16em;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  padding-bottom:6px;
+  box-sizing:border-box;
+  pointer-events:none;
+}
+.mockupStudioV2 .technicalTee:has(.teeArtwork)::after{color:transparent}
