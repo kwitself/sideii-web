@@ -24,7 +24,7 @@ export default function GlobalBag(){
  const[form,setForm]=useState({name:'',email:'',phone:'',address:'',city:'',district:'',postal:'',notes:''});
  const[accountProfile,setAccountProfile]=useState(null);
  const[cartUser,setCartUser]=useState(null),[cartSyncReady,setCartSyncReady]=useState(false);
- useEffect(()=>{const sync=e=>setCart(e?.detail||readCart());const openBag=()=>setOpen(true);const account=e=>setAccountProfile(e?.detail||null);sync();window.addEventListener('sideii-cart',sync);window.addEventListener('sideii-open-bag',openBag);window.addEventListener('sideii-account-profile',account);return()=>{window.removeEventListener('sideii-cart',sync);window.removeEventListener('sideii-open-bag',openBag);window.removeEventListener('sideii-account-profile',account)}},[]);
+ useEffect(()=>{const sync=e=>setCart(e?.detail||readCart());const openBag=()=>setOpen(true);const account=e=>setAccountProfile(e?.detail||null);const address=e=>{const a=e?.detail;if(!a)return;setForm(v=>({...v,name:a.full_name||v.name,phone:a.phone||v.phone,address:a.address_line||v.address,city:a.city||v.city,district:a.district||v.district,postal:a.postal_code||v.postal}));setOpen(true);setCheckout(true)};sync();window.addEventListener('sideii-cart',sync);window.addEventListener('sideii-open-bag',openBag);window.addEventListener('sideii-account-profile',account);window.addEventListener('sideii-checkout-address',address);return()=>{window.removeEventListener('sideii-cart',sync);window.removeEventListener('sideii-open-bag',openBag);window.removeEventListener('sideii-account-profile',account);window.removeEventListener('sideii-checkout-address',address)}},[]);
 
  useEffect(()=>{
   if(!supabase)return;
