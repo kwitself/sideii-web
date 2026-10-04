@@ -1,15 +1,17 @@
 'use client';
+import Link from 'next/link';
 import {useEffect,useMemo,useState} from 'react';
 import {usePathname} from 'next/navigation';
 import {supabase} from '../lib/supabase';
 import TurkeyAddressFields from './TurkeyAddressFields';
+import {readWishlist,writeWishlist} from '../lib/wishlist';
 
 const money=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:0}).format(Number(n||0));
 
 export default function GlobalAccount(){
  const pathname=usePathname();
  const [open,setOpen]=useState(false),[session,setSession]=useState(null),[mode,setMode]=useState('signin');
- const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false);
+ const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false),[wishlist,setWishlist]=useState([]);
  const [auth,setAuth]=useState({email:'',password:'',full_name:''});
  const [profile,setProfile]=useState({full_name:'',phone:'',address_line:'',city:'',district:'',postal_code:''});
  const signedIn=!!session?.user;
@@ -18,13 +20,19 @@ export default function GlobalAccount(){
 
  async function loadAccount(user){
   if(!supabase||!user)return;
-  const [{data:p,error:profileError},{data:o}]=await Promise.all([
+  const [{data:p,error:profileError},{data:o},{data:w}]=await Promise.all([
    supabase.rpc('get_my_customer_account'),
-   supabase.rpc('get_my_store_orders')
+   supabase.rpc('get_my_store_orders'),
+   supabase.from('customer_wishlist').select('product_slug,title,catalogue,cover,is_merch').eq('user_id',user.id).order('created_at',{ascending:false})
   ]);
   const row=Array.isArray(p)?p[0]:p;
   const next={full_name:row?.full_name||user.user_metadata?.full_name||'',phone:row?.phone||'',address_line:row?.address_line||'',city:row?.city||'',district:row?.district||'',postal_code:row?.postal_code||''};
   if(profileError) setMessage(profileError.message);
+  const local=readWishlist();
+  const merged=[...(w||[])];
+  for(const item of local)if(!merged.some(x=>x.product_slug===item.product_slug))merged.push(item);
+  setWishlist(merged);writeWishlist(merged);
+  if(local.length) await supabase.from('customer_wishlist').upsert(local.map(x=>({...x,user_id:user.id})),{onConflict:'user_id,product_slug'});
   setProfile(next);setOrders(Array.isArray(o)?o:[]);
   window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:{email:user.email||'',...next}}));
  }
@@ -78,6 +86,11 @@ export default function GlobalAccount(){
   setMessage(error?error.message:'Password reset email sent.');
  }
  async function signOut(){await supabase.auth.signOut();setOpen(false)}
+ async function removeWishlistItem(slug){
+  const next=wishlist.filter(x=>x.product_slug!==slug);
+  setWishlist(next);writeWishlist(next);
+  if(session?.user)await supabase.from('customer_wishlist').delete().eq('user_id',session.user.id).eq('product_slug',slug);
+ }
  function closeOrderDetail(){
   if(!selectedOrder||closingOrder)return;
   setClosingOrder(true);
@@ -116,6 +129,16 @@ export default function GlobalAccount(){
      {message&&<p className="accountMessage">{message}</p>}
      <button className="accountPrimary" disabled={busy}>{busy?'SAVING…':'SAVE DETAILS'}</button>
     </form>
+    <section className="accountWishlist">
+      <div className="accountSectionHead"><span>WISHLIST</span><small>{wishlist.length}</small></div>
+      {wishlist.length===0?<p className="accountEmpty">No saved items yet.</p>:wishlist.map(item=><article key={item.product_slug}>
+        <Link href={item.is_merch?('/store/'+item.product_slug):('/releases/'+item.product_slug)} onClick={()=>setOpen(false)}>
+          {item.cover?<img src={item.cover} alt=""/>:<span className="accountWishlistPlaceholder">SIDE:II</span>}
+          <div><b>{item.title}</b><small>{item.catalogue||'SIDE:II'}</small></div>
+        </Link>
+        <button type="button" onClick={()=>removeWishlistItem(item.product_slug)}>REMOVE</button>
+      </article>)}
+    </section>
     <section className="accountOrders"><div className="accountSectionHead"><span>ORDER HISTORY</span><small>{orders.length}</small></div>
      {orders.length===0?<p className="accountEmpty">No orders yet.</p>:orders.map(o=><button type="button" className="accountOrderRow" key={o.id} onClick={()=>toggleOrder(o)}><div><b>#SII-{String(o.order_no).padStart(4,'0')}</b><small>{new Date(o.created_at).toLocaleDateString('tr-TR')} · {String(o.status).toUpperCase()}</small></div><strong>{money(o.total)}</strong>{o.tracking_number&&<em>{o.shipping_carrier||'CARRIER'} · {o.tracking_number}</em>}<span>VIEW →</span></button>)}
     </section>
