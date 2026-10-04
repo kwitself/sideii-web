@@ -24,7 +24,7 @@ export default function GlobalBag(){
  const[form,setForm]=useState({name:'',email:'',phone:'',address:'',city:'',district:'',postal:'',notes:''});
  useEffect(()=>{const sync=e=>setCart(e?.detail||readCart());const openBag=()=>setOpen(true);sync();window.addEventListener('sideii-cart',sync);window.addEventListener('sideii-open-bag',openBag);return()=>{window.removeEventListener('sideii-cart',sync);window.removeEventListener('sideii-open-bag',openBag)}},[]);
  const localSubtotal=useMemo(()=>cart.reduce((s,x)=>s+x.price*x.qty,0),[cart]),physical=cart.some(x=>!x.digital),digital=cart.some(x=>x.digital),subtotal=quote?Number(quote.subtotal):localSubtotal,discount=quote?Number(quote.discount_total||0):0,shipping=quote?Number(quote.shipping_total):0,total=quote?Number(quote.total):subtotal-discount+shipping,orderType=physical&&digital?'MIXED ORDER':physical?'PHYSICAL ORDER':'DIGITAL ORDER',update=n=>{setCart(n);writeCart(n)};
- useEffect(()=>{let live=true;if(!supabase||cart.length===0){setQuote(null);return()=>{live=false}};const timer=setTimeout(async()=>{const items=cart.map(x=>({variant_id:x.variantId,quantity:x.qty}));const {data,error}=await supabase.rpc('quote_store_order_v3',{p_items:items,p_promo_code:promoCode||null,p_email:form.email.trim()||null});if(!live)return;if(error){setQuote(null);if(promoCode)setQuoteError(promoErrorMessage(error.message));return}setQuote(data);setQuoteError('')},120);return()=>{live=false;clearTimeout(timer)}},[cart,promoCode,form.email]);
+ useEffect(()=>{let live=true;if(!supabase||cart.length===0){setQuote(null);return()=>{live=false}};const timer=setTimeout(async()=>{const items=cart.map(x=>({variant_id:x.variantId,quantity:x.qty}));const {data,error}=await supabase.rpc('quote_store_order_v3',{p_items:items,p_promo_code:promoCode||null,p_email:form.email.trim()||null});if(!live)return;if(error){const msg=promoErrorMessage(error.message);if(promoCode&&/requires customer email/i.test(String(error.message||''))){const base=await supabase.rpc('quote_store_order_v3',{p_items:items,p_promo_code:null,p_email:form.email.trim()||null});if(!live)return;if(!base.error)setQuote(base.data);setQuoteError(msg);return}setQuote(null);if(promoCode)setQuoteError(msg);return}setQuote(data);setQuoteError('')},120);return()=>{live=false;clearTimeout(timer)}},[cart,promoCode,form.email]);
  async function applyPromo(){
   const code=promoInput.trim().toUpperCase();
   if(!code){setPromoCode('');setPromoInput('');setQuoteError('');return}
@@ -35,6 +35,8 @@ export default function GlobalBag(){
   if(error){
     const msg=promoErrorMessage(error.message);
     if(/requires customer email/i.test(String(error.message||''))){
+      const base=await supabase.rpc('quote_store_order_v3',{p_items:items,p_promo_code:null,p_email:form.email.trim()||null});
+      if(!base.error)setQuote(base.data);
       setPromoCode(code);setPromoInput(code);setQuoteError(msg);return;
     }
     setQuoteError(msg);return;
