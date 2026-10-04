@@ -48,14 +48,14 @@ export default function ApplicationForm(){
    budget_note:form.budget_note.trim()||null
   };
 
-  const {data,error}=await supabase.from('production_applications').insert(payload).select('id').single();
+  const {error}=await supabase.from('production_applications').insert(payload);
   if(error){setBusy(false);setMessage(error.message);return}
 
   try{
    await fetch('/api/applications/notify',{
     method:'POST',
     headers:{'content-type':'application/json'},
-    body:JSON.stringify({...payload,id:data.id})
+    body:JSON.stringify(payload)
    });
   }catch{}
 
