@@ -384,3 +384,21 @@
 .variantList article.editingVariant{padding-right:0!important}
 .variantList .variantSummary{min-width:0!important;overflow:hidden}
 .variantList .variantSummary small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+
+/* Variant row is the edit trigger — avoids hidden action controls in narrow merch modal */
+.variantList article.variantClickable{cursor:pointer!important;padding-right:92px!important}
+.variantList article.variantClickable::after{
+ content:'EDIT →';
+ position:absolute;
+ right:0;
+ top:50%;
+ transform:translateY(-50%);
+ color:#b9b5ae;
+ font:8px/1 Arial,sans-serif;
+ letter-spacing:.16em;
+ pointer-events:none;
+}
+.variantList article.variantClickable:hover::after{color:#f0ece4}
+.variantList article.variantClickable:hover{background:#0f0f11}
+.variantList article.variantClickable:focus{outline:1px solid #555158;outline-offset:-1px}
