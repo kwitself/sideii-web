@@ -5,24 +5,30 @@ import {supabase} from '../lib/supabase';
 
 const initial={title:'',category:'apparel',imprint:'sideii',description:'',status:'draft',price:'',stock:'',size:'',color:'BLACK',style:'',weight_g:'',sku:''};
 
-export default function MerchWorkspace({onCreated}){
+export default function MerchWorkspace({onCreated,onContinue}){
  const [form,setForm]=useState(initial),[saving,setSaving]=useState(false),[message,setMessage]=useState('');
  const [imagePreview,setImagePreview]=useState('');
  const set=(k,v)=>setForm(p=>({...p,[k]:v}));
  async function save(){
   if(!form.title.trim()){setMessage('Product name is required.');return}
   setSaving(true);setMessage('');
-  const {error}=await supabase.rpc('admin_create_merch',{
+  const {data:createdId,error}=await supabase.rpc('admin_create_merch',{
    p_title:form.title.trim(),p_category:form.category,p_imprint:form.imprint,p_description:form.description.trim()||null,p_status:form.status,
    p_price:Math.max(0,Number(form.price)||0),p_stock:Math.max(0,parseInt(form.stock||'0',10)||0),p_size:form.size.trim()||null,
    p_color:form.color.trim()||null,p_style:form.style.trim()||null,p_weight_g:form.weight_g?Math.max(0,parseInt(form.weight_g,10)||0):null,p_sku:form.sku.trim()||null
   });
   setSaving(false);if(error){setMessage(error.message);return}
-  setMessage('Merch product created. Open it from Catalogue to add gallery images and more variants.');setForm(initial);setImagePreview('');if(onCreated)await onCreated();
+  setMessage('Merch product created. Opening product studio…');
+  let createdProduct=null;
+  if(createdId){
+   const {data}=await supabase.from('products').select('id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,gallery_images,status,is_public,product_origin,homepage_selected,product_type,merch_category,created_at,product_variants(id,sku,format,edition_name,price,currency,manufactured_qty,stock_qty,reserved_qty,active,option_size,option_color,option_style,weight_g,shipping_class)').eq('id',createdId).single();
+   createdProduct=data||null;
+  }
+  setForm(initial);setImagePreview('');if(onCreated)await onCreated();if(createdProduct&&onContinue)onContinue(createdProduct);
  }
  return <section id="new-merch" className="adminSection merchWorkspace"><div className="sectionLabel"><span>NEW / MERCH WORKSPACE</span><p>Apparel, objects, patches and accessories.</p></div>
  <div className="adminPanel merchForm merchCreateV2">
-  <div className="formIntro"><span>COMMERCE + INVENTORY CONNECTED</span><h2>New <em>merch.</em></h2><p>Create the product and its first sellable variant. Gallery images and additional variants continue in Merch Editor V2.</p></div>
+  <div className="formIntro"><span>COMMERCE + INVENTORY CONNECTED</span><h2>New <em>merch.</em></h2><p>Create the base product, then continue directly into the same product studio for gallery, size × colour variants, stock and publishing.</p></div>
   <div className="merchCreateGrid">
    <aside className="merchImagePanel">
     {imagePreview?<img src={imagePreview} alt="New merch preview"/>:<div className="merchImageEmpty">PRODUCT PREVIEW</div>}
@@ -45,6 +51,6 @@ export default function MerchWorkspace({onCreated}){
    </div>
   </div>
   {message&&<p className="workspaceMessage">{message}</p>}
-  <div className="formActions"><button type="button" className="saveButton" disabled={saving} onClick={save}>{saving?'CREATING…':'CREATE MERCH →'}</button></div>
+  <div className="formActions"><button type="button" className="saveButton" disabled={saving} onClick={save}>{saving?'CREATING…':'CREATE & CONTINUE →'}</button></div>
  </div></section>;
 }
