@@ -34,7 +34,7 @@ export default function MerchProductClient({product}){
  const hasFront=!!product.mockups?.front,hasBack=!!product.mockups?.back;
  const gallery=useMemo(()=>product.galleryImages?.filter(x=>x?.url&&!x?.mockup)||[],[product.galleryImages]);
  function add(){if(unavailable)return;const next=addCartItem(product,v);setBagCount(next.reduce((s,x)=>s+x.qty,0));setAdded(true);setTimeout(()=>setAdded(false),1300)}
- async function joinWaitlist(){const email=waitEmail.trim();if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)){setWaitMessage('Enter a valid email.');return}setWaitBusy(true);setWaitMessage('');const {error}=await supabase.rpc('join_stock_waitlist',{p_variant_id:v.id,p_email:email});setWaitBusy(false);setWaitMessage(error?error.message:'You are on the restock list.');}
+ async function joinWaitlist(){const email=waitEmail.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setWaitMessage('Enter a valid email.');return}setWaitBusy(true);setWaitMessage('');const {error}=await supabase.rpc('join_stock_waitlist',{p_variant_id:v.id,p_email:email});setWaitBusy(false);setWaitMessage(error?error.message:'You are on the restock list.');}
  return <section className="merchDetail shell">
   <div className="merchDetailVisual">
    <div className="merchDetailSwitch">{hasFront&&<button className={side==='front'?'active':''} onClick={()=>setSide('front')}>FRONT</button>}{hasBack&&<button className={side==='back'?'active':''} onClick={()=>setSide('back')}>BACK</button>}</div>
