@@ -296,3 +296,16 @@
 .mockupStudioV2 .mockupUpload{background:#0d0d0e;transition:.18s ease}.mockupStudioV2 .mockupUpload:hover{border-color:#8b8780;color:#e0ddd6}
 .mockupStudioV2 .saveButton:not(:disabled){background:#dedbd3!important;color:#09090a!important}
 @media(max-width:760px){.mockupToolbar{grid-template-columns:1fr 1fr}.mockupToolbar select,.mockupToolbar label{grid-column:1/-1}.mockupStudioV2 .mockupCanvas{min-height:350px}}
+
+
+/* Mockup Studio V2.1 — technical fashion flat template */
+.mockupStudioV2 .technicalTee{position:relative;width:min(92%,390px);aspect-ratio:420/500;filter:drop-shadow(0 22px 28px rgba(0,0,0,.48));user-select:none}
+.mockupStudioV2 .technicalTee svg{display:block;width:100%;height:100%;overflow:visible}
+.mockupStudioV2 .technicalTee .teeLine{fill:none;stroke:rgba(235,232,225,.68);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.mockupStudioV2 .technicalTee .teeLine.seam{stroke:rgba(235,232,225,.34);stroke-width:1.15}
+.mockupStudioV2 .technicalTee .teeLine.neck{stroke:rgba(235,232,225,.74);stroke-width:1.7}
+.mockupStudioV2 .technicalTee .teeFill{stroke:none}
+.mockupStudioV2 .technicalTee .teeArtwork{position:absolute;z-index:4;height:auto;max-width:none;object-fit:contain;filter:drop-shadow(0 1px 1px rgba(0,0,0,.3));pointer-events:none}
+.mockupStudioV2 .technicalTee.regular{width:min(84%,350px)}
+.mockupStudioV2 .mockupCanvas{padding:24px}
+@media(max-width:760px){.mockupStudioV2 .technicalTee{width:min(94%,330px)}.mockupStudioV2 .technicalTee.regular{width:min(88%,300px)}}
