@@ -241,3 +241,20 @@ button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser butt
 @media(max-width:900px){
   .teeZoomStage{padding:22px!important}
 }
+
+
+/* Interactive artwork editing */
+.teePrintClip.interactive{pointer-events:auto!important;touch-action:none;user-select:none}
+.teePrintClip.interactive.hasArtwork{cursor:grab}
+.teePrintClip.interactive.hasArtwork:active{cursor:grabbing}
+.teeArtwork.draggable{pointer-events:auto!important;user-select:none;-webkit-user-drag:none;touch-action:none}
+.printGuide{position:absolute;z-index:4;pointer-events:none;opacity:.9}
+.printGuide.guideX{left:50%;top:0;bottom:0;width:1px;transform:translateX(-50%);background:linear-gradient(to bottom,transparent,#8b867f,transparent)}
+.printGuide.guideY{top:50%;left:0;right:0;height:1px;transform:translateY(-50%);background:linear-gradient(to right,transparent,#8b867f,transparent)}
+.mockupArtworkActions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.mockupUpload,.mockupActionButton,.mockupSaveButton{appearance:none;min-height:34px;padding:0 12px;border:1px solid #343337;background:#0d0d0f;color:#817e78;font:7px/1 Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;transition:border-color .2s,color .2s,background .2s,transform .2s}
+.mockupUpload:hover,.mockupActionButton:hover:not(:disabled),.mockupSaveButton:hover:not(:disabled){border-color:#77737c;color:#e5e0d8;background:#151517}
+.mockupDanger{border-color:#5a3034;color:#cfa4a4;background:#140d0e}
+.mockupDanger:hover:not(:disabled){border-color:#8d4d54;color:#f0d2d2;background:#1b1012}
+.mockupSaveButton{border-color:#4a484d!important;color:#aaa69f!important;background:#111113!important}
+.mockupSaveButton:disabled,.mockupActionButton:disabled{opacity:.35;cursor:not-allowed}
