@@ -505,3 +505,25 @@ body{
 .accountAddressButtons{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
 .accountAddressButtons button{border:0;background:none;color:#77736e;font:7px/1 Arial,sans-serif;letter-spacing:.12em;cursor:pointer}
 .accountAddressButtons button:first-child{color:#d5d0c8}
+
+
+/* Global BAG commerce controls — shared across every route */
+.globalBagDrawer .promoBox{padding:18px 0 6px;border-top:1px solid #29282b}
+.globalBagDrawer .promoLabel{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.globalBagDrawer .promoLabel span{font:9px/1 Arial,sans-serif;letter-spacing:.18em;color:#817d83}
+.globalBagDrawer .promoLabel button{border:0;background:none;color:#77747a;font:8px/1 Arial,sans-serif;letter-spacing:.12em;cursor:pointer}
+.globalBagDrawer .promoEntry{display:grid;grid-template-columns:1fr auto;gap:8px}
+.globalBagDrawer .promoEntry input{min-width:0;height:42px;border:1px solid #343337;background:#09090a;color:#d8d4cd;padding:0 12px;font:11px/1 Arial,sans-serif;letter-spacing:.08em;outline:none}
+.globalBagDrawer .promoEntry input:focus{border-color:#69666a}
+.globalBagDrawer .promoEntry button{min-width:92px;border:1px solid #454248;background:#151517;color:#bdb8b0;font:9px/1 Arial,sans-serif;letter-spacing:.14em;padding:0 13px;cursor:pointer}
+.globalBagDrawer .promoEntry button:disabled{opacity:.35;cursor:default}
+.globalBagDrawer .promoBox>small{display:block;margin-top:9px;color:#7f8b76;font:8px/1 Arial,sans-serif;letter-spacing:.14em}
+.globalBagDrawer .cartDiscount,
+.globalBagDrawer .cartShipping{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:0 0 18px;color:#aaa69f}
+.globalBagDrawer .cartDiscount span,
+.globalBagDrawer .cartShipping span{font:9px/1.25 Arial,sans-serif;letter-spacing:.14em}
+.globalBagDrawer .cartDiscount strong,
+.globalBagDrawer .cartShipping strong{font:14px/1 Georgia,serif;font-weight:400;color:#b8b3aa;text-align:right;white-space:nowrap}
+.globalBagDrawer .cartShipping{padding-bottom:20px;color:#77747a}
+.globalBagDrawer .globalBagCheckout{box-sizing:border-box;min-height:46px;cursor:pointer}
+.globalBagDrawer .globalBagCheckout:disabled{opacity:.4;cursor:default}
