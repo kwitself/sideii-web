@@ -439,3 +439,22 @@ body{
   .accountOrderTracking,
   .accountOrderNote{animation:none!important}
 }
+
+
+@keyframes accountOrderDetailOut{
+  0%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+  100%{opacity:0;transform:translateY(-8px) scale(.992);filter:blur(1.5px)}
+}
+.accountOrderDetail.closing{
+  pointer-events:none;
+  animation:accountOrderDetailOut .22s cubic-bezier(.4,0,.7,.2) both;
+}
+.accountOrderDetail.closing .accountOrderDetailHead,
+.accountOrderDetail.closing .accountOrderMeta,
+.accountOrderDetail.closing .accountOrderItems,
+.accountOrderDetail.closing .accountOrderTotals,
+.accountOrderDetail.closing .accountOrderAddress,
+.accountOrderDetail.closing .accountOrderTracking,
+.accountOrderDetail.closing .accountOrderNote{
+  animation:none!important;
+}
