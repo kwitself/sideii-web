@@ -15,6 +15,11 @@ const friendlyStoreError=message=>{
   return left?('Only '+left+' left in stock. Your bag has been adjusted.'):'There is not enough stock for this item.';
  }
  if(/edition unavailable/i.test(m))return 'This edition is no longer available.';
+ if(/promo usage limit reached/i.test(m))return 'This code has reached its usage limit.';
+ if(/promo code expired/i.test(m))return 'This code has expired.';
+ if(/promo code inactive/i.test(m))return 'This code is currently inactive.';
+ if(/promo code not started/i.test(m))return 'This code is not active yet.';
+ if(/promo code not found/i.test(m))return 'This code is not valid.';
  if(/promo code invalid/i.test(m))return 'This code is not valid or has expired.';
  if(/promo code no longer available/i.test(m))return 'This code is no longer available.';
  if(/promo minimum not met/i.test(m)){const amount=m.match(/:\s*([0-9.]+)/)?.[1];return amount?('This code requires a minimum basket of ₺'+Number(amount).toLocaleString('tr-TR')+'.'):'Your basket does not meet the minimum for this code.';}
