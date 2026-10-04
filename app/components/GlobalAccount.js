@@ -9,7 +9,7 @@ const money=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',ma
 export default function GlobalAccount(){
  const pathname=usePathname();
  const [open,setOpen]=useState(false),[session,setSession]=useState(null),[mode,setMode]=useState('signin');
- const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]);
+ const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null);
  const [auth,setAuth]=useState({email:'',password:'',full_name:''});
  const [profile,setProfile]=useState({full_name:'',phone:'',address_line:'',city:'',district:'',postal_code:''});
  const signedIn=!!session?.user;
@@ -107,8 +107,28 @@ export default function GlobalAccount(){
      <button className="accountPrimary" disabled={busy}>{busy?'SAVING…':'SAVE DETAILS'}</button>
     </form>
     <section className="accountOrders"><div className="accountSectionHead"><span>ORDER HISTORY</span><small>{orders.length}</small></div>
-     {orders.length===0?<p className="accountEmpty">No orders yet.</p>:orders.map(o=><article key={o.id}><div><b>#SII-{String(o.order_no).padStart(4,'0')}</b><small>{new Date(o.created_at).toLocaleDateString('tr-TR')} · {String(o.status).toUpperCase()}</small></div><strong>{money(o.total)}</strong>{o.tracking_number&&<em>{o.shipping_carrier||'CARRIER'} · {o.tracking_number}</em>}</article>)}
+     {orders.length===0?<p className="accountEmpty">No orders yet.</p>:orders.map(o=><button type="button" className="accountOrderRow" key={o.id} onClick={()=>setSelectedOrder(o)}><div><b>#SII-{String(o.order_no).padStart(4,'0')}</b><small>{new Date(o.created_at).toLocaleDateString('tr-TR')} · {String(o.status).toUpperCase()}</small></div><strong>{money(o.total)}</strong>{o.tracking_number&&<em>{o.shipping_carrier||'CARRIER'} · {o.tracking_number}</em>}<span>VIEW →</span></button>)}
     </section>
+    {selectedOrder&&<section className="accountOrderDetail">
+      <div className="accountOrderDetailHead"><div><small>ORDER</small><h3>#SII-{String(selectedOrder.order_no).padStart(4,'0')}</h3></div><button type="button" onClick={()=>setSelectedOrder(null)}>CLOSE ×</button></div>
+      <div className="accountOrderMeta">
+       <div><span>STATUS</span><b>{String(selectedOrder.status||'').toUpperCase()}</b></div>
+       <div><span>PAYMENT</span><b>{String(selectedOrder.payment_status||'').toUpperCase()}</b></div>
+       <div><span>ORDERED</span><b>{new Date(selectedOrder.created_at).toLocaleString('tr-TR')}</b></div>
+       <div><span>FULFILMENT</span><b>{String(selectedOrder.fulfillment_type||'—').toUpperCase()}</b></div>
+      </div>
+      <div className="accountOrderItems">{(selectedOrder.items||[]).map((it,i)=><article key={it.id||i}><div><b>{it.title}</b><small>{it.format||''}{it.sku?' · '+it.sku:''} · QTY {it.quantity}</small></div><strong>{money(it.line_total)}</strong></article>)}</div>
+      <div className="accountOrderTotals">
+       <div><span>SUBTOTAL</span><b>{money(selectedOrder.subtotal)}</b></div>
+       {Number(selectedOrder.discount_total||0)>0&&<div><span>DISCOUNT{selectedOrder.promo_code?' · '+selectedOrder.promo_code:''}</span><b>−{money(selectedOrder.discount_total)}</b></div>}
+       {Number(selectedOrder.campaign_discount_total||0)>0&&<div><span>CAMPAIGN{selectedOrder.campaign_name?' · '+selectedOrder.campaign_name:''}</span><b>−{money(selectedOrder.campaign_discount_total)}</b></div>}
+       <div><span>SHIPPING</span><b>{Number(selectedOrder.shipping_total||0)>0?money(selectedOrder.shipping_total):'FREE'}</b></div>
+       <div className="grand"><span>TOTAL</span><b>{money(selectedOrder.total)}</b></div>
+      </div>
+      {selectedOrder.shipping_address&&<div className="accountOrderAddress"><span>DELIVERY</span><b>{selectedOrder.shipping_name||displayName}</b><p>{selectedOrder.shipping_phone||''}</p><p>{selectedOrder.shipping_address.line1||''}</p><p>{[selectedOrder.shipping_address.district,selectedOrder.shipping_address.city,selectedOrder.shipping_address.postal_code].filter(Boolean).join(' · ')}</p></div>}
+      {(selectedOrder.shipping_carrier||selectedOrder.tracking_number)&&<div className="accountOrderTracking"><span>TRACKING</span><b>{selectedOrder.shipping_carrier||'CARRIER'}</b><p>{selectedOrder.tracking_number||'Not assigned yet'}</p>{selectedOrder.shipped_at&&<small>SHIPPED · {new Date(selectedOrder.shipped_at).toLocaleString('tr-TR')}</small>}</div>}
+      {selectedOrder.notes&&<div className="accountOrderNote"><span>ORDER NOTE</span><p>{selectedOrder.notes}</p></div>}
+     </section>}
     <button className="accountSignout" onClick={signOut}>SIGN OUT</button>
    </div>}
   </aside>
