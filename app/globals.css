@@ -274,7 +274,7 @@ button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser butt
 .mockupControls input[type="range"]::-webkit-slider-runnable-track{
   height:3px;
   border-radius:999px;
-  background:linear-gradient(90deg,#8f8b84 0%,#5f5c57 42%,#2c2b2e 42%,#2c2b2e 100%);
+  background:linear-gradient(90deg,#8f8b84 0%,#5f5c57 var(--range-fill,50%),#2c2b2e var(--range-fill,50%),#2c2b2e 100%);
   border:1px solid #343337;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
 }
