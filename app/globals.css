@@ -291,3 +291,8 @@ button:not(:disabled),a[href],.productButton:not(:disabled),.editionChooser butt
     right:14px!important;
   }
 }
+
+
+/* Bag panels never create horizontal page scroll */
+html,body{overflow-x:hidden!important}
+.globalBagDrawer,.cartDrawer{box-sizing:border-box;max-width:100vw}
