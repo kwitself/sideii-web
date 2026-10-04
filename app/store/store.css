@@ -240,3 +240,14 @@
   position:fixed!important;
   inset:0!important;
 }
+
+
+/* Keep storefront navigation visible while browsing long catalogue */
+.storePage>.nav{
+  position:sticky!important;
+  top:0!important;
+  z-index:70!important;
+  background:rgba(9,9,10,.94)!important;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
