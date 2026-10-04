@@ -12,7 +12,9 @@ const money=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',ma
 export default function GlobalAccount(){
  const pathname=usePathname();
  const [open,setOpen]=useState(false),[session,setSession]=useState(null),[mode,setMode]=useState('signin');
- const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false),[wishlist,setWishlist]=useState([]),[savedCart,setSavedCart]=useState([]);
+ const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false),[wishlist,setWishlist]=useState([]),[savedCart,setSavedCart]=useState([]),[addresses,setAddresses]=useState([]),[addressEditing,setAddressEditing]=useState(false),[addressBusy,setAddressBusy]=useState(false);
+ const emptyAddress={id:null,label:'HOME',full_name:'',phone:'',address_line:'',city:'',district:'',postal_code:'',is_default:false};
+ const [addressForm,setAddressForm]=useState(emptyAddress);
  const [auth,setAuth]=useState({email:'',password:'',full_name:''});
  const [profile,setProfile]=useState({full_name:'',phone:'',address_line:'',city:'',district:'',postal_code:''});
  const signedIn=!!session?.user;
@@ -21,10 +23,11 @@ export default function GlobalAccount(){
 
  async function loadAccount(user){
   if(!supabase||!user)return;
-  const [{data:p,error:profileError},{data:o},{data:w}]=await Promise.all([
+  const [{data:p,error:profileError},{data:o},{data:w},{data:a}]=await Promise.all([
    supabase.rpc('get_my_customer_account'),
    supabase.rpc('get_my_store_orders'),
-   supabase.from('customer_wishlist').select('product_slug,title,catalogue,cover,is_merch').eq('user_id',user.id).order('created_at',{ascending:false})
+   supabase.from('customer_wishlist').select('product_slug,title,catalogue,cover,is_merch').eq('user_id',user.id).order('created_at',{ascending:false}),
+   supabase.from('customer_addresses').select('id,label,full_name,phone,address_line,city,district,postal_code,is_default').eq('user_id',user.id).order('is_default',{ascending:false}).order('created_at',{ascending:true})
   ]);
   const row=Array.isArray(p)?p[0]:p;
   const next={full_name:row?.full_name||user.user_metadata?.full_name||'',phone:row?.phone||'',address_line:row?.address_line||'',city:row?.city||'',district:row?.district||'',postal_code:row?.postal_code||''};
@@ -34,7 +37,7 @@ export default function GlobalAccount(){
   for(const item of local)if(!merged.some(x=>x.product_slug===item.product_slug))merged.push(item);
   setWishlist(merged);writeWishlist(merged);
   if(local.length) await supabase.from('customer_wishlist').upsert(local.map(x=>({...x,user_id:user.id})),{onConflict:'user_id,product_slug'});
-  setProfile(next);setOrders(Array.isArray(o)?o:[]);
+  setProfile(next);setOrders(Array.isArray(o)?o:[]);setAddresses(Array.isArray(a)?a:[]);
   window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:{email:user.email||'',...next}}));
  }
 
@@ -102,6 +105,39 @@ export default function GlobalAccount(){
   setWishlist(next);writeWishlist(next);
   if(session?.user)await supabase.from('customer_wishlist').delete().eq('user_id',session.user.id).eq('product_slug',slug);
  }
+ async function saveAddress(e){
+  e.preventDefault();
+  if(!session?.user)return;
+  if(!addressForm.address_line.trim()||!addressForm.city||!addressForm.district){setMessage('Complete the address, city and district.');return}
+  setAddressBusy(true);setMessage('');
+  const {data,error}=await supabase.rpc('save_my_customer_address',{
+   p_id:addressForm.id||null,
+   p_label:addressForm.label||'HOME',
+   p_full_name:addressForm.full_name||profile.full_name||'',
+   p_phone:addressForm.phone||profile.phone||'',
+   p_address_line:addressForm.address_line,
+   p_city:addressForm.city,
+   p_district:addressForm.district,
+   p_postal_code:addressForm.postal_code||'',
+   p_is_default:!!addressForm.is_default
+  });
+  setAddressBusy(false);
+  if(error){setMessage(error.message);return}
+  await loadAccount(session.user);
+  setAddressForm(emptyAddress);setAddressEditing(false);setMessage('Address saved.');
+ }
+ function editAddress(a){setAddressForm({...emptyAddress,...a});setAddressEditing(true)}
+ async function deleteAddress(id){
+  if(!session?.user)return;
+  const {error}=await supabase.from('customer_addresses').delete().eq('id',id).eq('user_id',session.user.id);
+  if(error){setMessage(error.message);return}
+  await loadAccount(session.user);
+ }
+ function useAddress(a){
+  window.dispatchEvent(new CustomEvent('sideii-checkout-address',{detail:a}));
+  window.dispatchEvent(new Event('sideii-open-bag'));
+  setOpen(false);
+ }
  function closeOrderDetail(){
   if(!selectedOrder||closingOrder)return;
   setClosingOrder(true);
@@ -140,6 +176,24 @@ export default function GlobalAccount(){
      {message&&<p className="accountMessage">{message}</p>}
      <button className="accountPrimary" disabled={busy}>{busy?'SAVING…':'SAVE DETAILS'}</button>
     </form>
+    <section className="accountAddressBook">
+      <div className="accountSectionHead"><span>ADDRESS BOOK</span><small>{addresses.length}</small></div>
+      <div className="accountAddressActions"><button type="button" onClick={()=>{setAddressForm({...emptyAddress,full_name:profile.full_name,phone:profile.phone});setAddressEditing(v=>!v)}}>{addressEditing?'CANCEL':'＋ ADD ADDRESS'}</button></div>
+      {addressEditing&&<form className="accountAddressForm" onSubmit={saveAddress}>
+        <div className="accountAddressLabelRow">{['HOME','WORK','OTHER'].map(x=><button type="button" key={x} className={addressForm.label===x?'active':''} onClick={()=>setAddressForm({...addressForm,label:x})}>{x}</button>)}</div>
+        <label>FULL NAME<input value={addressForm.full_name} onChange={e=>setAddressForm({...addressForm,full_name:e.target.value})}/></label>
+        <label>PHONE<input value={addressForm.phone} onChange={e=>setAddressForm({...addressForm,phone:e.target.value})}/></label>
+        <label>ADDRESS<textarea required value={addressForm.address_line} onChange={e=>setAddressForm({...addressForm,address_line:e.target.value})}/></label>
+        <TurkeyAddressFields form={addressForm} setForm={setAddressForm}/>
+        <label>POSTAL CODE<input value={addressForm.postal_code} onChange={e=>setAddressForm({...addressForm,postal_code:e.target.value})}/></label>
+        <label className="accountDefaultAddress"><input type="checkbox" checked={!!addressForm.is_default} onChange={e=>setAddressForm({...addressForm,is_default:e.target.checked})}/><span>USE AS DEFAULT ADDRESS</span></label>
+        <button className="accountPrimary" disabled={addressBusy}>{addressBusy?'SAVING…':'SAVE ADDRESS'}</button>
+      </form>}
+      <div className="accountAddressList">{addresses.map(a=><article key={a.id}>
+        <div><div className="accountAddressTitle"><b>{a.label}</b>{a.is_default&&<span>DEFAULT</span>}</div><small>{a.full_name||displayName}</small><p>{a.address_line}</p><p>{[a.district,a.city,a.postal_code].filter(Boolean).join(' · ')}</p></div>
+        <div className="accountAddressButtons"><button type="button" onClick={()=>useAddress(a)}>USE</button><button type="button" onClick={()=>editAddress(a)}>EDIT</button><button type="button" onClick={()=>deleteAddress(a.id)}>REMOVE</button></div>
+      </article>)}</div>
+    </section>
     <section className="accountSavedBag">
       <div className="accountSectionHead"><span>SAVED BAG</span><small>{savedCart.reduce((s,x)=>s+Number(x.qty||0),0)}</small></div>
       {savedCart.length===0?<p className="accountEmpty">Your bag is empty.</p>:<button type="button" className="accountSavedBagButton" onClick={()=>{setOpen(false);window.dispatchEvent(new Event('sideii-open-bag'))}}>
