@@ -140,4 +140,5 @@ export default function DiscountsPanel(){
     </article>)}
    </div>
   </div>
- </section>
+ </section>;
+}
