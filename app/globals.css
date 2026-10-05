@@ -650,3 +650,36 @@ body{
 @media(max-width:760px){
  .lethargiaBadge{margin-bottom:7px}
 }
+
+
+/* Lethargia store context + restrained motion */
+.storePageLethargia .storeHero{position:relative}
+.storePageLethargia .storeHero:after{
+ content:"";position:absolute;right:7%;top:2%;width:min(360px,30vw);aspect-ratio:1;border-radius:50%;
+ background:repeating-radial-gradient(circle,rgba(103,58,66,.20) 0 1px,transparent 2px 7px);
+ opacity:.18;pointer-events:none;animation:lethStoreDrift 22s linear infinite
+}
+.storeImprintContext{
+ display:grid;grid-template-columns:minmax(220px,.7fr) 1fr auto;gap:28px;align-items:end;
+ margin-top:10px;margin-bottom:24px;padding:18px 0 20px;
+ border-top:1px solid rgba(111,70,78,.26);border-bottom:1px solid rgba(255,255,255,.05)
+}
+.storeImprintContext div{display:grid;gap:8px}.storeImprintContext small{font:7px/1 Arial,sans-serif;letter-spacing:.15em;color:#6f555a}
+.storeImprintContext img{width:145px;height:auto;object-fit:contain}
+.storeImprintContext p{margin:0;max-width:500px;color:#766c6e;font:italic 12px/1.45 Georgia,serif}
+.storeImprintContext>a{align-self:center;color:#9b7b81;text-decoration:none;font:7px/1 Arial,sans-serif;letter-spacing:.14em}
+.storeImprintContext>a:hover{color:#d0bcc0}
+.storePageLethargia .storeProduct{transition:transform .28s ease,border-color .28s ease,background .28s ease}
+.storePageLethargia .storeProduct:hover{transform:translateY(-2px);background:rgba(66,27,35,.035)}
+.storePageLethargia .storeProduct.lethargiaProduct .storeCover{transition:transform .35s cubic-bezier(.2,.8,.2,1),filter .35s ease}
+.storePageLethargia .storeProduct.lethargiaProduct:hover .storeCover{transform:translateY(-4px);filter:contrast(1.03)}
+@keyframes lethStoreDrift{to{transform:rotate(360deg)}}
+@media(max-width:760px){
+ .storeImprintContext{grid-template-columns:1fr;gap:12px;align-items:start}
+ .storeImprintContext img{width:118px}
+ .storePageLethargia .storeHero:after{right:-22%;width:68vw}
+}
+@media(prefers-reduced-motion:reduce){
+ .storePageLethargia .storeHero:after{animation:none}
+ .storePageLethargia .storeProduct,.storePageLethargia .storeProduct.lethargiaProduct .storeCover{transition:none!important}
+}
