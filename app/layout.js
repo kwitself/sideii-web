@@ -2,6 +2,7 @@ import './globals.css';
 import './physical-formats.css';
 import GlobalBag from './components/GlobalBag';
 import GlobalAccount from './components/GlobalAccount';
+import {LocaleCurrencyProvider} from './components/LocaleCurrencyProvider';
 
 export const metadata = {
   title: {
@@ -40,7 +41,7 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}<GlobalAccount/><GlobalBag/></body>
+      <body><LocaleCurrencyProvider>{children}<GlobalAccount/><GlobalBag/></LocaleCurrencyProvider></body>
     </html>
   );
 }
