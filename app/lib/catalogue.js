@@ -2,10 +2,15 @@ import { createClient } from '@supabase/supabase-js';
 
 const url=process.env.NEXT_PUBLIC_SUPABASE_URL;
 const key=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+let cachedClient=null;
 
 const PRODUCT_SELECT='id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,gallery_images,has_shrinkwrap,release_date,credits,tracklist,gallery_paths,status,is_public,product_origin,original_label,original_catalogue_no,barcode,homepage_selected,product_type,merch_category,created_at,product_variants(id,sku,format,edition_name,edition_details,price,currency,stock_qty,reserved_qty,low_stock_threshold,active,digital_formats,audio_specs,vinyl_size,vinyl_speed,vinyl_weight_g,vinyl_color,option_size,option_color,option_style,weight_g,shipping_class,preorder_enabled,preorder_limit,edition_numbering_enabled,edition_total,next_edition_number,digital_download_url)';
 
-function client(){return url&&key?createClient(url,key,{auth:{persistSession:false}}):null}
+function client(){
+ if(!url||!key)return null;
+ if(!cachedClient)cachedClient=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+ return cachedClient;
+}
 function numberFromCatalogue(value,index=0){const m=String(value||'').match(/(\d+)(?!.*\d)/);return m?m[1].padStart(2,'0'):String(index+1).padStart(2,'0')}
 function titleParts(title){const words=String(title||'Release').trim().split(/\s+/);if(words.length<2)return [words[0]||'Release','Edition.'];return [words.slice(0,-1).join(' '),words.at(-1)+'.']}
 function assetUrl(sb,value){if(!value)return null;if(/^https?:\/\//i.test(String(value)))return String(value);return sb.storage.from('release-artwork').getPublicUrl(value).data.publicUrl}
