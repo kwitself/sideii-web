@@ -311,3 +311,7 @@
  .storeWearEntry{margin-top:18px;min-height:42px}
  .merchWearMark{margin-top:9px}
 }
+
+.storeEditorialLinks{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.storeEditorialLinks .storeWearEntry{margin-top:0}
+@media(max-width:760px){.storeEditorialLinks{gap:6px}.storeEditorialLinks .storeWearEntry{flex:1 1 calc(50% - 6px);width:auto}}
