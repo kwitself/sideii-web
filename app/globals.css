@@ -735,3 +735,42 @@ body{
  .productPageLethargia .productHero:before{right:-24%;width:78vw}
 }
 @media(prefers-reduced-motion:reduce){.productPageLethargia .productHero:before{animation:none}}
+
+
+/* Lethargia cinematic atmosphere — restrained burgundy haze */
+.lethargiaPage,
+.productPageLethargia,
+.storePageLethargia{
+  background-color:#050506;
+  background-image:
+    radial-gradient(circle at 50% -8%, rgba(118,24,40,.11) 0%, rgba(118,24,40,.045) 24%, rgba(118,24,40,0) 56%),
+    linear-gradient(180deg, rgba(118,24,40,.15) 0%, rgba(118,24,40,.075) 17%, rgba(118,24,40,.028) 31%, rgba(118,24,40,0) 48%);
+  background-repeat:no-repeat;
+  background-size:100% 980px,100% 980px;
+  background-position:top center,top center;
+}
+.lethargiaPage .lethNav,
+.productPageLethargia .nav,
+.storePageLethargia .nav{
+  background:linear-gradient(180deg,rgba(7,5,6,.54),rgba(7,5,6,0));
+  backdrop-filter:blur(1.5px);
+}
+.productPageLethargia .productHero,
+.storePageLethargia .storeHero{
+  background:transparent;
+}
+.lethargiaPage .lethHero{
+  background:
+    radial-gradient(circle at 82% 48%,rgba(92,28,39,.12),transparent 35%),
+    transparent;
+}
+@media(max-width:760px){
+  .lethargiaPage,
+  .productPageLethargia,
+  .storePageLethargia{
+    background-size:100% 720px,100% 720px;
+    background-image:
+      radial-gradient(circle at 50% -5%, rgba(118,24,40,.10) 0%, rgba(118,24,40,.035) 28%, rgba(118,24,40,0) 58%),
+      linear-gradient(180deg, rgba(118,24,40,.13) 0%, rgba(118,24,40,.06) 18%, rgba(118,24,40,.02) 34%, rgba(118,24,40,0) 50%);
+  }
+}
