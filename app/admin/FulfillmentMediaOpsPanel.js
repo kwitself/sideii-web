@@ -7,21 +7,22 @@ const emptyPress={product_id:'',public_enabled:false,press_copy:''};
 const emptyAsset={id:null,product_id:'',label:'',asset_url:'',asset_type:'other',sort_order:0};
 
 export default function FulfillmentMediaOpsPanel({products=[]}){
- const [locations,setLocations]=useState([]),[stocks,setStocks]=useState([]),[variants,setVariants]=useState([]),[pressKits,setPressKits]=useState([]);
+ const [locations,setLocations]=useState([]),[stocks,setStocks]=useState([]),[variants,setVariants]=useState([]),[pressKits,setPressKits]=useState([]),[health,setHealth]=useState([]);
  const [locationForm,setLocationForm]=useState(emptyLocation),[pressForm,setPressForm]=useState(emptyPress),[assetForm,setAssetForm]=useState(emptyAsset);
  const [busy,setBusy]=useState(''),[message,setMessage]=useState('');
  const productMap=useMemo(()=>Object.fromEntries(products.map(p=>[p.id,p])),[products]);
 
  async function load(){
   if(!supabase)return;
-  const [l,s,v,p]=await Promise.all([
+  const [l,s,v,p,h]=await Promise.all([
    supabase.rpc('admin_list_stock_locations'),
    supabase.rpc('admin_list_location_stock'),
    supabase.from('product_variants').select('id,sku,format,stock_qty,reserved_qty,product_id,products(id,catalogue_no,title)').eq('active',true).order('created_at'),
-   supabase.rpc('admin_list_press_kits')
+   supabase.rpc('admin_list_press_kits'),
+   supabase.rpc('admin_location_stock_health')
   ]);
   if(l.error)return setMessage(l.error.message);
-  setLocations(l.data||[]);setStocks(s.data||[]);setVariants(v.data||[]);setPressKits(p.data||[]);
+  setLocations(l.data||[]);setStocks(s.data||[]);setVariants(v.data||[]);setPressKits(p.data||[]);setHealth(h.data||[]);
  }
  useEffect(()=>{load()},[]);
 
@@ -74,6 +75,12 @@ export default function FulfillmentMediaOpsPanel({products=[]}){
    </article>
   </div>
 
+  <article className="adminPanel locationHealth"><header><span>STOCK HEALTH</span><small>{health.filter(x=>x.status!=='ALIGNED').length} review item(s)</small></header>
+   {health.length===0?<p className="emptyNote">No active variants.</p>:health.map(x=><div className="locationHealthRow" key={x.variant_id}>
+    <div><b>{x.catalogue_no} · {x.sku}</b><small>{x.title}</small></div>
+    <span>GLOBAL {x.global_on_hand}</span><span>LOCATIONS {x.location_on_hand}</span><span className={'locationHealthStatus '+String(x.status).toLowerCase()}>{x.status}</span>
+   </div>)}
+  </article>
   {locations.length>0&&<article className="adminPanel locationMatrix"><header><span>LOCATION STOCK</span><small>Operational location counts. Global sellable stock remains the checkout authority.</small></header>
    {variants.map(v=><div className="locationStockRow" key={v.id}><div><b>{v.products?.catalogue_no||'—'} · {v.sku}</b><small>{v.products?.title||''} · {String(v.format).toUpperCase()} · GLOBAL {v.stock_qty-v.reserved_qty}</small></div><div className="locationStockInputs">{locations.map(l=>{const row=stocks.find(s=>s.location_id===l.id&&s.variant_id===v.id);return <label key={l.id}><span>{l.name}</span><input type="number" min="0" defaultValue={row?.on_hand??0} onBlur={e=>saveStock(l.id,v.id,e.target.value)}/></label>})}</div></div>)}
   </article>}
