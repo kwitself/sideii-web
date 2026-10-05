@@ -1287,3 +1287,12 @@
 .auditRow time{font-size:7px;color:#66636a}
 @media(max-width:1100px){.growthOpsGrid{grid-template-columns:1fr}}
 @media(max-width:700px){.growthSplit,.auditRow,.wholesaleAdminRow{grid-template-columns:1fr}}
+
+.valueOpsGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.valueOpsCard{padding:18px}
+.valueOpsCard>header{display:flex;justify-content:space-between;gap:16px;padding-bottom:12px;border-bottom:1px solid #28272a}
+.valueOpsCard>header span{font-size:9px;letter-spacing:.17em;color:#aaa69f}
+.valueOpsCard>header small{font-size:9px;color:#67646a}
+.valueOpsCard>p{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:0;padding:11px 0;border-bottom:1px solid #242326;color:#89857f;font:11px/1.3 Georgia,serif}
+.valueOpsCard>p b{font-weight:400;color:#d5d0c8}
+@media(max-width:900px){.valueOpsGrid{grid-template-columns:1fr}}
