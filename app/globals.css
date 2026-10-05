@@ -2328,3 +2328,16 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .checkoutPolicyNote a{color:#a29e97;text-decoration:underline;text-underline-offset:3px}
 .checkoutPolicyNote a:hover{color:#dedad2}
 @media(max-width:760px){.checkoutPolicyNote{margin:12px 6px 2px;font-size:7px;line-height:1.6}}
+
+.accountCollection,.accountOwnerContent{margin-top:26px;padding-top:22px;border-top:1px solid #29282b}
+.accountCollection>article,.accountOwnerContent>article{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding:13px 0;border-bottom:1px solid #232226}
+.accountCollection b,.accountOwnerContent b{display:block;color:#d5d0c8;font:14px/1.2 Georgia,serif;font-weight:400}
+.accountCollection small,.accountOwnerContent small{display:block;margin-top:5px;color:#6c6970;font:7px/1.35 Arial,sans-serif;letter-spacing:.11em}
+.accountCollection em{display:inline-block;margin-top:7px;padding:5px 7px;border:1px solid #3d3a3f;color:#9f9a92;font:7px/1 Arial,sans-serif;font-style:normal;letter-spacing:.12em}
+.accountCollection>article>a,.accountOwnerContent>article>a{flex:0 0 auto;color:#aaa69f;text-decoration:none;font:7px/1 Arial,sans-serif;letter-spacing:.14em}
+.accountOwnerContent p{margin:7px 0 0;color:#77747a;font:11px/1.5 Georgia,serif}
+.accountPassportList{margin-top:16px;border-top:1px solid #29282b}
+.accountPassportList>span{display:block;padding:12px 0 8px;color:#77747a;font:7px/1 Arial,sans-serif;letter-spacing:.16em}
+.accountPassportList>a{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid #232226;text-decoration:none;color:inherit}
+.accountPassportList>a b{font-size:12px}
+.accountPassportList>a>span{color:#8fab86;font:7px/1 Arial,sans-serif;letter-spacing:.13em}
