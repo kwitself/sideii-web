@@ -2372,3 +2372,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .collectorCompletion i b{display:block;height:100%;background:#8f8a82}
 .collectorCompletion small{display:block;margin-top:7px;font:7px/1 Arial,sans-serif;letter-spacing:.14em;color:#68656b}
 @media(max-width:420px){.collectorSummaryGrid{grid-template-columns:1fr}}
+
+/* Locale + display currency */
+.localeCurrency{position:fixed;right:18px;bottom:18px;z-index:150;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.localeCurrencyTrigger{min-height:34px;padding:0 11px;border:1px solid #3a393d;background:#0c0c0e;color:#a9a59e;font:8px/1 Arial,sans-serif;letter-spacing:.14em;cursor:pointer;box-shadow:0 8px 28px #0008}
+.localeCurrencyPanel{width:220px;padding:12px;border:1px solid #343337;background:#0d0d0f;box-shadow:0 18px 50px #000b;display:grid;gap:10px}
+.localeCurrencyPanel label{display:grid;gap:6px}
+.localeCurrencyPanel label>span{font:7px/1 Arial,sans-serif;letter-spacing:.14em;color:#6f6c72}
+.localeCurrencyPanel select{min-height:38px;border:1px solid #343337;background:#09090a;color:#d3cfc8;padding:0 9px;font:10px Arial,sans-serif}
+.localeCurrencyPanel small{font:7px/1.45 Arial,sans-serif;letter-spacing:.1em;color:#77747a}
+@media(max-width:760px){.localeCurrency{right:10px;bottom:10px}.localeCurrencyPanel{width:min(220px,calc(100vw - 20px))}.localeCurrencyTrigger{min-height:36px}}
