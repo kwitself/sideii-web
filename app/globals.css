@@ -2382,3 +2382,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .localeCurrencyPanel select{min-height:38px;border:1px solid #343337;background:#09090a;color:#d3cfc8;padding:0 9px;font:10px Arial,sans-serif}
 .localeCurrencyPanel small{font:7px/1.45 Arial,sans-serif;letter-spacing:.1em;color:#77747a}
 @media(max-width:760px){.localeCurrency{right:10px;bottom:10px}.localeCurrencyPanel{width:min(220px,calc(100vw - 20px))}.localeCurrencyTrigger{min-height:36px}}
+
+.releasePressEntry{margin:18px 0}
+.releasePressEntry a{display:inline-flex;padding:10px 12px;border:1px solid #3a393d;color:#aaa69f;text-decoration:none;font:8px/1 Arial,sans-serif;letter-spacing:.14em}
