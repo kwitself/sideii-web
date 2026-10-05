@@ -13,7 +13,7 @@ export default function GlobalAccount(){
  const pathname=usePathname();
  const [open,setOpen]=useState(false),[session,setSession]=useState(null),[mode,setMode]=useState('signin');
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false),[wishlist,setWishlist]=useState([]),[savedCart,setSavedCart]=useState([]),[addresses,setAddresses]=useState([]),[addressEditing,setAddressEditing]=useState(false),[addressBusy,setAddressBusy]=useState(false),[requestBusy,setRequestBusy]=useState(false),[requestReason,setRequestReason]=useState('');
- const [collection,setCollection]=useState([]),[passports,setPassports]=useState([]),[ownerContent,setOwnerContent]=useState([]),[collectorSummary,setCollectorSummary]=useState(null),[storeCredit,setStoreCredit]=useState(null);
+ const [collection,setCollection]=useState([]),[passports,setPassports]=useState([]),[ownerContent,setOwnerContent]=useState([]),[collectorSummary,setCollectorSummary]=useState(null),[storeCredit,setStoreCredit]=useState(null),[storeCreditHistory,setStoreCreditHistory]=useState([]);
  const emptyAddress={id:null,label:'',full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:'',is_default:false};
  const [addressForm,setAddressForm]=useState(emptyAddress);
  const [auth,setAuth]=useState({email:'',password:'',full_name:''});
@@ -24,7 +24,7 @@ export default function GlobalAccount(){
 
  async function loadAccount(user){
   if(!supabase||!user)return;
-  const [{data:p,error:profileError},{data:o},{data:w},{data:a},{data:col},{data:pass},{data:own},{data:summary},{data:credit}]=await Promise.all([
+  const [{data:p,error:profileError},{data:o},{data:w},{data:a},{data:col},{data:pass},{data:own},{data:summary},{data:credit},{data:creditHistory}]=await Promise.all([
    supabase.rpc('get_my_customer_account'),
    supabase.rpc('get_my_store_orders'),
    supabase.from('customer_wishlist').select('product_slug,title,catalogue,cover,is_merch').eq('user_id',user.id).order('created_at',{ascending:false}),
@@ -33,7 +33,8 @@ export default function GlobalAccount(){
    supabase.rpc('get_my_edition_passports'),
    supabase.rpc('get_my_owner_content'),
    supabase.rpc('get_my_collector_summary'),
-   supabase.rpc('get_my_store_credit')
+   supabase.rpc('get_my_store_credit'),
+   supabase.rpc('get_my_store_credit_history')
   ]);
   const row=Array.isArray(p)?p[0]:p;
   const next={full_name:row?.full_name||user.user_metadata?.full_name||'',phone:row?.phone||'',address_line:row?.address_line||'',country_code:row?.country_code||'TR',state_region:row?.state_region||'',city:row?.city||'',district:row?.district||'',postal_code:row?.postal_code||''};
@@ -43,7 +44,7 @@ export default function GlobalAccount(){
   for(const item of local)if(!merged.some(x=>x.product_slug===item.product_slug))merged.push(item);
   setWishlist(merged);writeWishlist(merged);
   if(local.length) await supabase.from('customer_wishlist').upsert(local.map(x=>({...x,user_id:user.id})),{onConflict:'user_id,product_slug'});
-  setProfile(next);setOrders(Array.isArray(o)?o:[]);setAddresses(Array.isArray(a)?a:[]);setCollection(Array.isArray(col)?col:[]);setPassports(Array.isArray(pass)?pass:[]);setOwnerContent(Array.isArray(own)?own:[]);setCollectorSummary(Array.isArray(summary)?summary[0]||null:summary||null);setStoreCredit(Array.isArray(credit)?credit[0]||null:credit||null);
+  setProfile(next);setOrders(Array.isArray(o)?o:[]);setAddresses(Array.isArray(a)?a:[]);setCollection(Array.isArray(col)?col:[]);setPassports(Array.isArray(pass)?pass:[]);setOwnerContent(Array.isArray(own)?own:[]);setCollectorSummary(Array.isArray(summary)?summary[0]||null:summary||null);setStoreCredit(Array.isArray(credit)?credit[0]||null:credit||null);setStoreCreditHistory(Array.isArray(creditHistory)?creditHistory:[]);
   window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:{email:user.email||'',...next}}));
  }
 
@@ -72,7 +73,7 @@ export default function GlobalAccount(){
     if(!live)return;
     setSession(next||null);setMessage('');
     if(event==='SIGNED_IN'&&next?.user) setTimeout(()=>loadAccount(next.user),0);
-    if(event==='SIGNED_OUT'){setOrders([]);setCollection([]);setPassports([]);setOwnerContent([]);setCollectorSummary(null);setStoreCredit(null);setProfile({full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:''});window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:null}))}
+    if(event==='SIGNED_OUT'){setOrders([]);setCollection([]);setPassports([]);setOwnerContent([]);setCollectorSummary(null);setStoreCredit(null);setStoreCreditHistory([]);setProfile({full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:''});window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:null}))}
   });
   return()=>{live=false;sub.subscription.unsubscribe()};
  },[]);
@@ -240,6 +241,10 @@ export default function GlobalAccount(){
         <div><span>{t('STORE CREDIT')}</span><b>{money(storeCredit?.balance||0)}</b></div>
       </div>
       <div className="collectorCompletion"><i><b style={{width:Math.max(0,Math.min(100,Number(collectorSummary?.completion_percent||0)))+'%'}}/></i><small>{t('CATALOGUE COMPLETION')}</small></div>
+    </section>
+    <section className="accountStoreCredit">
+      <div className="accountSectionHead"><span>{t('STORE CREDIT')}</span><small>{money(storeCredit?.balance||0)}</small></div>
+      {storeCreditHistory.length===0?<p className="accountEmpty">No store credit activity yet.</p>:<div className="accountStoreCreditList">{storeCreditHistory.slice(0,8).map(x=><article key={x.id}><div><b>{String(x.entry_type||'').toUpperCase()}</b><small>{new Date(x.created_at).toLocaleDateString('tr-TR')}{x.note?' · '+x.note:''}</small></div><strong className={Number(x.amount)>=0?'positive':'negative'}>{Number(x.amount)>=0?'+':''}{money(x.amount)}</strong></article>)}</div>}
     </section>
     <section className="accountCollection">
       <div className="accountSectionHead"><span>{t('MY COLLECTION')}</span><small>{collection.reduce((s,x)=>s+Number(x.total_quantity||0),0)}</small></div>
