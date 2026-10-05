@@ -110,9 +110,15 @@ Completed or active foundations:
 - language / display currency foundation
 
 Remaining before Final QA:
-- final small code-hygiene pass
 - full functional + visual regression check
 - mobile / tablet / desktop review
 - production readiness report
+
+Code hygiene pass: ✅ complete
+- legacy StoreClient checkout removed
+- GlobalBag is the single storefront cart/checkout authority
+- obsolete v2 commerce calls removed from storefront code
+- metadata title duplication normalized
+- launch readiness checklist added
 
 Provider-dependent actions remain deferred to Phase 08.
