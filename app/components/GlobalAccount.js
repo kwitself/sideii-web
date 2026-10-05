@@ -6,10 +6,10 @@ import {supabase} from '../lib/supabase';
 import GlobalAddressFields from './GlobalAddressFields';
 import {readWishlist,writeWishlist} from '../lib/wishlist';
 import {readCart} from '../lib/cart';
-
-const money=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:0}).format(Number(n||0));
+import {useLocaleCurrency} from './LocaleCurrencyProvider';
 
 export default function GlobalAccount(){
+ const {money,t}=useLocaleCurrency();
  const pathname=usePathname();
  const [open,setOpen]=useState(false),[session,setSession]=useState(null),[mode,setMode]=useState('signin');
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false),[wishlist,setWishlist]=useState([]),[savedCart,setSavedCart]=useState([]),[addresses,setAddresses]=useState([]),[addressEditing,setAddressEditing]=useState(false),[addressBusy,setAddressBusy]=useState(false),[requestBusy,setRequestBusy]=useState(false),[requestReason,setRequestReason]=useState('');
@@ -172,22 +172,22 @@ export default function GlobalAccount(){
  return <>
   {!open&&<button className="globalAccountTrigger" onClick={()=>{setMessage('');setOpen(true)}}>{signedIn?initials:'ACCOUNT'}</button>}
   <aside className={'globalAccountDrawer '+(open?'open':'')}>
-   <button className="globalAccountClose" onClick={()=>setOpen(false)}>CLOSE ×</button><span>ACCOUNT</span>
+   <button className="globalAccountClose" onClick={()=>setOpen(false)}>{t('CLOSE')} ×</button><span>{t('ACCOUNT')}</span>
    {!signedIn?<div className="accountAuth">
-    <div className="accountTabs"><button className={mode==='signin'?'active':''} onClick={()=>setMode('signin')}>SIGN IN</button><button className={mode==='signup'?'active':''} onClick={()=>setMode('signup')}>CREATE ACCOUNT</button></div>
+    <div className="accountTabs"><button className={mode==='signin'?'active':''} onClick={()=>setMode('signin')}>{t('SIGN IN')}</button><button className={mode==='signup'?'active':''} onClick={()=>setMode('signup')}>{t('CREATE ACCOUNT')}</button></div>
     <h3>{mode==='signup'?'Join SIDE:II.':'Welcome back.'}</h3>
     <form onSubmit={submitAuth}>
-     {mode==='signup'&&<label>FULL NAME<input required value={auth.full_name} onChange={e=>setAuth({...auth,full_name:e.target.value})}/></label>}
-     <label>EMAIL<input type="email" required value={auth.email} onChange={e=>setAuth({...auth,email:e.target.value})}/></label>
-     <label>PASSWORD<input type="password" minLength="6" required value={auth.password} onChange={e=>setAuth({...auth,password:e.target.value})}/></label>
+     {mode==='signup'&&<label>{t('FULL NAME')}<input required value={auth.full_name} onChange={e=>setAuth({...auth,full_name:e.target.value})}/></label>}
+     <label>{t('EMAIL')}<input type="email" required value={auth.email} onChange={e=>setAuth({...auth,email:e.target.value})}/></label>
+     <label>{t('PASSWORD')}<input type="password" minLength="6" required value={auth.password} onChange={e=>setAuth({...auth,password:e.target.value})}/></label>
      {message&&<p className="accountMessage">{message}</p>}
      <button className="accountPrimary" disabled={busy}>{busy?'PLEASE WAIT…':mode==='signup'?'CREATE ACCOUNT':'SIGN IN'}</button>
-     {mode==='signin'&&<button type="button" className="accountTextButton" onClick={resetPassword}>FORGOT PASSWORD?</button>}
+     {mode==='signin'&&<button type="button" className="accountTextButton" onClick={resetPassword}>{t('FORGOT PASSWORD?')}</button>}
     </form>
    </div>:<div className="accountBody">
     <header className="accountIdentity"><b>{displayName}</b><small>{session.user.email}</small></header>
     <form className="accountProfile" onSubmit={saveProfile}>
-     <label>FULL NAME<input value={profile.full_name} onChange={e=>setProfile({...profile,full_name:e.target.value})}/></label>
+     <label>{t('FULL NAME')}<input value={profile.full_name} onChange={e=>setProfile({...profile,full_name:e.target.value})}/></label>
      <label>PHONE<input value={profile.phone} onChange={e=>setProfile({...profile,phone:e.target.value})}/></label>
      <label>ADDRESS<textarea value={profile.address_line} onChange={e=>setProfile({...profile,address_line:e.target.value})}/></label>
      <GlobalAddressFields form={{...profile,country:profile.country_code}} setForm={next=>setProfile({...next,country_code:next.country||next.country_code||'TR'})}/>
@@ -196,11 +196,11 @@ export default function GlobalAccount(){
      <button className="accountPrimary" disabled={busy}>{busy?'SAVING…':'SAVE DETAILS'}</button>
     </form>
     <section className="accountAddressBook">
-      <div className="accountSectionHead"><span>ADDRESS BOOK</span><small>{addresses.length}</small></div>
+      <div className="accountSectionHead"><span>{t('ADDRESS BOOK')}</span><small>{addresses.length}</small></div>
       <div className="accountAddressActions"><button type="button" onClick={()=>{setAddressForm({...emptyAddress,full_name:profile.full_name,phone:profile.phone});setAddressEditing(v=>!v)}}>{addressEditing?'CANCEL':'＋ ADD ADDRESS'}</button></div>
       {addressEditing&&<form className="accountAddressForm" onSubmit={saveAddress}>
         <label>ADDRESS NAME<input required maxLength="40" placeholder="e.g. HOME, STUDIO, MOM'S HOUSE" value={addressForm.label} onChange={e=>setAddressForm({...addressForm,label:e.target.value})}/></label>
-        <label>FULL NAME<input value={addressForm.full_name} onChange={e=>setAddressForm({...addressForm,full_name:e.target.value})}/></label>
+        <label>{t('FULL NAME')}<input value={addressForm.full_name} onChange={e=>setAddressForm({...addressForm,full_name:e.target.value})}/></label>
         <label>PHONE<input value={addressForm.phone} onChange={e=>setAddressForm({...addressForm,phone:e.target.value})}/></label>
         <label>ADDRESS<textarea required value={addressForm.address_line} onChange={e=>setAddressForm({...addressForm,address_line:e.target.value})}/></label>
         <GlobalAddressFields form={{...addressForm,country:addressForm.country_code}} setForm={next=>setAddressForm({...next,country_code:next.country||next.country_code||'TR'})}/>
@@ -230,19 +230,19 @@ export default function GlobalAccount(){
       </article>)}
     </section>
     <section className="accountCollectorSummary">
-      <div className="accountSectionHead"><span>COLLECTOR PROFILE</span><small>{collectorSummary?collectorSummary.completion_percent+'%':'—'}</small></div>
+      <div className="accountSectionHead"><span>{t('COLLECTOR PROFILE')}</span><small>{collectorSummary?collectorSummary.completion_percent+'%':'—'}</small></div>
       <div className="collectorSummaryGrid">
-        <div><span>CATALOGUE OWNED</span><b>{collectorSummary?.owned_products||0} / {collectorSummary?.public_catalogue_products||0}</b></div>
-        <div><span>OWNED UNITS</span><b>{collectorSummary?.owned_units||0}</b></div>
-        <div><span>PASSPORTS</span><b>{collectorSummary?.active_passports||0}</b></div>
-        <div><span>OWNER CONTENT</span><b>{collectorSummary?.owner_content_items||0}</b></div>
-        <div><span>VERIFIED IMPACT</span><b>{money(collectorSummary?.verified_impact_total||0)}</b></div>
-        <div><span>STORE CREDIT</span><b>{money(storeCredit?.balance||0)}</b></div>
+        <div><span>{t('CATALOGUE OWNED')}</span><b>{collectorSummary?.owned_products||0} / {collectorSummary?.public_catalogue_products||0}</b></div>
+        <div><span>{t('OWNED UNITS')}</span><b>{collectorSummary?.owned_units||0}</b></div>
+        <div><span>{t('PASSPORTS')}</span><b>{collectorSummary?.active_passports||0}</b></div>
+        <div><span>{t('OWNER CONTENT')}</span><b>{collectorSummary?.owner_content_items||0}</b></div>
+        <div><span>{t('VERIFIED IMPACT')}</span><b>{money(collectorSummary?.verified_impact_total||0)}</b></div>
+        <div><span>{t('STORE CREDIT')}</span><b>{money(storeCredit?.balance||0)}</b></div>
       </div>
-      <div className="collectorCompletion"><i><b style={{width:Math.max(0,Math.min(100,Number(collectorSummary?.completion_percent||0)))+'%'}}/></i><small>CATALOGUE COMPLETION</small></div>
+      <div className="collectorCompletion"><i><b style={{width:Math.max(0,Math.min(100,Number(collectorSummary?.completion_percent||0)))+'%'}}/></i><small>{t('CATALOGUE COMPLETION')}</small></div>
     </section>
     <section className="accountCollection">
-      <div className="accountSectionHead"><span>MY COLLECTION</span><small>{collection.reduce((s,x)=>s+Number(x.total_quantity||0),0)}</small></div>
+      <div className="accountSectionHead"><span>{t('MY COLLECTION')}</span><small>{collection.reduce((s,x)=>s+Number(x.total_quantity||0),0)}</small></div>
       {collection.length===0?<p className="accountEmpty">Paid physical and digital editions will appear here.</p>:collection.map(item=><article key={item.product_id+':'+item.format}>
         <div><b>{item.product_title}</b><small>{item.catalogue_no} · {String(item.format||'').toUpperCase()} · QTY {item.total_quantity}</small>{item.passport_count>0&&<em>{item.passport_count} EDITION PASSPORT{item.passport_count===1?'':'S'}</em>}</div>
         <Link href={item.product_type==='merch'?('/store/'+item.product_slug):('/releases/'+item.product_slug)} onClick={()=>setOpen(false)}>OPEN →</Link>
@@ -250,14 +250,14 @@ export default function GlobalAccount(){
       {passports.length>0&&<div className="accountPassportList"><span>EDITION PASSPORTS</span>{passports.map(p=><Link key={p.id} href={'/passport/'+p.public_token} onClick={()=>setOpen(false)}><div><b>{p.catalogue_no} · #{String(p.edition_number).padStart(3,'0')}</b><small>{p.product_title} · {String(p.format).toUpperCase()}</small></div><span>VERIFY ↗</span></Link>)}</div>}
     </section>
     <section className="accountOwnerContent">
-      <div className="accountSectionHead"><span>OWNER CONTENT</span><small>{ownerContent.length}</small></div>
+      <div className="accountSectionHead"><span>{t('OWNER CONTENT')}</span><small>{ownerContent.length}</small></div>
       {ownerContent.length===0?<p className="accountEmpty">Exclusive release content will appear here when available.</p>:ownerContent.map(x=><article key={x.id}><div><b>{x.title}</b><small>{x.catalogue_no} · {String(x.content_type).toUpperCase()}</small>{x.note&&<p>{x.note}</p>}</div>{x.content_url&&<a href={x.content_url} target="_blank" rel="noreferrer">OPEN ↗</a>}</article>)}
     </section>
-    <section className="accountOrders"><div className="accountSectionHead"><span>ORDER HISTORY</span><small>{orders.length}</small></div>
+    <section className="accountOrders"><div className="accountSectionHead"><span>{t('ORDER HISTORY')}</span><small>{orders.length}</small></div>
      {orders.length===0?<p className="accountEmpty">No orders yet.</p>:orders.map(o=><button type="button" className="accountOrderRow" key={o.id} onClick={()=>toggleOrder(o)}><div><b>#SII-{String(o.order_no).padStart(4,'0')}</b><small>{new Date(o.created_at).toLocaleDateString('tr-TR')} · {String(o.status).toUpperCase()}</small></div><strong>{money(o.total)}</strong>{o.tracking_number&&<em>{o.shipping_carrier||'CARRIER'} · {o.tracking_number}</em>}<span>VIEW →</span></button>)}
     </section>
     {selectedOrder&&<section className={'accountOrderDetail '+(closingOrder?'closing':'')}>
-      <div className="accountOrderDetailHead"><div><small>ORDER</small><h3>#SII-{String(selectedOrder.order_no).padStart(4,'0')}</h3></div><button type="button" onClick={closeOrderDetail}>CLOSE ×</button></div>
+      <div className="accountOrderDetailHead"><div><small>ORDER</small><h3>#SII-{String(selectedOrder.order_no).padStart(4,'0')}</h3></div><button type="button" onClick={closeOrderDetail}>{t('CLOSE')} ×</button></div>
       <div className="accountOrderMeta">
        <div><span>STATUS</span><b>{String(selectedOrder.status||'').toUpperCase()}</b></div>
        <div><span>PAYMENT</span><b>{String(selectedOrder.payment_status||'').toUpperCase()}</b></div>
@@ -282,7 +282,7 @@ export default function GlobalAccount(){
        {['pending','preparing','shipped','completed'].includes(selectedOrder.status)&&<><textarea placeholder="Optional reason / note" value={requestReason} onChange={e=>setRequestReason(e.target.value)}/><div>{['pending','preparing'].includes(selectedOrder.status)&&<button type="button" disabled={requestBusy} onClick={()=>requestOrderAction('cancel')}>REQUEST CANCELLATION</button>}{['shipped','completed'].includes(selectedOrder.status)&&<button type="button" disabled={requestBusy} onClick={()=>requestOrderAction('return')}>REQUEST RETURN</button>}</div></>}
       </div>
      </section>}
-    <button className="accountSignout" onClick={signOut}>SIGN OUT</button>
+    <button className="accountSignout" onClick={signOut}>{t('SIGN OUT')}</button>
    </div>}
   </aside>
   {open&&<button className="globalAccountShade" aria-label="Close account" onClick={()=>setOpen(false)}/>}
