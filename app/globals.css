@@ -774,3 +774,378 @@ body{
       linear-gradient(180deg, rgba(118,24,40,.13) 0%, rgba(118,24,40,.06) 18%, rgba(118,24,40,.02) 34%, rgba(118,24,40,0) 50%);
   }
 }
+
+
+/* Global UI polish + mobile readiness sprint 01 */
+:root{
+  --sideii-touch:44px;
+  --sideii-edge:18px;
+}
+html,body{min-width:0}
+body{overflow-x:clip}
+img,svg,video{max-width:100%}
+button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit}
+
+/* shared chrome */
+.nav{
+  position:sticky;
+  top:0;
+  z-index:120;
+  background:rgba(9,9,10,.94);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+.nav nav a,.lethNav a,.footerNav a,.globalBagTrigger,.globalAccountTrigger{
+  transition:color .18s ease,border-color .18s ease,background .18s ease,opacity .18s ease;
+}
+.nav nav a:focus-visible,.lethNav a:focus-visible,.footerNav a:focus-visible,
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{
+  outline:1px solid #8a867f;
+  outline-offset:3px;
+}
+
+/* homepage polish */
+.heroCore{max-width:980px}
+.heroFoot{gap:16px}
+.releaseGrid{align-items:start}
+.homeStorePreview{width:100%}
+.homeStoreCard{min-width:0}
+.homeStoreCard img{display:block}
+.storeEntry,.imprintExplore{min-height:var(--sideii-touch);display:inline-flex;align-items:center}
+.footerNav a{width:max-content}
+
+/* release detail polish */
+.productPage .nav{margin-bottom:0}
+.productPage .productHero{overflow:hidden}
+.productReleaseLayout,.editionExperience{min-width:0}
+.productVisual,.editionPanel,.productInfo{min-width:0}
+.editionChooser button,.productButton,.releaseBagLink,.releaseWaitlist button{
+  min-height:var(--sideii-touch);
+}
+.releaseWaitlist input{min-height:var(--sideii-touch)}
+.trackSection li span{overflow-wrap:anywhere}
+.productNote p{max-width:980px}
+
+/* storefront polish */
+.storeFilters{display:flex;justify-content:space-between;gap:18px;align-items:center}
+.storeFilters>div{display:flex;gap:6px;flex-wrap:wrap}
+.storeFilters button{min-height:38px}
+.storeProduct{min-width:0}
+.storeProductMeta,.storeVariants,.storeVariant{min-width:0}
+.storeVariant b,.storeVariant span,.storeProductMeta h2{overflow-wrap:anywhere}
+.storeWaitlist input,.storeWaitlist button,.merchWaitlist input,.merchWaitlist button{min-height:var(--sideii-touch)}
+.storeNoResults{width:100%}
+
+/* drawers + forms */
+.globalBagDrawer,.globalAccountDrawer{
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+}
+.globalBagClose,.globalAccountClose{
+  min-width:var(--sideii-touch);
+  min-height:var(--sideii-touch);
+  display:inline-grid;
+  place-items:center;
+}
+.globalCheckout input,.globalCheckout textarea,.globalCheckout select,
+.accountProfile input,.accountProfile textarea,.accountProfile select,
+.accountAddressForm input,.accountAddressForm textarea,.accountAddressForm select{
+  min-height:var(--sideii-touch);
+}
+.globalCheckout textarea,.accountProfile textarea,.accountAddressForm textarea{line-height:1.45}
+.checkoutInvoiceType button,.checkoutBack,.globalBagCheckout{min-height:var(--sideii-touch)}
+.accountAddressButtons button,.accountAddressActions button,.accountSignout{min-height:36px}
+.accountWishlist article,.accountAddressList article{min-width:0}
+.accountWishlist article>a,.accountAddressList article>div{min-width:0}
+
+/* compact tablet pass */
+@media(max-width:980px){
+  .shell{width:calc(100% - 44px)}
+  .nav nav{gap:24px}
+  .statement{gap:70px}
+  .about{gap:48px}
+  .productReleaseLayout>.productInfo{margin-left:42%;width:58%}
+  .editionExperience{gap:5vw!important}
+  .storeImprintContext,.releaseImprintStrip{grid-template-columns:220px 1fr}
+  .storeImprintContext>a,.releaseImprintStrip>a{grid-column:2;justify-self:start}
+}
+
+/* mobile pass */
+@media(max-width:760px){
+  :root{--sideii-edge:16px}
+
+  .shell{width:calc(100% - 32px)!important}
+  .nav{
+    height:64px!important;
+    padding:0!important;
+    gap:12px;
+  }
+  .nav .brand{width:78px!important;height:38px!important;flex:0 0 auto}
+  .nav nav{
+    gap:13px!important;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scrollbar-width:none;
+    min-width:0;
+    padding:10px 2px;
+  }
+  .nav nav::-webkit-scrollbar{display:none}
+  .nav nav a{
+    display:block!important;
+    flex:0 0 auto;
+    font-size:7px!important;
+    letter-spacing:.13em!important;
+    line-height:1;
+    padding:10px 0;
+  }
+
+  .globalBagTrigger{
+    top:12px!important;
+    right:12px!important;
+    min-height:40px!important;
+    padding:0 10px!important;
+    background:rgba(9,9,10,.9)!important;
+    backdrop-filter:blur(10px);
+  }
+  .globalAccountTrigger{
+    top:12px!important;
+    right:82px!important;
+    min-height:40px!important;
+    padding:0 10px!important;
+    background:rgba(9,9,10,.9)!important;
+    backdrop-filter:blur(10px);
+  }
+
+  /* homepage */
+  .hero{
+    min-height:calc(88svh - 64px)!important;
+    padding:34px 0 82px!important;
+  }
+  .heroCore{width:100%!important;max-width:none;transform:none!important}
+  .heroLogo{width:92%!important;margin:18px 0 15px!important}
+  .tagline{font-size:25px!important}
+  .heroFoot{bottom:18px!important;padding-top:12px!important}
+  .heroFoot span{font-size:7px!important;letter-spacing:.15em!important}
+  .sideWave{right:-28%;width:110%;opacity:.38}
+  .statement{padding:78px 0!important;gap:34px!important}
+  .statement>p{font-size:52px!important;line-height:.88!important}
+  .statement>div{max-width:none}
+  .statement>div p{font-size:18px!important;line-height:1.45!important;margin:20px 0!important}
+  .section{padding:78px 0!important}
+  .sectionHead{gap:24px!important;margin-bottom:40px!important}
+  .sectionHead h2{font-size:54px!important;line-height:.84!important}
+  .releaseGrid{gap:44px!important}
+  .releaseMeta{padding-top:16px!important}
+  .releaseMeta h3{font-size:24px!important}
+  .catalogueFoot{margin-top:32px!important}
+  .imprintInner{padding:78px 0!important;gap:40px!important}
+  .homeLethargiaLogo{max-width:260px}
+  .imprint p{font-size:18px!important;line-height:1.45!important;margin:28px 0!important}
+  .about{padding-top:78px!important;padding-bottom:78px!important}
+  .aboutCopy p{font-size:25px!important;line-height:1.28!important}
+  .store{padding:78px 0!important}
+  .store h2{font-size:58px!important;line-height:.86!important;margin:34px 0!important}
+  .homeStorePreview{grid-template-columns:1fr!important;gap:12px!important}
+  .storeRow{padding-top:22px!important}
+  .closingInner{padding:78px 0!important}
+  .closingInner p{font-size:48px!important}
+  .footerInner{padding:54px 0!important;gap:28px!important}
+  .footerLogo{width:auto!important}
+
+  /* store */
+  .storeHero{padding-top:42px!important;padding-bottom:30px!important}
+  .storeHero h1{font-size:44px!important;margin:15px 0!important}
+  .storeHero p{font-size:13px!important;max-width:100%!important}
+  .storeFilters{
+    display:grid!important;
+    grid-template-columns:1fr;
+    gap:10px!important;
+    padding-bottom:16px!important;
+  }
+  .storeFilters>div{
+    flex-wrap:nowrap!important;
+    overflow-x:auto;
+    scrollbar-width:none;
+    padding-bottom:2px;
+  }
+  .storeFilters>div::-webkit-scrollbar{display:none}
+  .storeFilters button{
+    flex:0 0 auto;
+    min-height:40px!important;
+    padding:0 11px!important;
+    font-size:8px!important;
+  }
+  .storeImprintContext{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    margin-bottom:10px!important;
+  }
+  .storeImprintContext>a{grid-column:auto!important}
+  .storeCatalogue{padding-top:20px!important}
+  .storeProduct{
+    grid-template-columns:1fr!important;
+    gap:18px!important;
+    padding:30px 0!important;
+  }
+  .storeProductMeta h2{font-size:32px!important;margin:10px 0 20px!important}
+  .storeVariant{grid-template-columns:minmax(0,1fr) auto!important}
+  .storeVariant>button{grid-column:1/-1!important;min-height:46px!important}
+  .storeWaitlist,.merchWaitlist{grid-template-columns:1fr!important}
+  .storeWaitlist button,.merchWaitlist button{width:100%}
+
+  /* release detail */
+  .productHero{padding:28px 0 52px!important}
+  .productReleaseLayout>.productInfo{
+    margin-left:0!important;
+    width:100%!important;
+    padding:8px 0 22px!important;
+  }
+  .releaseHeroPair{
+    width:100%;
+    flex-wrap:wrap;
+    gap:12px!important;
+  }
+  .releaseImprintWordmark img{max-width:140px}
+  .releaseHeroX{font-size:14px!important}
+  .releaseHeroPair h1{
+    flex-basis:100%;
+    font-size:52px!important;
+    line-height:.82!important;
+    margin:8px 0!important;
+  }
+  .editionExperience{
+    grid-template-columns:1fr!important;
+    gap:24px!important;
+    margin-top:24px!important;
+  }
+  .productVisual{width:100%;max-width:none!important}
+  .editionPanel{max-width:none!important}
+  .editionDynamicLead{font-size:18px!important;margin-bottom:16px!important}
+  .editionChooser{padding-top:16px!important}
+  .editionChooser>div{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .editionChooser button{
+    width:100%;
+    min-width:0!important;
+    padding:0 10px!important;
+  }
+  .editionFacts div{grid-template-columns:.85fr 1.15fr!important}
+  .releaseImprintStrip{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    margin-top:8px!important;
+  }
+  .releaseImprintStrip>a{grid-column:auto!important}
+  .releaseGallery{padding:42px 0 58px!important}
+  .trackSection{
+    grid-template-columns:1fr!important;
+    gap:22px!important;
+    padding:58px 0!important;
+  }
+  .trackSection li{grid-template-columns:44px 1fr!important;padding:14px 0!important}
+  .trackSection li span{font-size:17px!important}
+  .productNote{
+    grid-template-columns:1fr!important;
+    gap:22px!important;
+    padding:62px 0 80px!important;
+  }
+  .productNote p{font-size:30px!important}
+  .productNote a{grid-column:auto!important}
+
+  /* BAG / checkout / account */
+  .globalBagDrawer,.globalAccountDrawer{
+    inset:0!important;
+    top:0!important;
+    right:0!important;
+    bottom:0!important;
+    left:auto!important;
+    width:100vw!important;
+    max-width:none!important;
+    height:100dvh!important;
+    max-height:none!important;
+    padding:18px 16px calc(20px + env(safe-area-inset-bottom))!important;
+    border-left:0!important;
+  }
+  .globalBagDrawer{padding-top:18px!important}
+  .globalAccountDrawer{padding-top:18px!important}
+  .globalBagClose,.globalAccountClose{
+    position:sticky!important;
+    top:0!important;
+    z-index:5!important;
+    margin-left:auto!important;
+    background:#0b0b0dcc!important;
+    backdrop-filter:blur(10px);
+  }
+  .globalBagItems article{
+    grid-template-columns:58px minmax(0,1fr) auto!important;
+    gap:11px!important;
+  }
+  .globalBagItems article img{width:58px!important;height:58px!important}
+  .globalBagActions{flex-wrap:wrap!important}
+  .promoEntry{grid-template-columns:1fr!important}
+  .promoEntry button{min-height:44px}
+  .checkoutSavedAddresses,.checkoutInvoice{padding:12px!important}
+  .checkoutSplit,.accountTwo,.accountProfile .checkoutSplit{grid-template-columns:1fr!important}
+  .checkoutInvoiceType{grid-template-columns:1fr 1fr!important}
+  .checkoutSummaryItem{gap:10px}
+  .accountIdentity{margin-top:28px!important}
+  .accountAddressList article{grid-template-columns:1fr!important}
+  .accountAddressButtons{
+    flex-direction:row!important;
+    justify-content:flex-start;
+    align-items:center!important;
+  }
+  .accountWishlist article{grid-template-columns:1fr auto!important}
+  .accountOrderDetailHead h3{font-size:24px!important}
+  .accountOrderMeta{grid-template-columns:1fr!important}
+  .accountOrderItems article{gap:8px!important}
+  .accountOrderRequest>div:last-child{flex-direction:column!important}
+  .accountOrderRequest button{min-height:44px!important}
+
+  /* Lethargia landing */
+  .lethNav{padding:14px 0!important}
+  .lethHero{min-height:78svh!important}
+  .lethBrandLogo{width:min(360px,86vw)!important}
+  .lethHeroStats{width:100%!important;gap:12px!important}
+  .lethManifest{padding:76px 0!important}
+  .lethManifest h2{font-size:50px!important}
+  .lethManifest p{font-size:17px!important}
+  .lethReleases{padding:76px 0 90px!important}
+  .lethSectionHead h2{font-size:54px!important}
+  .lethEmpty h3{font-size:28px!important}
+  .lethStore .shell{padding:78px 0!important}
+  .lethStore h2{font-size:58px!important}
+}
+
+/* narrow phones */
+@media(max-width:390px){
+  .shell{width:calc(100% - 28px)!important}
+  .nav nav{gap:10px!important}
+  .nav nav a{font-size:6.5px!important}
+  .globalAccountTrigger{right:78px!important}
+  .heroLogo{width:96%!important}
+  .statement>p{font-size:46px!important}
+  .sectionHead h2,.lethSectionHead h2{font-size:48px!important}
+  .store h2,.lethStore h2{font-size:50px!important}
+  .releaseHeroPair h1{font-size:46px!important}
+  .productNote p{font-size:27px!important}
+  .editionChooser>div{grid-template-columns:1fr!important}
+}
+
+/* touch devices: remove hover-only movement */
+@media(hover:none){
+  .release:hover .cover,
+  .release:hover .physicalMedia,
+  .release.cd:hover .physicalMedia,
+  .lethRelease:hover .lethCover,
+  .lethRelease:hover .physicalMedia,
+  .storePageLethargia .storeProduct:hover,
+  .storePageLethargia .storeProduct.lethargiaProduct:hover .storeCover,
+  .productVisual:hover .productCover,
+  .productVisual.digital:hover .digitalMaster{
+    transform:none!important;
+  }
+}
