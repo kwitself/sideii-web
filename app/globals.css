@@ -1905,3 +1905,165 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
     line-height:1.45!important;
   }
 }
+
+
+/* Account mobile polish pass 02 */
+@media(max-width:760px){
+  .globalAccountDrawer{
+    padding-bottom:calc(24px + env(safe-area-inset-bottom))!important;
+  }
+  .accountIdentity{
+    margin-top:18px!important;
+  }
+  .accountIdentity b{
+    font-size:23px!important;
+    line-height:1.05!important;
+    overflow-wrap:anywhere;
+  }
+  .accountIdentity small{
+    display:block;
+    margin-top:6px;
+    font-size:11px!important;
+    overflow-wrap:anywhere;
+  }
+
+  .accountProfile{
+    margin-top:14px!important;
+  }
+  .accountProfile label,
+  .accountAddressForm label{
+    font-size:7px!important;
+    letter-spacing:.13em!important;
+  }
+  .accountProfile input,
+  .accountProfile textarea,
+  .accountProfile select,
+  .accountAddressForm input,
+  .accountAddressForm textarea,
+  .accountAddressForm select{
+    min-height:44px!important;
+    font-size:12px!important;
+    padding:11px 12px!important;
+  }
+  .accountProfile textarea,
+  .accountAddressForm textarea{
+    min-height:76px!important;
+  }
+
+  .accountSectionHead{
+    margin-bottom:10px!important;
+  }
+  .accountSectionHead span{
+    font-size:7px!important;
+    letter-spacing:.15em!important;
+  }
+  .accountSectionHead small{
+    font-size:7px!important;
+  }
+
+  .accountAddressList article{
+    display:block!important;
+    padding:14px 0 16px!important;
+  }
+  .accountAddressTitle{
+    gap:8px!important;
+  }
+  .accountAddressTitle b{
+    font-size:16px!important;
+  }
+  .accountAddressTitle span{
+    padding:3px 5px!important;
+    font-size:6px!important;
+  }
+  .accountAddressList article small,
+  .accountAddressList article p{
+    line-height:1.45!important;
+  }
+  .accountAddressList article p{
+    margin:4px 0!important;
+    font-size:10px!important;
+  }
+  .accountAddressButtons{
+    display:flex!important;
+    flex-wrap:wrap;
+    gap:8px!important;
+    margin-top:12px!important;
+  }
+  .accountAddressButtons button{
+    min-height:34px!important;
+    padding:0 8px!important;
+    font-size:7px!important;
+  }
+
+  .accountSavedBagButton{
+    display:flex!important;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+  }
+  .accountSavedBagButton span{
+    font-size:8px!important;
+    letter-spacing:.11em!important;
+  }
+
+  .accountWishlist .accountEmpty{
+    margin:10px 0 2px!important;
+  }
+
+  .accountOrders{
+    margin-top:24px!important;
+  }
+  .accountOrderRow{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:4px 10px!important;
+    align-items:start!important;
+    text-align:left!important;
+    width:100%;
+  }
+  .accountOrderRow>div{
+    min-width:0;
+  }
+  .accountOrderRow>div b{
+    display:block;
+    font-size:14px!important;
+  }
+  .accountOrderRow>div small{
+    display:block;
+    margin-top:4px;
+    font-size:7px!important;
+    line-height:1.35!important;
+    overflow-wrap:anywhere;
+  }
+  .accountOrderRow>strong{
+    grid-column:2;
+    grid-row:1;
+    font-size:13px!important;
+    white-space:nowrap;
+  }
+  .accountOrderRow>em{
+    grid-column:1/-1;
+    margin-top:1px;
+    font-size:10px!important;
+    line-height:1.35!important;
+    overflow-wrap:anywhere;
+  }
+  .accountOrderRow>span{
+    grid-column:2;
+    grid-row:2;
+    justify-self:end;
+    font-size:7px!important;
+  }
+
+  .accountSignout{
+    width:100%!important;
+    min-height:46px!important;
+    margin-top:28px!important;
+  }
+}
+
+@media(max-width:390px){
+  .accountIdentity b{font-size:21px!important}
+  .accountAddressTitle b{font-size:15px!important}
+  .accountOrderRow>div b{font-size:13px!important}
+}
