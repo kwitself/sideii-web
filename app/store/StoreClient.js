@@ -103,7 +103,8 @@ export default function StoreClient({releases}){
  const [promoInput,setPromoInput]=useState('');
  const [promoCode,setPromoCode]=useState('');
  const [promoBusy,setPromoBusy]=useState(false);
- const filtered=releases.filter(r=>(filter==='all'||(filter==='selected'?r.productOrigin==='distributed':r.imprint===filter))&&(formatFilter==='all'||(formatFilter==='merch'?r.isMerch:r.variants.some(v=>v.format===formatFilter))));
+ const uniqueReleases=useMemo(()=>Array.from(new Map((releases||[]).map(r=>[r.slug||r.id||r.catalogue,r])).values()),[releases]);
+ const filtered=uniqueReleases.filter(r=>(filter==='all'||(filter==='selected'?r.productOrigin==='distributed':r.imprint===filter))&&(formatFilter==='all'||(formatFilter==='merch'?r.isMerch:r.variants.some(v=>v.format===formatFilter))));
  const physical=cart.some(x=>!x.digital),digital=cart.some(x=>x.digital),localSubtotal=useMemo(()=>cart.reduce((s,x)=>s+x.price*x.qty,0),[cart]),subtotal=quote?Number(quote.subtotal):localSubtotal,discount=quote?Number(quote.discount_total||0):0,shipping=quote?Number(quote.shipping_total):0,total=quote?Number(quote.total):subtotal-discount+shipping,orderType=physical&&digital?'MIXED ORDER':physical?'PHYSICAL ORDER':'DIGITAL ORDER';
  const add=(r,v)=>{setDone(null);setQuote(null);setQuoteError('');setCart(addCartItem(r,v));window.dispatchEvent(new Event('sideii-open-bag'))};
  async function refreshLiveQuoteNow(code=promoCode){
