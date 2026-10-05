@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import T from '../components/T';
 import {getStoreReleases} from '../lib/catalogue';
 import Money from '../components/Money';
 import './wear.css';
@@ -12,12 +13,12 @@ export const metadata={
 export default async function WearPage(){
   const products=(await getStoreReleases()).filter(x=>x.isMerch);
   return <main className="wearPage">
-    <header className="nav shell"><Link className="brand" href="/"><img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/></Link><nav><Link href="/store">Store</Link><Link href="/#releases">Releases</Link><Link href="/wear">Wear</Link></nav></header>
+    <header className="nav shell"><Link className="brand" href="/"><img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/></Link><nav><Link href="/store"><T k="Store"/></Link><Link href="/#releases"><T k="Releases"/></Link><Link href="/wear">Wear</Link></nav></header>
     <section className="wearHero shell">
-      <span>SIDE:II / OBJECTS</span>
-      <h1>Wear what<br/><i>you support.</i></h1>
+      <span><T k="SIDE:II / OBJECTS"/></span>
+      <h1><T k="Wear what"/><br/><i><T k="you support."/></i></h1>
       <p>Apparel and objects built from the same visual language as the catalogue — made to carry the release beyond the shelf.</p>
-      <div className="wearHeroMeta"><small>APPAREL · OBJECTS · LIMITED RUNS</small><Link href="/store?media=merch">SHOP MERCH →</Link></div>
+      <div className="wearHeroMeta"><small>APPAREL · OBJECTS · LIMITED RUNS</small><Link href="/store?media=merch"><T k="SHOP MERCH →"/></Link></div>
     </section>
 
     <section className="wearManifest shell">
