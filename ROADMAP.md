@@ -3,14 +3,14 @@
 ## Guiding rule
 Build the label, catalogue, commerce, collector and impact systems first. Anything that depends on a final legal company identity, production domain, verified sending domain, live payment provider, banking credentials, or carrier contracts stays in the final launch phase.
 
-## Phase 01 — Collector Core
+## Phase 01 — Collector Core ✅
 - Release Passport / Edition Certificate
 - Customer collection view
 - QR-ready passport URLs for physical inserts
 - Numbered edition ownership
 - Owner-only release content foundation
 
-## Phase 02 — Catalogue Depth
+## Phase 02 — Catalogue Depth — in progress
 - Archive / Sold Out Museum
 - Repress / second pressing generations
 - Catalogue timeline
@@ -19,7 +19,7 @@ Build the label, catalogue, commerce, collector and impact systems first. Anythi
 - Listening preview
 - Digital booklet reader
 
-## Phase 03 — Commerce Expansion
+## Phase 03 — Commerce Expansion — mostly complete
 - Product bundles / collector sets
 - Gift mode
 - Store credit / gift cards
@@ -27,14 +27,14 @@ Build the label, catalogue, commerce, collector and impact systems first. Anythi
 - Pre-order production milestones
 - Low-stock editorial messaging
 
-## Phase 04 — Collector Experience
+## Phase 04 — Collector Experience ✅
 - Collector profile
 - Owned editions count
 - Wishlist + owned + archive relationship
 - Secret owner-only content
 - QR entry points from physical products
 
-## Phase 05 — Impact
+## Phase 05 — Impact — core complete
 - Impact Ledger
 - Customer Impact Receipt / Donation Proof
 - Public anonymous impact page
@@ -42,7 +42,7 @@ Build the label, catalogue, commerce, collector and impact systems first. Anythi
 - Verified proof links
 - Automatic email delivery hook
 
-## Phase 06 — Operations Intelligence
+## Phase 06 — Operations Intelligence — core complete
 - Production cost & margin panel
 - Artist / royalty share ledger
 - Smart admin alerts
@@ -51,7 +51,7 @@ Build the label, catalogue, commerce, collector and impact systems first. Anythi
 - Audit log
 - Stock-location readiness
 
-## Phase 07 — B2B / Scale
+## Phase 07 — B2B / Scale — foundation active
 - Wholesale / distributor portal
 - Bulk order rules
 - Warehouse / consignment locations
@@ -78,3 +78,32 @@ Deferred until legal/company/domain/provider information is final:
 - impact ledger / proof
 - performance / accessibility / SEO
 - production deploy checklist
+
+
+## Current implementation status
+Completed or active foundations:
+- edition passports, collection profile, owner-only content
+- archive museum, repress metadata, artist pages, structured credits
+- listening preview, digital booklet fields
+- bundles with backend discount calculation
+- gift mode
+- drops / collections
+- preorder milestone public UI
+- impact ledger, verified public impact, customer impact receipt
+- production cost / margin foundation
+- royalty share rules and report
+- smart alerts, daily brief and audit log
+- wholesale applications and wholesale price-rule foundation
+- store credit and gift-card ledger foundation
+- Control Room sections through 12 / VALUE OPS
+
+Remaining before Final QA:
+- catalogue timeline
+- richer public credits graph linking
+- full wholesale price controls in UI
+- gift-card/store-credit redemption UI and checkout handoff
+- stock location / consignment implementation
+- press/media kit
+- final small code-hygiene pass
+
+Provider-dependent actions remain deferred to Phase 08.
