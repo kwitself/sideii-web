@@ -57,6 +57,14 @@ Build the label, catalogue, commerce, collector and impact systems first. Anythi
 - Warehouse / consignment locations
 - Press / media kit
 
+## Phase 07.5 — Localization / Currency
+- English + Turkish storefront language foundation
+- Global language selector
+- Display currency selector
+- TRY base pricing with converted display currencies
+- Manual FX rate management in Control Room
+- Live FX provider sync deferred to final launch/provider phase
+
 ## Phase 08 — Final Launch Dependencies
 Deferred until legal/company/domain/provider information is final:
 - legal company name / address / tax data
@@ -95,7 +103,8 @@ Completed or active foundations:
 - smart alerts, daily brief and audit log
 - wholesale applications and wholesale price-rule foundation
 - store credit and gift-card ledger foundation
-- Control Room sections through 12 / VALUE OPS
+- Control Room sections through 13 / LOCALIZATION
+- language / display currency foundation
 
 Remaining before Final QA:
 - catalogue timeline
