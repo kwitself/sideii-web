@@ -41,7 +41,7 @@ export default function GlobalAddressFields({form,setForm}){
  },[country,form.city,provinces]);
 
  function setCountry(code){
-  const next={...form,country:code,country_code:code,city:'',district:'',state_region:''};
+  const next={...form,country:code,country_code:code,city:'',district:'',state_region:'',postal:''};
   setForm(next);
  }
 
