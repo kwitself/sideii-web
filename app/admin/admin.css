@@ -1222,3 +1222,38 @@
 .impactFootnote{margin:14px 0 0;max-width:900px;color:#6f6c71;font:11px/1.6 Georgia,serif}
 @media(max-width:1100px){.impactGrid,.impactLower{grid-template-columns:1fr}.impactProductRow{grid-template-columns:1fr minmax(220px,.8fr) auto}.impactBatchRow{grid-template-columns:1fr auto auto}.impactBatchActions{grid-column:1/-1;justify-content:flex-start}}
 @media(max-width:700px){.impactFormGrid{grid-template-columns:1fr}.impactWide,.impactToggle{grid-column:1!important}.impactCampaignRow,.impactProductRow,.impactAllocationRow,.impactBatchRow{grid-template-columns:1fr}.impactBatchActions{grid-column:1}.impactCampaignRow>button,.impactProductRow select{width:100%}}
+
+/* Catalogue operations */
+.catalogueAlerts,.ownerContentForm,.ownerContentList,.catalogueProductOps{padding:18px}
+.catalogueAlerts>header,.ownerContentForm>header,.ownerContentList>header,.catalogueProductOps>header{display:flex;justify-content:space-between;gap:16px;padding-bottom:12px;border-bottom:1px solid #28272a}
+.catalogueAlerts>header span,.ownerContentForm>header span,.ownerContentList>header span,.catalogueProductOps>header span{font-size:9px;letter-spacing:.17em;color:#aaa69f}
+.catalogueAlerts>header small,.ownerContentForm>header small,.ownerContentList>header small,.catalogueProductOps>header small{font-size:9px;color:#67646a}
+.catalogueAlertRow{display:grid;grid-template-columns:86px minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid #242326}
+.catalogueAlertRow>span{font-size:7px;letter-spacing:.12em;color:#8a867f}
+.catalogueAlertRow b{font:14px Georgia,serif;font-weight:400}
+.catalogueAlertRow small{display:block;margin-top:4px;color:#6d6970;font-size:8px}
+.catalogueAlertRow em{font-style:normal;font-size:7px;color:#8d8983}
+.catalogueOpsGrid{display:grid;grid-template-columns:minmax(360px,.9fr) minmax(0,1.1fr);gap:12px;margin:12px 0}
+.ownerContentForm{display:grid;gap:12px}
+.ownerContentForm label{display:flex;flex-direction:column;gap:6px}
+.ownerContentForm label>span{font-size:8px;letter-spacing:.14em;color:#716e73}
+.ownerContentForm input,.ownerContentForm select,.ownerContentForm textarea,.catalogueDepthFields input,.catalogueCostFields input{min-height:40px;border:1px solid #343337;background:#09090a;color:#d3cfc8;padding:9px 10px}
+.ownerContentForm textarea{min-height:82px}
+.catalogueSplit{display:grid;grid-template-columns:1fr .45fr;gap:10px}
+.catalogueCheck{display:flex!important;flex-direction:row!important;align-items:center!important}
+.catalogueCheck input{width:14px!important;height:14px!important;min-height:auto!important}
+.ownerContentRow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid #242326}
+.ownerContentRow b{font:14px Georgia,serif;font-weight:400}
+.ownerContentRow small{display:block;margin-top:4px;color:#6d6970;font-size:7px;letter-spacing:.1em}
+.ownerContentRow>span{font-size:7px;letter-spacing:.12em;color:#77747a}
+.catalogueProductRow{padding:16px 0;border-bottom:1px solid #242326}
+.catalogueProductTitle{display:grid;grid-template-columns:1fr auto;gap:4px 20px;margin-bottom:12px}
+.catalogueProductTitle b{font:16px Georgia,serif;font-weight:400}
+.catalogueProductTitle small{color:#6c6970;font-size:7px;letter-spacing:.1em}
+.catalogueProductTitle em{grid-column:1/-1;font-style:normal;color:#8a867f;font-size:8px;letter-spacing:.08em}
+.catalogueDepthFields{display:grid;grid-template-columns:90px 1fr 1fr 1fr auto auto;gap:8px;align-items:end}
+.catalogueCostFields{display:grid;grid-template-columns:repeat(4,minmax(100px,1fr)) auto;gap:8px;align-items:end;margin-top:9px}
+.catalogueDepthFields label,.catalogueCostFields label{display:flex;flex-direction:column;gap:5px}
+.catalogueDepthFields label span,.catalogueCostFields label span{font-size:7px;letter-spacing:.11em;color:#6f6c71}
+@media(max-width:1250px){.catalogueOpsGrid{grid-template-columns:1fr}.catalogueDepthFields,.catalogueCostFields{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.catalogueAlertRow,.ownerContentRow,.catalogueProductTitle,.catalogueDepthFields,.catalogueCostFields,.catalogueSplit{grid-template-columns:1fr}}
