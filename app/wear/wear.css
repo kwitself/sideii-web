@@ -1,0 +1,37 @@
+.wearPage{min-height:100vh;background:#09090a;color:#ddd9d1}
+.wearHero{min-height:78vh;padding:120px 0 70px;display:flex;flex-direction:column;justify-content:center;border-bottom:1px solid #29282b;position:relative;overflow:hidden}
+.wearHero:after{content:'II';position:absolute;right:-2vw;bottom:-5vw;font:clamp(220px,30vw,520px)/.7 Georgia,serif;color:#101012;letter-spacing:-.08em;pointer-events:none}
+.wearHero>span,.wearManifest>span,.wearSectionHead>span,.wearSystemInner>span{font:8px/1 Arial,sans-serif;letter-spacing:.22em;color:#77736d}
+.wearHero h1{position:relative;z-index:1;margin:24px 0 30px;font:clamp(72px,10vw,168px)/.72 Georgia,serif;font-weight:400;letter-spacing:-.065em;color:#ebe7df}
+.wearHero h1 i{font-weight:400;color:#85817b}
+.wearHero>p{position:relative;z-index:1;max-width:650px;margin:0;font:17px/1.6 Georgia,serif;color:#89857f}
+.wearHeroMeta{position:relative;z-index:1;margin-top:48px;padding-top:17px;border-top:1px solid #29282b;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.wearHeroMeta small{font:8px/1 Arial,sans-serif;letter-spacing:.16em;color:#66636a}
+.wearHeroMeta a{padding:12px 14px;border:1px solid #3a393d;color:#aaa69f;text-decoration:none;font:8px/1 Arial,sans-serif;letter-spacing:.15em}
+.wearManifest{display:grid;grid-template-columns:.5fr 1.5fr;gap:70px;padding:100px 0;border-bottom:1px solid #29282b}
+.wearManifest h2{margin:0 0 22px;font:clamp(48px,6vw,86px)/.86 Georgia,serif;font-weight:400;letter-spacing:-.045em}
+.wearManifest p{max-width:680px;margin:0;color:#88847e;font:16px/1.65 Georgia,serif}
+.wearProducts{padding:88px 0 110px}
+.wearSectionHead{display:flex;justify-content:space-between;align-items:end;margin-bottom:28px}
+.wearSectionHead p{margin:0;color:#66636a;font:italic 14px Georgia,serif}
+.wearGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.wearCard{color:inherit;text-decoration:none;border-top:1px solid #302f33;padding-top:16px}
+.wearVisual{aspect-ratio:1.08/1;background:radial-gradient(circle at 50% 42%,#151517,#0b0b0d 70%);border:1px solid #28272b;overflow:hidden;display:grid;place-items:center}
+.wearVisual img{width:100%;height:100%;object-fit:cover;transition:transform .55s cubic-bezier(.16,.8,.18,1),filter .35s ease}
+.wearCard:hover .wearVisual img{transform:scale(1.018);filter:contrast(1.03)}
+.wearPlaceholder{font:42px/.9 Georgia,serif;color:#303036;text-align:center}
+.wearCardMeta{display:grid;grid-template-columns:1fr auto;gap:8px 20px;padding:16px 2px 8px}
+.wearCardMeta small{grid-column:1/-1;color:#68656a;font:8px/1 Arial,sans-serif;letter-spacing:.16em}
+.wearCardMeta h3{margin:0;font:30px/1 Georgia,serif;font-weight:400}
+.wearCardMeta span{align-self:end;color:#a7a29a;font:13px/1 Georgia,serif}
+.wearEmpty{padding:60px 0;border-top:1px solid #29282b;border-bottom:1px solid #29282b}
+.wearEmpty small{font:8px/1 Arial,sans-serif;letter-spacing:.18em;color:#66636a}
+.wearEmpty h3{max-width:760px;margin:18px 0 26px;font:38px/1.08 Georgia,serif;font-weight:400}
+.wearEmpty a{display:inline-flex;padding:12px 14px;border:1px solid #3a393d;color:#aaa69f;text-decoration:none;font:8px/1 Arial,sans-serif;letter-spacing:.15em}
+.wearSystem{border-top:1px solid #29282b;border-bottom:1px solid #29282b;background:#0b0b0d}
+.wearSystemInner{min-height:52vh;padding:90px 0;display:grid;align-content:center}
+.wearSystemInner p{margin:22px 0;font:clamp(48px,6vw,92px)/.9 Georgia,serif;letter-spacing:-.045em}
+.wearSystemInner p i{font-weight:400;color:#85817b}
+.wearSystemInner small{font:8px/1 Arial,sans-serif;letter-spacing:.18em;color:#5f5c62}
+@media(max-width:800px){.wearHero{min-height:68vh;padding:86px 0 56px}.wearHero h1{font-size:72px}.wearHero>p{font-size:14px}.wearManifest{grid-template-columns:1fr;gap:26px;padding:70px 0}.wearGrid{grid-template-columns:1fr}.wearProducts{padding:64px 0 80px}.wearCardMeta h3{font-size:27px}.wearSystemInner{min-height:40vh;padding:70px 0}}
+@media(max-width:520px){.wearHero h1{font-size:58px}.wearHeroMeta{align-items:flex-start;flex-direction:column}.wearManifest h2{font-size:44px}.wearSectionHead{align-items:flex-start;flex-direction:column;gap:8px}.wearCardMeta{grid-template-columns:1fr}.wearCardMeta span{margin-top:4px}.wearSystemInner p{font-size:43px}}
