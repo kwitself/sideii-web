@@ -2307,3 +2307,19 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
     transform:translateY(-1px);
   }
 }
+
+
+/* Desktop release visual regression fix */
+@media(min-width:761px){
+  .editionExperience>.productVisual{
+    width:100%!important;
+    min-width:0!important;
+    justify-self:stretch!important;
+  }
+  .editionExperience>.productVisual.digital,
+  .editionExperience>.productVisual.vinyl,
+  .editionExperience>.productVisual.cd,
+  .editionExperience>.productVisual.cassette{
+    aspect-ratio:1!important;
+  }
+}
