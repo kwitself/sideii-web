@@ -2361,3 +2361,14 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .checkoutGift .checkoutSavedAddressHead{margin-bottom:12px}
 .checkoutGift textarea{min-height:72px}
 @media(max-width:760px){.releaseListen,.releaseBooklet{grid-template-columns:1fr;gap:18px;padding:40px 0}.releaseCredits.structured p{grid-template-columns:1fr;gap:4px}}
+
+.accountCollectorSummary{margin-top:26px;padding-top:22px;border-top:1px solid #29282b}
+.collectorSummaryGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.collectorSummaryGrid>div{min-height:72px;padding:11px;border:1px solid #2d2c30;background:#0d0d0f;display:flex;flex-direction:column;justify-content:space-between}
+.collectorSummaryGrid span{font:7px/1.25 Arial,sans-serif;letter-spacing:.13em;color:#6f6c72}
+.collectorSummaryGrid b{font:17px/1 Georgia,serif;font-weight:400;color:#d6d1c9}
+.collectorCompletion{margin-top:12px}
+.collectorCompletion i{display:block;height:3px;background:#222125;overflow:hidden}
+.collectorCompletion i b{display:block;height:100%;background:#8f8a82}
+.collectorCompletion small{display:block;margin-top:7px;font:7px/1 Arial,sans-serif;letter-spacing:.14em;color:#68656b}
+@media(max-width:420px){.collectorSummaryGrid{grid-template-columns:1fr}}
