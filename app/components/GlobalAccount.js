@@ -3,7 +3,7 @@ import Link from 'next/link';
 import {useEffect,useMemo,useState} from 'react';
 import {usePathname} from 'next/navigation';
 import {supabase} from '../lib/supabase';
-import TurkeyAddressFields from './TurkeyAddressFields';
+import GlobalAddressFields from './GlobalAddressFields';
 import {readWishlist,writeWishlist} from '../lib/wishlist';
 import {readCart} from '../lib/cart';
 
@@ -13,10 +13,10 @@ export default function GlobalAccount(){
  const pathname=usePathname();
  const [open,setOpen]=useState(false),[session,setSession]=useState(null),[mode,setMode]=useState('signin');
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false),[wishlist,setWishlist]=useState([]),[savedCart,setSavedCart]=useState([]),[addresses,setAddresses]=useState([]),[addressEditing,setAddressEditing]=useState(false),[addressBusy,setAddressBusy]=useState(false),[requestBusy,setRequestBusy]=useState(false),[requestReason,setRequestReason]=useState('');
- const emptyAddress={id:null,label:'',full_name:'',phone:'',address_line:'',city:'',district:'',postal_code:'',is_default:false};
+ const emptyAddress={id:null,label:'',full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:'',is_default:false};
  const [addressForm,setAddressForm]=useState(emptyAddress);
  const [auth,setAuth]=useState({email:'',password:'',full_name:''});
- const [profile,setProfile]=useState({full_name:'',phone:'',address_line:'',city:'',district:'',postal_code:''});
+ const [profile,setProfile]=useState({full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:''});
  const signedIn=!!session?.user;
  const displayName=profile.full_name||session?.user?.email?.split('@')[0]||'ACCOUNT';
  const initials=useMemo(()=>displayName.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]?.toUpperCase()).join('')||'II',[displayName]);
@@ -27,10 +27,10 @@ export default function GlobalAccount(){
    supabase.rpc('get_my_customer_account'),
    supabase.rpc('get_my_store_orders'),
    supabase.from('customer_wishlist').select('product_slug,title,catalogue,cover,is_merch').eq('user_id',user.id).order('created_at',{ascending:false}),
-   supabase.from('customer_addresses').select('id,label,full_name,phone,address_line,city,district,postal_code,is_default').eq('user_id',user.id).order('is_default',{ascending:false}).order('created_at',{ascending:true})
+   supabase.from('customer_addresses').select('id,label,full_name,phone,address_line,country_code,state_region,city,district,postal_code,is_default').eq('user_id',user.id).order('is_default',{ascending:false}).order('created_at',{ascending:true})
   ]);
   const row=Array.isArray(p)?p[0]:p;
-  const next={full_name:row?.full_name||user.user_metadata?.full_name||'',phone:row?.phone||'',address_line:row?.address_line||'',city:row?.city||'',district:row?.district||'',postal_code:row?.postal_code||''};
+  const next={full_name:row?.full_name||user.user_metadata?.full_name||'',phone:row?.phone||'',address_line:row?.address_line||'',country_code:row?.country_code||'TR',state_region:row?.state_region||'',city:row?.city||'',district:row?.district||'',postal_code:row?.postal_code||''};
   if(profileError) setMessage(profileError.message);
   const local=readWishlist();
   const merged=[...(w||[])];
@@ -66,7 +66,7 @@ export default function GlobalAccount(){
     if(!live)return;
     setSession(next||null);setMessage('');
     if(event==='SIGNED_IN'&&next?.user) setTimeout(()=>loadAccount(next.user),0);
-    if(event==='SIGNED_OUT'){setOrders([]);setProfile({full_name:'',phone:'',address_line:'',city:'',district:'',postal_code:''});window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:null}))}
+    if(event==='SIGNED_OUT'){setOrders([]);setProfile({full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:''});window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:null}))}
   });
   return()=>{live=false;sub.subscription.unsubscribe()};
  },[]);
@@ -86,11 +86,12 @@ export default function GlobalAccount(){
   e.preventDefault();setBusy(true);setMessage('');
   const {data,error}=await supabase.rpc('save_my_customer_account',{
    p_full_name:profile.full_name,p_phone:profile.phone,p_address_line:profile.address_line,
-   p_city:profile.city,p_district:profile.district,p_postal_code:profile.postal_code
+   p_city:profile.city,p_district:profile.district,p_postal_code:profile.postal_code,
+   p_country_code:profile.country_code||'TR',p_state_region:profile.state_region||''
   });
   setBusy(false);if(error)return setMessage(error.message);
   const saved=Array.isArray(data)?data[0]:data;
-  const next={full_name:saved?.full_name||'',phone:saved?.phone||'',address_line:saved?.address_line||'',city:saved?.city||'',district:saved?.district||'',postal_code:saved?.postal_code||''};
+  const next={full_name:saved?.full_name||'',phone:saved?.phone||'',address_line:saved?.address_line||'',country_code:saved?.country_code||'TR',state_region:saved?.state_region||'',city:saved?.city||'',district:saved?.district||'',postal_code:saved?.postal_code||''};
   setProfile(next);setMessage('Account details saved.');
   window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:{email:session?.user?.email||'',...next}}));
  }
@@ -108,7 +109,7 @@ export default function GlobalAccount(){
  async function saveAddress(e){
   e.preventDefault();
   if(!session?.user)return;
-  if(!addressForm.address_line.trim()||!addressForm.city||!addressForm.district){setMessage('Complete the address, city and district.');return}
+  if(!addressForm.address_line.trim()||!addressForm.city||(addressForm.country_code==='TR'&&!addressForm.district)){setMessage(addressForm.country_code==='TR'?'Complete the address, city and district.':'Complete the address and city.');return}
   setAddressBusy(true);setMessage('');
   const {data,error}=await supabase.rpc('save_my_customer_address',{
    p_id:addressForm.id||null,
@@ -119,7 +120,9 @@ export default function GlobalAccount(){
    p_city:addressForm.city,
    p_district:addressForm.district,
    p_postal_code:addressForm.postal_code||'',
-   p_is_default:!!addressForm.is_default
+   p_is_default:!!addressForm.is_default,
+   p_country_code:addressForm.country_code||'TR',
+   p_state_region:addressForm.state_region||''
   });
   setAddressBusy(false);
   if(error){setMessage(error.message);return}
@@ -181,7 +184,7 @@ export default function GlobalAccount(){
      <label>FULL NAME<input value={profile.full_name} onChange={e=>setProfile({...profile,full_name:e.target.value})}/></label>
      <label>PHONE<input value={profile.phone} onChange={e=>setProfile({...profile,phone:e.target.value})}/></label>
      <label>ADDRESS<textarea value={profile.address_line} onChange={e=>setProfile({...profile,address_line:e.target.value})}/></label>
-     <TurkeyAddressFields form={profile} setForm={setProfile}/>
+     <GlobalAddressFields form={{...profile,country:profile.country_code}} setForm={next=>setProfile({...next,country_code:next.country||next.country_code||'TR'})}/>
      <label>POSTAL CODE<input value={profile.postal_code} onChange={e=>setProfile({...profile,postal_code:e.target.value})}/></label>
      {message&&<p className="accountMessage">{message}</p>}
      <button className="accountPrimary" disabled={busy}>{busy?'SAVING…':'SAVE DETAILS'}</button>
@@ -194,13 +197,13 @@ export default function GlobalAccount(){
         <label>FULL NAME<input value={addressForm.full_name} onChange={e=>setAddressForm({...addressForm,full_name:e.target.value})}/></label>
         <label>PHONE<input value={addressForm.phone} onChange={e=>setAddressForm({...addressForm,phone:e.target.value})}/></label>
         <label>ADDRESS<textarea required value={addressForm.address_line} onChange={e=>setAddressForm({...addressForm,address_line:e.target.value})}/></label>
-        <TurkeyAddressFields form={addressForm} setForm={setAddressForm}/>
+        <GlobalAddressFields form={{...addressForm,country:addressForm.country_code}} setForm={next=>setAddressForm({...next,country_code:next.country||next.country_code||'TR'})}/>
         <label>POSTAL CODE<input value={addressForm.postal_code} onChange={e=>setAddressForm({...addressForm,postal_code:e.target.value})}/></label>
         <label className="accountDefaultAddress"><input type="checkbox" checked={!!addressForm.is_default} onChange={e=>setAddressForm({...addressForm,is_default:e.target.checked})}/><span>USE AS DEFAULT ADDRESS</span></label>
         <button className="accountPrimary" disabled={addressBusy}>{addressBusy?'SAVING…':'SAVE ADDRESS'}</button>
       </form>}
       <div className="accountAddressList">{addresses.map(a=><article key={a.id}>
-        <div><div className="accountAddressTitle"><b>{a.label}</b>{a.is_default&&<span>DEFAULT</span>}</div><small>{a.full_name||displayName}</small><p>{a.address_line}</p><p>{[a.district,a.city,a.postal_code].filter(Boolean).join(' · ')}</p></div>
+        <div><div className="accountAddressTitle"><b>{a.label}</b>{a.is_default&&<span>DEFAULT</span>}</div><small>{a.full_name||displayName}</small><p>{a.address_line}</p><p>{[a.district||a.state_region,a.city,a.postal_code,a.country_code&&a.country_code!=='TR'?a.country_code:null].filter(Boolean).join(' · ')}</p></div>
         <div className="accountAddressButtons"><button type="button" onClick={()=>useAddress(a)}>USE</button><button type="button" onClick={()=>editAddress(a)}>EDIT</button><button type="button" onClick={()=>deleteAddress(a.id)}>REMOVE</button></div>
       </article>)}</div>
     </section>
