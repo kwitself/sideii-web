@@ -4,7 +4,10 @@ import GlobalBag from './components/GlobalBag';
 import GlobalAccount from './components/GlobalAccount';
 import {LocaleCurrencyProvider} from './components/LocaleCurrencyProvider';
 
+const siteUrl=process.env.NEXT_PUBLIC_SITE_URL||'https://sideii-web.vercel.app';
+
 export const metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: 'Side:II — The Other Side of Sound',
     template: '%s — Side:II',
