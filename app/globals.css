@@ -2385,3 +2385,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 .releasePressEntry{margin:18px 0}
 .releasePressEntry a{display:inline-flex;padding:10px 12px;border:1px solid #3a393d;color:#aaa69f;text-decoration:none;font:8px/1 Arial,sans-serif;letter-spacing:.14em}
+
+.checkoutStoreValue{margin:18px 0;padding:16px;border:1px solid #302f33;background:#0d0d0f}
+.storeValueGift{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}
+.storeValueGift label{display:flex;flex-direction:column;gap:6px}
+.storeValueGift button{min-height:40px;padding:0 12px;border:1px solid #3a393d;background:#151517;color:#d8d3cb;font:8px Arial,sans-serif;letter-spacing:.12em;cursor:pointer}
+.storeValueReady,.storeValueMessage{display:block;margin-top:9px;font:8px/1.4 Arial,sans-serif;letter-spacing:.1em}
+.storeValueReady{color:#8fab86}.storeValueMessage{color:#8a867f}
+.orderDoneStoreValue{display:block;margin-top:10px;font:8px/1.35 Arial,sans-serif;font-style:normal;letter-spacing:.12em;color:#8fab86}
+.orderDoneStoreValue.error{color:#a77f87}
+@media(max-width:520px){.storeValueGift{grid-template-columns:1fr}.storeValueGift button{width:100%}}
