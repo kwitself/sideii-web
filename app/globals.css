@@ -610,3 +610,15 @@ body{
  font:7px/1 Arial,sans-serif!important;letter-spacing:.14em!important;cursor:pointer!important;
 }
 .globalBagRemove:hover{color:#d8d4cd!important}
+
+
+/* Keep REMOVE directly beside quantity controls */
+.globalBagActions{
+ justify-content:flex-start!important;
+ gap:8px!important;
+}
+.globalBagRemove{
+ margin-left:0!important;
+ padding:0 2px!important;
+ min-width:auto!important;
+}
