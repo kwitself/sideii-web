@@ -1359,3 +1359,179 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   .storeProductMeta h2{font-size:29px!important}
   .storeMerchTee{width:min(235px,76%)!important}
 }
+
+
+/* Mobile release detail polish pass 02 */
+@media(max-width:760px){
+  .productPage .nav.shell{
+    margin-bottom:8px!important;
+  }
+
+  .productPage .productHero{
+    overflow:visible!important;
+  }
+
+  .productReleaseLayout>.productInfo{
+    border-bottom:1px solid #29282b!important;
+  }
+
+  .releaseHeroPair{
+    display:grid!important;
+    grid-template-columns:auto 18px minmax(0,1fr)!important;
+    align-items:center!important;
+    column-gap:10px!important;
+    row-gap:10px!important;
+  }
+  .releaseImprintWordmark{
+    min-width:0;
+  }
+  .releaseImprintWordmark img{
+    width:auto!important;
+    max-width:128px!important;
+    max-height:58px!important;
+    object-fit:contain!important;
+    object-position:left center!important;
+  }
+  .releaseHeroX{
+    width:18px!important;
+    text-align:center;
+    align-self:center;
+  }
+  .releaseHeroPair h1{
+    grid-column:3!important;
+    flex-basis:auto!important;
+    min-width:0;
+    margin:0!important;
+    font-size:44px!important;
+    line-height:.86!important;
+    overflow-wrap:anywhere;
+  }
+  .productIndex{
+    margin-top:14px!important;
+  }
+
+  .editionExperience{
+    margin-top:30px!important;
+  }
+  .productVisual{
+    min-height:0!important;
+    aspect-ratio:1!important;
+  }
+  .productCover{
+    inset:7%!important;
+  }
+  .digitalMaster{
+    width:74%!important;
+    height:62%!important;
+    right:0!important;
+    top:19%!important;
+  }
+
+  .editionDynamicLead{
+    font-size:18px!important;
+    line-height:1.15!important;
+    margin:0 0 14px!important;
+  }
+  .editionDynamicLead small{
+    margin-top:7px!important;
+  }
+  .editionChooser{
+    margin-bottom:18px!important;
+  }
+  .editionChooser>span{
+    margin-bottom:10px!important;
+  }
+  .editionFacts{
+    margin-top:18px!important;
+    margin-bottom:22px!important;
+  }
+  .editionFacts div{
+    min-height:44px;
+    align-items:center;
+  }
+  .editionFacts dt,.editionFacts dd{
+    line-height:1.35;
+  }
+
+  .releaseImprintStrip{
+    padding:16px 0 18px!important;
+    margin-top:10px!important;
+    margin-bottom:0!important;
+  }
+  .releaseImprintStrip img{
+    width:108px!important;
+  }
+  .releaseImprintStrip p{
+    font-size:11px!important;
+    line-height:1.45!important;
+  }
+
+  .trackSection{
+    padding:52px 0!important;
+  }
+  .trackSection>span{
+    margin-bottom:0!important;
+  }
+  .productNote{
+    padding:58px 0 74px!important;
+  }
+  .productNote p{
+    font-size:28px!important;
+    line-height:1.18!important;
+  }
+  .releaseCredits{
+    margin-top:22px!important;
+  }
+  .releaseCredits p{
+    font-size:22px!important;
+  }
+
+  .merchDetail{
+    padding-top:34px!important;
+  }
+  .merchDetailVisual{
+    margin-top:0!important;
+  }
+  .merchDetailSwitch{
+    margin-bottom:12px!important;
+  }
+  .merchDetailPreview{
+    aspect-ratio:1/1.05!important;
+    min-height:0!important;
+  }
+  .merchDetailInfo{
+    padding-top:4px!important;
+  }
+  .merchBack{
+    margin-bottom:24px!important;
+  }
+  .merchDetailInfo>span{
+    font-size:8px!important;
+  }
+  .merchDetailInfo h1{
+    font-size:40px!important;
+    line-height:.94!important;
+    margin:12px 0 16px!important;
+    letter-spacing:-.035em!important;
+  }
+  .merchDetailInfo>p{
+    font-size:13px!important;
+    line-height:1.5!important;
+  }
+  .merchDetailFacts{
+    margin:22px 0!important;
+  }
+  .merchVariantChooser>div{
+    gap:7px!important;
+  }
+  .merchVariantChooser button{
+    min-height:52px!important;
+  }
+}
+
+@media(max-width:390px){
+  .releaseImprintWordmark img{max-width:114px!important}
+  .releaseHeroPair h1{font-size:40px!important}
+  .productNote p{font-size:26px!important}
+  .merchDetailInfo h1{font-size:38px!important}
+}
