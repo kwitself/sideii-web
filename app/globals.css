@@ -2323,3 +2323,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
     aspect-ratio:1!important;
   }
 }
+
+.checkoutPolicyNote{margin:12px 0 2px;text-align:center;font:8px/1.55 Arial,sans-serif;letter-spacing:.08em;color:#68656a}
+.checkoutPolicyNote a{color:#a29e97;text-decoration:underline;text-underline-offset:3px}
+.checkoutPolicyNote a:hover{color:#dedad2}
+@media(max-width:760px){.checkoutPolicyNote{margin:12px 6px 2px;font-size:7px;line-height:1.6}}
