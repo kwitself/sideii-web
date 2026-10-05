@@ -1181,3 +1181,44 @@
     grid-column:1!important;
   }
 }
+
+
+/* Impact Ledger */
+.impactMetrics{margin-bottom:14px}
+.impactGrid{display:grid;grid-template-columns:minmax(360px,.9fr) minmax(0,1.1fr);gap:12px;margin-bottom:12px}
+.impactCampaignForm,.impactCampaignList,.impactProducts,.impactAllocations,.impactBatches{padding:18px}
+.impactCampaignForm>header,.impactCampaignList>header,.impactProducts>header,.impactAllocations>header,.impactBatches>header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding-bottom:12px;border-bottom:1px solid #28272a}
+.impactCampaignForm>header span,.impactCampaignList>header span,.impactProducts>header span,.impactAllocations>header span,.impactBatches>header span{font-size:9px;letter-spacing:.17em;color:#aaa69f}
+.impactCampaignForm>header small,.impactCampaignList>header small,.impactProducts>header small,.impactAllocations>header small,.impactBatches>header small{font-size:9px;color:#67646a}
+.impactFormGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;padding:18px 0}
+.impactFormGrid label{display:flex;flex-direction:column;gap:7px}
+.impactFormGrid label>span{font-size:8px;letter-spacing:.14em;color:#716e73}
+.impactFormGrid input,.impactFormGrid select,.impactFormGrid textarea,.impactProductRow select{min-height:40px;border:1px solid #343337;background:#09090a;color:#d3cfc8;padding:9px 10px}
+.impactFormGrid textarea{min-height:90px;resize:vertical}
+.impactWide{grid-column:1/-1}
+.impactToggle{grid-column:1/-1!important;flex-direction:row!important;align-items:center!important}
+.impactToggle input{width:14px;height:14px;min-height:auto}
+.impactCampaignRow,.impactProductRow,.impactAllocationRow,.impactBatchRow{display:grid;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #242326}
+.impactCampaignRow{grid-template-columns:minmax(0,1fr) auto auto auto}
+.impactProductRow{grid-template-columns:minmax(220px,1.4fr) minmax(220px,1fr) auto}
+.impactAllocationRow{grid-template-columns:minmax(0,1fr) auto auto}
+.impactBatchRow{grid-template-columns:minmax(0,1fr) auto auto minmax(160px,auto)}
+.impactCampaignRow>div,.impactProductRow>div,.impactAllocationRow>div,.impactBatchRow>div{min-width:0}
+.impactCampaignRow b,.impactProductRow b,.impactAllocationRow b,.impactBatchRow b{font:14px Georgia,serif;font-weight:400}
+.impactCampaignRow small,.impactProductRow small,.impactAllocationRow small,.impactBatchRow small{display:block;margin-top:5px;color:#6f6c71;font-size:7px;letter-spacing:.1em;line-height:1.4}
+.impactCampaignRow>span,.impactProductRow label,.impactAllocationRow>span,.impactBatchRow>span{font-size:7px;letter-spacing:.12em;color:#77747a}
+.impactProductRow label{display:flex;align-items:center;gap:7px}
+.impactProductRow label input{width:14px;height:14px}
+.impactAllocationRow strong,.impactBatchRow strong{font:16px Georgia,serif;font-weight:400;white-space:nowrap}
+.impactStatus{padding:6px 8px;border:1px solid #343337;background:#0b0b0d}
+.impactStatus.pending{color:#b4a36f;border-color:#554d32}
+.impactStatus.batched,.impactStatus.draft{color:#8f8b84}
+.impactStatus.sent{color:#9c8cb1;border-color:#4c4259}
+.impactStatus.donated,.impactStatus.verified{color:#8fab86;border-color:#41523e}
+.impactStatus.reversed,.impactStatus.cancelled{color:#a77f87;border-color:#573c42}
+.impactBatchActions{display:flex;gap:6px;justify-content:flex-end}
+.impactBatchActions a{display:inline-flex;align-items:center;min-height:34px;padding:0 9px;border:1px solid #37363a;text-decoration:none;color:#aaa69f;font-size:7px;letter-spacing:.12em}
+.impactLower{grid-template-columns:1.08fr .92fr}
+.impactFootnote{margin:14px 0 0;max-width:900px;color:#6f6c71;font:11px/1.6 Georgia,serif}
+@media(max-width:1100px){.impactGrid,.impactLower{grid-template-columns:1fr}.impactProductRow{grid-template-columns:1fr minmax(220px,.8fr) auto}.impactBatchRow{grid-template-columns:1fr auto auto}.impactBatchActions{grid-column:1/-1;justify-content:flex-start}}
+@media(max-width:700px){.impactFormGrid{grid-template-columns:1fr}.impactWide,.impactToggle{grid-column:1!important}.impactCampaignRow,.impactProductRow,.impactAllocationRow,.impactBatchRow{grid-template-columns:1fr}.impactBatchActions{grid-column:1}.impactCampaignRow>button,.impactProductRow select{width:100%}}
