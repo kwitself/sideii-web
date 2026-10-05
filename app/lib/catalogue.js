@@ -22,7 +22,7 @@ function mapRelease(sb,p,index=0){
  const activeVariants=(p.product_variants||[]).filter(v=>v.active!==false);
  const v=activeVariants[0]||{};
  const format=isMerch?'MERCH':v.format==='cassette'?'CASSETTE':v.format==='digital'?'DIGITAL':v.format==='vinyl'?'VINYL':'CD';
- const status=p.status==='active'?'AVAILABLE':p.status==='forthcoming'?'FORTHCOMING':'IN PREPARATION';
+ const status=p.status==='active'?'AVAILABLE':p.status==='forthcoming'?'FORTHCOMING':p.status==='archived'?'ARCHIVED':'IN PREPARATION';
  const dateLabel=p.release_date?new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(p.release_date+'T00:00:00Z')).toUpperCase():null;
  const variants=activeVariants.map(x=>isMerch?merchVariant(x,p):releaseVariant(x,p));
  const rawGallery=Array.isArray(p.gallery_images)?p.gallery_images:[];
