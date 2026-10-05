@@ -2,10 +2,10 @@
 import Link from 'next/link';
 import {useMemo,useState} from 'react';
 import {addCartItem,readCart} from '../lib/cart';
-
-const money=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:0}).format(Number(n||0));
+import {useLocaleCurrency} from '../components/LocaleCurrencyProvider';
 
 export default function BundleClient({bundles=[],products=[]}){
+ const {money}=useLocaleCurrency();
  const [message,setMessage]=useState('');
  const productMap=useMemo(()=>Object.fromEntries(products.map(p=>[p.id,p])),[products]);
 
