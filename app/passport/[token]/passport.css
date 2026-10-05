@@ -1,0 +1,16 @@
+.passportPage{min-height:100vh;background:#09090a;color:#ddd9d1}
+.passportHero{padding:108px 0 72px;border-bottom:1px solid #29282b}
+.passportHero>span,.passportFoot>span,.passportFacts span{font:8px/1 Arial,sans-serif;letter-spacing:.2em;color:#77736d}
+.passportHero h1{margin:22px 0;font:clamp(58px,7vw,108px)/.82 Georgia,serif;font-weight:400;letter-spacing:-.055em}.passportHero h1 i{font-weight:400;color:#8a867f}
+.passportHero p{max-width:720px;font:15px/1.65 Georgia,serif;color:#88847e}
+.passportCard{display:grid;grid-template-columns:220px minmax(0,1fr);gap:52px;padding:72px 0;border-bottom:1px solid #29282b}
+.passportSeal{width:180px;height:180px;border:1px solid #3c3a3f;border-radius:50%;display:grid;place-items:center;align-content:center;gap:10px;background:radial-gradient(circle,#121214,#0b0b0d 72%)}
+.passportSeal span{font:72px/.8 Georgia,serif;color:#d7d2ca}.passportSeal small{font:8px/1 Arial,sans-serif;letter-spacing:.2em;color:#77736d}
+.passportFacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid #29282b}
+.passportFacts>div{padding:16px 0;border-bottom:1px solid #29282b}
+.passportFacts b{display:block;margin-top:8px;font:16px/1.2 Georgia,serif;font-weight:400;color:#d5d0c8}
+.passportStatus{grid-column:2;margin-top:4px;padding:18px;border:1px solid #343337;background:#0d0d0f}
+.passportStatus span{font:9px/1 Arial,sans-serif;letter-spacing:.16em}.passportStatus p{margin:9px 0 0;font:13px/1.55 Georgia,serif;color:#77736d}
+.passportStatus.active{border-color:#40513d}.passportStatus.active span{color:#8fab86}.passportStatus.revoked{border-color:#573c42}.passportStatus.revoked span{color:#a77f87}
+.passportFoot{padding:70px 0 100px}.passportFoot p{max-width:650px;font:18px/1.6 Georgia,serif;color:#88847e}.passportFoot a{display:inline-flex;margin-top:16px;padding:12px 14px;border:1px solid #3a393d;color:#aaa69f;text-decoration:none;font:8px/1 Arial,sans-serif;letter-spacing:.15em}
+@media(max-width:760px){.passportHero{padding:76px 0 54px}.passportCard{grid-template-columns:1fr;gap:28px;padding:52px 0}.passportSeal{width:140px;height:140px}.passportSeal span{font-size:58px}.passportFacts{grid-template-columns:1fr}.passportStatus{grid-column:1}.passportFoot{padding:54px 0 80px}}
