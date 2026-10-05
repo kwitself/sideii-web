@@ -1,5 +1,6 @@
 'use client';
 import {useEffect,useMemo,useState} from 'react';
+import {supabase} from '../lib/supabase';
 
 const API='https://api.turkiyeapi.dev/v2';
 const COUNTRY_CODES='AD AE AF AG AL AM AO AR AT AU AZ BA BB BD BE BF BG BH BI BJ BN BO BR BS BT BW BY BZ CA CD CF CG CH CI CL CM CN CO CR CU CV CY CZ DE DJ DK DM DO DZ EC EE EG ER ES ET FI FJ FM FR GA GB GD GE GH GM GN GQ GR GT GW GY HK HN HR HT HU ID IE IL IN IQ IR IS IT JM JO JP KE KG KH KI KM KN KP KR KW KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MG MH MK ML MM MN MO MR MT MU MV MW MX MY MZ NA NE NG NI NL NO NP NR NZ OM PA PE PG PH PK PL PR PS PT PW PY QA RO RS RU RW SA SB SC SD SE SG SI SK SL SM SN SO SR SS ST SV SY SZ TD TG TH TJ TL TM TN TO TR TT TV TW TZ UA UG US UY UZ VA VC VE VN VU WS YE ZA ZM ZW'.split(' ');
@@ -14,7 +15,23 @@ function countryName(code){
 export default function GlobalAddressFields({form,setForm}){
  const country=form.country||form.country_code||'TR';
  const [provinces,setProvinces]=useState([]),[districts,setDistricts]=useState([]),[loading,setLoading]=useState(false),[districtLoading,setDistrictLoading]=useState(false),[notice,setNotice]=useState('');
- const countries=useMemo(()=>COUNTRY_CODES.map(code=>({code,name:countryName(code)})).sort((a,b)=>a.name.localeCompare(b.name)),[]);
+ const [internationalEnabled,setInternationalEnabled]=useState(false);
+ const countries=useMemo(()=>{
+  const source=internationalEnabled?COUNTRY_CODES:['TR'];
+  return source.map(code=>({code,name:countryName(code)})).sort((a,b)=>a.name.localeCompare(b.name));
+ },[internationalEnabled]);
+
+ useEffect(()=>{
+  let live=true;
+  if(!supabase)return;
+  supabase.rpc('get_store_shipping_scope').then(({data})=>{
+   if(!live)return;
+   const enabled=!!data?.international_enabled;
+   setInternationalEnabled(enabled);
+   if(!enabled&&country!=='TR')setCountry('TR');
+  });
+  return()=>{live=false};
+ },[]);
 
  useEffect(()=>{
   if(country!=='TR'){setProvinces([]);setDistricts([]);setNotice('');return}
@@ -47,10 +64,11 @@ export default function GlobalAddressFields({form,setForm}){
 
  return <>
   <label>COUNTRY
-   <select required value={country} onChange={e=>setCountry(e.target.value)}>
+   <select required value={internationalEnabled?country:'TR'} onChange={e=>setCountry(e.target.value)}>
     {countries.map(c=><option key={c.code} value={c.code}>{c.name.toUpperCase()}</option>)}
    </select>
   </label>
+  {!internationalEnabled&&<small className="addressNotice">International shipping is currently unavailable.</small>}
   {country==='TR'?<>
    <div className="checkoutSplit addressLocation">
     <label>CITY<select required disabled={loading||!provinces.length} value={form.city||''} onChange={e=>setForm({...form,city:e.target.value,district:''})}><option value="">{loading?'LOADING CITIES…':'SELECT CITY'}</option>{provinces.map(p=><option key={p.id} value={p.name}>{p.name}</option>)}</select></label>
