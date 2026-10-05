@@ -2401,3 +2401,12 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .accountOrderGift>span{display:block;font:7px/1 Arial,sans-serif;letter-spacing:.14em;color:#77747a}
 .accountOrderGift>b{display:block;margin-top:8px;font:13px/1.25 Georgia,serif;font-weight:400;color:#c9c4bc}
 .accountOrderGift>p{margin:9px 0 0;color:#85817b;font:12px/1.55 Georgia,serif}
+
+.accountStoreCredit{margin-top:26px;padding-top:22px;border-top:1px solid #29282b}
+.accountStoreCreditList{margin-top:10px}
+.accountStoreCreditList article{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:10px 0;border-bottom:1px solid #232226}
+.accountStoreCreditList b{font:12px/1 Georgia,serif;font-weight:400;color:#d5d0c8}
+.accountStoreCreditList small{display:block;margin-top:4px;color:#6d6970;font:7px/1.35 Arial,sans-serif;letter-spacing:.09em}
+.accountStoreCreditList strong{font:14px/1 Georgia,serif;font-weight:400}
+.accountStoreCreditList strong.positive{color:#8fab86}
+.accountStoreCreditList strong.negative{color:#a77f87}
