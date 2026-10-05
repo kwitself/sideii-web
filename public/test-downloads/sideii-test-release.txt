@@ -1,0 +1,7 @@
+SIDE:II — TEST RELEASE
+Digital delivery test file.
+
+If you can open this file from Account > Order after the order is marked PAID,
+the digital download delivery flow is working correctly.
+
+SIDE:II / MMXXVI
