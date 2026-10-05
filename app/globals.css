@@ -695,3 +695,43 @@ body{
 .storeNoResultsLethargia p{max-width:560px;margin:12px 0 20px;color:#746d6e;font:12px/1.5 Georgia,serif;letter-spacing:0;text-transform:none}
 .storeNoResultsLethargia a{display:inline-block;color:#9b7b81;text-decoration:none;font:7px/1 Arial,sans-serif;letter-spacing:.14em}
 .storeNoResultsLethargia a:hover{color:#d0bcc0}
+
+
+/* Lethargia release detail polish */
+.productPageLethargia{position:relative}
+.productPageLethargia .productHero{position:relative;isolation:isolate}
+.productPageLethargia .productHero:before{
+ content:"";position:absolute;z-index:-1;right:2%;top:5%;width:min(520px,38vw);aspect-ratio:1;border-radius:50%;
+ background:repeating-radial-gradient(circle,rgba(104,55,64,.22) 0 1px,transparent 2px 8px);
+ opacity:.13;pointer-events:none;animation:lethDetailSpin 28s linear infinite
+}
+.productPageLethargia .releaseHeroPair{align-items:center}
+.productPageLethargia .releaseImprintWordmark img{filter:saturate(.95) contrast(1.04)}
+.productPageLethargia .releaseHeroX{color:#6d5056}
+.productPageLethargia .productIndex{color:#73575c}
+.productPageLethargia .editionPanel{border-color:rgba(103,67,74,.28)}
+.productPageLethargia .editionDynamicLead small{color:#765f64}
+.productPageLethargia .editionChooser button.active{border-color:#8c676f;color:#c3a9ae;background:rgba(73,32,40,.18)}
+.productPageLethargia .productButton{border-color:#5c454a}
+.productPageLethargia .productButton:hover{border-color:#94717a}
+.productPageLethargia .trackSection>span,
+.productPageLethargia .releaseGallery>span,
+.productPageLethargia .productNote>span{color:#76575d}
+.releaseImprintStrip{
+ display:grid;grid-template-columns:minmax(200px,.72fr) 1fr auto;gap:28px;align-items:end;
+ margin-top:22px;margin-bottom:8px;padding:18px 0 20px;
+ border-top:1px solid rgba(107,67,75,.22);border-bottom:1px solid rgba(255,255,255,.05)
+}
+.releaseImprintStrip div{display:grid;gap:7px}
+.releaseImprintStrip small{font:7px/1 Arial,sans-serif;letter-spacing:.15em;color:#6c5056}
+.releaseImprintStrip img{width:138px;height:auto}
+.releaseImprintStrip p{max-width:560px;margin:0;color:#746b6c;font:italic 12px/1.45 Georgia,serif}
+.releaseImprintStrip>a{align-self:center;color:#9b7b81;text-decoration:none;font:7px/1 Arial,sans-serif;letter-spacing:.14em}
+.releaseImprintStrip>a:hover{color:#d0bcc0}
+@keyframes lethDetailSpin{to{transform:rotate(360deg)}}
+@media(max-width:760px){
+ .releaseImprintStrip{grid-template-columns:1fr;gap:12px;align-items:start}
+ .releaseImprintStrip img{width:116px}
+ .productPageLethargia .productHero:before{right:-24%;width:78vw}
+}
+@media(prefers-reduced-motion:reduce){.productPageLethargia .productHero:before{animation:none}}
