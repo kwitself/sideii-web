@@ -40,6 +40,16 @@ export default function FulfillmentMediaOpsPanel({products=[]}){
   const {error}=await supabase.rpc('admin_save_press_kit',{p_product_id:pressForm.product_id,p_public_enabled:pressForm.public_enabled,p_press_copy:pressForm.press_copy||null});
   setBusy('');if(error)return setMessage(error.message);setPressForm(emptyPress);setMessage('Press kit saved.');load();
  }
+ async function uploadPressAsset(file){
+  if(!file||!assetForm.product_id){setMessage('Select a product before uploading.');return}
+  setBusy('upload');setMessage('Uploading press asset…');
+  const ext=file.name.split('.').pop()?.toLowerCase()||'bin';
+  const path='press/'+assetForm.product_id+'/'+Date.now()+'-'+file.name.replace(/[^a-zA-Z0-9._-]+/g,'-');
+  const {error}=await supabase.storage.from('release-artwork').upload(path,file,{upsert:false});
+  if(error){setBusy('');setMessage(error.message);return}
+  const {data}=supabase.storage.from('release-artwork').getPublicUrl(path);
+  setAssetForm(v=>({...v,asset_url:data.publicUrl,label:v.label||file.name}));setBusy('');setMessage('Press asset uploaded. Save it to publish.');
+ }
  async function saveAsset(e){
   e.preventDefault();setBusy('asset');setMessage('');
   const {error}=await supabase.rpc('admin_save_press_asset',{p_id:assetForm.id||null,p_product_id:assetForm.product_id,p_label:assetForm.label,p_asset_url:assetForm.asset_url,p_asset_type:assetForm.asset_type,p_sort_order:Number(assetForm.sort_order)||0});
@@ -79,9 +89,9 @@ export default function FulfillmentMediaOpsPanel({products=[]}){
    <form className="adminPanel growthForm" onSubmit={saveAsset}><header><span>PRESS ASSET</span><small>Cover · Photo · Logo · Audio · Video · Document</small></header>
     <label><span>PRODUCT</span><select required value={assetForm.product_id} onChange={e=>setAssetForm({...assetForm,product_id:e.target.value})}><option value="">SELECT…</option>{products.filter(p=>p.product_type!=='merch').map(p=><option key={p.id} value={p.id}>{p.catalogue_no} · {p.title}</option>)}</select></label>
     <label><span>LABEL</span><input required value={assetForm.label} onChange={e=>setAssetForm({...assetForm,label:e.target.value})}/></label>
-    <label><span>URL</span><input required value={assetForm.asset_url} onChange={e=>setAssetForm({...assetForm,asset_url:e.target.value})} placeholder="/media/... or https://..."/></label>
+    <label><span>URL</span><input required value={assetForm.asset_url} onChange={e=>setAssetForm({...assetForm,asset_url:e.target.value})} placeholder="/media/... or https://..."/></label><label><span>UPLOAD FILE</span><input type="file" accept="image/*,audio/*,video/*,.pdf,.zip" onChange={e=>uploadPressAsset(e.target.files?.[0])}/></label>
     <label><span>TYPE</span><select value={assetForm.asset_type} onChange={e=>setAssetForm({...assetForm,asset_type:e.target.value})}><option value="cover">COVER</option><option value="photo">PHOTO</option><option value="logo">LOGO</option><option value="audio">AUDIO</option><option value="video">VIDEO</option><option value="document">DOCUMENT</option><option value="other">OTHER</option></select></label>
-    <button className="saveButton" disabled={busy==='asset'}>SAVE ASSET</button>
+    <button className="saveButton" disabled={busy==='asset'||busy==='upload'}>{busy==='upload'?'UPLOADING…':'SAVE ASSET'}</button>
    </form>
   </div>
 
