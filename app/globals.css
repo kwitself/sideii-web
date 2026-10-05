@@ -1895,3 +1895,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   .globalBagClose,
   .globalAccountClose{right:14px!important}
 }
+
+
+/* Checkout address notice spacing */
+@media(max-width:760px){
+  .globalCheckout .addressNotice{
+    display:block!important;
+    margin:8px 0 14px!important;
+    line-height:1.45!important;
+  }
+}
