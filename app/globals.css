@@ -594,3 +594,19 @@ body{
  font:8px/1 Arial,sans-serif!important;letter-spacing:.12em!important;cursor:pointer!important;
 }
 .globalBagRemove:hover{border-color:#69666a!important;color:#d8d4cd!important}
+
+
+/* BAG item actions — compact editorial treatment */
+.globalBagActions{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:12px!important;margin-top:8px!important;min-height:32px!important;
+}
+.globalBagActions .globalBagQty{margin-top:0!important}
+.globalBagRemove{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ position:relative!important;z-index:4!important;pointer-events:auto!important;
+ min-height:32px!important;margin:0!important;padding:0 4px!important;
+ border:0!important;background:transparent!important;color:#77747a!important;
+ font:7px/1 Arial,sans-serif!important;letter-spacing:.14em!important;cursor:pointer!important;
+}
+.globalBagRemove:hover{color:#d8d4cd!important}
