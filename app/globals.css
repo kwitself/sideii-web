@@ -1149,3 +1149,85 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
     transform:none!important;
   }
 }
+
+
+/* Mobile chrome refinement — preserve content width beside account + bag */
+@media(max-width:760px){
+  .nav.shell{
+    padding-right:132px!important;
+    width:calc(100% - 32px)!important;
+  }
+  .nav .brand{
+    width:76px!important;
+    min-width:76px!important;
+  }
+  .nav nav{
+    position:absolute;
+    left:94px;
+    right:132px;
+    justify-content:flex-start;
+    gap:12px!important;
+    padding:0!important;
+    overflow:hidden!important;
+  }
+  .nav nav a{
+    padding:10px 0!important;
+    font-size:6.5px!important;
+  }
+  .nav nav a:nth-child(n+3){display:none!important}
+
+  .globalAccountTrigger{
+    right:77px!important;
+    min-width:46px!important;
+    width:46px!important;
+    height:40px!important;
+    padding:0!important;
+    text-align:center;
+  }
+  .globalBagTrigger{
+    right:12px!important;
+    min-width:64px!important;
+    height:40px!important;
+    padding:0 8px!important;
+    white-space:nowrap;
+  }
+
+  .homeFormatFilters{
+    margin-top:0!important;
+    margin-bottom:26px!important;
+    gap:7px!important;
+    overflow-x:auto!important;
+    scrollbar-width:none;
+  }
+  .homeFormatFilters::-webkit-scrollbar{display:none}
+  .homeFormatFilters button{
+    flex:0 0 auto;
+    min-height:40px;
+    padding:0 12px;
+  }
+
+  .homeStoreCard{
+    grid-template-columns:82px minmax(0,1fr)!important;
+    gap:14px!important;
+    padding:11px!important;
+  }
+  .homeStoreCard img,.homeStorePlaceholder{width:82px!important}
+  .homeStoreCard small{line-height:1.45}
+  .homeStoreCard b{font-size:18px!important;line-height:1.1}
+
+  .imprintExplore,.storeEntry{
+    min-height:44px;
+    padding:0 16px!important;
+  }
+
+  .formats span{min-height:54px;display:flex;align-items:center}
+  .footerNav a{min-height:30px;display:flex;align-items:center}
+}
+
+@media(max-width:390px){
+  .nav.shell{padding-right:124px!important}
+  .nav nav{left:90px;right:124px}
+  .nav nav a{font-size:6px!important;letter-spacing:.1em!important}
+  .globalAccountTrigger{right:73px!important;width:44px!important;min-width:44px!important}
+  .globalBagTrigger{min-width:60px!important}
+}
