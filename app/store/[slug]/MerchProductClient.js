@@ -3,6 +3,7 @@ import Link from 'next/link';
 import {useEffect,useMemo,useState} from 'react';
 import {addCartItem,readCart} from '../../lib/cart';
 import {supabase} from '../../lib/supabase';
+import {useLocaleCurrency} from '../../components/LocaleCurrencyProvider';
 
 const fmt=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:0}).format(Number(n||0));
 
@@ -23,6 +24,7 @@ function TeePreview({product,side}){
 }
 
 export default function MerchProductClient({product}){
+ const {money}=useLocaleCurrency();
  const variants=product.variants||[];
  const [index,setIndex]=useState(0);
  const [side,setSide]=useState(product.mockups?.front?'front':'back');
