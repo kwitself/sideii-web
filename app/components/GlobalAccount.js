@@ -13,6 +13,7 @@ export default function GlobalAccount(){
  const pathname=usePathname();
  const [open,setOpen]=useState(false),[session,setSession]=useState(null),[mode,setMode]=useState('signin');
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false),[wishlist,setWishlist]=useState([]),[savedCart,setSavedCart]=useState([]),[addresses,setAddresses]=useState([]),[addressEditing,setAddressEditing]=useState(false),[addressBusy,setAddressBusy]=useState(false),[requestBusy,setRequestBusy]=useState(false),[requestReason,setRequestReason]=useState('');
+ const [collection,setCollection]=useState([]),[passports,setPassports]=useState([]),[ownerContent,setOwnerContent]=useState([]);
  const emptyAddress={id:null,label:'',full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:'',is_default:false};
  const [addressForm,setAddressForm]=useState(emptyAddress);
  const [auth,setAuth]=useState({email:'',password:'',full_name:''});
@@ -23,11 +24,14 @@ export default function GlobalAccount(){
 
  async function loadAccount(user){
   if(!supabase||!user)return;
-  const [{data:p,error:profileError},{data:o},{data:w},{data:a}]=await Promise.all([
+  const [{data:p,error:profileError},{data:o},{data:w},{data:a},{data:col},{data:pass},{data:own}]=await Promise.all([
    supabase.rpc('get_my_customer_account'),
    supabase.rpc('get_my_store_orders'),
    supabase.from('customer_wishlist').select('product_slug,title,catalogue,cover,is_merch').eq('user_id',user.id).order('created_at',{ascending:false}),
-   supabase.from('customer_addresses').select('id,label,full_name,phone,address_line,country_code,state_region,city,district,postal_code,is_default').eq('user_id',user.id).order('is_default',{ascending:false}).order('created_at',{ascending:true})
+   supabase.from('customer_addresses').select('id,label,full_name,phone,address_line,country_code,state_region,city,district,postal_code,is_default').eq('user_id',user.id).order('is_default',{ascending:false}).order('created_at',{ascending:true}),
+   supabase.rpc('get_my_collection'),
+   supabase.rpc('get_my_edition_passports'),
+   supabase.rpc('get_my_owner_content')
   ]);
   const row=Array.isArray(p)?p[0]:p;
   const next={full_name:row?.full_name||user.user_metadata?.full_name||'',phone:row?.phone||'',address_line:row?.address_line||'',country_code:row?.country_code||'TR',state_region:row?.state_region||'',city:row?.city||'',district:row?.district||'',postal_code:row?.postal_code||''};
@@ -37,7 +41,7 @@ export default function GlobalAccount(){
   for(const item of local)if(!merged.some(x=>x.product_slug===item.product_slug))merged.push(item);
   setWishlist(merged);writeWishlist(merged);
   if(local.length) await supabase.from('customer_wishlist').upsert(local.map(x=>({...x,user_id:user.id})),{onConflict:'user_id,product_slug'});
-  setProfile(next);setOrders(Array.isArray(o)?o:[]);setAddresses(Array.isArray(a)?a:[]);
+  setProfile(next);setOrders(Array.isArray(o)?o:[]);setAddresses(Array.isArray(a)?a:[]);setCollection(Array.isArray(col)?col:[]);setPassports(Array.isArray(pass)?pass:[]);setOwnerContent(Array.isArray(own)?own:[]);
   window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:{email:user.email||'',...next}}));
  }
 
@@ -66,7 +70,7 @@ export default function GlobalAccount(){
     if(!live)return;
     setSession(next||null);setMessage('');
     if(event==='SIGNED_IN'&&next?.user) setTimeout(()=>loadAccount(next.user),0);
-    if(event==='SIGNED_OUT'){setOrders([]);setProfile({full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:''});window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:null}))}
+    if(event==='SIGNED_OUT'){setOrders([]);setCollection([]);setPassports([]);setOwnerContent([]);setProfile({full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:''});window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:null}))}
   });
   return()=>{live=false;sub.subscription.unsubscribe()};
  },[]);
@@ -222,6 +226,18 @@ export default function GlobalAccount(){
         </Link>
         <button type="button" onClick={()=>removeWishlistItem(item.product_slug)}>REMOVE</button>
       </article>)}
+    </section>
+    <section className="accountCollection">
+      <div className="accountSectionHead"><span>MY COLLECTION</span><small>{collection.reduce((s,x)=>s+Number(x.total_quantity||0),0)}</small></div>
+      {collection.length===0?<p className="accountEmpty">Paid physical and digital editions will appear here.</p>:collection.map(item=><article key={item.product_id+':'+item.format}>
+        <div><b>{item.product_title}</b><small>{item.catalogue_no} · {String(item.format||'').toUpperCase()} · QTY {item.total_quantity}</small>{item.passport_count>0&&<em>{item.passport_count} EDITION PASSPORT{item.passport_count===1?'':'S'}</em>}</div>
+        <Link href={item.product_type==='merch'?('/store/'+item.product_slug):('/releases/'+item.product_slug)} onClick={()=>setOpen(false)}>OPEN →</Link>
+      </article>)}
+      {passports.length>0&&<div className="accountPassportList"><span>EDITION PASSPORTS</span>{passports.map(p=><Link key={p.id} href={'/passport/'+p.public_token} onClick={()=>setOpen(false)}><div><b>{p.catalogue_no} · #{String(p.edition_number).padStart(3,'0')}</b><small>{p.product_title} · {String(p.format).toUpperCase()}</small></div><span>VERIFY ↗</span></Link>)}</div>}
+    </section>
+    <section className="accountOwnerContent">
+      <div className="accountSectionHead"><span>OWNER CONTENT</span><small>{ownerContent.length}</small></div>
+      {ownerContent.length===0?<p className="accountEmpty">Exclusive release content will appear here when available.</p>:ownerContent.map(x=><article key={x.id}><div><b>{x.title}</b><small>{x.catalogue_no} · {String(x.content_type).toUpperCase()}</small>{x.note&&<p>{x.note}</p>}</div>{x.content_url&&<a href={x.content_url} target="_blank" rel="noreferrer">OPEN ↗</a>}</article>)}
     </section>
     <section className="accountOrders"><div className="accountSectionHead"><span>ORDER HISTORY</span><small>{orders.length}</small></div>
      {orders.length===0?<p className="accountEmpty">No orders yet.</p>:orders.map(o=><button type="button" className="accountOrderRow" key={o.id} onClick={()=>toggleOrder(o)}><div><b>#SII-{String(o.order_no).padStart(4,'0')}</b><small>{new Date(o.created_at).toLocaleDateString('tr-TR')} · {String(o.status).toUpperCase()}</small></div><strong>{money(o.total)}</strong>{o.tracking_number&&<em>{o.shipping_carrier||'CARRIER'} · {o.tracking_number}</em>}<span>VIEW →</span></button>)}
