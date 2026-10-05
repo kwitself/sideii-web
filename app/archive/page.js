@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import T from '../components/T';
 import {getArchiveReleases} from '../lib/catalogue';
 import './archive.css';
 
@@ -8,8 +9,8 @@ export const metadata={title:'Archive',description:'Sold out, past and archived 
 export default async function ArchivePage(){
  const releases=await getArchiveReleases();
  return <main className="archivePage">
-  <header className="nav shell"><Link className="brand" href="/"><img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/></Link><nav><Link href="/store">Store</Link><Link href="/#releases">Releases</Link><Link href="/archive">Archive</Link></nav></header>
-  <section className="archiveHero shell"><span>CATALOGUE / ARCHIVE</span><h1>Past objects,<br/><i>kept in view.</i></h1><p>Sold out and retired editions remain part of the catalogue. Archive entries are not currently for sale.</p></section>
+  <header className="nav shell"><Link className="brand" href="/"><img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/></Link><nav><Link href="/store"><T k="Store"/></Link><Link href="/#releases"><T k="Releases"/></Link><Link href="/archive"><T k="Archive"/></Link></nav></header>
+  <section className="archiveHero shell"><span><T k="CATALOGUE / ARCHIVE"/></span><h1><T k="Past objects,"/><br/><i><T k="kept in view."/></i></h1><p>Sold out and retired editions remain part of the catalogue. Archive entries are not currently for sale.</p></section>
   <section className="archiveList shell">
    <div className="archiveHead"><span>ARCHIVED EDITIONS</span><p>{releases.length} record{releases.length===1?'':'s'}</p></div>
    {releases.length===0?<div className="archiveEmpty"><small>ARCHIVE / EMPTY</small><h2>No archived editions are public yet.</h2></div>:releases.map(r=><article key={r.slug}>
