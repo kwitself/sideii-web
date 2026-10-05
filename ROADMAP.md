@@ -10,7 +10,7 @@ Build the label, catalogue, commerce, collector and impact systems first. Anythi
 - Numbered edition ownership
 - Owner-only release content foundation
 
-## Phase 02 — Catalogue Depth — in progress
+## Phase 02 — Catalogue Depth ✅
 - Archive / Sold Out Museum
 - Repress / second pressing generations
 - Catalogue timeline
@@ -19,7 +19,7 @@ Build the label, catalogue, commerce, collector and impact systems first. Anythi
 - Listening preview
 - Digital booklet reader
 
-## Phase 03 — Commerce Expansion — mostly complete
+## Phase 03 — Commerce Expansion ✅
 - Product bundles / collector sets
 - Gift mode
 - Store credit / gift cards
@@ -34,7 +34,7 @@ Build the label, catalogue, commerce, collector and impact systems first. Anythi
 - Secret owner-only content
 - QR entry points from physical products
 
-## Phase 05 — Impact — core complete
+## Phase 05 — Impact ✅
 - Impact Ledger
 - Customer Impact Receipt / Donation Proof
 - Public anonymous impact page
@@ -42,7 +42,7 @@ Build the label, catalogue, commerce, collector and impact systems first. Anythi
 - Verified proof links
 - Automatic email delivery hook
 
-## Phase 06 — Operations Intelligence — core complete
+## Phase 06 — Operations Intelligence ✅
 - Production cost & margin panel
 - Artist / royalty share ledger
 - Smart admin alerts
@@ -51,13 +51,13 @@ Build the label, catalogue, commerce, collector and impact systems first. Anythi
 - Audit log
 - Stock-location readiness
 
-## Phase 07 — B2B / Scale — foundation active
+## Phase 07 — B2B / Scale ✅
 - Wholesale / distributor portal
 - Bulk order rules
 - Warehouse / consignment locations
 - Press / media kit
 
-## Phase 07.5 — Localization / Currency
+## Phase 07.5 — Localization / Currency — core complete
 - English + Turkish storefront language foundation
 - Global language selector
 - Display currency selector
@@ -103,16 +103,16 @@ Completed or active foundations:
 - smart alerts, daily brief and audit log
 - wholesale applications and wholesale price-rule foundation
 - store credit and gift-card ledger foundation
-- Control Room sections through 13 / LOCALIZATION
+- Control Room sections through 14 / FULFILLMENT + MEDIA
+- stock reconciliation health
+- press/media kit with direct asset upload
+- gift-card/store-credit checkout redemption and account history
 - language / display currency foundation
 
 Remaining before Final QA:
-- catalogue timeline
-- richer public credits graph linking
-- full wholesale price controls in UI
-- gift-card/store-credit redemption UI and checkout handoff
-- stock location / consignment implementation
-- press/media kit
 - final small code-hygiene pass
+- full functional + visual regression check
+- mobile / tablet / desktop review
+- production readiness report
 
 Provider-dependent actions remain deferred to Phase 08.
