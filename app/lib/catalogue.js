@@ -79,3 +79,10 @@ export async function getProductCredits(productId){
  const {data,error}=await sb.rpc('get_public_product_credits',{p_product_id:productId});
  return error?[]:(Array.isArray(data)?data:[]);
 }
+
+export async function getPublicPressKit(slug){
+ const sb=client(); if(!sb||!slug)return null;
+ const {data,error}=await sb.rpc('get_public_press_kit',{p_slug:slug});
+ if(error)return null;
+ return Array.isArray(data)?(data[0]||null):(data||null);
+}
