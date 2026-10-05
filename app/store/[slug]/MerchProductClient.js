@@ -43,7 +43,7 @@ export default function MerchProductClient({product}){
   </div>
   <div className="merchDetailInfo">
    <Link href="/store" className="merchBack">← STORE</Link>
-   <span>SIDE:II / {String(product.merchCategory||'MERCH').toUpperCase()}</span>
+   <span>SIDE:II / {String(product.merchCategory||'MERCH').toUpperCase()}</span><Link className="merchWearMark" href="/wear">WEAR WHAT YOU SUPPORT ↗</Link>
    <h1>{product.title}</h1>
    <p>{product.lead}</p>
    <div className="merchDetailFacts"><div><span>PRODUCT</span><b>{product.catalogue}</b></div><div><span>AVAILABILITY</span><b>{product.status}</b></div></div>
