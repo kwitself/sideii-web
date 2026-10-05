@@ -1842,3 +1842,56 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
     height:52px!important;
   }
 }
+
+
+/* Mobile checkout scroll refinement */
+@media(max-width:760px){
+  /* Keep the bag CTA sticky, but never let PLACE ORDER cover form fields. */
+  .globalCheckout .globalBagCheckout{
+    position:static!important;
+    bottom:auto!important;
+    box-shadow:none!important;
+    margin-top:16px!important;
+  }
+
+  /* Reserve a clean top chrome zone so CLOSE never sits on top of fields while scrolling. */
+  .globalBagDrawer,
+  .globalAccountDrawer{
+    padding-top:56px!important;
+    position:fixed!important;
+  }
+  .globalBagClose,
+  .globalAccountClose{
+    position:fixed!important;
+    top:10px!important;
+    right:16px!important;
+    z-index:210!important;
+    min-width:72px!important;
+    height:36px!important;
+    padding:0!important;
+    justify-content:flex-end!important;
+    background:#0b0b0df2!important;
+  }
+  .globalBagDrawer>span,
+  .globalAccountDrawer>span{
+    margin-top:-36px;
+    padding-top:2px;
+    min-height:36px;
+    display:flex!important;
+    align-items:center;
+  }
+
+  .globalCheckout .checkoutSummary{
+    margin-top:22px!important;
+  }
+  .globalCheckout .checkoutSummaryTotal{
+    padding:13px 0!important;
+  }
+  .globalCheckout .checkoutBack{
+    margin-top:10px!important;
+  }
+}
+@media(max-width:390px){
+  .globalBagClose,
+  .globalAccountClose{right:14px!important}
+}
