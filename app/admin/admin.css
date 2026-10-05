@@ -1257,3 +1257,33 @@
 .catalogueDepthFields label span,.catalogueCostFields label span{font-size:7px;letter-spacing:.11em;color:#6f6c71}
 @media(max-width:1250px){.catalogueOpsGrid{grid-template-columns:1fr}.catalogueDepthFields,.catalogueCostFields{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.catalogueAlertRow,.ownerContentRow,.catalogueProductTitle,.catalogueDepthFields,.catalogueCostFields,.catalogueSplit{grid-template-columns:1fr}}
+
+/* Growth operations */
+.growthOpsGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.growthForm,.growthList{padding:18px}
+.growthForm>header,.growthList>header{display:flex;justify-content:space-between;gap:16px;padding-bottom:12px;border-bottom:1px solid #28272a}
+.growthForm>header span,.growthList>header span{font-size:9px;letter-spacing:.17em;color:#aaa69f}
+.growthForm>header small,.growthList>header small{font-size:9px;color:#67646a}
+.growthForm{display:grid;gap:12px}
+.growthForm label{display:flex;flex-direction:column;gap:6px}
+.growthForm label>span{font-size:8px;letter-spacing:.14em;color:#716e73}
+.growthForm input,.growthForm select,.growthForm textarea,.wholesaleAdminRow select{min-height:40px;border:1px solid #343337;background:#09090a;color:#d3cfc8;padding:9px 10px}
+.growthForm textarea{min-height:84px;resize:vertical}
+.growthSplit{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.growthListBlock{padding:13px 0;border-bottom:1px solid #242326}
+.growthListBlock>div:first-child b{font:15px Georgia,serif;font-weight:400}
+.growthListBlock small{display:block;margin-top:4px;color:#6d6970;font-size:7px;letter-spacing:.1em}
+.growthProductChecks{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.growthProductChecks label{display:flex;align-items:center;gap:5px;padding:6px 7px;border:1px solid #302f33;background:#0b0b0d}
+.growthProductChecks span{font-size:7px;letter-spacing:.1em;color:#8c8983}
+.growthMiniList{margin-top:8px;border-top:1px solid #28272a}
+.growthMiniList p{display:flex;justify-content:space-between;gap:8px;margin:0;padding:9px 0;border-bottom:1px solid #242326;color:#767279;font:8px/1.35 Arial,sans-serif;letter-spacing:.08em}
+.growthMiniList b{color:#b9b4ac;font-weight:400}
+.wholesaleAdminRow,.auditRow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid #242326}
+.wholesaleAdminRow b,.auditRow b{font:14px Georgia,serif;font-weight:400}
+.wholesaleAdminRow small,.auditRow small{display:block;margin-top:4px;color:#6d6970;font-size:7px;letter-spacing:.09em}
+.auditRow{grid-template-columns:72px minmax(0,1fr) auto}
+.auditRow>span{font-size:7px;letter-spacing:.12em;color:#8a867f;text-transform:uppercase}
+.auditRow time{font-size:7px;color:#66636a}
+@media(max-width:1100px){.growthOpsGrid{grid-template-columns:1fr}}
+@media(max-width:700px){.growthSplit,.auditRow,.wholesaleAdminRow{grid-template-columns:1fr}}
