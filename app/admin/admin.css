@@ -1341,3 +1341,17 @@
 .valueMilestoneRow input{min-height:38px;border:1px solid #343337;background:#09090a;color:#d3cfc8;padding:8px 9px}
 @media(max-width:900px){.valueMilestoneRow{grid-template-columns:1fr 1fr}.valueMilestoneRow>div{grid-column:1/-1}.valueMilestoneRow .saveButton{grid-column:2}}
 @media(max-width:560px){.valueMilestoneRow{grid-template-columns:1fr}.valueMilestoneRow>div,.valueMilestoneRow .saveButton{grid-column:1}}
+
+.locationHealth{padding:18px;margin-bottom:12px}
+.locationHealth>header{display:flex;justify-content:space-between;gap:16px;padding-bottom:12px;border-bottom:1px solid #28272a}
+.locationHealth>header span{font-size:9px;letter-spacing:.17em;color:#aaa69f}
+.locationHealth>header small{font-size:9px;color:#67646a}
+.locationHealthRow{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid #242326}
+.locationHealthRow b{font:14px Georgia,serif;font-weight:400}
+.locationHealthRow small{display:block;margin-top:4px;color:#6d6970;font-size:7px;letter-spacing:.09em}
+.locationHealthRow>span{font-size:7px;letter-spacing:.11em;color:#7c797f}
+.locationHealthStatus{padding:6px 8px;border:1px solid #343337}
+.locationHealthStatus.aligned{color:#8fab86;border-color:#40513d}
+.locationHealthStatus.review{color:#b4a36f;border-color:#554d32}
+.locationHealthStatus.unassigned{color:#a77f87;border-color:#573c42}
+@media(max-width:760px){.locationHealthRow{grid-template-columns:1fr 1fr}.locationHealthRow>div{grid-column:1/-1}}
