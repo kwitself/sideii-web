@@ -12,7 +12,8 @@ const items=[
  ['commerce-ops','07','Commerce'],
  ['settings','08','Settings'],
  ['impact','09','Impact'],
- ['catalogue-ops','10','Catalogue Ops']
+ ['catalogue-ops','10','Catalogue Ops'],
+ ['growth-ops','11','Growth Ops']
 ];
 
 export default function AdminRail(){
