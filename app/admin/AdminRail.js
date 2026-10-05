@@ -10,7 +10,8 @@ const items=[
  ['customers','05','Customers'],
  ['discounts','06','Discounts'],
  ['commerce-ops','07','Commerce'],
- ['settings','08','Settings']
+ ['settings','08','Settings'],
+ ['impact','09','Impact']
 ];
 
 export default function AdminRail(){
