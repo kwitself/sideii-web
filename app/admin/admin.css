@@ -1311,3 +1311,22 @@
 .localizationNote{margin:14px 0 0;color:#6d6970;font:11px/1.55 Georgia,serif}
 @media(max-width:1100px){.localizationGrid{grid-template-columns:1fr}}
 @media(max-width:700px){.fxRow,.localeRow{grid-template-columns:1fr}.fxRow .saveButton,.localeRow .saveButton{width:100%}}
+
+.fulfillmentMediaGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.locationSummary,.locationMatrix,.pressKitList{padding:18px}
+.locationSummary>header,.locationMatrix>header,.pressKitList>header{display:flex;justify-content:space-between;gap:16px;padding-bottom:12px;border-bottom:1px solid #28272a}
+.locationSummary>header span,.locationMatrix>header span,.pressKitList>header span{font-size:9px;letter-spacing:.17em;color:#aaa69f}
+.locationSummary>header small,.locationMatrix>header small,.pressKitList>header small{font-size:9px;color:#67646a}
+.locationRow,.pressKitRow{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid #242326}
+.locationRow b,.pressKitRow b{font:14px Georgia,serif;font-weight:400}
+.locationRow small,.pressKitRow small{display:block;margin-top:4px;color:#6d6970;font-size:7px;letter-spacing:.09em}
+.pressKitRow a{color:#aaa69f;text-decoration:none;font:7px Arial,sans-serif;letter-spacing:.13em}
+.locationStockRow{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);gap:18px;padding:12px 0;border-bottom:1px solid #242326}
+.locationStockRow>div:first-child b{font:14px Georgia,serif;font-weight:400}
+.locationStockRow>div:first-child small{display:block;margin-top:4px;color:#6d6970;font-size:7px;letter-spacing:.09em}
+.locationStockInputs{display:grid;grid-template-columns:repeat(3,minmax(100px,1fr));gap:8px}
+.locationStockInputs label{display:flex;flex-direction:column;gap:5px}
+.locationStockInputs span{font-size:7px;letter-spacing:.1em;color:#77747a}
+.locationStockInputs input{min-height:38px;border:1px solid #343337;background:#09090a;color:#d3cfc8;padding:8px 9px}
+@media(max-width:1100px){.fulfillmentMediaGrid{grid-template-columns:1fr}.locationStockRow{grid-template-columns:1fr}.locationStockInputs{grid-template-columns:repeat(2,minmax(100px,1fr))}}
+@media(max-width:700px){.locationStockInputs{grid-template-columns:1fr}.locationRow,.pressKitRow{align-items:flex-start;flex-direction:column}}
