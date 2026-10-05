@@ -545,3 +545,639 @@
 .orderInvoice p{margin:6px 0 0;color:#8b8780;font-size:9px;letter-spacing:.08em}
 
 
+
+
+/* Control Room final polish — desktop/tablet */
+:root{
+  --admin-bg:#09090a;
+  --admin-panel:#0d0d0f;
+  --admin-panel-hi:#111113;
+  --admin-line:#29282c;
+  --admin-line-soft:#222125;
+  --admin-ink:#ddd9d1;
+  --admin-muted:#77747a;
+  --admin-faint:#555258;
+  --admin-accent:#d8d4cc;
+}
+
+.adminApp{
+  background:
+    radial-gradient(circle at 72% -12%,rgba(255,255,255,.018),transparent 28%),
+    var(--admin-bg);
+}
+.adminMain{
+  min-width:0;
+  max-width:none;
+  padding-left:clamp(34px,4vw,70px);
+  padding-right:clamp(34px,4vw,70px);
+}
+.adminSection,
+.releaseWorkspace,
+.merchWorkspace,
+.discountsSection,
+.commerceOps{
+  scroll-margin-top:28px;
+}
+
+/* rail */
+.adminRail{
+  width:230px;
+  min-width:230px;
+  padding:30px 22px 24px;
+  background:linear-gradient(180deg,#080809,#09090a 78%);
+  box-shadow:16px 0 42px rgba(0,0,0,.12);
+}
+.adminBrand{
+  padding:2px 4px 26px;
+}
+.adminBrand img{
+  width:86px;
+  height:auto;
+  object-fit:contain;
+  object-position:left center;
+}
+.adminBrand small{
+  margin-top:2px;
+}
+.adminNav{
+  gap:3px;
+  padding-top:20px;
+}
+.adminNav a{
+  position:relative;
+  height:43px;
+  padding:0 10px;
+  gap:12px;
+  border-color:transparent;
+}
+.adminNav a:before{
+  content:"";
+  position:absolute;
+  left:-22px;
+  top:8px;
+  bottom:8px;
+  width:1px;
+  background:transparent;
+}
+.adminNav a.active{
+  background:linear-gradient(90deg,#121214,rgba(18,18,20,.5));
+  border-color:#2c2b2f;
+}
+.adminNav a.active:before{
+  background:#aaa59d;
+}
+.adminNav a i{
+  width:16px;
+}
+.railFoot{
+  gap:9px;
+}
+
+/* top */
+.adminTop{
+  min-height:205px;
+  gap:36px;
+}
+.adminTop h1{
+  font-size:clamp(54px,4.2vw,72px);
+  line-height:.88;
+  letter-spacing:-.045em;
+}
+.topActions{
+  align-items:center;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  max-width:580px;
+}
+.topActions a,
+.topActions button{
+  min-height:42px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 14px;
+  transition:border-color .18s ease,background .18s ease,color .18s ease,transform .18s ease;
+}
+.topActions a:hover,
+.topActions button:hover{
+  border-color:#666269;
+  color:#e0ddd6;
+}
+.topActions .primaryAction:hover{
+  background:#f0ece4;
+  border-color:#f0ece4;
+  color:#09090a;
+}
+
+/* section rhythm */
+.adminSection{
+  padding:46px 0 50px;
+}
+.sectionLabel{
+  margin-bottom:18px;
+  min-height:28px;
+}
+.sectionLabel>span{
+  color:#8b8780;
+}
+.sectionLabel p{
+  font-size:13px;
+  color:#716e73;
+}
+.dbNotice{
+  margin:-2px 0 18px;
+  background:#0d0d0f;
+  border-color:#3a393e;
+}
+
+/* metrics */
+.metricGrid{
+  gap:10px;
+}
+.metricGrid article{
+  height:164px;
+  padding:18px 19px;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.018),transparent 48%),
+    #0e0e10;
+  transition:border-color .18s ease,transform .18s ease,background .18s ease;
+}
+.metricGrid article:hover{
+  border-color:#3c3a3f;
+  background:#101012;
+  transform:translateY(-1px);
+}
+.metricGrid strong{
+  font-size:clamp(38px,3.15vw,54px);
+  margin:auto 0 6px;
+  letter-spacing:-.035em;
+}
+.metricGrid small{
+  line-height:1.35;
+}
+
+/* shared panels */
+.adminPanel{
+  background:linear-gradient(180deg,#0e0e10,#0c0c0e);
+  border-color:#2d2c30;
+}
+.adminPanel input,
+.adminPanel select,
+.adminPanel textarea,
+.releaseForm input,
+.releaseForm select,
+.releaseForm textarea,
+.shippingSettings input{
+  border-color:#343338;
+  background:#09090b;
+  color:#d8d4cc;
+  transition:border-color .16s ease,background .16s ease;
+}
+.adminPanel input:focus,
+.adminPanel select:focus,
+.adminPanel textarea:focus,
+.releaseForm input:focus,
+.releaseForm select:focus,
+.releaseForm textarea:focus,
+.shippingSettings input:focus{
+  outline:none;
+  border-color:#706c73;
+  background:#0c0c0e;
+}
+
+/* products */
+.tableHead,
+.productRow{
+  grid-template-columns:minmax(260px,2.15fr) minmax(88px,.72fr) minmax(112px,.95fr) minmax(78px,.55fr) minmax(64px,.42fr) minmax(320px,1.45fr);
+  padding-left:18px;
+  padding-right:18px;
+}
+.tableHead{
+  height:42px;
+  background:#0a0a0c;
+}
+.productRow{
+  min-height:78px;
+}
+.productRow:hover{
+  background:#0f0f11;
+}
+.adminArtworkThumb{
+  width:46px!important;
+  height:46px!important;
+  object-fit:cover;
+  border:1px solid #343338;
+}
+.editionCell{
+  gap:13px;
+  min-width:0;
+}
+.editionCell>div{
+  min-width:0;
+}
+.editionCell strong,
+.editionCell small{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.statusSelect{
+  min-height:34px;
+}
+.rowActions{
+  gap:6px;
+  flex-wrap:wrap;
+  justify-content:flex-start;
+}
+.rowActions a,
+.rowActions button{
+  min-height:30px;
+  display:inline-flex;
+  align-items:center;
+  padding:0 7px;
+  border:1px solid #302f33!important;
+  background:#0b0b0d!important;
+  color:#8f8b84!important;
+  font-size:7px!important;
+  line-height:1;
+  letter-spacing:.11em!important;
+  text-decoration:none;
+  transition:border-color .16s ease,color .16s ease,background .16s ease;
+}
+.rowActions a:hover,
+.rowActions button:hover{
+  border-color:#625f65!important;
+  color:#e0ddd6!important;
+  background:#111113!important;
+}
+.rowActions .deleteReleaseButton:hover{
+  border-color:#683f47!important;
+  color:#c58b95!important;
+}
+.panelAction{
+  padding:14px 18px;
+  background:#0a0a0c;
+}
+
+/* forms / workspaces */
+.releaseGrid{
+  gap:12px;
+}
+.releaseForm{
+  padding:28px;
+}
+.formIntro{
+  padding-bottom:22px;
+}
+.formIntro h2{
+  font-size:40px;
+  margin:10px 0 8px;
+}
+.formGrid{
+  gap:16px 14px;
+  padding:24px 0;
+}
+.formGrid label{
+  gap:7px;
+}
+.formGrid input,
+.formGrid select{
+  min-height:40px;
+}
+.formGrid textarea{
+  min-height:96px;
+}
+.formActions{
+  padding-top:18px;
+  gap:8px;
+}
+.formActions button,
+.saveButton,
+.ghostButton{
+  min-height:38px;
+}
+.releasePreview{
+  overflow:hidden;
+}
+.previewMeta{
+  backdrop-filter:blur(7px);
+}
+
+/* orders + inventory */
+.twoCol{
+  gap:12px;
+}
+.orderRow{
+  min-height:68px;
+  padding-left:16px;
+  padding-right:16px;
+  transition:background .16s ease,border-color .16s ease;
+}
+.orderRow:hover{
+  background:#111113;
+}
+.orderRow strong{
+  font-size:14px;
+}
+.orderRow small{
+  line-height:1.4;
+}
+.inventoryCard{
+  min-height:156px;
+  padding:22px;
+}
+.inventoryRing{
+  width:104px;
+  height:104px;
+}
+.inventoryRow{
+  min-height:66px;
+  padding:12px 14px;
+  grid-template-columns:minmax(240px,2fr) repeat(3,minmax(90px,.72fr)) auto auto;
+}
+.inventoryRow:hover{
+  background:#0f0f11;
+}
+.inventoryRow strong{
+  font-size:15px;
+}
+.inventoryRow input{
+  min-height:36px;
+}
+
+/* customers / settings cards */
+.lowerGrid.singleAdminCard{
+  max-width:none;
+}
+.lowerGrid article{
+  min-height:300px;
+  padding:28px 30px;
+}
+.lowerGrid h2{
+  font-size:46px;
+  line-height:.94;
+  margin-top:46px;
+}
+.shippingSettings{
+  margin-top:28px;
+}
+.shippingFields{
+  gap:12px!important;
+}
+.shippingFields input{
+  min-height:40px;
+}
+
+/* discounts */
+.discountLayout{
+  gap:12px;
+}
+.discountForm{
+  padding:24px;
+}
+.discountIntro h2{
+  font-size:34px;
+}
+.discountGrid{
+  gap:14px 12px;
+  padding:18px 0;
+}
+.discountGrid input,
+.discountGrid select{
+  min-height:40px;
+}
+.discountList article{
+  min-height:70px;
+  padding:11px 14px;
+}
+.discountListHead{
+  padding:0 14px;
+}
+.campaignDivider{
+  margin-top:28px;
+}
+
+/* commerce ops */
+.commerceMetricHead{
+  margin-bottom:10px;
+}
+.commerceMetrics{
+  margin-bottom:14px;
+}
+.commerceOpsGrid{
+  gap:12px;
+}
+.commerceCard,
+.commerceVariants,
+.commerceReturns{
+  padding:16px;
+}
+.commerceCard>header,
+.commerceVariants>header,
+.commerceReturns>header{
+  padding-bottom:11px;
+}
+.commerceRateRow{
+  grid-template-columns:minmax(0,1fr) 96px 64px;
+  padding:10px 0;
+}
+.commerceAlertRow{
+  padding:10px 0;
+}
+.commerceVariantRow{
+  grid-template-columns:minmax(170px,1.4fr) minmax(105px,.72fr) minmax(70px,.5fr) minmax(88px,.62fr) minmax(94px,.68fr) minmax(84px,.58fr) minmax(92px,.65fr) 62px;
+  gap:7px;
+  padding:11px 0;
+}
+.commerceVariantRow input,
+.commerceVariantRow select{
+  min-height:36px;
+}
+.commerceVariantRow>.saveButton{
+  min-height:36px;
+}
+.commerceReturnRow{
+  padding:11px 0;
+}
+
+/* accessible desktop focus */
+.adminApp a:focus-visible,
+.adminApp button:focus-visible,
+.adminApp input:focus-visible,
+.adminApp select:focus-visible,
+.adminApp textarea:focus-visible{
+  outline:1px solid #8a867f;
+  outline-offset:2px;
+}
+
+/* tablet */
+@media(max-width:1280px) and (min-width:901px){
+  .adminApp{grid-template-columns:200px minmax(0,1fr)}
+  .adminRail{
+    width:200px;
+    min-width:200px;
+    padding-left:18px;
+    padding-right:18px;
+  }
+  .adminNav a:before{left:-18px}
+  .adminMain{
+    padding-left:28px;
+    padding-right:28px;
+  }
+  .tableHead,
+  .productRow{
+    grid-template-columns:minmax(230px,1.8fr) 82px 108px 76px 62px minmax(250px,1.3fr);
+  }
+  .rowActions{
+    gap:4px;
+  }
+  .rowActions a,
+  .rowActions button{
+    padding:0 5px;
+  }
+  .commerceVariantRow{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+  }
+  .commerceVariantTitle{
+    grid-column:1/-1;
+  }
+  .commerceVariantRow .commerceWide{
+    grid-column:1/-1;
+  }
+  .commerceVariantRow>.saveButton{
+    grid-column:4;
+  }
+}
+
+/* small admin screens keep functionality visible rather than hiding actions */
+@media(max-width:900px){
+  .adminRail{
+    position:sticky!important;
+    top:0!important;
+    z-index:220;
+    height:auto!important;
+    padding:14px 16px!important;
+    border-right:0;
+    border-bottom:1px solid #29282c;
+    background:#080809f5;
+    backdrop-filter:blur(12px);
+  }
+  .adminBrand{
+    display:none;
+  }
+  .adminNav{
+    padding:0!important;
+    flex-direction:row!important;
+    gap:4px!important;
+    overflow-x:auto!important;
+    scrollbar-width:none;
+  }
+  .adminNav::-webkit-scrollbar{display:none}
+  .adminNav a{
+    flex:0 0 auto;
+    min-width:max-content;
+    height:38px;
+    padding:0 10px;
+  }
+  .adminNav a:before{display:none}
+  .adminMain{
+    padding:0 16px 32px!important;
+  }
+  .adminTop{
+    min-height:160px;
+    padding:28px 0;
+  }
+  .topActions{
+    max-width:none;
+    align-items:stretch;
+  }
+  .topActions a{
+    min-height:38px;
+  }
+  .metricGrid{
+    grid-template-columns:1fr 1fr!important;
+  }
+  .metricGrid article{
+    height:132px;
+  }
+  .tableHead{display:none!important}
+  .productRow{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:12px!important;
+    padding:14px!important;
+  }
+  .productRow>span,
+  .productRow>.statusSelect{
+    display:none!important;
+  }
+  .rowActions{
+    display:flex!important;
+    grid-column:1/-1;
+  }
+  .releaseGrid{
+    grid-template-columns:1fr!important;
+  }
+  .releasePreview{
+    min-height:460px;
+  }
+  .twoCol{
+    grid-template-columns:1fr!important;
+  }
+  .inventoryRow{
+    grid-template-columns:minmax(0,1fr) auto!important;
+  }
+  .inventoryRow>span:nth-of-type(2),
+  .inventoryRow>span:nth-of-type(3){
+    display:none;
+  }
+  .discountLayout{
+    grid-template-columns:1fr!important;
+  }
+  .commerceOpsGrid{
+    grid-template-columns:1fr!important;
+  }
+}
+
+@media(max-width:560px){
+  .adminTop{
+    align-items:flex-start;
+    padding:26px 0;
+  }
+  .adminTop h1{
+    font-size:42px;
+  }
+  .topActions{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr;
+  }
+  .metricGrid{
+    grid-template-columns:1fr!important;
+  }
+  .metricGrid article{
+    height:118px!important;
+  }
+  .sectionLabel{
+    gap:7px!important;
+  }
+  .sectionLabel p{
+    font-size:12px;
+  }
+  .releaseForm,
+  .discountForm,
+  .commerceCard,
+  .commerceVariants,
+  .commerceReturns{
+    padding:16px!important;
+  }
+  .formGrid,
+  .discountGrid{
+    grid-template-columns:1fr!important;
+  }
+  .commerceVariantRow{
+    grid-template-columns:1fr!important;
+  }
+  .commerceVariantRow>*{
+    grid-column:1!important;
+  }
+}
