@@ -30,7 +30,7 @@ export async function POST(request){
    completed:'ORDER COMPLETED'
   };
   const heading=labels[payload.type]||'ORDER UPDATE';
-  const tracking=payload.tracking_number?\`\nCarrier: ${payload.shipping_carrier||'—'}\nTracking: ${payload.tracking_number}\`:'';
+  const tracking=payload.tracking_number?`\nCarrier: ${payload.shipping_carrier||'—'}\nTracking: ${payload.tracking_number}`:'';
   const text=[
    heading,
    '',
