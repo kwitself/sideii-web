@@ -3,7 +3,7 @@ import ApplicationForm from './ApplicationForm';
 import './apply.css';
 
 export const metadata={
- title:'Production Application — SIDE:II',
+ title:'Production Application',
  description:'Apply for CD pressing, merch printing and physical music production with SIDE:II.'
 };
 
