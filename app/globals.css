@@ -2067,3 +2067,243 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   .accountAddressTitle b{font-size:15px!important}
   .accountOrderRow>div b{font-size:13px!important}
 }
+
+
+/* Desktop + tablet final polish */
+@media(min-width:761px){
+  .shell{width:min(1280px,calc(100% - 96px))}
+  .nav{
+    min-height:74px;
+    display:flex;
+    align-items:center;
+  }
+  .nav .brand{
+    display:flex;
+    align-items:center;
+    flex:0 0 auto;
+  }
+  .nav nav{
+    margin-left:auto;
+    margin-right:138px;
+    gap:30px;
+  }
+  .nav nav a{
+    letter-spacing:.15em;
+  }
+
+  .hero{
+    min-height:calc(100vh - 74px);
+  }
+  .heroCore{max-width:1060px}
+  .heroLogo{max-width:940px}
+  .statement{gap:90px}
+  .statement>div{max-width:620px}
+  .sectionHead{align-items:end}
+  .releaseGrid{gap:34px}
+  .releaseMeta h3{max-width:92%}
+  .imprintInner{gap:80px}
+  .about{gap:72px}
+  .aboutCopy{max-width:720px}
+  .homeStorePreview{gap:18px}
+  .homeStoreCard{
+    min-height:136px;
+    padding:14px;
+  }
+  .homeStoreCard b{line-height:1.08}
+  .closingInner{min-height:54vh}
+  .footerInner{min-height:260px}
+
+  .storeHero{
+    padding-top:88px!important;
+    padding-bottom:54px!important;
+  }
+  .storeHero h1{
+    max-width:760px;
+  }
+  .storeHero p{
+    max-width:700px;
+    line-height:1.55;
+  }
+  .storeFilters{
+    align-items:flex-start;
+    padding-top:24px!important;
+  }
+  .storeCatalogue{
+    padding-top:38px!important;
+  }
+  .storeProduct{
+    grid-template-columns:minmax(260px,330px) minmax(0,1fr)!important;
+    gap:58px!important;
+    padding:42px 0!important;
+  }
+  .storeCover{
+    align-self:start;
+  }
+  .storeProductMeta{
+    padding-top:2px;
+  }
+  .storeProductMeta h2{
+    max-width:760px;
+  }
+  .storeVariants{
+    max-width:900px;
+  }
+  .storeVariant{
+    grid-template-columns:minmax(0,1fr) 100px 128px!important;
+  }
+  .storeWishlistButton{
+    top:42px;
+  }
+
+  .productHero{
+    padding-top:58px!important;
+    padding-bottom:58px!important;
+  }
+  .productReleaseLayout>.productInfo{
+    margin-left:38%;
+    width:62%;
+  }
+  .releaseHeroPair{
+    gap:18px;
+  }
+  .releaseHeroPair h1{
+    max-width:760px;
+  }
+  .releaseImprintWordmark img{
+    max-width:185px;
+    max-height:86px;
+    object-fit:contain;
+  }
+  .editionExperience{
+    grid-template-columns:minmax(360px,1.02fr) minmax(360px,.98fr)!important;
+    gap:6vw!important;
+    margin-top:48px!important;
+  }
+  .productVisual{
+    max-width:590px!important;
+    justify-self:start;
+  }
+  .editionPanel{
+    max-width:620px;
+    justify-self:end;
+    width:100%;
+  }
+  .editionChooser>div{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .editionChooser button{
+    min-width:88px;
+  }
+  .releaseImprintStrip{
+    margin-top:32px!important;
+  }
+  .trackSection{
+    padding-top:74px!important;
+    padding-bottom:74px!important;
+  }
+  .productNote{
+    padding-top:82px!important;
+    padding-bottom:96px!important;
+  }
+  .productNote p{
+    max-width:900px;
+  }
+
+  .merchDetail{
+    max-width:1380px;
+    margin:0 auto;
+  }
+  .merchDetailPreview{
+    min-height:620px!important;
+  }
+  .merchDetailInfo{
+    top:96px!important;
+  }
+
+  .globalBagDrawer{
+    width:min(500px,92vw)!important;
+    padding:30px 32px 36px!important;
+  }
+  .globalAccountDrawer{
+    width:min(460px,92vw)!important;
+    padding:28px 30px 36px!important;
+  }
+  .globalBagItems article{
+    grid-template-columns:64px minmax(0,1fr) auto!important;
+  }
+  .globalCheckout h3{
+    font-size:34px!important;
+  }
+  .checkoutSavedAddressPreview{
+    padding:12px;
+  }
+  .accountOrderDetail{
+    margin-top:24px;
+  }
+}
+
+@media(min-width:761px) and (max-width:1100px){
+  .shell{width:min(100% - 56px,1080px)}
+  .nav nav{
+    gap:20px;
+    margin-right:132px;
+  }
+  .statement{gap:54px}
+  .about{gap:48px}
+  .homeStorePreview{grid-template-columns:1fr 1fr}
+  .homeStoreCard:last-child:nth-child(odd){grid-column:1/-1}
+
+  .storeProduct{
+    grid-template-columns:minmax(220px,280px) minmax(0,1fr)!important;
+    gap:36px!important;
+  }
+  .storeVariant{
+    grid-template-columns:minmax(0,1fr) 88px 112px!important;
+    gap:12px!important;
+  }
+
+  .productReleaseLayout>.productInfo{
+    margin-left:30%;
+    width:70%;
+  }
+  .releaseHeroPair h1{
+    font-size:clamp(54px,7vw,82px)!important;
+  }
+  .editionExperience{
+    grid-template-columns:minmax(300px,.92fr) minmax(330px,1.08fr)!important;
+    gap:4vw!important;
+  }
+  .productVisual{max-width:500px!important}
+
+  .merchDetail{
+    grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr)!important;
+    gap:38px!important;
+    padding-left:28px;
+    padding-right:28px;
+  }
+  .merchDetailPreview{min-height:520px!important}
+}
+
+/* subtle desktop interaction consistency */
+@media(hover:hover) and (pointer:fine){
+  .nav nav a:hover,
+  .footerNav a:hover{color:#f0ece4}
+  .homeStoreCard,
+  .storeVariant>button,
+  .editionChooser button,
+  .productButton,
+  .releaseBagLink,
+  .accountPrimary,
+  .globalBagCheckout{
+    transition:border-color .18s ease,background .18s ease,color .18s ease,transform .18s ease;
+  }
+  .homeStoreCard:hover{transform:translateY(-2px)}
+  .storeVariant>button:hover:not(:disabled),
+  .editionChooser button:hover,
+  .productButton:hover,
+  .releaseBagLink:hover{
+    transform:translateY(-1px);
+  }
+}
