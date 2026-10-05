@@ -240,6 +240,7 @@ export default function GlobalAccount(){
        <div className="grand"><span>TOTAL</span><b>{money(selectedOrder.total)}</b></div>
       </div>
       {selectedOrder.shipping_address&&<div className="accountOrderAddress"><span>DELIVERY</span><b>{selectedOrder.shipping_name||displayName}</b><p>{selectedOrder.shipping_phone||''}</p><p>{selectedOrder.shipping_address.line1||''}</p><p>{[selectedOrder.shipping_address.district,selectedOrder.shipping_address.city,selectedOrder.shipping_address.postal_code].filter(Boolean).join(' · ')}</p></div>}
+      {selectedOrder.invoice_type&&<div className="accountOrderInvoice"><span>INVOICE</span><b>{selectedOrder.invoice_type==='company'?(selectedOrder.invoice_company||'COMPANY'):'INDIVIDUAL'}</b>{selectedOrder.invoice_type==='company'&&<><p>{selectedOrder.invoice_tax_office||''}</p><p>{selectedOrder.invoice_tax_number||''}</p></>}</div>}
       {(selectedOrder.shipping_carrier||selectedOrder.tracking_number)&&<div className="accountOrderTracking"><span>TRACKING</span><b>{selectedOrder.shipping_carrier||'CARRIER'}</b><p>{selectedOrder.tracking_number||'Not assigned yet'}</p>{selectedOrder.shipped_at&&<small>SHIPPED · {new Date(selectedOrder.shipped_at).toLocaleString('tr-TR')}</small>}</div>}
       {selectedOrder.notes&&<div className="accountOrderNote"><span>ORDER NOTE</span><p>{selectedOrder.notes}</p></div>}
       <div className="accountOrderRequest">
