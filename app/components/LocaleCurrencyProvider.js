@@ -22,7 +22,25 @@ const tr={
  'OWNED UNITS':'SAHİP OLUNAN ÜRÜN','PASSPORTS':'PASAPORTLAR','OWNER CONTENT':'SAHİBE ÖZEL İÇERİK','VERIFIED IMPACT':'DOĞRULANMIŞ ETKİ',
  'STORE CREDIT':'MAĞAZA BAKİYESİ','CATALOGUE COMPLETION':'KATALOG TAMAMLAMA','ORDER HISTORY':'SİPARİŞ GEÇMİŞİ','SIGN OUT':'ÇIKIŞ YAP',
  'STORE POLICIES':'MAĞAZA POLİTİKALARI','WEAR WHAT YOU SUPPORT':'DESTEKLEDİĞİNİ GİY','COLLECTIONS':'KOLEKSİYONLAR','BUNDLES':'PAKETLER','ARCHIVE':'ARŞİV',
- 'Store':'Mağaza','Releases':'Yayınlar','Artists':'Sanatçılar','Credits':'Krediler','Impact':'Etki'
+ 'Store':'Mağaza','Releases':'Yayınlar','Artists':'Sanatçılar','Credits':'Krediler','Impact':'Etki',
+ 'Collections':'Koleksiyonlar','Bundles':'Paketler','Archive':'Arşiv','Timeline':'Zaman Çizgisi','Wholesale':'Toptan Satış',
+ 'CATALOGUE / TIMELINE':'KATALOG / ZAMAN ÇİZGİSİ','In sequence,':'Sırayla,','not in silence.':'sessiz değil.',
+ 'Every public SIDE:II catalogue object arranged by catalogue number.':'Tüm herkese açık SIDE:II katalog nesneleri katalog numarasına göre sıralanır.',
+ 'OPEN RECORD →':'KAYDI AÇ →','PRESS / MEDIA KIT':'BASIN / MEDYA KİTİ','PRESS COPY':'BASIN METNİ','ASSETS':'DOSYALAR',
+ 'No public assets available.':'Herkese açık medya dosyası bulunmuyor.','OPEN ↗':'AÇ ↗',
+ 'STORE / COLLECTIONS':'MAĞAZA / KOLEKSİYONLAR','Objects,':'Nesneler,','grouped by intent.':'amaçlarına göre bir arada.',
+ 'STORE / BUNDLES':'MAĞAZA / PAKETLER','More than':'Birden fazla','one object.':'nesne.',
+ 'CATALOGUE / ARTISTS':'KATALOG / SANATÇILAR','People behind':'Nesnelerin','the objects.':'arkasındaki insanlar.',
+ 'CATALOGUE / CREDITS':'KATALOG / KREDİLER','Who made':'Nesneyi','the object.':'kim yaptı.',
+ 'CATALOGUE / ARCHIVE':'KATALOG / ARŞİV','Past objects,':'Geçmiş nesneler,','kept in view.':'görünür kalır.',
+ 'B2B / WHOLESALE':'B2B / TOPTAN SATIŞ','Catalogue,':'Katalog,','for shelves.':'raflar için.',
+ 'TRADE / APPLICATION':'TİCARİ / BAŞVURU','Tell us where':'Müziği nerede','you sell music.':'sattığınızı anlatın.',
+ 'SUBMIT TRADE INTEREST →':'TİCARİ BAŞVURUYU GÖNDER →','COMPANY / STORE':'FİRMA / MAĞAZA','CONTACT NAME':'İLGİLİ KİŞİ',
+ 'COUNTRY CODE':'ÜLKE KODU','STORE / DISTRIBUTION NOTES':'MAĞAZA / DAĞITIM NOTLARI',
+ 'WEAR WHAT YOU SUPPORT / VERIFIED IMPACT':'WEAR WHAT YOU SUPPORT / DOĞRULANMIŞ ETKİ','Support,':'Destek,','accounted for.':'kayıt altına alınır.',
+ 'CAMPAIGNS':'KAMPANYALAR','HOW IT WORKS':'NASIL ÇALIŞIR','OPEN STORE →':'MAĞAZAYI AÇ →','SHOP MERCH →':'MERCH ALIŞVERİŞİ →',
+ 'SIDE:II / OBJECTS':'SIDE:II / NESNELER','Wear what':'Desteklediğini','you support.':'giy.','AVAILABLE OBJECTS':'MEVCUT NESNELER',
+ 'THE CATALOGUE DOES NOT END AT THE RECORD.':'KATALOG PLAKTA BİTMEZ.'
 };
 
 const dict={en:{},tr};
