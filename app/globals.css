@@ -2395,3 +2395,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .orderDoneStoreValue{display:block;margin-top:10px;font:8px/1.35 Arial,sans-serif;font-style:normal;letter-spacing:.12em;color:#8fab86}
 .orderDoneStoreValue.error{color:#a77f87}
 @media(max-width:520px){.storeValueGift{grid-template-columns:1fr}.storeValueGift button{width:100%}}
+
+.accountOrderTotals .storeValueHistory{color:#9dad94}
+.accountOrderGift{margin-top:12px;padding:14px;border:1px solid #3a393d;background:#0d0d0f}
+.accountOrderGift>span{display:block;font:7px/1 Arial,sans-serif;letter-spacing:.14em;color:#77747a}
+.accountOrderGift>b{display:block;margin-top:8px;font:13px/1.25 Georgia,serif;font-weight:400;color:#c9c4bc}
+.accountOrderGift>p{margin:9px 0 0;color:#85817b;font:12px/1.55 Georgia,serif}
