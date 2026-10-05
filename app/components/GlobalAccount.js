@@ -269,13 +269,16 @@ export default function GlobalAccount(){
        <div><span>SUBTOTAL</span><b>{money(selectedOrder.subtotal)}</b></div>
        {Number(selectedOrder.discount_total||0)>0&&<div><span>DISCOUNT{selectedOrder.promo_code?' · '+selectedOrder.promo_code:''}</span><b>−{money(selectedOrder.discount_total)}</b></div>}
        {Number(selectedOrder.campaign_discount_total||0)>0&&<div><span>CAMPAIGN{selectedOrder.campaign_name?' · '+selectedOrder.campaign_name:''}</span><b>−{money(selectedOrder.campaign_discount_total)}</b></div>}
+       {Number(selectedOrder.gift_card_amount||0)>0&&<div><span>GIFT CARD</span><b>−{money(selectedOrder.gift_card_amount)}</b></div>}
+       {Number(selectedOrder.store_credit_amount||0)>0&&<div><span>STORE CREDIT</span><b>−{money(selectedOrder.store_credit_amount)}</b></div>}
+       {Number(selectedOrder.store_value_total||0)>0&&<div className="storeValueHistory"><span>STORE VALUE · {String(selectedOrder.store_value_status||'').toUpperCase()}</span><b>−{money(selectedOrder.store_value_total)}</b></div>}
        <div><span>SHIPPING</span><b>{Number(selectedOrder.shipping_total||0)>0?money(selectedOrder.shipping_total):'FREE'}</b></div>
        <div className="grand"><span>TOTAL</span><b>{money(selectedOrder.total)}</b></div>
       </div>
       {selectedOrder.shipping_address&&<div className="accountOrderAddress"><span>DELIVERY</span><b>{selectedOrder.shipping_name||displayName}</b><p>{selectedOrder.shipping_phone||''}</p><p>{selectedOrder.shipping_address.line1||''}</p><p>{[selectedOrder.shipping_address.district,selectedOrder.shipping_address.city,selectedOrder.shipping_address.postal_code].filter(Boolean).join(' · ')}</p></div>}
       {selectedOrder.invoice_type&&<div className="accountOrderInvoice"><span>INVOICE</span><b>{selectedOrder.invoice_type==='company'?(selectedOrder.invoice_company||'COMPANY'):'INDIVIDUAL'}</b>{selectedOrder.invoice_type==='company'&&<><p>{selectedOrder.invoice_tax_office||''}</p><p>{selectedOrder.invoice_tax_number||''}</p></>}</div>}
       {(selectedOrder.shipping_carrier||selectedOrder.tracking_number)&&<div className="accountOrderTracking"><span>TRACKING</span><b>{selectedOrder.shipping_carrier||'CARRIER'}</b><p>{selectedOrder.tracking_number||'Not assigned yet'}</p>{selectedOrder.shipped_at&&<small>SHIPPED · {new Date(selectedOrder.shipped_at).toLocaleString('tr-TR')}</small>}</div>}
-      {selectedOrder.notes&&<div className="accountOrderNote"><span>ORDER NOTE</span><p>{selectedOrder.notes}</p></div>}
+      {selectedOrder.is_gift&&<div className="accountOrderGift"><span>GIFT ORDER</span><b>{selectedOrder.hide_prices?'PRICES HIDDEN IN PACKING':'STANDARD PACKING'}</b>{selectedOrder.gift_message&&<p>{selectedOrder.gift_message}</p>}</div>}{selectedOrder.notes&&<div className="accountOrderNote"><span>ORDER NOTE</span><p>{selectedOrder.notes}</p></div>}
       <div className="accountOrderRequest">
        <span>ORDER REQUESTS</span>
        {(selectedOrder.return_requests||[]).length>0&&<div className="accountOrderRequestHistory">{selectedOrder.return_requests.map(r=><p key={r.id}>{String(r.request_type).toUpperCase()} · {String(r.status).toUpperCase()} · {new Date(r.created_at).toLocaleDateString('tr-TR')}</p>)}</div>}
