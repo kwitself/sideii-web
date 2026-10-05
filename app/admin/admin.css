@@ -1330,3 +1330,14 @@
 .locationStockInputs input{min-height:38px;border:1px solid #343337;background:#09090a;color:#d3cfc8;padding:8px 9px}
 @media(max-width:1100px){.fulfillmentMediaGrid{grid-template-columns:1fr}.locationStockRow{grid-template-columns:1fr}.locationStockInputs{grid-template-columns:repeat(2,minmax(100px,1fr))}}
 @media(max-width:700px){.locationStockInputs{grid-template-columns:1fr}.locationRow,.pressKitRow{align-items:flex-start;flex-direction:column}}
+
+.valueMilestones{padding:18px}
+.valueMilestones>header{display:flex;justify-content:space-between;gap:16px;padding-bottom:12px;border-bottom:1px solid #28272a}
+.valueMilestones>header span{font-size:9px;letter-spacing:.17em;color:#aaa69f}
+.valueMilestones>header small{font-size:9px;color:#67646a}
+.valueMilestoneRow{display:grid;grid-template-columns:minmax(220px,1fr) 110px 190px auto;gap:8px;align-items:center;padding:11px 0;border-bottom:1px solid #242326}
+.valueMilestoneRow b{font:14px Georgia,serif;font-weight:400}
+.valueMilestoneRow small{display:block;margin-top:4px;color:#6d6970;font-size:7px;letter-spacing:.09em}
+.valueMilestoneRow input{min-height:38px;border:1px solid #343337;background:#09090a;color:#d3cfc8;padding:8px 9px}
+@media(max-width:900px){.valueMilestoneRow{grid-template-columns:1fr 1fr}.valueMilestoneRow>div{grid-column:1/-1}.valueMilestoneRow .saveButton{grid-column:2}}
+@media(max-width:560px){.valueMilestoneRow{grid-template-columns:1fr}.valueMilestoneRow>div,.valueMilestoneRow .saveButton{grid-column:1}}
