@@ -1900,3 +1900,60 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .mockupBody.mockupFullscreen .teeZoomStage::after{
   transition:none;
 }
+
+
+/* Merch editor sizing tools */
+.mockupCanvasTools .unitToggle{
+  min-width:46px;
+  border-color:#555159;
+  color:#d8d3cb;
+}
+.mockupSizeTools{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:minmax(160px,.8fr) minmax(220px,1.2fr);
+  gap:10px;
+  align-items:end;
+}
+.mockupSizeTools>label{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+.mockupSizeTools>label>span,
+.mockupPresets>span{
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.14em;
+  color:#77737a;
+}
+.mockupSizeTools input{
+  min-height:38px;
+  border:1px solid #343338;
+  background:#09090a;
+  color:#ddd8d0;
+  padding:0 10px;
+  font-size:11px;
+}
+.mockupPresets{
+  display:grid;
+  grid-template-columns:auto repeat(4,1fr);
+  gap:6px;
+  align-items:center;
+}
+.mockupPresets>span{padding-right:4px;white-space:nowrap}
+.mockupPresets button{
+  min-height:38px;
+  border:1px solid #343338;
+  background:#09090a;
+  color:#8f8b84;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.1em;
+  cursor:pointer;
+}
+.mockupPresets button:hover:not(:disabled){border-color:#6d696f;color:#eeeae3;background:#131315}
+.mockupPresets button:disabled{opacity:.25;cursor:not-allowed}
+@media(max-width:620px){
+  .mockupSizeTools{grid-template-columns:1fr}
+  .mockupPresets{grid-template-columns:repeat(4,1fr)}
+  .mockupPresets>span{grid-column:1/-1}
+}
