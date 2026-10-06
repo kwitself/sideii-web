@@ -2,6 +2,7 @@ import Link from 'next/link';
 import {notFound} from 'next/navigation';
 import {createClient} from '@supabase/supabase-js';
 import './receipt.css';
+import GlobalHeader from '../../../components/GlobalHeader';
 
 export const revalidate=0;
 function sb(){const u=process.env.NEXT_PUBLIC_SUPABASE_URL,k=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;return u&&k?createClient(u,k,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}}):null}
@@ -14,7 +15,7 @@ export default async function ReceiptPage({params}){
  const {data,error}=await c.rpc('get_public_impact_receipt',{p_token:token});const r=Array.isArray(data)?data[0]:data;
  if(error||!r)notFound();
  return <main className="impactReceiptPage">
-  <header className="nav shell"><Link className="brand" href="/"><img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/></Link><nav><Link href="/impact">Impact</Link><Link href="/store">Store</Link></nav></header>
+  <GlobalHeader/>
   <section className="impactReceiptHero shell"><span>IMPACT RECEIPT / VERIFIED</span><h1>{r.campaign_name}</h1><p>{r.customer_message||'This purchase contributed to a verified SIDE:II donation batch.'}</p></section>
   <section className="impactReceiptCard shell"><div className="impactReceiptSeal">✓</div><div className="impactReceiptFacts">
    <div><span>CONTRIBUTION</span><b>{money(r.amount,r.currency)}</b></div><div><span>PRODUCT</span><b>{r.product_title}</b></div>
