@@ -1527,103 +1527,42 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 }
 
 
-/* Multi-product mockup templates */
+
+
+/* Multi-product mockup templates — SVG rebuild */
 .mockupToolbar{grid-template-columns:auto auto minmax(130px,.8fr) minmax(150px,1fr) auto auto}
 .mockupToolbar .mockupTypeSelect{border-color:#57535a;color:#d3cec6;background:#111113}
 .mockupStudioV2 .technicalObject{
   position:relative;
   width:min(88%,390px);
   aspect-ratio:1/1;
-  filter:drop-shadow(0 28px 32px rgba(0,0,0,.5));
+  filter:drop-shadow(0 28px 34px rgba(0,0,0,.5));
   user-select:none;
 }
-.mockupStudioV2 .technicalObject .objectShape{
-  position:absolute;inset:8%;
-  color:var(--object-color,#171719);
+.mockupStudioV2 .technicalObject.patch{aspect-ratio:1.55/1}
+.mockupStudioV2 .technicalObject .objectSvg{display:block;width:100%;height:100%;overflow:visible}
+.mockupStudioV2 .technicalObject .objectLine{
+  fill:none;stroke:rgba(235,232,225,.72);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;
 }
+.mockupStudioV2 .technicalObject .objectLine.soft{stroke:rgba(235,232,225,.26);stroke-width:1.1}
+.mockupStudioV2 .technicalObject .objectLine.stitch{stroke-dasharray:5 5;stroke:rgba(235,232,225,.42);stroke-width:1.2}
+.mockupStudioV2 .technicalObject .objectFill{stroke:none}
 .mockupStudioV2 .technicalObject .objectArtwork{
-  position:absolute;z-index:4;height:auto;max-width:none;object-fit:contain;
-  filter:drop-shadow(0 1px 1px rgba(0,0,0,.28));pointer-events:none;
+  position:absolute;z-index:4;height:auto;max-width:none;object-fit:contain;filter:drop-shadow(0 1px 1px rgba(0,0,0,.28));pointer-events:none
 }
 .mockupStudioV2 .technicalObject .objectPrintClip{
   position:absolute;z-index:4;overflow:hidden;pointer-events:none;
-  border:1px dashed rgba(235,232,225,.25);
-  background:rgba(255,255,255,.012);
+  border:1px dashed rgba(235,232,225,.34);background:rgba(255,255,255,.018)
 }
-.mockupStudioV2 .technicalObject .objectTemplateLabel{
-  position:absolute;left:50%;bottom:3%;transform:translateX(-50%);
-  font:7px/1 Arial,sans-serif;letter-spacing:.16em;color:#5f5b61;
-  white-space:nowrap;
-}
-/* Mug */
-.mockupStudioV2 .technicalObject.mug .objectShape{
-  left:14%;right:16%;top:17%;bottom:16%;
-  border-radius:8% 8% 14% 14% / 8% 8% 10% 10%;
-  background:linear-gradient(90deg,rgba(255,255,255,.09),transparent 18%,transparent 82%,rgba(0,0,0,.24)),var(--object-color);
-  border:1px solid rgba(235,232,225,.28);
-}
-.mockupStudioV2 .technicalObject.mug .mugHandle{
-  position:absolute;right:-23%;top:22%;width:34%;height:48%;
-  border:18px solid var(--object-color);border-left-width:12px;border-radius:0 50% 50% 0;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),0 0 0 1px rgba(255,255,255,.14);
-}
-.mockupStudioV2 .technicalObject.mug .mugRim{
-  position:absolute;left:5%;right:5%;top:-3%;height:10%;
-  border-radius:50%;border:1px solid rgba(255,255,255,.25);
-  background:rgba(0,0,0,.28);
-}
-.mockupStudioV2 .technicalObject.mug .objectPrintClip{left:25%;top:33%;width:44%;height:34%}
-/* Lighter */
-.mockupStudioV2 .technicalObject.lighter .objectShape{
-  left:27%;right:27%;top:10%;bottom:9%;
-  border-radius:6%;
-  background:linear-gradient(135deg,rgba(255,255,255,.11),transparent 22%,rgba(0,0,0,.2) 65%),var(--object-color);
-  border:1px solid rgba(255,255,255,.28);
-}
-.mockupStudioV2 .technicalObject.lighter .lighterLid{
-  position:absolute;left:0;right:0;top:0;height:34%;
-  border-bottom:1px solid rgba(255,255,255,.3);
-}
-.mockupStudioV2 .technicalObject.lighter .lighterHinge{
-  position:absolute;left:-6%;top:31%;width:8%;height:12%;
-  border-radius:2px;background:#59585c;box-shadow:0 7px 0 #3e3d40,0 14px 0 #59585c;
-}
-.mockupStudioV2 .technicalObject.lighter .objectPrintClip{left:34%;top:48%;width:32%;height:30%}
-/* Beanie */
-.mockupStudioV2 .technicalObject.beanie .objectShape{
-  left:12%;right:12%;top:17%;bottom:14%;
-  border-radius:48% 48% 18% 18% / 58% 58% 18% 18%;
-  background:
-    repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 3px,rgba(0,0,0,.08) 3px 6px),
-    var(--object-color);
-  border:1px solid rgba(255,255,255,.18);
-}
-.mockupStudioV2 .technicalObject.beanie .beanieCrown{
-  position:absolute;left:46%;top:-2%;width:8%;height:8%;
-  border-top:1px solid rgba(255,255,255,.17);transform:rotate(45deg);
-}
-.mockupStudioV2 .technicalObject.beanie .beanieCuff{
-  position:absolute;left:-1%;right:-1%;bottom:0;height:32%;
-  border-top:1px solid rgba(255,255,255,.2);
-  background:repeating-linear-gradient(90deg,rgba(255,255,255,.035) 0 3px,rgba(0,0,0,.1) 3px 6px);
-}
-.mockupStudioV2 .technicalObject.beanie .objectPrintClip{left:34%;top:62%;width:32%;height:16%}
-/* Patch */
-.mockupStudioV2 .technicalObject.patch{aspect-ratio:1.55/1}
-.mockupStudioV2 .technicalObject.patch .objectShape{
-  left:7%;right:7%;top:16%;bottom:16%;
-  border-radius:7%;
-  background:
-    repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 2px,rgba(0,0,0,.06) 2px 4px),
-    var(--object-color);
-  border:3px solid rgba(235,232,225,.32);
-  box-shadow:inset 0 0 0 5px rgba(0,0,0,.38);
-}
-.mockupStudioV2 .technicalObject.patch .patchBorder{
-  position:absolute;inset:6%;border:1px dashed rgba(235,232,225,.28);border-radius:5%;
-}
-.mockupStudioV2 .technicalObject.patch .objectPrintClip{left:17%;top:30%;width:66%;height:40%}
 .mockupStudioV2 .technicalObject .objectPrintClip.hasArtwork{border-color:rgba(235,232,225,.12)}
+.mockupStudioV2 .technicalObject .objectTemplateLabel{
+  position:absolute;left:50%;bottom:1%;transform:translateX(-50%);
+  font:7px/1 Arial,sans-serif;letter-spacing:.16em;color:#6b676d;white-space:nowrap
+}
+.mockupStudioV2 .technicalObject.mug .objectPrintClip{left:27%;top:34%;width:42%;height:32%}
+.mockupStudioV2 .technicalObject.lighter .objectPrintClip{left:34%;top:49%;width:32%;height:27%}
+.mockupStudioV2 .technicalObject.beanie .objectPrintClip{left:34%;top:66%;width:32%;height:13%}
+.mockupStudioV2 .technicalObject.patch .objectPrintClip{left:18%;top:34%;width:64%;height:32%}
 @media(max-width:760px){
   .mockupToolbar{grid-template-columns:1fr 1fr}
   .mockupToolbar .mockupTypeSelect{grid-column:1/-1}
