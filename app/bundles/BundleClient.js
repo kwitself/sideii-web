@@ -1,3 +1,4 @@
+import GlobalHeader from '../components/GlobalHeader';
 'use client';
 import Link from 'next/link';
 import {useMemo,useState} from 'react';
@@ -31,7 +32,7 @@ export default function BundleClient({bundles=[],products=[]}){
  }
 
  return <main className="bundlesPage">
-  <header className="nav shell"><Link className="brand" href="/"><img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/></Link><nav><Link href="/store">Store</Link><Link href="/collections">Collections</Link><Link href="/bundles">Bundles</Link></nav></header>
+  <GlobalHeader/>
   <section className="bundlesHero shell"><span>STORE / BUNDLES</span><h1>More than<br/><i>one object.</i></h1><p>Collector sets combine catalogue objects into a single purchase. Eligible bundle savings are calculated again by the store backend at checkout.</p></section>
   <section className="bundleList shell">
    {message&&<p className="bundleMessage">{message}</p>}
