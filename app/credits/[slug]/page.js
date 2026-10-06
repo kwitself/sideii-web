@@ -2,6 +2,7 @@ import Link from 'next/link';
 import {notFound} from 'next/navigation';
 import {createClient} from '@supabase/supabase-js';
 import '../credits.css';
+import GlobalHeader from '../../components/GlobalHeader';
 
 export const revalidate=0;
 function client(){const u=process.env.NEXT_PUBLIC_SUPABASE_URL,k=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;return u&&k?createClient(u,k,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}}):null}
@@ -16,7 +17,7 @@ export default async function CreditDetail({params}){
  const {data,error}=await sb.rpc('get_credit_person_catalogue',{p_person_name:person.person_name});const rows=Array.isArray(data)?data:[];
  if(error)notFound();
  return <main className="creditsPage">
-  <header className="nav shell"><Link className="brand" href="/"><img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/></Link><nav><Link href="/credits">Credits</Link><Link href="/artists">Artists</Link></nav></header>
+  <GlobalHeader/>
   <section className="creditDetailHero shell"><span>CREDIT / PERSON</span><h1>{person.person_name}</h1><p>{rows.length} credited catalogue appearance{rows.length===1?'':'s'}.</p></section>
   <section className="creditCatalogue shell">{rows.map((r,i)=><Link href={'/releases/'+r.slug} key={r.product_id+':'+r.role} className="creditRelease"><div>{asset(sb,r.artwork_path)?<img src={asset(sb,r.artwork_path)} alt={r.title}/>:<span>{r.catalogue_no}</span>}</div><section><small>{String(i+1).padStart(2,'0')} · {r.catalogue_no}</small><h2>{r.title}</h2><p>{r.artist_project||'SIDE:II'}</p><b>{r.role}</b></section></Link>)}</section>
  </main>
