@@ -1957,3 +1957,20 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .mockupPresets{grid-template-columns:repeat(4,1fr)}
   .mockupPresets>span{grid-column:1/-1}
 }
+
+
+/* Merch preview guide toggle */
+.mockupCanvasTools .activeTool{
+  border-color:#706b73!important;
+  color:#e3ddd4!important;
+  background:#141416!important;
+}
+.teeZoomStage.guidesOff::before,
+.teeZoomStage.guidesOff::after{opacity:0}
+.teeZoomStage.guidesOff .printGuide{opacity:0!important}
+.teeZoomStage.guidesOff .technicalTee::after{opacity:0!important}
+.teeZoomStage.guidesOff .objectPrintClip{
+  border-color:transparent!important;
+  background:transparent!important;
+}
+.teeZoomStage.guidesOff .objectTemplateLabel{opacity:0}
