@@ -1,0 +1,34 @@
+.frame{
+  width:100%;
+  height:100%;
+  min-height:260px;
+  display:grid;
+  place-items:center;
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 45%,rgba(255,255,255,.035),transparent 34%),
+    linear-gradient(180deg,#0a0a0c,#0d0d0f);
+}
+.tee{position:relative;width:min(78%,320px);aspect-ratio:420/500;filter:drop-shadow(0 22px 28px rgba(0,0,0,.38))}
+.tee svg,.objectSvg{display:block;width:100%;height:100%}
+.line,.soft,.seam,.stitch{fill:none;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+.line{stroke:rgba(235,232,225,.66);stroke-width:1.6}
+.soft{stroke:rgba(235,232,225,.24);stroke-width:1.1}
+.seam{stroke:rgba(235,232,225,.22);stroke-width:1}
+.stitch{stroke:rgba(235,232,225,.4);stroke-width:1.1;stroke-dasharray:5 5}
+.teePrint{position:absolute;left:30%;top:32%;width:40%;height:43%;overflow:hidden}
+.artwork{position:absolute;max-width:none;height:auto;object-fit:contain;pointer-events:none;user-select:none}
+.object{position:relative;width:min(76%,310px);aspect-ratio:1/1;filter:drop-shadow(0 22px 28px rgba(0,0,0,.4))}
+.patch{aspect-ratio:1.55/1;width:min(82%,360px)}
+.mugPrint,.lighterPrint,.beaniePrint,.patchPrint{position:absolute;overflow:hidden}
+.mugPrint{left:27%;top:34%;width:42%;height:32%}
+.lighterPrint{left:34%;top:49%;width:32%;height:27%}
+.beaniePrint{left:34%;top:66%;width:32%;height:13%}
+.patchPrint{left:18%;top:34%;width:64%;height:32%}
+@media(max-width:700px){
+  .frame{min-height:220px}
+  .tee{width:min(82%,280px)}
+  .object{width:min(80%,270px)}
+  .patch{width:min(86%,320px)}
+}
