@@ -1,3 +1,4 @@
+import GlobalHeader from '../components/GlobalHeader';
 'use client';
 import Link from 'next/link';
 import {useEffect,useMemo,useState} from 'react';
@@ -92,7 +93,7 @@ export default function StoreClient({releases}){
  const add=(r,v)=>{addCartItem(r,v);window.dispatchEvent(new Event('sideii-open-bag'))};
 
  return <main className={"storePage "+(filter==="lethargia"?"storePageLethargia":"")}>
-  <header className="nav shell"><Link className="brand" href="/"><img src="/brand/sideii-logo-flat.png" alt="Side II"/></Link><nav><Link href="/">{t('Releases')}</Link><Link href="/#imprints">Imprints</Link><Link href="/#about">About</Link><Link href="/apply">Apply</Link></nav></header>
+  <GlobalHeader/>
   <section className="storeHero shell"><span>STORE / CATALOGUE</span><h1>Available<br/><i>editions.</i></h1><p>Physical objects and digital masters from SIDE:II and its imprints.</p><div className="storeEditorialLinks"><Link className="storeWearEntry" href="/wear">{t('WEAR WHAT YOU SUPPORT')} →</Link><Link className="storeWearEntry" href="/collections">{t('COLLECTIONS')} →</Link><Link className="storeWearEntry" href="/bundles">{t('BUNDLES')} →</Link><Link className="storeWearEntry" href="/archive">{t('ARCHIVE')} →</Link></div></section>
   <section className="storeFilters shell"><div>{[['all','ALL'],['sideii','SIDE:II'],['lethargia','LETHARGIA'],['selected','SELECTED']].map(([v,l])=><button key={v} className={filter===v?'active':''} onClick={()=>setFilter(v)}>{l}</button>)}</div><div>{[['all','ALL MEDIA'],['merch','MERCH'],['vinyl','VINYL'],['cd','CD'],['cassette','CASSETTE'],['digital','DIGITAL']].map(([v,l])=><button key={v} className={formatFilter===v?'active':''} onClick={()=>setFormatFilter(v)}>{l}</button>)}</div></section>
   {filter==='lethargia'&&<section className="storeImprintContext shell"><div><small>A SIDE:II IMPRINT</small><img src="/brand/lethargia/lethargia-logo.png" alt="Lethargia Records"/></div><p>Independent editions developed under their own visual and physical logic.</p><Link href="/imprints/lethargia">OPEN IMPRINT ↗</Link></section>}
