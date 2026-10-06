@@ -110,10 +110,8 @@ export default function MerchEditor({product,onClose,onSaved,embedded=false,setu
  function startArtworkDrag(e){if(!mockup.designUrl||!printClipRef.current)return;e.preventDefault();const rect=printClipRef.current.getBoundingClientRect();dragRef.current={side:mockupBase.side,startClientX:e.clientX,startClientY:e.clientY,startX:Number(mockup.x),startY:Number(mockup.y),rect};e.currentTarget.setPointerCapture?.(e.pointerId);}
  function handleArtworkWheel(e){if(!mockup.designUrl)return;e.preventDefault();const step=e.shiftKey?.5:1.5;const delta=e.deltaY<0?step:-step;markMockupDirty();setMockups(prev=>({...prev,[mockupBase.side]:{...prev[mockupBase.side],scale:clamp(Number(prev[mockupBase.side].scale||36)+delta,8,160)}}));}
  useEffect(()=>{ // SYNC_STAGE_CROSS_ONLY — moves guides, never the product
-  let raf=0;
-  const sync=()=>{
-   cancelAnimationFrame(raf);
-   raf=requestAnimationFrame(()=>{
+  let raf1=0,raf2=0,timer=0;
+  const measure=()=>{
     const stage=stageRef.current,clip=printClipRef.current;
     if(!stage||!clip)return;
     const s=stage.getBoundingClientRect(),p=clip.getBoundingClientRect();
@@ -121,13 +119,18 @@ export default function MerchEditor({product,onClose,onSaved,embedded=false,setu
     const y=(p.top+p.height/2)-s.top;
     stage.style.setProperty('--stage-cross-x',x+'px');
     stage.style.setProperty('--stage-cross-y',y+'px');
-   });
+    stage.dataset.crossDelta='0px';
+  };
+  const sync=()=>{
+   cancelAnimationFrame(raf1);cancelAnimationFrame(raf2);clearTimeout(timer);
+   raf1=requestAnimationFrame(()=>{raf2=requestAnimationFrame(measure)});
+   timer=setTimeout(measure,80);
   };
   sync();
   const ro=typeof ResizeObserver!=='undefined'?new ResizeObserver(sync):null;
   if(ro){if(stageRef.current)ro.observe(stageRef.current);if(printClipRef.current)ro.observe(printClipRef.current);}
   window.addEventListener('resize',sync);
-  return()=>{cancelAnimationFrame(raf);ro?.disconnect();window.removeEventListener('resize',sync)};
+  return()=>{cancelAnimationFrame(raf1);cancelAnimationFrame(raf2);clearTimeout(timer);ro?.disconnect();window.removeEventListener('resize',sync)};
  },[mockup.template,mockup.garment,mockupBase.side,teeZoom,mockupFullscreen]);
  useEffect(()=>{function onPointerMove(e){const drag=dragRef.current;if(!drag)return;const dx=((e.clientX-drag.startClientX)/drag.rect.width)*100;const dy=((e.clientY-drag.startClientY)/drag.rect.height)*100;let nextX=clamp(drag.startX+dx,0,100);let nextY=clamp(drag.startY+dy,0,100);const snapX=Math.abs(nextX-50)<=2.5;const snapY=Math.abs(nextY-50)<=2.5;if(snapX)nextX=50;if(snapY)nextY=50;setSnapGuides({x:snapX,y:snapY});setMockupDirty(prev=>({...prev,[drag.side]:true}));setMockups(prev=>({...prev,[drag.side]:{...prev[drag.side],x:nextX,y:nextY}}));}function onPointerUp(){dragRef.current=null;setSnapGuides({x:false,y:false});}window.addEventListener('pointermove',onPointerMove);window.addEventListener('pointerup',onPointerUp);return()=>{window.removeEventListener('pointermove',onPointerMove);window.removeEventListener('pointerup',onPointerUp);};},[]);
  useEffect(()=>{ // MOCKUP_KEYBOARD_SHORTCUTS
