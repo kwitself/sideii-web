@@ -30,21 +30,55 @@ function normalizeMockupTemplate(value){
 function TechnicalObject({mockup,printClipRef,onArtworkPointerDown,onArtworkWheel,snapGuides}){
  const type=normalizeMockupTemplate(mockup.template);
  const fill=mockup.garmentColor||'#171719';
+ const common=<>
+   <defs>
+    <linearGradient id={'objGrad-'+type} x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stopColor="#ffffff" stopOpacity=".10"/>
+      <stop offset="38%" stopColor={fill}/>
+      <stop offset="100%" stopColor="#000000" stopOpacity=".35"/>
+    </linearGradient>
+   </defs>
+  </>;
+ const art=<div ref={printClipRef} className={'objectPrintClip interactive'+(mockup.designUrl?' hasArtwork':'')} onWheel={onArtworkWheel}>
+   {snapGuides.x&&<i className="printGuide guideX"/>}{snapGuides.y&&<i className="printGuide guideY"/>}
+   {mockup.designUrl&&<img className="objectArtwork draggable" src={mockup.designUrl} alt="Print artwork" onPointerDown={onArtworkPointerDown} draggable="false" style={{left:mockup.x+'%',top:mockup.y+'%',width:mockup.scale+'%',transform:`translate(-50%,-50%) rotate(${mockup.rotation}deg)`}}/>}
+ </div>;
  return <div className={'technicalObject '+type} style={{'--object-color':fill}}>
-   <div className="objectShape" aria-hidden="true">
-     {type==='mug'&&<><i className="mugHandle"/><i className="mugRim"/></>}
-     {type==='lighter'&&<><i className="lighterLid"/><i className="lighterHinge"/></>}
-     {type==='beanie'&&<><i className="beanieCrown"/><i className="beanieCuff"/></>}
-     {type==='patch'&&<><i className="patchBorder"/></>}
-   </div>
-   <div ref={printClipRef} className={'objectPrintClip interactive'+(mockup.designUrl?' hasArtwork':'')} onWheel={onArtworkWheel}>
-     {snapGuides.x&&<i className="printGuide guideX"/>}{snapGuides.y&&<i className="printGuide guideY"/>}
-     {mockup.designUrl&&<img className="objectArtwork draggable" src={mockup.designUrl} alt="Print artwork" onPointerDown={onArtworkPointerDown} draggable="false" style={{left:mockup.x+'%',top:mockup.y+'%',width:mockup.scale+'%',transform:`translate(-50%,-50%) rotate(${mockup.rotation}deg)`}}/>}
-   </div>
-   <span className="objectTemplateLabel">{type.toUpperCase()} / PRINT AREA</span>
+  <svg className="objectSvg" viewBox="0 0 420 420" role="img" aria-label={type+' mockup'}>
+   {common}
+   {type==='mug'&&<>
+    <path className="objectFill" fill={'url(#objGrad-'+type+')'} d="M92 105 Q92 88 111 88 H292 Q311 88 311 105 V306 Q311 330 286 336 H117 Q92 330 92 306 Z"/>
+    <path className="objectLine" d="M111 88 H292 Q311 88 311 105 V306 Q311 330 286 336 H117 Q92 330 92 306 V105 Q92 88 111 88 Z"/>
+    <path className="objectLine soft" d="M111 88 Q201 75 292 88 M105 101 Q201 112 299 101"/>
+    <path className="objectLine" d="M311 143 C371 138 377 289 313 287"/>
+    <path className="objectLine soft" d="M316 166 C349 163 352 262 317 261"/>
+   </>}
+   {type==='lighter'&&<>
+    <rect className="objectFill" fill={'url(#objGrad-'+type+')'} x="126" y="52" width="168" height="314" rx="18"/>
+    <rect className="objectLine" x="126" y="52" width="168" height="314" rx="18"/>
+    <path className="objectLine" d="M126 157 H294"/>
+    <path className="objectLine soft" d="M117 145 h9 M117 154 h9 M117 163 h9 M117 172 h9"/>
+    <path className="objectLine soft" d="M145 70 H276"/>
+   </>}
+   {type==='beanie'&&<>
+    <path className="objectFill" fill={'url(#objGrad-'+type+')'} d="M87 277 C82 195 100 105 210 77 C320 105 338 195 333 277 Z"/>
+    <path className="objectLine" d="M87 277 C82 195 100 105 210 77 C320 105 338 195 333 277 Z"/>
+    <path className="objectFill" fill={'url(#objGrad-'+type+')'} d="M77 269 H343 V343 Q343 356 330 356 H90 Q77 356 77 343 Z"/>
+    <path className="objectLine" d="M77 269 H343 V343 Q343 356 330 356 H90 Q77 356 77 343 Z"/>
+    <path className="objectLine soft" d="M111 114 L111 268 M139 96 L139 268 M167 84 L167 268 M195 78 L195 268 M223 78 L223 268 M251 84 L251 268 M279 96 L279 268 M307 114 L307 268"/>
+    <path className="objectLine soft" d="M92 292 H328 M92 318 H328 M92 344 H328"/>
+   </>}
+   {type==='patch'&&<>
+    <rect className="objectFill" fill={'url(#objGrad-'+type+')'} x="56" y="117" width="308" height="186" rx="24"/>
+    <rect className="objectLine" x="56" y="117" width="308" height="186" rx="24"/>
+    <rect className="objectLine stitch" x="69" y="130" width="282" height="160" rx="17"/>
+    <path className="objectLine soft" d="M82 143 H338 M82 277 H338"/>
+   </>}
+  </svg>
+  {art}
+  <span className="objectTemplateLabel">{type.toUpperCase()} / PRINT AREA</span>
  </div>
 }
-
 export default function MerchEditor({product,onClose,onSaved,embedded=false,setupMode=false}){
  const initialGallery=Array.isArray(product.gallery_images)?product.gallery_images:[];
  const frontImage=initialGallery.find(item=>(item?.kind||'').toLowerCase()==='front');
