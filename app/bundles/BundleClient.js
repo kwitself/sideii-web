@@ -1,5 +1,5 @@
-import GlobalHeader from '../components/GlobalHeader';
 'use client';
+import GlobalHeader from '../components/GlobalHeader';
 import Link from 'next/link';
 import {useMemo,useState} from 'react';
 import {addCartItem,readCart} from '../lib/cart';
