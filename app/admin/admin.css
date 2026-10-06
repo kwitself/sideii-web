@@ -1979,7 +1979,6 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 /* Unified object zoom behavior */
 .mockupStudioV2 .teeZoomObject{
   transform:scale(var(--object-zoom,1));
-  transition:transform .16s ease;
 }
 .mockupBody.mockupFullscreen .teeZoomObject{
   transform:translate(-50%,-50%) scale(var(--object-zoom,1))!important;
