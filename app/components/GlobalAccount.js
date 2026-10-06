@@ -170,9 +170,10 @@ export default function GlobalAccount(){
  }
 
  if(pathname?.startsWith('/admin'))return null;
+ useEffect(()=>{if(!open)return;const onKey=e=>{if(e.key==='Escape')setOpen(false)};window.addEventListener('keydown',onKey);return()=>window.removeEventListener('keydown',onKey)},[open]);
  return <>
-  {!open&&<button className="globalAccountTrigger" onClick={()=>{setMessage('');setOpen(true)}}>{signedIn?initials:'ACCOUNT'}</button>}
-  <aside className={'globalAccountDrawer '+(open?'open':'')}>
+  {!open&&<button className="globalAccountTrigger" aria-haspopup="dialog" aria-expanded={open} aria-label={t('ACCOUNT')} onClick={()=>{setMessage('');setOpen(true)}}>{signedIn?initials:'ACCOUNT'}</button>}
+  <aside className={'globalAccountDrawer '+(open?'open':'')} role="dialog" aria-modal="true" aria-label={t('ACCOUNT')} aria-hidden={!open}>
    <button className="globalAccountClose" onClick={()=>setOpen(false)}>{t('CLOSE')} ×</button><span>{t('ACCOUNT')}</span>
    {!signedIn?<div className="accountAuth">
     <div className="accountTabs"><button className={mode==='signin'?'active':''} onClick={()=>setMode('signin')}>{t('SIGN IN')}</button><button className={mode==='signup'?'active':''} onClick={()=>setMode('signup')}>{t('CREATE ACCOUNT')}</button></div>
