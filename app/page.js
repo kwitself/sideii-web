@@ -3,7 +3,7 @@ import { getDatabaseReleases, getHomepageSelectedReleases, getHomepageStoreRelea
 import HomeSectionRail from './components/HomeSectionRail';
 import SelectedReleaseGrid from './components/SelectedReleaseGrid';
 import './catalogue.css';
-import GlobalHeader from 'components/GlobalHeader';
+import GlobalHeader from './components/GlobalHeader';
 
 export const revalidate = 0;
 
