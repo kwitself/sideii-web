@@ -16,7 +16,8 @@ const items=[
  ['growth-ops','11','Growth Ops'],
  ['value-ops','12','Value Ops'],
  ['localization','13','Localization'],
- ['fulfillment-media','14','Fulfillment + Media']
+ ['fulfillment-media','14','Fulfillment + Media'],
+ ['launch-readiness','15','Launch Readiness']
 ];
 
 export default function AdminRail(){
