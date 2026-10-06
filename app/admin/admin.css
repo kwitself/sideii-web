@@ -1770,3 +1770,24 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .mockupStudioV2 .teeZoomObject.template-beanie{width:min(340px,84%)!important}
   .mockupStudioV2 .teeZoomObject.template-patch{width:min(380px,90%)!important}
 }
+
+
+/* Fullscreen object hard-center fix */
+.mockupBody.mockupFullscreen .teeZoomStage{
+  position:relative!important;
+  display:block!important;
+}
+.mockupBody.mockupFullscreen .teeZoomObject{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  margin:0!important;
+  transform:translate(-50%,-50%)!important;
+  justify-self:auto!important;
+  align-self:auto!important;
+}
+@media(max-width:760px){
+  .mockupBody.mockupFullscreen .teeZoomStage{
+    min-height:420px!important;
+  }
+}
