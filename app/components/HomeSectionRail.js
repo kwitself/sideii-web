@@ -2,7 +2,7 @@
 import {useEffect,useState} from 'react';
 
 const sections=[
- ['top','00'],['manifesto','01'],['releases','02'],['imprints','03'],['about','04'],['store','05'],['closing','06']
+ ['top','00'],['manifesto','01'],['releases','02'],['imprints','03'],['about','04'],['production','05'],['store','06'],['closing','07']
 ];
 export default function HomeSectionRail(){
  const [active,setActive]=useState('00');
