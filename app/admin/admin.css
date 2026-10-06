@@ -1976,10 +1976,14 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .teeZoomStage.guidesOff .objectTemplateLabel{opacity:0}
 
 
-/* Unified object zoom behavior */
+
+
+/* FINAL merch object zoom authority */
 .mockupStudioV2 .teeZoomObject{
-  transform:scale(var(--object-zoom,1));
+  width:min(var(--object-width,460px),92%)!important;
+  transform:none!important;
 }
 .mockupBody.mockupFullscreen .teeZoomObject{
-  transform:translate(-50%,-50%) scale(var(--object-zoom,1))!important;
+  width:min(var(--object-width,460px),82vw)!important;
+  transform:translate(-50%,-50%)!important;
 }
