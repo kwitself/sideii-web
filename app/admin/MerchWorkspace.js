@@ -37,7 +37,7 @@ export default function MerchWorkspace({onCreated,onContinue}){
    </aside>
    <div className="formGrid">
     <label><span>PRODUCT NAME</span><input value={form.title} onChange={e=>set('title',e.target.value)} placeholder="SIDE:II Logo T-Shirt"/></label>
-    <label><span>CATEGORY</span><select value={form.category} onChange={e=>set('category',e.target.value)}><option value="apparel">APPAREL / T-SHIRT</option><option value="mug">MUG</option><option value="patch">PATCH</option><option value="accessory">ACCESSORY</option></select></label>
+    <label><span>CATEGORY</span><select value={form.category} onChange={e=>set('category',e.target.value)}><option value="apparel">APPAREL / T-SHIRT</option><option value="mug">MUG</option><option value="lighter">LIGHTER</option><option value="beanie">BEANIE</option><option value="patch">PATCH</option><option value="accessory">OTHER ACCESSORY</option></select></label>
     <label><span>IMPRINT</span><select value={form.imprint} onChange={e=>set('imprint',e.target.value)}><option value="sideii">SIDE:II</option><option value="lethargia">LETHARGIA RECORDS</option></select></label>
     <label><span>STATUS</span><select value={form.status} onChange={e=>set('status',e.target.value)}><option value="draft">DRAFT</option><option value="forthcoming">FORTHCOMING</option><option value="active">AVAILABLE</option></select></label>
     <label><span>PRICE / TRY</span><input type="number" min="0" step="0.01" inputMode="decimal" value={form.price} onChange={e=>set('price',e.target.value)} placeholder="0.00"/></label>
