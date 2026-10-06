@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import './policies.css';
+import GlobalHeader from '../components/GlobalHeader';
 
 export const metadata={
   title:'Store Policies',
@@ -17,7 +18,7 @@ const sections=[
 
 export default function PoliciesPage(){
  return <main className="policyPage">
-   <header className="nav shell"><Link className="brand" href="/"><img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/></Link><nav><Link href="/store">Store</Link><Link href="/apply">Apply</Link><Link href="/policies">Policies</Link></nav></header>
+   <GlobalHeader/>
    <section className="policyHero shell">
     <span>STORE / POLICIES</span>
     <h1>Before the order<br/><i>becomes an object.</i></h1>
