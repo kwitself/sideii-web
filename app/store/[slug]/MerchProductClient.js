@@ -7,20 +7,39 @@ import {useLocaleCurrency} from '../../components/LocaleCurrencyProvider';
 
 const fmt=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:0}).format(Number(n||0));
 
-function TeePreview({product,side}){
+function normalizeTemplate(v){
+ const x=String(v||'apparel').toLowerCase();
+ return ['apparel','mug','lighter','beanie','patch'].includes(x)?x:(x==='accessory'?'lighter':'apparel');
+}
+
+function ProductPreview({product,side}){
  const mockup=product.mockups?.[side]||product.mockups?.front||product.mockups?.back;
- const fill=mockup?.garmentColor||'#171719';
- const front=(mockup?.side||side)!=='back';
- return <div className="merchDetailPreview">
-  <div className="merchDetailTee">
-   <svg viewBox="0 0 420 500" aria-hidden="true">
-    <path fill={fill} d="M82 82 L158 48 Q210 68 262 48 L338 82 L392 151 L350 194 L316 171 L316 438 Q210 447 104 438 L104 171 L70 194 L28 151 Z"/>
-    <path className="storeMerchLine" d="M82 82 L158 48 Q210 68 262 48 L338 82 L392 151 L350 194 L316 171 L316 438 Q210 447 104 438 L104 171 L70 194 L28 151 Z"/>
-    <path className="storeMerchLine storeMerchSeam" d="M104 171 L82 82 M316 171 L338 82 M104 426 Q210 436 316 426 M31 154 L72 190 M389 154 L348 190"/>{front?<><path className="storeMerchLine storeMerchNeck" d="M167 48 Q172 98 210 100 Q248 98 253 48"/><path className="storeMerchLine storeMerchSeam" d="M174 55 Q179 88 210 89 Q241 88 246 55"/></>:<><path className="storeMerchLine storeMerchNeck" d="M167 48 Q185 70 210 71 Q235 70 253 48"/><path className="storeMerchLine storeMerchSeam" d="M174 53 Q190 64 210 65 Q230 64 246 53"/></>}
-   </svg>
-   <div className="merchDetailPrint">{mockup?.designUrl&&<img src={mockup.designUrl} alt="" style={{left:(mockup.x??50)+'%',top:(mockup.y??50)+'%',width:(mockup.scale??36)+'%',transform:`translate(-50%,-50%) rotate(${mockup.rotation??0}deg)`}}/>}</div>
+ const type=normalizeTemplate(mockup?.template||product.merchCategory);
+ if(type==='apparel'){
+  const fill=mockup?.garmentColor||'#171719';
+  const front=(mockup?.side||side)!=='back';
+  return <div className="merchDetailPreview">
+   <div className="merchDetailTee">
+    <svg viewBox="0 0 420 500" aria-hidden="true">
+     <path fill={fill} d="M82 82 L158 48 Q210 68 262 48 L338 82 L392 151 L350 194 L316 171 L316 438 Q210 447 104 438 L104 171 L70 194 L28 151 Z"/>
+     <path className="storeMerchLine" d="M82 82 L158 48 Q210 68 262 48 L338 82 L392 151 L350 194 L316 171 L316 438 Q210 447 104 438 L104 171 L70 194 L28 151 Z"/>
+     <path className="storeMerchLine storeMerchSeam" d="M104 171 L82 82 M316 171 L338 82 M104 426 Q210 436 316 426 M31 154 L72 190 M389 154 L348 190"/>{front?<><path className="storeMerchLine storeMerchNeck" d="M167 48 Q172 98 210 100 Q248 98 253 48"/><path className="storeMerchLine storeMerchSeam" d="M174 55 Q179 88 210 89 Q241 88 246 55"/></>:<><path className="storeMerchLine storeMerchNeck" d="M167 48 Q185 70 210 71 Q235 70 253 48"/><path className="storeMerchLine storeMerchSeam" d="M174 53 Q190 64 210 65 Q230 64 246 53"/></>}
+    </svg>
+    <div className="merchDetailPrint">{mockup?.designUrl&&<img src={mockup.designUrl} alt="" style={{left:(mockup.x??50)+'%',top:(mockup.y??50)+'%',width:(mockup.scale??36)+'%',transform:`translate(-50%,-50%) rotate(${mockup.rotation??0}deg)`}}/>}</div>
+   </div>
   </div>
- </div>
+ }
+ return <div className="merchDetailPreview">
+   <div className={'merchDetailObject '+type} style={{'--object-color':mockup?.garmentColor||'#171719'}}>
+    <div className="objectShape" aria-hidden="true">
+      {type==='mug'&&<><i className="mugHandle"/><i className="mugRim"/></>}
+      {type==='lighter'&&<><i className="lighterLid"/><i className="lighterHinge"/></>}
+      {type==='beanie'&&<><i className="beanieCrown"/><i className="beanieCuff"/></>}
+      {type==='patch'&&<i className="patchBorder"/>}
+    </div>
+    <div className="objectPrint">{mockup?.designUrl&&<img src={mockup.designUrl} alt="" style={{left:(mockup.x??50)+'%',top:(mockup.y??50)+'%',width:(mockup.scale??36)+'%',transform:`translate(-50%,-50%) rotate(${mockup.rotation??0}deg)`}}/>}</div>
+   </div>
+  </div>
 }
 
 export default function MerchProductClient({product}){
@@ -33,14 +52,14 @@ export default function MerchProductClient({product}){
  useEffect(()=>{const sync=()=>setBagCount(readCart().reduce((s,x)=>s+x.qty,0));sync();window.addEventListener('sideii-cart',sync);return()=>window.removeEventListener('sideii-cart',sync)},[]);
  const v=variants[index]||{};
  const soldOut=Number(v.stock||0)<=0,canPreorder=soldOut&&v.preorderEnabled;const unavailable=product.status!=='AVAILABLE'||(soldOut&&!canPreorder);
- const hasFront=!!product.mockups?.front,hasBack=!!product.mockups?.back;
+ const hasFront=!!product.mockups?.front,hasBack=normalizeTemplate(product.mockups?.front?.template||product.merchCategory)==='apparel'&&!!product.mockups?.back;
  const gallery=useMemo(()=>product.galleryImages?.filter(x=>x?.url&&!x?.mockup)||[],[product.galleryImages]);
  function add(){if(unavailable)return;const next=addCartItem(product,v);setBagCount(next.reduce((s,x)=>s+x.qty,0));setAdded(true);setTimeout(()=>setAdded(false),1300)}
  async function joinWaitlist(){const email=waitEmail.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setWaitMessage('Enter a valid email.');return}setWaitBusy(true);setWaitMessage('');const {error}=await supabase.rpc('join_stock_waitlist',{p_variant_id:v.id,p_email:email});setWaitBusy(false);setWaitMessage(error?error.message:'You are on the restock list.');}
  return <section className="merchDetail shell">
   <div className="merchDetailVisual">
    <div className="merchDetailSwitch">{hasFront&&<button className={side==='front'?'active':''} onClick={()=>setSide('front')}>FRONT</button>}{hasBack&&<button className={side==='back'?'active':''} onClick={()=>setSide('back')}>BACK</button>}</div>
-   <TeePreview product={product} side={side}/><div className="merchViewMeta"><span>{side.toUpperCase()} VIEW</span><small>{String(product.merchCategory||'MERCH').toUpperCase()}</small></div>
+   <ProductPreview product={product} side={side}/><div className="merchViewMeta"><span>{side.toUpperCase()} VIEW</span><small>{String(product.merchCategory||'MERCH').toUpperCase()}</small></div>
    {gallery.length>0&&<div className="merchDetailGallery">{gallery.slice(0,4).map((g,i)=><img key={g.id||g.url||i} src={g.url} alt={product.title+' view '+(i+1)}/>)}</div>}
   </div>
   <div className="merchDetailInfo">
