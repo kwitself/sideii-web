@@ -1731,3 +1731,42 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
     overflow:auto!important;
   }
 }
+
+
+/* Mockup working-size calibration */
+.mockupStudioV2 .teeZoomStage{
+  padding:18px 10px 10px;
+}
+.mockupStudioV2 .teeZoomObject{
+  width:min(520px,88%)!important;
+  max-height:390px;
+}
+.mockupStudioV2 .teeZoomObject.template-apparel{
+  width:min(460px,86%)!important;
+}
+.mockupStudioV2 .teeZoomObject.template-apparel .technicalTee{
+  width:100%!important;
+  max-width:none!important;
+}
+.mockupStudioV2 .teeZoomObject.template-mug{
+  width:min(410px,82%)!important;
+}
+.mockupStudioV2 .teeZoomObject.template-lighter{
+  width:min(310px,62%)!important;
+}
+.mockupStudioV2 .teeZoomObject.template-beanie{
+  width:min(420px,82%)!important;
+}
+.mockupStudioV2 .teeZoomObject.template-patch{
+  width:min(500px,88%)!important;
+}
+.mockupStudioV2 .technicalObject.patch{
+  width:100%!important;
+}
+@media(max-width:760px){
+  .mockupStudioV2 .teeZoomObject.template-apparel{width:min(360px,88%)!important}
+  .mockupStudioV2 .teeZoomObject.template-mug{width:min(330px,84%)!important}
+  .mockupStudioV2 .teeZoomObject.template-lighter{width:min(245px,64%)!important}
+  .mockupStudioV2 .teeZoomObject.template-beanie{width:min(340px,84%)!important}
+  .mockupStudioV2 .teeZoomObject.template-patch{width:min(380px,90%)!important}
+}
