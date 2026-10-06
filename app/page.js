@@ -3,6 +3,7 @@ import { getDatabaseReleases, getHomepageSelectedReleases, getHomepageStoreRelea
 import HomeSectionRail from './components/HomeSectionRail';
 import SelectedReleaseGrid from './components/SelectedReleaseGrid';
 import './catalogue.css';
+import GlobalHeader from 'components/GlobalHeader';
 
 export const revalidate = 0;
 
@@ -12,7 +13,7 @@ export default async function Home() {
   const storeReleases = await getHomepageStoreReleases(3);
   const featured = selected.length ? selected : releases.slice(0,3);
   return <main><HomeSectionRail/>
-    <header className="nav shell"><a className="brand" href="#top" aria-label="Side II home"><img src="/brand/sideii-logo-flat.png" alt="Side II" /></a><nav className="primaryNav"><a href="#releases">Releases</a><a href="#imprints">Imprints</a><Link href="/store">Store</Link><Link href="/wear">Wear</Link><div className="navExplore"><button type="button">Explore <span>＋</span></button><div className="navExploreMenu"><Link href="/collections">Collections</Link><Link href="/bundles">Bundles</Link><Link href="/artists">Artists</Link><Link href="/credits">Credits</Link><Link href="/timeline">Timeline</Link><Link href="/archive">Archive</Link><Link href="/policies">Policies</Link></div></div><Link href="/apply" className="navApply">Apply</Link></nav></header>
+    <GlobalHeader/>
     <section id="top" className="hero shell"><div className="sideWave" aria-hidden="true"><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/></div><div className="heroCore"><div className="eyebrow">INDEPENDENT PHYSICAL MUSIC LABEL · EST. MMXXVI</div><div className="heroLogo"><img src="/brand/sideii-logo-silver.png" alt="Side II" /></div><p className="tagline">Music, in another form.</p></div><a className="scrollCue" href="#manifesto"><span>EXPLORE</span><b>↓</b></a><div className="heroFoot"><span>SELECTED RELEASES</span><span>CD · CASSETTE · LIMITED EDITIONS</span></div></section>
     <section className="capabilityStrip shell" aria-label="Side II capabilities"><div><span>01</span><b>PHYSICAL EDITIONS</b><small>CD · CASSETTE · LIMITED</small></div><div><span>02</span><b>ART DIRECTION</b><small>OBJECT · PRINT · PACKAGING</small></div><div><span>03</span><b>PRODUCTION</b><small>MASTER TO MANUFACTURE</small></div><div><span>04</span><b>CATALOGUE</b><small>OWN · SELECTED · IMPRINTS</small></div></section>
     <section id="manifesto" className="statement shell"><p>Sound becomes<br/>an <em>edition.</em></p><div><span>01 / APPROACH</span><p>Each Side:II release is developed as a complete physical edition: music, format, artwork and production considered together.</p><small>SOUND · ARTWORK · FORMAT</small></div></section>
