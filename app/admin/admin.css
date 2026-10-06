@@ -1974,3 +1974,13 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   background:transparent!important;
 }
 .teeZoomStage.guidesOff .objectTemplateLabel{opacity:0}
+
+
+/* Unified object zoom behavior */
+.mockupStudioV2 .teeZoomObject{
+  transform:scale(var(--object-zoom,1));
+  transition:transform .16s ease;
+}
+.mockupBody.mockupFullscreen .teeZoomObject{
+  transform:translate(-50%,-50%) scale(var(--object-zoom,1))!important;
+}
