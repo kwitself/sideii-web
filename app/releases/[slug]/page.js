@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDatabaseRelease, getProductCredits, getPublicPressKit } from '../../lib/catalogue';
 import EditionSelector from './EditionSelector';
+import GlobalHeader from '../../components/GlobalHeader';
 
 export const revalidate = 0;
 
@@ -26,7 +27,7 @@ export default async function ReleasePage({ params }) {
   const isCassette = release.media === 'cassette';
 
   return <main className={'productPage '+(release.imprint==='lethargia'?'productPageLethargia':'productPageSideii')}>
-    <header className="nav shell"><Link className="brand" href="/" aria-label="Side II home"><img src="/brand/sideii-logo-flat.png" alt="Side II" /></Link><nav><Link href="/#releases">Releases</Link><Link href="/#imprints">Imprints</Link><Link href="/#about">About</Link><Link href="/store">Store</Link></nav></header>
+    <GlobalHeader/>
     <section className="productHero shell">
       <div className="productReleaseLayout"><div className={'productInfo releaseHeroIdentity '+(release.imprint==='lethargia'?'releaseHeroLethargia':'releaseHeroSideii')}>
         <div className="releaseHeroPair">
