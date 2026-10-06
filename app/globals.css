@@ -2772,3 +2772,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   .editionObjectCase{width:145px;height:145px;left:29%;top:83px}
   .editionObjectDisc{width:155px;left:57%;top:67px}
 }
+
+
+/* Shared header mobile visibility correction */
+@media(max-width:760px){
+  .primaryNav>a:nth-of-type(3){display:inline-flex!important}
+}
