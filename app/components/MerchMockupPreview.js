@@ -16,8 +16,8 @@ function Artwork({mockup}){
   }}/>;
 }
 
-export default function MerchMockupPreview({product,className=''}) {
- const mockup=product?.mockups?.front||product?.mockups?.back;
+export default function MerchMockupPreview({product,className='',side=null}) {
+ const mockup=(side&&product?.mockups?.[side])||product?.mockups?.front||product?.mockups?.back;
  if(!mockup)return null;
  const type=typeOf(product,mockup);
  const fill=mockup.garmentColor||'#171719';
