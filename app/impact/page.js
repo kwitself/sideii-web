@@ -2,6 +2,7 @@ import Link from 'next/link';
 import T from '../components/T';
 import {createClient} from '@supabase/supabase-js';
 import './impact.css';
+import GlobalHeader from '../components/GlobalHeader';
 
 export const revalidate=0;
 export const metadata={title:'Impact',description:'Verified SIDE:II impact contributions and donation batches.'};
@@ -18,7 +19,7 @@ export default async function ImpactPage(){
  const total=rows.reduce((s,x)=>s+Number(x.donated_total||0),0);
  const orders=rows.reduce((s,x)=>s+Number(x.contributing_orders||0),0);
  return <main className="impactPublicPage">
-  <header className="nav shell"><Link className="brand" href="/"><img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/></Link><nav><Link href="/wear"><T k="WEAR WHAT YOU SUPPORT"/></Link><Link href="/store"><T k="Store"/></Link><Link href="/impact"><T k="Impact"/></Link></nav></header>
+  <GlobalHeader/>
   <section className="impactPublicHero shell"><span><T k="WEAR WHAT YOU SUPPORT / VERIFIED IMPACT"/></span><h1><T k="Support,"/><br/><i><T k="accounted for."/></i></h1><p>Only verified donation batches appear here. Individual customer identities are never published.</p><div className="impactPublicStats"><div><small>VERIFIED CONTRIBUTIONS</small><b>{money(total)}</b></div><div><small>CONTRIBUTING ORDERS</small><b>{orders}</b></div><div><small>ACTIVE CAMPAIGNS</small><b>{rows.length}</b></div></div></section>
   <section className="impactPublicList shell">
    <div className="impactPublicHead"><span><T k="CAMPAIGNS"/></span><p>Transparent totals from verified transfer records.</p></div>
