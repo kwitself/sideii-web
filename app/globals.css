@@ -2410,3 +2410,29 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .accountStoreCreditList strong{font:14px/1 Georgia,serif;font-weight:400}
 .accountStoreCreditList strong.positive{color:#8fab86}
 .accountStoreCreditList strong.negative{color:#a77f87}
+
+
+/* Final drawer focus polish */
+.globalBagTrigger:focus-visible,
+.globalAccountTrigger:focus-visible,
+.globalBagClose:focus-visible,
+.globalAccountClose:focus-visible,
+.globalBagCheckout:focus-visible,
+.accountPrimary:focus-visible,
+.accountSignout:focus-visible,
+.accountTextButton:focus-visible,
+.localeCurrencyTrigger:focus-visible{
+  outline:1px solid #d7d2ca;
+  outline-offset:3px;
+}
+.globalBagTrigger:hover,
+.globalAccountTrigger:hover,
+.localeCurrencyTrigger:hover{
+  border-color:#716d66;
+  color:#e7e2da;
+  background:#151517;
+}
+.globalBagClose:hover,
+.globalAccountClose:hover{
+  color:#e7e2da;
+}
