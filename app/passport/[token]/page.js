@@ -2,6 +2,7 @@ import Link from 'next/link';
 import {notFound} from 'next/navigation';
 import {createClient} from '@supabase/supabase-js';
 import './passport.css';
+import GlobalHeader from '../../components/GlobalHeader';
 
 export const revalidate=0;
 
@@ -28,7 +29,7 @@ export default async function PassportPage({params}){
  if(error||!p)notFound();
  const active=p.status==='active';
  return <main className="passportPage">
-  <header className="nav shell"><Link className="brand" href="/"><img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/></Link><nav><Link href="/store">Store</Link><Link href="/#releases">Releases</Link></nav></header>
+  <GlobalHeader/>
   <section className="passportHero shell">
    <span>EDITION PASSPORT / VERIFIED RECORD</span>
    <h1>{p.catalogue_no}<br/><i>{p.product_title}</i></h1>
