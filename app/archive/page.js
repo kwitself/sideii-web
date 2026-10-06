@@ -2,6 +2,7 @@ import Link from 'next/link';
 import T from '../components/T';
 import {getArchiveReleases} from '../lib/catalogue';
 import './archive.css';
+import GlobalHeader from '../components/GlobalHeader';
 
 export const revalidate=0;
 export const metadata={title:'Archive',description:'Sold out, past and archived SIDE:II catalogue editions.'};
@@ -9,7 +10,7 @@ export const metadata={title:'Archive',description:'Sold out, past and archived 
 export default async function ArchivePage(){
  const releases=await getArchiveReleases();
  return <main className="archivePage">
-  <header className="nav shell"><Link className="brand" href="/"><img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/></Link><nav><Link href="/store"><T k="Store"/></Link><Link href="/#releases"><T k="Releases"/></Link><Link href="/archive"><T k="Archive"/></Link></nav></header>
+  <GlobalHeader/>
   <section className="archiveHero shell"><span><T k="CATALOGUE / ARCHIVE"/></span><h1><T k="Past objects,"/><br/><i><T k="kept in view."/></i></h1><p>Sold out and retired editions remain part of the catalogue. Archive entries are not currently for sale.</p></section>
   <section className="archiveList shell">
    <div className="archiveHead"><span>ARCHIVED EDITIONS</span><p>{releases.length} record{releases.length===1?'':'s'}</p></div>
