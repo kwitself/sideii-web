@@ -1791,3 +1791,102 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
     min-height:420px!important;
   }
 }
+
+
+/* Merch editor polish v3 */
+.mockupStudioV2{padding:28px 30px 32px}
+.mockupStudioV2 .mockupHead{
+  align-items:end;
+  padding-bottom:16px;
+  margin-bottom:14px;
+  border-bottom:1px solid #29282b;
+}
+.mockupStudioV2 .mockupHead p{font-size:11px;max-width:620px}
+.mockupStudioV2 .mockupToolbar{
+  margin:0 0 14px;
+  padding:10px;
+  border:1px solid #2b2a2e;
+  background:#0a0a0b;
+}
+.mockupStudioV2 .mockupToolbar button,
+.mockupStudioV2 .mockupToolbar select,
+.mockupStudioV2 .mockupToolbar label{
+  min-height:40px;
+  border-color:#39383c;
+}
+.mockupStudioV2 .mockupBody{
+  gap:18px;
+  grid-template-columns:minmax(420px,1.15fr) minmax(320px,.85fr);
+}
+.mockupStudioV2 .mockupCanvas{
+  border-color:#343338;
+  background:
+    radial-gradient(circle at 50% 50%,rgba(255,255,255,.025),transparent 34%),
+    #080809;
+}
+.mockupStudioV2 .mockupControls{
+  padding:16px;
+  border:1px solid #302f33;
+  background:#0b0b0d;
+}
+.mockupMetricsBar{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+}
+.mockupMetricsBar>div{
+  min-height:84px;
+  padding:11px 12px;
+  border:1px solid #2e2d31;
+  background:#09090a;
+  display:grid;
+  align-content:center;
+  gap:5px;
+}
+.mockupMetricsBar span,
+.mockupNudge>span{
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.14em;
+  color:#77737a;
+}
+.mockupMetricsBar b{
+  font:16px/1.1 Georgia,serif;
+  font-weight:400;
+  color:#ddd8d0;
+}
+.mockupMetricsBar small{
+  font:7px/1.3 Arial,sans-serif;
+  letter-spacing:.08em;
+  color:#66636a;
+}
+.mockupNudge{
+  grid-column:1/-1;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:9px 0 3px;
+}
+.mockupNudge>div{display:flex;gap:5px}
+.mockupNudge button{
+  width:34px;height:34px;
+  border:1px solid #343338;
+  background:#09090a;
+  color:#a8a49d;
+  cursor:pointer;
+}
+.mockupNudge button:hover:not(:disabled){border-color:#6d696f;color:#eeeae3;background:#131315}
+.mockupNudge button:disabled{opacity:.25;cursor:not-allowed}
+.mockupArtworkActions{grid-column:1/-1}
+.mockupSaveState{min-height:40px;display:flex;align-items:center;padding:0 12px}
+.mockupSaveButton{min-height:44px!important}
+@media(max-width:980px){
+  .mockupStudioV2 .mockupBody{grid-template-columns:1fr}
+  .mockupMetricsBar{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:620px){
+  .mockupStudioV2{padding:20px 16px 24px}
+  .mockupMetricsBar{grid-template-columns:1fr}
+  .mockupNudge{align-items:flex-start;flex-direction:column}
+}
