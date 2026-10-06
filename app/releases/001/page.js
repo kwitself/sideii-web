@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import GlobalHeader from '../../components/GlobalHeader';
 
 export const metadata = {
   title: 'SIDEII—001 · First Edition',
@@ -8,10 +9,7 @@ export const metadata = {
 export default function Release001() {
   return (
     <main className="productPage">
-      <header className="nav shell">
-        <Link className="brand" href="/" aria-label="Side II home"><img src="/brand/sideii-logo-flat.png" alt="Side II" /></Link>
-        <nav><Link href="/#releases">Releases</Link><Link href="/#imprints">Imprints</Link><Link href="/#about">About</Link><Link href="/#store">Store</Link></nav>
-      </header>
+      <GlobalHeader/>
 
       <section className="productHero shell">
         <div className="productVisual cd">
