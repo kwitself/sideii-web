@@ -1568,3 +1568,166 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .mockupToolbar .mockupTypeSelect{grid-column:1/-1}
   .mockupStudioV2 .technicalObject{width:min(92%,330px)}
 }
+
+
+/* Unified mockup engine layout */
+.mockupStudioV2 .mockupCanvas{
+  min-height:520px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  padding:14px 18px 18px!important;
+}
+.mockupCanvasTools{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:7px;
+  flex-wrap:wrap;
+  width:100%;
+  padding:0 0 12px;
+  border-bottom:1px solid #29282b;
+}
+.mockupCanvasTools button{
+  min-height:34px;
+  padding:0 10px;
+  border:1px solid #343338;
+  background:#0a0a0b;
+  color:#87838a;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.1em;
+  cursor:pointer;
+}
+.mockupCanvasTools button:hover:not(:disabled){border-color:#6d696f;color:#e3dfd8}
+.mockupCanvasTools button:disabled{opacity:.28}
+.teeZoomReadout{
+  min-width:46px;text-align:center;color:#9a969e;
+  font:8px/1 Arial,sans-serif;letter-spacing:.1em
+}
+.teeZoomStage{
+  position:relative;
+  flex:1 1 auto;
+  min-height:380px;
+  width:100%;
+  display:grid!important;
+  place-items:center!important;
+  overflow:visible;
+}
+.teeZoomStage::before,
+.teeZoomStage::after{
+  content:'';
+  position:absolute;
+  z-index:0;
+  pointer-events:none;
+  background:rgba(235,232,225,.055);
+}
+.teeZoomStage::before{left:50%;top:8%;bottom:8%;width:1px}
+.teeZoomStage::after{top:50%;left:8%;right:8%;height:1px}
+.teeZoomObject{
+  position:relative;
+  z-index:1;
+  margin:auto!important;
+  display:grid!important;
+  place-items:center!important;
+  transform-origin:center center;
+}
+.teeZoomObject .technicalTee,
+.teeZoomObject .technicalObject{
+  margin:auto!important;
+}
+.teeZoomObject .technicalObject{
+  width:100%!important;
+}
+.teeZoomObject.template-patch{max-width:440px}
+.teeZoomObject.template-lighter{max-width:320px}
+.teeZoomObject.template-mug{max-width:390px}
+.teeZoomObject.template-beanie{max-width:390px}
+
+/* Shared interactive print engine */
+.mockupStudioV2 .teePrintClip.interactive,
+.mockupStudioV2 .objectPrintClip.interactive{
+  pointer-events:auto!important;
+  touch-action:none!important;
+  cursor:crosshair;
+}
+.mockupStudioV2 .teeArtwork.draggable,
+.mockupStudioV2 .objectArtwork.draggable{
+  pointer-events:auto!important;
+  touch-action:none!important;
+  cursor:grab!important;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+.mockupStudioV2 .teeArtwork.draggable:active,
+.mockupStudioV2 .objectArtwork.draggable:active{cursor:grabbing!important}
+
+/* Persistent center guides + snap guides */
+.mockupStudioV2 .teePrintClip,
+.mockupStudioV2 .objectPrintClip{isolation:isolate}
+.mockupStudioV2 .printGuide{
+  position:absolute;
+  z-index:8;
+  display:block;
+  pointer-events:none;
+}
+.mockupStudioV2 .printGuide.guideX{
+  left:50%;top:0;bottom:0;width:1px;transform:translateX(-.5px);
+}
+.mockupStudioV2 .printGuide.guideY{
+  top:50%;left:0;right:0;height:1px;transform:translateY(-.5px);
+}
+.mockupStudioV2 .printGuide.guideStatic{
+  background:rgba(235,232,225,.17);
+}
+.mockupStudioV2 .printGuide.guideSnap{
+  background:rgba(235,232,225,.92);
+  box-shadow:0 0 10px rgba(235,232,225,.36);
+}
+.mockupStudioV2 .teePrintClip::after,
+.mockupStudioV2 .objectPrintClip::after{
+  content:'CENTER';
+  position:absolute;
+  right:5px;
+  bottom:4px;
+  z-index:9;
+  font:6px/1 Arial,sans-serif;
+  letter-spacing:.13em;
+  color:rgba(235,232,225,.28);
+  pointer-events:none;
+}
+.mockupStudioV2 .teePrintClip.hasArtwork::after,
+.mockupStudioV2 .objectPrintClip.hasArtwork::after{content:''}
+
+/* Keep all object templates optically centered inside the common stage */
+.technicalObject.mug .objectSvg{transform:translateX(-2.5%)}
+.technicalObject.mug .objectPrintClip{transform:translateX(-2.5%)}
+.technicalObject.lighter .objectSvg{transform:none}
+.technicalObject.beanie .objectSvg{transform:none}
+.technicalObject.patch .objectSvg{transform:none}
+
+/* Fullscreen keeps exactly the same engine */
+.mockupBody.mockupFullscreen{
+  position:fixed!important;
+  inset:20px!important;
+  z-index:10050!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 360px!important;
+  gap:18px!important;
+  padding:18px!important;
+  background:#09090af7!important;
+  border:1px solid #343338!important;
+  box-shadow:0 40px 120px rgba(0,0,0,.75)!important;
+}
+.mockupBody.mockupFullscreen .mockupCanvas{min-height:calc(100vh - 76px)!important}
+@media(max-width:760px){
+  .mockupStudioV2 .mockupCanvas{min-height:430px!important;padding:12px!important}
+  .teeZoomStage{min-height:310px}
+  .mockupCanvasTools{gap:5px}
+  .mockupCanvasTools button{font-size:7px;padding:0 8px}
+  .mockupBody.mockupFullscreen{
+    inset:8px!important;
+    grid-template-columns:1fr!important;
+    overflow:auto!important;
+  }
+}
