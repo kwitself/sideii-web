@@ -1622,8 +1622,8 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   pointer-events:none;
   background:rgba(235,232,225,.055);
 }
-.teeZoomStage::before{left:50%;top:8%;bottom:8%;width:1px}
-.teeZoomStage::after{top:50%;left:8%;right:8%;height:1px}
+.teeZoomStage::before{left:var(--stage-cross-x,50%);top:8%;bottom:8%;width:1px}
+.teeZoomStage::after{top:var(--stage-cross-y,50%);left:8%;right:8%;height:1px}
 .teeZoomObject{
   position:relative;
   z-index:1;
@@ -1889,4 +1889,14 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .mockupStudioV2{padding:20px 16px 24px}
   .mockupMetricsBar{grid-template-columns:1fr}
   .mockupNudge{align-items:flex-start;flex-direction:column}
+}
+
+
+/* Crosshair sync polish */
+.teeZoomStage::before,.teeZoomStage::after{
+  transition:left .12s ease,top .12s ease;
+}
+.mockupBody.mockupFullscreen .teeZoomStage::before,
+.mockupBody.mockupFullscreen .teeZoomStage::after{
+  transition:none;
 }
