@@ -35,3 +35,110 @@
 .wearSystemInner small{font:8px/1 Arial,sans-serif;letter-spacing:.18em;color:#5f5c62}
 @media(max-width:800px){.wearHero{min-height:68vh;padding:86px 0 56px}.wearHero h1{font-size:72px}.wearHero>p{font-size:14px}.wearManifest{grid-template-columns:1fr;gap:26px;padding:70px 0}.wearGrid{grid-template-columns:1fr}.wearProducts{padding:64px 0 80px}.wearCardMeta h3{font-size:27px}.wearSystemInner{min-height:40vh;padding:70px 0}}
 @media(max-width:520px){.wearHero h1{font-size:58px}.wearHeroMeta{align-items:flex-start;flex-direction:column}.wearManifest h2{font-size:44px}.wearSectionHead{align-items:flex-start;flex-direction:column;gap:8px}.wearCardMeta{grid-template-columns:1fr}.wearCardMeta span{margin-top:4px}.wearSystemInner p{font-size:43px}}
+
+
+/* Wear polish pass */
+.wearHero{
+  background:
+    radial-gradient(circle at 78% 38%,rgba(255,255,255,.035),transparent 28%),
+    linear-gradient(180deg,#09090a,#0b0b0d);
+}
+.wearHero:before{
+  content:'OBJECTS';
+  position:absolute;left:0;bottom:34px;
+  font:clamp(74px,12vw,170px)/.7 Georgia,serif;
+  letter-spacing:-.055em;color:#0f0f12;pointer-events:none;
+}
+.wearHeroMeta a,.wearEmpty a,.wearSystemFoot a{
+  transition:border-color .2s,color .2s,background .2s,transform .2s;
+}
+.wearHeroMeta a:hover,.wearEmpty a:hover,.wearSystemFoot a:hover{
+  border-color:#77736c;color:#eee9e0;background:#141416;transform:translateY(-1px);
+}
+.wearObjectSystem{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  border-bottom:1px solid #29282b;
+}
+.wearObjectSystem article{
+  min-height:180px;padding:26px 22px;
+  border-right:1px solid #29282b;
+  display:grid;grid-template-columns:auto 1fr;gap:18px;
+  align-items:start;
+}
+.wearObjectSystem article:first-child{padding-left:0}
+.wearObjectSystem article:last-child{border-right:0;padding-right:0}
+.wearObjectSystem article>span{
+  font:24px/1 Georgia,serif;color:#39373d;
+}
+.wearObjectSystem b{
+  display:block;margin-bottom:14px;
+  font:8px/1 Arial,sans-serif;letter-spacing:.18em;font-weight:400;color:#77737a;
+}
+.wearObjectSystem p{
+  margin:0;max-width:280px;
+  font:15px/1.55 Georgia,serif;color:#9a968f;
+}
+.wearProducts{padding-top:100px}
+.wearGrid{gap:30px 24px}
+.wearCard{
+  border-top:0;padding-top:0;
+  transition:transform .28s ease;
+}
+.wearCard:hover{transform:translateY(-3px)}
+.wearVisual{
+  position:relative;
+  border-color:#343237;
+  background:
+    radial-gradient(circle at 50% 42%,#1a1a1d,#0b0b0d 72%);
+  box-shadow:0 22px 60px rgba(0,0,0,.12);
+}
+.wearVisual:after{
+  content:'';
+  position:absolute;inset:0;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.015);
+  pointer-events:none;
+}
+.wearCardIndex,.wearVisualTag{
+  position:absolute;z-index:2;
+  font:7px/1 Arial,sans-serif;letter-spacing:.16em;color:#77737a;
+  background:rgba(9,9,10,.72);backdrop-filter:blur(5px);
+  padding:7px 8px;border:1px solid rgba(255,255,255,.07);
+}
+.wearCardIndex{left:12px;top:12px}
+.wearVisualTag{right:12px;bottom:12px}
+.wearCardMeta{
+  border-bottom:1px solid #302f33;
+  padding:18px 2px 14px;
+}
+.wearCardMeta h3{font-size:32px}
+.wearCardMeta span{font-size:14px}
+.wearSystem{
+  background:
+    radial-gradient(circle at 78% 50%,rgba(255,255,255,.035),transparent 30%),
+    #0b0b0d;
+}
+.wearSystemInner{min-height:58vh}
+.wearSystemFoot{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:24px;padding-top:18px;border-top:1px solid #29282b;
+}
+.wearSystemFoot a{
+  padding:12px 14px;border:1px solid #3a393d;
+  color:#aaa69f;text-decoration:none;
+  font:8px/1 Arial,sans-serif;letter-spacing:.15em;
+}
+@media(max-width:800px){
+  .wearObjectSystem{grid-template-columns:1fr}
+  .wearObjectSystem article,
+  .wearObjectSystem article:first-child,
+  .wearObjectSystem article:last-child{
+    min-height:130px;padding:22px 0;border-right:0;border-bottom:1px solid #29282b;
+  }
+  .wearObjectSystem article:last-child{border-bottom:0}
+  .wearSystemFoot{align-items:flex-start;flex-direction:column}
+}
+@media(max-width:520px){
+  .wearHero:before{font-size:68px;bottom:18px}
+  .wearCardMeta h3{font-size:29px}
+  .wearCardIndex,.wearVisualTag{font-size:6px}
+}
