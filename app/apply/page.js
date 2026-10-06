@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import ApplicationForm from './ApplicationForm';
 import './apply.css';
+import GlobalHeader from '../components/GlobalHeader';
 
 export const metadata={
  title:'Production Application',
@@ -9,7 +10,7 @@ export const metadata={
 
 export default function ApplyPage(){
  return <main className="applyPage">
-   <header className="nav shell"><Link className="brand" href="/"><img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/></Link><nav><Link href="/">Home</Link><Link href="/store">Store</Link><Link href="/apply">Apply</Link></nav></header>
+   <GlobalHeader/>
    <section className="applyHero shell">
     <span>PRODUCTION / APPLICATION</span>
     <h1>Turn the release<br/>into an <i>object.</i></h1>
