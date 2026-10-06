@@ -3,6 +3,7 @@ import T from '../components/T';
 import {getStoreReleases} from '../lib/catalogue';
 import Money from '../components/Money';
 import './wear.css';
+import GlobalHeader from '../components/GlobalHeader';
 
 export const revalidate=0;
 export const metadata={
@@ -13,7 +14,7 @@ export const metadata={
 export default async function WearPage(){
   const products=(await getStoreReleases()).filter(x=>x.isMerch);
   return <main className="wearPage">
-    <header className="nav shell"><Link className="brand" href="/"><img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/></Link><nav><Link href="/store"><T k="Store"/></Link><Link href="/#releases"><T k="Releases"/></Link><Link href="/wear">Wear</Link></nav></header>
+    <GlobalHeader/>
     <section className="wearHero shell">
       <span><T k="SIDE:II / OBJECTS"/></span>
       <h1><T k="Wear what"/><br/><i><T k="you support."/></i></h1>
