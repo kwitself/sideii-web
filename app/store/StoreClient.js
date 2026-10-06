@@ -6,24 +6,7 @@ import {supabase} from '../lib/supabase';
 import {addCartItem} from '../lib/cart';
 import {readWishlist,writeWishlist,wishlistItemFromProduct} from '../lib/wishlist';
 import {useLocaleCurrency} from '../components/LocaleCurrencyProvider';
-
-function MerchPreview({product}){
- const mockup=product.mockups?.front||product.mockups?.back;
- const fill=mockup?.garmentColor||'#171719';
- const front=(mockup?.side||'front')!=='back';
- return <div className="storeMerchPreview">
-  <div className="storeMerchTee">
-   <svg viewBox="0 0 420 500" aria-hidden="true">
-    <path fill={fill} d="M82 82 L158 48 Q210 68 262 48 L338 82 L392 151 L350 194 L316 171 L316 438 Q210 447 104 438 L104 171 L70 194 L28 151 Z"/>
-    <path className="storeMerchLine" d="M82 82 L158 48 Q210 68 262 48 L338 82 L392 151 L350 194 L316 171 L316 438 Q210 447 104 438 L104 171 L70 194 L28 151 Z"/>
-    <path className="storeMerchLine storeMerchSeam" d="M104 171 L82 82 M316 171 L338 82 M104 426 Q210 436 316 426 M31 154 L72 190 M389 154 L348 190"/>
-    {front?<><path className="storeMerchLine storeMerchNeck" d="M167 48 Q172 98 210 100 Q248 98 253 48"/><path className="storeMerchLine storeMerchSeam" d="M174 55 Q179 88 210 89 Q241 88 246 55"/></>:<><path className="storeMerchLine storeMerchNeck" d="M167 48 Q185 70 210 71 Q235 70 253 48"/><path className="storeMerchLine storeMerchSeam" d="M174 53 Q190 64 210 65 Q230 64 246 53"/></>}
-   </svg>
-   <div className="storeMerchPrint">{mockup?.designUrl&&<img src={mockup.designUrl} alt="" style={{left:(mockup.x??50)+'%',top:(mockup.y??50)+'%',width:(mockup.scale??36)+'%',transform:`translate(-50%,-50%) rotate(${mockup.rotation??0}deg)`}}/>}</div>
-  </div>
-  <span>{front?'FRONT':'BACK'} / {String(product.merchCategory||'MERCH').toUpperCase()}</span>
- </div>;
-}
+import MerchMockupPreview from '../components/MerchMockupPreview';
 
 export default function StoreClient({releases}){
  const {money:fmt,t}=useLocaleCurrency();
@@ -100,7 +83,7 @@ export default function StoreClient({releases}){
   <section className="storeCatalogue shell">
    {filtered.map(r=><article className={"storeProduct "+(r.isMerch?"merchProduct ":"")+(r.productOrigin==="distributed"?"selectedProduct ":"")+(r.imprint==="lethargia"?"lethargiaProduct":"")} key={r.slug}>
     <button type="button" className={"storeWishlistButton "+(wishlist.some(x=>x.product_slug===r.slug)?"active":"")} aria-label="Toggle wishlist" onClick={()=>toggleWishlist(r)}>{wishlist.some(x=>x.product_slug===r.slug)?'♥':'♡'}</button>
-    <Link href={r.isMerch?('/store/'+r.slug):('/releases/'+r.slug)} className="storeCover">{r.isMerch&&r.mockups?.front?<MerchPreview product={r}/>:r.cover?<img src={r.cover} alt={r.title}/>:<span>{r.catalogue}</span>}</Link>
+    <Link href={r.isMerch?('/store/'+r.slug):('/releases/'+r.slug)} className="storeCover">{r.isMerch&&(r.mockups?.front||r.mockups?.back)?<MerchMockupPreview product={r}/>:r.cover?<img src={r.cover} alt={r.title}/>:<span>{r.catalogue}</span>}</Link>
     <div className="storeProductMeta">
      {r.productOrigin==='distributed'&&<span className="selectedBadge">SELECTED / DISTRIBUTION</span>}
      {r.isMerch&&<span className="merchBadge">SIDE:II / MERCH</span>}
