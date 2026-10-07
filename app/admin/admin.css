@@ -2004,18 +2004,6 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 
 
 
-/* Admin merch previews mirror editor scene */
-.merchHeroImage,
-.merchGallery article,
-.adminMerchThumb{
-  background:transparent!important;
-}
-.merchHeroImage > div,
-.merchGallery article > div:first-child:not(:last-child),
-.adminMerchThumb > div{
-  background:transparent!important;
-}
-
 /* Scale the whole shared scene, never the product/artwork independently */
 .merchHeroImage > div{
   width:100%!important;
@@ -2052,3 +2040,21 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .merchHeroImage > div{transform:scale(.9)}
   .merchGallery article > div:first-child:not(:last-child){transform:scale(.68)}
 }
+
+
+/* Admin merch preview containment v2 */
+.adminMerchThumb{
+  width:48px;height:48px;min-width:48px;overflow:hidden;
+  border:1px solid #3a393d;background:transparent!important;
+}
+.adminMerchThumb > div,
+.merchHeroImage > div,
+.merchGallery article > div:first-child:not(:last-child){
+  min-height:0!important;
+  height:100%!important;
+  width:100%!important;
+  background:transparent!important;
+  transform:none!important;
+}
+.merchHeroImage,.merchGallery article{overflow:hidden;background:transparent!important}
+.merchGallery article{min-height:190px!important}
