@@ -11,7 +11,7 @@ function tag(name,value){
 }
 
 function feedItem(product,variant){
- const availability=availabilityValue(variant);
+ const availability=availabilityValue(variant,product);
  const active=product.status==='AVAILABLE';
  const preorder=availability==='preorder';
  if(!active&&!preorder)return '';
@@ -24,9 +24,9 @@ function feedItem(product,variant){
  const itemGroup=(product.variants||[]).length>1?String(product.catalogue||product.id):null;
  const brand=brandName(product);
  const gtin=product.seoConfig?.gtin||product.barcode||'';
- const mpn=product.seoConfig?.mpn||(!gtin?variant.sku||product.catalogue:'');
+ const mpn=product.seoConfig?.mpn||'';
  const identifierExists=Boolean(gtin||(brand&&mpn));
- const title=[product.title,variant.size,variant.color,variant.style,product.isMerch?null:variant.formatLabel].filter(Boolean).join(' · ');
+ const title=[product.rawTitle||product.title,variant.size,variant.color,variant.style,product.isMerch?null:variant.formatLabel].filter(Boolean).join(' · ');
  const extraImages=images.slice(1,11).map(x=>tag('additional_image_link',x)).join('');
  return `<item>
 ${tag('id',id)}
