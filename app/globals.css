@@ -3972,3 +3972,22 @@ button,a{transition:color .18s ease,border-color .18s ease,background .18s ease,
  .productionCta{align-items:stretch;flex-direction:column}
  .productionCta a{width:100%;justify-content:center}
 }
+
+/* FINAL ACCESSIBILITY POLISH */
+main a:focus-visible,
+main button:focus-visible,
+footer a:focus-visible,
+.globalSiteHeader a:focus-visible,
+.globalSiteHeader button:focus-visible{
+  outline:1px solid #d7d2ca;
+  outline-offset:3px;
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto!important}
+  *,*::before,*::after{
+    scroll-behavior:auto!important;
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+  }
+}
