@@ -3230,3 +3230,10 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .qaIssueGroup button b{font-size:11px}.qaIssueGroup button span{font-size:9px;letter-spacing:.09em;opacity:.6;white-space:nowrap}
 .qaIssueGroup.warnings button{opacity:.86}
 .qaReady{margin-top:24px;border:1px solid rgba(120,220,150,.45);padding:20px;text-align:center;font-size:12px;letter-spacing:.15em}
+
+
+.qaSummaryBar{display:grid;grid-template-columns:minmax(180px,1fr) repeat(3,auto);gap:10px;align-items:center;margin-bottom:12px;padding:12px 14px;border:1px solid rgba(255,255,255,.1)}
+.qaSummaryBar>div{display:grid;gap:3px}.qaSummaryBar span{font-size:9px;letter-spacing:.13em;opacity:.55}.qaSummaryBar b{font-size:11px}
+.qaSummaryBar>strong{font-size:9px;letter-spacing:.1em;padding:8px 10px;border:1px solid rgba(255,255,255,.12);font-weight:600}
+.qaSummaryBar>strong.ready{border-color:rgba(120,220,150,.42)}.qaSummaryBar>strong.warning{border-color:rgba(240,190,90,.5)}.qaSummaryBar>strong.blocked{border-color:rgba(245,100,100,.55)}
+@media(max-width:760px){.qaSummaryBar{grid-template-columns:1fr 1fr}.qaSummaryBar>div{grid-column:1/-1}}
