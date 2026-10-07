@@ -15,11 +15,11 @@ const STOREFRONT_DEFAULTS={
  visibility:{store:true,homepage:true,wear:true,collections:true,search:true,archive:true,related:true,google:true,meta:true,pinterest:true,microsoft:true,tiktok:true},
  detail:{default_variant:'auto',default_side:'front',gallery_layout:'grid',facts:true,tracklist:true,credits:true,object_note:true,press_kit:true,listening_preview:true,related:true,sticky_buy:true}
 };
-function storefrontConfig(value={},legacyHover='auto'){
+function storefrontConfig(value={}){
  return {
   card:{...STOREFRONT_DEFAULTS.card,...(value.card||{})},
   badge:{...STOREFRONT_DEFAULTS.badge,...(value.badge||{})},
-  hover:{...STOREFRONT_DEFAULTS.hover,format:value?.hover?.format||legacyHover||'auto',...(value.hover||{})},
+  hover:{...STOREFRONT_DEFAULTS.hover,...(value.hover||{})},
   visibility:{...STOREFRONT_DEFAULTS.visibility,...(value.visibility||{})},
   detail:{...STOREFRONT_DEFAULTS.detail,...(value.detail||{})}
  };
@@ -37,12 +37,13 @@ export default function EditReleaseModal({product,onClose,onSaved}){
  const initialVariants=(product?.product_variants||[]).map(cleanVariant);
  const [tab,setTab]=useState(product.__initialTab||'release');
  const [form,setForm]=useState({catalogue_no:product.catalogue_no||'',title:product.title||'',artist_project:product.artist_project||'',description:product.description||'',imprint:product.imprint||'sideii',status:product.status||'draft',has_shrinkwrap:!!product.has_shrinkwrap,release_date:product.release_date||'',credits:product.credits||'',tracklist:Array.isArray(product.tracklist)?product.tracklist.join('\n'):'',product_origin:product.product_origin||'own',original_label:product.original_label||'',original_catalogue_no:product.original_catalogue_no||'',barcode:product.barcode||''});
- const [storefront,setStorefront]=useState(()=>storefrontConfig(product.storefront_config,product.hover_media_format));
+ const [storefront,setStorefront]=useState(()=>storefrontConfig(product.storefront_config));
  const [seo,setSeo]=useState(()=>seoConfig(product.seo_config));
  const [commerce,setCommerce]=useState(()=>commerceConfig(product.commerce_config));
  const [variants,setVariants]=useState(initialVariants.length?initialVariants:[cleanVariant({sku:`${product.catalogue_no||'SIDEII'}-CD`})]);
  const [removedVariants,setRemovedVariants]=useState([]);
- const [file,setFile]=useState(null); const [preview,setPreview]=useState(''); const [gallery,setGallery]=useState(Array.isArray(product.gallery_paths)?product.gallery_paths:[]); const [galleryFiles,setGalleryFiles]=useState([]);
+ const initialGallery=(Array.isArray(product.gallery_images)?product.gallery_images:[]).map(x=>typeof x==='string'?x:(x?.path||x?.url||'')).filter(x=>x&&!/^https?:\/\//i.test(x));
+ const [file,setFile]=useState(null); const [preview,setPreview]=useState(''); const [gallery,setGallery]=useState(initialGallery); const [galleryFiles,setGalleryFiles]=useState([]);
  const [saving,setSaving]=useState(false); const [message,setMessage]=useState(''); const [dirty,setDirty]=useState(false);
  const set=(k,v)=>{setDirty(true);setForm(p=>({...p,[k]:v}))};
  const setStore=(section,key,value)=>{setDirty(true);setStorefront(p=>({...p,[section]:{...p[section],[key]:value}}))};
@@ -109,10 +110,10 @@ export default function EditReleaseModal({product,onClose,onSaved}){
    if(file){const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');const path=`${product.id}/cover.${ext}`;const {error:u}=await supabase.storage.from('release-artwork').upload(path,file,{upsert:true,contentType:file.type,cacheControl:'3600'});if(u)throw u;if(artworkPath&&artworkPath!==path)await supabase.storage.from('release-artwork').remove([artworkPath]);artworkPath=path}
    const uploaded=[];
    for(const item of galleryFiles){const ext=(item.file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');const path=`${product.id}/gallery/${Date.now()}-${uploaded.length}.${ext}`;const {error}=await supabase.storage.from('release-artwork').upload(path,item.file,{upsert:false,contentType:item.file.type,cacheControl:'3600'});if(error)throw error;uploaded.push(path)}
-   const removed=(Array.isArray(product.gallery_paths)?product.gallery_paths:[]).filter(x=>!gallery.includes(x));if(removed.length)await supabase.storage.from('release-artwork').remove(removed);
+   const removed=initialGallery.filter(x=>!gallery.includes(x));if(removed.length)await supabase.storage.from('release-artwork').remove(removed);
    const galleryPaths=[...gallery,...uploaded];
    const isPublic=['active','forthcoming'].includes(form.status);
-   const {error:p}=await supabase.from('products').update({catalogue_no:form.catalogue_no.trim(),title:form.title.trim(),artist_project:form.artist_project.trim()||null,description:form.description.trim()||null,imprint:form.imprint,status:form.status,is_public:isPublic,has_shrinkwrap:form.has_shrinkwrap,release_date:form.release_date||null,credits:form.credits.trim()||null,tracklist:form.tracklist.split('\n').map(x=>x.trim()).filter(Boolean),product_origin:form.product_origin,original_label:form.product_origin==='distributed'?(form.original_label.trim()||null):null,original_catalogue_no:form.product_origin==='distributed'?(form.original_catalogue_no.trim()||null):null,barcode:form.barcode.trim()||null,hover_media_format:storefront.hover.format,storefront_config:storefront,seo_config:seo,commerce_config:commerce,artwork_path:artworkPath,gallery_paths:galleryPaths}).eq('id',product.id);if(p)throw p;
+   const {error:p}=await supabase.from('products').update({catalogue_no:form.catalogue_no.trim(),title:form.title.trim(),artist_project:form.artist_project.trim()||null,description:form.description.trim()||null,imprint:form.imprint,status:form.status,is_public:isPublic,has_shrinkwrap:form.has_shrinkwrap,release_date:form.release_date||null,credits:form.credits.trim()||null,tracklist:form.tracklist.split('\n').map(x=>x.trim()).filter(Boolean),product_origin:form.product_origin,original_label:form.product_origin==='distributed'?(form.original_label.trim()||null):null,original_catalogue_no:form.product_origin==='distributed'?(form.original_catalogue_no.trim()||null):null,barcode:form.barcode.trim()||null,storefront_config:storefront,seo_config:seo,commerce_config:commerce,artwork_path:artworkPath,gallery_images:galleryPaths}).eq('id',product.id);if(p)throw p;
    for(const id of removedVariants){const {error}=await supabase.from('product_variants').delete().eq('id',id);if(error)throw error}
    for(const [i,v] of variants.entries()){const stock=Math.max(0,parseInt(v.stock||'0',10)||0),price=Math.max(0,parseFloat(v.price||'0')||0);const payload={product_id:product.id,sku:v.sku.trim()||`${form.catalogue_no}-${v.format.toUpperCase()}-${i+1}`,format:v.format,price,currency:'TRY',stock_qty:stock,manufactured_qty:Math.max(stock+Number(v.reserved_qty||0),Number(v.manufactured_qty||0)),reserved_qty:Number(v.reserved_qty||0),edition_name:v.edition_name.trim()||form.title.trim(),edition_details:v.edition_details.trim()||null,digital_formats:v.format==='digital'?v.digital_formats.split(',').map(x=>x.trim().toUpperCase()).filter(Boolean):[],audio_specs:v.format==='digital'?(v.audio_specs.trim()||null):null,vinyl_size:v.format==='vinyl'?v.vinyl_size:null,vinyl_speed:v.format==='vinyl'?v.vinyl_speed:null,vinyl_weight_g:v.format==='vinyl'?(parseInt(v.vinyl_weight_g||'0',10)||null):null,vinyl_color:v.format==='vinyl'?(v.vinyl_color.trim()||null):null,shipping_class:v.shipping_class.trim()||null,weight_g:v.weight_g===''?null:Math.max(0,parseInt(v.weight_g||'0',10)||0),low_stock_threshold:Math.max(0,parseInt(v.low_stock_threshold||'0',10)||0),preorder_enabled:!!v.preorder_enabled,preorder_limit:v.preorder_limit===''?null:Math.max(1,parseInt(v.preorder_limit||'1',10)||1),preorder_target:v.preorder_target===''?null:Math.max(1,parseInt(v.preorder_target||'1',10)||1),preorder_deadline:v.preorder_deadline||null,edition_numbering_enabled:!!v.edition_numbering_enabled,edition_total:v.edition_total===''?null:Math.max(1,parseInt(v.edition_total||'1',10)||1),active:v.active};const q=v.id?supabase.from('product_variants').update(payload).eq('id',v.id):supabase.from('product_variants').insert(payload);const {error}=await q;if(error)throw error}
    setDirty(false);await onSaved();onClose();
