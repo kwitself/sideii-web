@@ -5,7 +5,6 @@ import MerchProductClient from './MerchProductClient';
 import '../store.css';
 import GlobalHeader from '../../components/GlobalHeader';
 import ProductDiscovery from '../../components/ProductDiscovery';
-import CompleteTheSet from '../../components/CompleteTheSet';
 import {jsonLd,productSchema} from '../../lib/productCommerceMeta';
 
 export const revalidate=0;
@@ -27,8 +26,10 @@ export default async function StoreProductPage({params}){
  if(!product||!product.isMerch)notFound();
  const schema=productSchema(product);
  const detail=product.storefrontConfig?.detail||{};
- const [related,bundles]=await Promise.all([detail.related===false?Promise.resolve([]):getRelatedProducts(product.id,6),getProductBundles(product.id,3)]);
- const bundles=detail.related===false?[]:await getProductBundles(product.id,3);
+ const [related,bundles]=await Promise.all([
+  detail.related===false?Promise.resolve([]):getRelatedProducts(product.id,6),
+  detail.related===false?Promise.resolve([]):getProductBundles(product.id,3)
+ ]);
  return <main className="storePage merchDetailPage">
   {schema&&<script type="application/ld+json" dangerouslySetInnerHTML={{__html:jsonLd(schema)}}/>}
   <GlobalHeader/>
