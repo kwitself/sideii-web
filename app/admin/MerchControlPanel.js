@@ -26,6 +26,19 @@ export default function MerchControlPanel({product,onSaved}){
  const setCommerceValue=(key,value)=>{setDirty(true);setCommerce(p=>({...p,[key]:value}))};
  const updateVariant=(id,key,value)=>{setDirty(true);setVariants(p=>p.map(v=>v.id===id?{...v,[key]:value}:v))};
  const primary=useMemo(()=>variants[0]||null,[variants]);
+ const hasImage=Boolean(product.artwork_path||(Array.isArray(product.gallery_images)&&product.gallery_images.length));
+ const feedBlockers=[
+  storefront.visibility.google===false?'GOOGLE CHANNEL IS OFF':null,
+  storefront.visibility.store===false?'STORE VISIBILITY IS OFF':null,
+  !String(product.title||'').trim()?'TITLE IS MISSING':null,
+  !hasImage?'PRODUCT / MOCKUP IMAGE IS MISSING':null,
+  !variants.some(v=>v.price!=null&&Number(v.price)>=0)?'NO PRICED VARIANT':null,
+  product.status!=='active'&&!variants.some(v=>v.preorder_enabled)?'PRODUCT IS NOT ACTIVE OR PRE-ORDERABLE':null
+ ].filter(Boolean);
+ const feedWarnings=[
+  !(seo.gtin||seo.mpn)?'NO GTIN / MPN — IDENTIFIER_EXISTS=NO':null,
+  !seo.google_category?'GOOGLE PRODUCT CATEGORY NOT SET':null
+ ].filter(Boolean);
  useEffect(()=>{const before=e=>{if(!dirty)return;e.preventDefault();e.returnValue=''};window.addEventListener('beforeunload',before);return()=>window.removeEventListener('beforeunload',before)},[dirty]);
 
  async function save(){
@@ -110,6 +123,7 @@ export default function MerchControlPanel({product,onSaved}){
   </div>}
 
   {tab==='seo'&&<div className="storefrontEditor seoEditor">
+   <section className="storefrontBlock feedReadiness"><header><span>GOOGLE FEED READINESS</span><p>Live eligibility check against the generated Merchant Center feed.</p></header><div className="feedReadinessBody"><div className={"feedReadinessState "+(feedBlockers.length?'blocked':'ready')}><b>{feedBlockers.length?'NOT READY':'READY FOR FEED'}</b><span>{feedBlockers.length?feedBlockers.length+' blocking issue(s)':'Variant data can be exported.'}</span></div>{feedBlockers.map(x=><p className="feedIssue blocker" key={x}>{x}</p>)}{feedWarnings.map(x=><p className="feedIssue warning" key={x}>{x}</p>)}<a href="/feeds/google.xml" target="_blank" rel="noreferrer">OPEN GOOGLE XML FEED ↗</a></div></section>
    <section className="storefrontBlock"><header><span>SEO / SEARCH</span><p>Metadata and shopping identifiers for this merch product.</p></header><div className="storefrontGrid">
     <label className="storefrontWide">SEO TITLE<input maxLength="70" value={seo.title||''} onChange={e=>setSeoValue('title',e.target.value)} placeholder={product.title}/></label>
     <label className="storefrontWide">META DESCRIPTION<textarea rows="3" value={seo.description||''} onChange={e=>setSeoValue('description',e.target.value)} placeholder={product.description||''}/></label>
