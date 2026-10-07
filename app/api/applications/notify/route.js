@@ -9,26 +9,26 @@ export async function POST(request){
   const anon=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY||process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   let recipient='';
   let application=null;
+  let client=null;
 
   if(url&&anon){
-   const client=createClient(url,anon,{auth:{persistSession:false}});
-   const [{data:settings},{data:claimed,error:claimError}]=await Promise.all([
-    client.from('application_settings').select('notification_email,sender_name').eq('id',1).maybeSingle(),
-    client.rpc('claim_production_application_notification',{p_id:applicationId})
-   ]);
-   if(claimError)return Response.json({ok:false,error:claimError.message},{status:400});
+   client=createClient(url,anon,{auth:{persistSession:false}});
+   const {data:settings}=await client.from('application_settings').select('notification_email,sender_name').eq('id',1).maybeSingle();
    recipient=settings?.notification_email||'';
-   application=claimed||null;
   }
 
   const apiKey=process.env.RESEND_API_KEY;
   const from=process.env.SIDEII_APPLICATION_FROM||'SIDE:II Applications <onboarding@resend.dev>';
 
-  if(!application){
-   return Response.json({ok:true,email_sent:false,reason:'already_claimed_or_not_found'});
-  }
   if(!recipient||!apiKey){
    return Response.json({ok:true,email_sent:false,reason:!recipient?'notification_email_not_configured':'email_provider_not_configured'});
+  }
+
+  const {data:claimed,error:claimError}=await client.rpc('claim_production_application_notification',{p_id:applicationId});
+  if(claimError)return Response.json({ok:false,error:claimError.message},{status:400});
+  application=claimed||null;
+  if(!application){
+   return Response.json({ok:true,email_sent:false,reason:'already_claimed_or_not_found'});
   }
 
   const lines=[
@@ -71,6 +71,7 @@ export async function POST(request){
 
   if(!res.ok){
    const detail=await res.text();
+   await client.rpc('release_production_application_notification',{p_id:applicationId});
    return Response.json({ok:false,email_sent:false,detail},{status:502});
   }
   return Response.json({ok:true,email_sent:true});
