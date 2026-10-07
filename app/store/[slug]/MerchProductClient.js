@@ -29,7 +29,7 @@ export default function MerchProductClient({product}){
  async function joinWaitlist(){const email=waitEmail.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setWaitMessage('Enter a valid email.');return}setWaitBusy(true);setWaitMessage('');const {error}=await supabase.rpc('join_stock_waitlist',{p_variant_id:v.id,p_email:email});setWaitBusy(false);setWaitMessage(error?error.message:'You are on the restock list.');}
  return <section className="merchDetail shell">
   <div className="merchDetailVisual">
-   <div className="merchDetailSwitch">{hasFront&&<button className={side==='front'?'active':''} onClick={()=>setSide('front')}>FRONT</button>}{hasBack&&<button className={side==='back'?'active':''} onClick={()=>setSide('back')}>BACK</button>}</div>
+   <div className="merchViewSelector"><span>PRODUCT VIEW</span><div className="merchDetailSwitch" role="tablist" aria-label="Product view">{hasFront&&<button type="button" role="tab" aria-selected={side==='front'} className={side==='front'?'active':''} onClick={()=>setSide('front')}><i>01</i><b>FRONT</b></button>}{hasBack&&<button type="button" role="tab" aria-selected={side==='back'} className={side==='back'?'active':''} onClick={()=>setSide('back')}><i>02</i><b>BACK</b></button>}</div></div>
    <MerchMockupPreview product={product} side={side} raster/><div className="merchViewMeta"><span>{side.toUpperCase()} VIEW</span><small>{String(product.merchCategory||'MERCH').toUpperCase()}</small></div>
    {gallery.length>0&&<div className="merchDetailGallery">{gallery.slice(0,4).map((g,i)=><img key={g.id||g.url||i} src={g.url} alt={product.title+' view '+(i+1)}/>)}</div>}
   </div>
