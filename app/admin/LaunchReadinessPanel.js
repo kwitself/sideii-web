@@ -2,6 +2,7 @@
 
 import {useEffect,useMemo,useState} from 'react';
 import {supabase} from '../lib/supabase';
+import FinalStoreQaPanel from './FinalStoreQaPanel';
 
 export default function LaunchReadinessPanel(){
   const [data,setData]=useState(null),[error,setError]=useState(''),[loading,setLoading]=useState(true);
@@ -25,7 +26,7 @@ export default function LaunchReadinessPanel(){
   const ready=checks.filter(x=>x.ready).length;
   const total=checks.length;
 
-  return <section id="launch-readiness" className="adminSection">
+  return <><section id="launch-readiness" className="adminSection">
     <div className="sectionLabel"><span>15 / LAUNCH READINESS</span><p>Provider and production-domain status. Secrets are never displayed.</p></div>
     <div className="adminPanel launchReadinessPanel">
       <header><div><span>PRODUCTION GATES</span><strong>{loading?'…':total?ready+'/'+total:'—'}</strong></div><button type="button" className="ghostButton" onClick={load} disabled={loading}>{loading?'CHECKING…':'REFRESH'}</button></header>
@@ -39,5 +40,5 @@ export default function LaunchReadinessPanel(){
       </div>
       {!loading&&total>0&&ready<total&&<small className="launchReadinessNote">Provider-dependent items stay pending until the real domain and selected production services are connected.</small>}
     </div>
-  </section>;
+  </section><FinalStoreQaPanel/></>;
 }
