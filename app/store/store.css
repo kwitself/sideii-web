@@ -910,7 +910,7 @@
 .storeSearchField input:focus{border-color:#817c75}
 .storeDiscoveryControls{
   display:grid;
-  grid-template-columns:1.1fr 1.5fr .7fr .7fr auto auto;
+  grid-template-columns:1.05fr 1.35fr .65fr .65fr 1fr auto auto;
   gap:8px;
   align-items:end;
 }
