@@ -19,9 +19,12 @@ export async function GET(request){
     const siteUrl=String(process.env.NEXT_PUBLIC_SITE_URL||'').trim();
     const domainReady=!!siteUrl&&!/\.vercel\.app\/?$/i.test(siteUrl);
     const applicationTo=String(process.env.SIDEII_APPLICATION_TO||'').trim();
+    const {data:paymentSettings}=await sb.from('store_payment_settings').select('mode,provider,enabled').eq('id',1).maybeSingle();
     const emailReady=!!process.env.RESEND_API_KEY&&!!process.env.SIDEII_ORDER_FROM&&!!process.env.SIDEII_APPLICATION_FROM;
     const paymentProvider=String(process.env.PAYMENT_PROVIDER||'').trim();
-    const paymentReady=!!paymentProvider&&!!process.env.PAYMENT_SECRET_KEY&&!!process.env.PAYMENT_WEBHOOK_SECRET&&!!process.env.SUPABASE_SECRET_KEY;
+    const manualLinkMode=paymentSettings?.enabled&&paymentSettings?.mode==='iyzilink_manual';
+    const apiPaymentReady=!!paymentProvider&&!!process.env.PAYMENT_SECRET_KEY&&!!process.env.PAYMENT_WEBHOOK_SECRET&&!!process.env.SUPABASE_SECRET_KEY;
+    const paymentReady=manualLinkMode||apiPaymentReady;
     const carrierReady=!!process.env.CARRIER_API_KEY;
     const fxReady=!!process.env.FX_API_KEY;
 
@@ -32,7 +35,7 @@ export async function GET(request){
         domain:{ready:domainReady,label:'Canonical domain',detail:domainReady?siteUrl:'Set NEXT_PUBLIC_SITE_URL to the real production domain.'},
         email:{ready:emailReady,label:'Transactional email',detail:emailReady?'Resend and sender identities configured.':'Configure RESEND_API_KEY and verified sender addresses.'},
         applicationInbox:{ready:!!applicationTo,label:'Application inbox',detail:applicationTo?'Server-only recipient configured.':'Set SIDEII_APPLICATION_TO in the server environment.'},
-        payment:{ready:paymentReady,label:'Payment provider',detail:paymentReady?'Provider + signed webhook + server Supabase secret configured.':'Set PAYMENT_PROVIDER, PAYMENT_SECRET_KEY, PAYMENT_WEBHOOK_SECRET and SUPABASE_SECRET_KEY.'},
+        payment:{ready:paymentReady,label:'Payment provider',detail:manualLinkMode?'iyzico Link manual mode active. Confirm payments by matching iyzico transaction references in Orders.':apiPaymentReady?'Provider + signed webhook + server Supabase secret configured.':'Configure iyzico Link manual mode or provider API credentials.'},
         carrier:{ready:carrierReady,label:'Carrier integration',detail:carrierReady?'Carrier credentials detected.':'Live carrier API not configured; fixed-rate shipping remains available.'},
         fx:{ready:fxReady,label:'Live FX',detail:fxReady?'Live FX credentials detected.':'Current non-TRY rates remain manual / QA display rates.'}
       }
