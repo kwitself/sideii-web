@@ -15,6 +15,9 @@ export default function MerchProductClient({product}){
  const {money}=useLocaleCurrency();
  const variants=product.variants||[];
  const detail=product.storefrontConfig?.detail||{};
+ const wear=product.storefrontConfig?.wear||{};
+ const wearVisible=product.isMerch&&product.storefrontConfig?.visibility?.wear!==false;
+ const showWearSupport=wearVisible&&wear.show_support!==false;
  const defaultVariant=detail.default_variant;const defaultIndex=Math.max(0,variants.findIndex(x=>String(x.id||x.sku)===String(defaultVariant)));
  const [index,setIndex]=useState(defaultVariant&&defaultVariant!=='auto'?defaultIndex:0);
  const preferredSide=detail.default_side==='back'&&product.mockups?.back?'back':product.mockups?.front?'front':'back';
@@ -42,6 +45,7 @@ export default function MerchProductClient({product}){
    <p>{product.lead}</p>
    <div className="merchDetailFacts"><div><span>PRODUCT</span><b>{product.catalogue}</b></div><div><span>AVAILABILITY</span><b>{product.status}</b></div></div>
    {variants.length>0&&<div className="merchVariantChooser"><span>CHOOSE SIZE / COLOUR</span><div>{variants.map((x,i)=><button key={x.id||x.sku} className={i===index?'active':''} onClick={()=>selectVariant(i)}>{x.formatLabel}<small>{x.stock>0?x.stock+' LEFT':x.preorderEnabled?'PRE-ORDER':'SOLD OUT'}{x.editionNumberingEnabled&&x.editionTotal?' · LIMITED '+x.editionTotal:''}</small></button>)}</div></div>}
+   {showWearSupport&&<div className="merchSupportCallout"><div><span>{wear.support_label||'WWYS SUPPORT'}</span><b>{wear.support_line||'Add extra support in your bag.'}</b></div><small>Choose any extra amount after adding this object to your bag.</small></div>}
    <div className="merchBuyRow"><strong>{money(v.price)}</strong><button disabled={unavailable} onClick={add}>{product.status!=='AVAILABLE'?'COMING SOON':soldOut&&!canPreorder?'SOLD OUT':added?'ADDED ✓':canPreorder?'PRE-ORDER':'ADD TO BAG'}</button></div>{product.status==='AVAILABLE'&&soldOut&&!canPreorder&&product.commerceConfig?.waitlist!==false&&<div className="merchWaitlist"><input type="email" placeholder="EMAIL FOR RESTOCK ALERT" value={waitEmail} onChange={e=>setWaitEmail(e.target.value)}/><button type="button" disabled={waitBusy} onClick={joinWaitlist}>{waitBusy?'SAVING…':'NOTIFY ME'}</button>{waitMessage&&<small>{waitMessage}</small>}</div>}
    <Link className="merchBagLink" href="/store?checkout=1">BAG · {bagCount}</Link>
   </div>
