@@ -2393,3 +2393,163 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .merchControlTabs button{flex:0 0 auto;min-width:132px}
   .merchControlActions .saveButton{width:100%;min-width:0}
 }
+
+
+/* CONTROL ROOM IA / SECTION VIEWS */
+.adminMain{
+  max-width:none;
+}
+.adminTop{
+  min-height:176px;
+}
+.adminViewSection{
+  min-height:calc(100vh - 230px);
+}
+.adminModuleStack{
+  display:grid;
+  gap:0;
+}
+.adminModuleStack>.adminSection:first-child{
+  padding-top:34px;
+}
+.adminModuleStack>.adminSection:last-child{
+  border-bottom:0;
+}
+.adminSubnav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:0;
+  margin:0 0 28px;
+  border:1px solid #343238;
+  width:max-content;
+  max-width:100%;
+}
+.adminSubnav button{
+  appearance:none;
+  min-height:39px;
+  padding:0 15px;
+  border:0;
+  border-right:1px solid #343238;
+  background:#0b0b0d;
+  color:#77736d;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.14em;
+  cursor:pointer;
+}
+.adminSubnav button:last-child{border-right:0}
+.adminSubnav button.active{
+  background:#d8d3ca;
+  color:#09090a;
+}
+.panelAction button{
+  appearance:none;
+  display:inline-flex;
+  align-items:center;
+  min-height:40px;
+  padding:0 14px;
+  border:1px solid #37363a;
+  background:#0d0d0f;
+  color:#aaa69f;
+  font:9px/1 Arial,sans-serif;
+  letter-spacing:.14em;
+  cursor:pointer;
+}
+.rowActions .rowNavButton{
+  appearance:none;
+  border:0;
+  background:transparent;
+  color:#77747a;
+  padding:0;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.12em;
+  cursor:pointer;
+}
+.rowActions .rowNavButton:hover{color:#dedbd4}
+.dashboardPanels{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:14px;
+}
+.dashboardPanels>article{
+  min-height:260px;
+  border:1px solid #2d2c2f;
+  background:#0d0d0f;
+}
+.dashboardPanels>article>header{
+  min-height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:0 16px;
+  border-bottom:1px solid #29282b;
+}
+.dashboardPanels>article>header span{
+  color:#8a8680;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.17em;
+}
+.dashboardPanels>article>header button{
+  appearance:none;
+  border:0;
+  background:none;
+  color:#77736d;
+  font:7px/1 Arial,sans-serif;
+  letter-spacing:.13em;
+  cursor:pointer;
+}
+.dashboardPanels>article>header button:hover{color:#d8d3ca}
+.dashboardLine{
+  min-height:49px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto auto;
+  gap:15px;
+  align-items:center;
+  padding:9px 16px;
+  border-bottom:1px solid #232326;
+}
+.dashboardLine>div{
+  display:flex;
+  min-width:0;
+  flex-direction:column;
+  gap:5px;
+}
+.dashboardLine b{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:#d5d0c8;
+  font:13px/1 Georgia,serif;
+  font-weight:400;
+}
+.dashboardLine small,.dashboardLine span{
+  color:#6f6b70;
+  font:7px/1.2 Arial,sans-serif;
+  letter-spacing:.09em;
+}
+.dashboardLine strong{
+  color:#aaa59d;
+  font:12px/1 Georgia,serif;
+  font-weight:400;
+}
+.dashboardHealthy{
+  display:grid;
+  min-height:210px;
+  place-items:center;
+  margin:0;
+  color:#65615c;
+  font:8px/1.4 Arial,sans-serif;
+  letter-spacing:.15em;
+}
+@media(max-width:900px){
+  .adminViewSection{min-height:auto}
+  .dashboardPanels{grid-template-columns:1fr}
+  .adminTop{min-height:155px}
+}
+@media(max-width:560px){
+  .adminSubnav{width:100%}
+  .adminSubnav button{flex:1;padding:0 9px;font-size:7px}
+  .dashboardLine{grid-template-columns:minmax(0,1fr) auto}
+  .dashboardLine>span{display:none}
+}
