@@ -4292,3 +4292,112 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .previewDiscoveryResult article{grid-template-columns:1fr}
   .previewDiscoveryMedia{border-right:0;border-bottom:1px solid #343337}
 }
+
+
+/* OCT 07 2026 — CONTROL ROOM FINAL DENSITY / RESPONSIVE POLISH */
+.adminMain,.adminSection,.adminPanel,.commerceOps,.commerceVariants{min-width:0}
+.adminTop{gap:28px}
+.topActions{flex-wrap:wrap;justify-content:flex-end}
+.sectionLabel{gap:20px}
+.sectionLabel>span{flex:none}
+.sectionLabel p{max-width:680px;text-align:right;line-height:1.45}
+.adminPanel{overflow:hidden}
+.commerceVariants>header,
+.commerceCard>header,
+.commerceReturns>header{
+  min-height:62px;
+  padding:16px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  border-bottom:1px solid #302f33;
+}
+.commerceVariants>header span,
+.commerceCard>header span,
+.commerceReturns>header span{font-size:10px;letter-spacing:.08em}
+.commerceVariants>header small,
+.commerceCard>header small,
+.commerceReturns>header small{
+  max-width:620px;
+  color:#8a8680;
+  font-size:10px;
+  line-height:1.4;
+  text-align:right;
+}
+.commerceVariantRow{
+  grid-template-columns:minmax(190px,1.5fr) repeat(5,minmax(105px,.72fr)) minmax(90px,.55fr)!important;
+  gap:12px!important;
+  align-items:end!important;
+  padding:18px!important;
+}
+.commerceVariantRow>*{min-width:0}
+.commerceVariantTitle{align-self:center}
+.commerceVariantTitle b{overflow-wrap:anywhere}
+.commerceVariantRow label{gap:7px}
+.commerceVariantRow input,
+.commerceVariantRow select{width:100%;max-width:100%}
+.commerceVariantRow .commerceWide{
+  grid-column:1/-2!important;
+}
+.commerceVariantRow .iyziLinkField{
+  padding-top:4px;
+}
+.commerceVariantRow .iyziLinkField small{
+  color:#706d72;
+  font-size:9px;
+  line-height:1.4;
+  letter-spacing:.02em;
+}
+.commerceVariantRow>.saveButton{
+  align-self:end;
+  min-height:46px;
+  width:100%;
+}
+.commerceReturnRow{
+  grid-template-columns:minmax(0,1fr) minmax(150px,190px)!important;
+  gap:18px!important;
+  align-items:start!important;
+}
+.commerceReturnRow>div{min-width:0}
+.commerceReturnRow p{overflow-wrap:anywhere;line-height:1.45}
+.orderControls{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px!important;
+  align-items:end!important;
+}
+.orderControls label{min-width:0}
+.orderControls select,.orderControls input{width:100%!important}
+.shippingTracking{grid-template-columns:repeat(2,minmax(0,1fr)) auto auto!important}
+.shippingTracking .saveButton,.shippingTracking .shipNowButton{min-height:46px}
+.orderDetailPanel,.orderDetail,.orderModal,.orderDrawer{max-width:100%}
+@media(max-width:1280px){
+  .commerceVariantRow{
+    grid-template-columns:minmax(180px,1.3fr) repeat(3,minmax(110px,.8fr))!important;
+  }
+  .commerceVariantRow .commerceWide{grid-column:1/-1!important}
+  .commerceVariantRow>.saveButton{grid-column:auto}
+  .shippingTracking{grid-template-columns:1fr 1fr!important}
+  .shippingTracking .saveButton,.shippingTracking .shipNowButton{width:100%}
+}
+@media(max-width:980px){
+  .adminTop{align-items:flex-start!important;flex-direction:column!important;padding:44px 0 32px}
+  .topActions{width:100%;justify-content:flex-start}
+  .sectionLabel{align-items:flex-start!important;flex-direction:column!important}
+  .sectionLabel p{text-align:left}
+  .commerceVariantRow{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .commerceVariantTitle,.commerceVariantRow .commerceWide{grid-column:1/-1!important}
+  .commerceReturnRow{grid-template-columns:1fr!important}
+  .commerceReturnRow select{width:100%}
+  .orderControls,.shippingTracking{grid-template-columns:1fr!important}
+}
+@media(max-width:620px){
+  .adminMain{padding-left:14px!important;padding-right:14px!important}
+  .adminSection{padding-top:38px!important;padding-bottom:38px!important}
+  .commerceVariantRow{grid-template-columns:1fr!important;padding:14px!important}
+  .commerceVariantTitle,.commerceVariantRow .commerceWide{grid-column:auto!important}
+  .commerceVariantRow>.saveButton{width:100%}
+  .topActions{display:grid!important;grid-template-columns:1fr!important}
+  .topActions a,.topActions button{width:100%;text-align:center}
+}
