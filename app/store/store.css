@@ -992,3 +992,90 @@
   .storeDiscoveryToggle{justify-content:flex-start}
   .storeDiscoveryMeta{align-items:flex-start;flex-direction:column}
 }
+
+
+/* ADVANCED STOREFRONT CARD CONTROLS */
+.storeCardMediaLink,
+.storeCover{
+  position:relative;
+}
+.storeCardMediaLink{
+  display:block;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+}
+.storeCardMediaLink .storePrimaryImage,
+.storeCardMediaLink .storeSecondaryImage,
+.storeCover .storePrimaryImage,
+.storeCover .storeSecondaryImage{
+  width:100%;
+  height:100%;
+  position:absolute;
+  inset:0;
+  transition:opacity .34s ease,transform .46s cubic-bezier(.22,.8,.24,1);
+}
+.storeCardMediaLink .storePrimaryImage,
+.storeCover .storePrimaryImage{opacity:1}
+.storeCardMediaLink .storeSecondaryImage,
+.storeCover .storeSecondaryImage{
+  opacity:0;
+  z-index:3;
+}
+.storeCardMediaLink.hasSecondary:hover .storePrimaryImage,
+.storeCover.hasSecondary:hover .storePrimaryImage{
+  opacity:0;
+  transform:scale(1.015);
+}
+.storeCardMediaLink.hasSecondary:hover .storeSecondaryImage,
+.storeCover.hasSecondary:hover .storeSecondaryImage{
+  opacity:1;
+  transform:scale(1.02);
+}
+.storeClassicCard.title-small .storeClassicMeta h3{font-size:15px}
+.storeClassicCard.title-regular .storeClassicMeta h3{font-size:18px}
+.storeClassicCard.title-large .storeClassicMeta h3{font-size:23px}
+.storeProduct.title-small .storeProductMeta h2{font-size:clamp(28px,2.7vw,38px)}
+.storeProduct.title-large .storeProductMeta h2{font-size:clamp(42px,4vw,58px)}
+.storeClassicPrice{
+  flex-wrap:wrap;
+}
+.storeClassicStock{
+  width:100%;
+  color:#6f6b70!important;
+  font:7px/1.2 Arial,sans-serif!important;
+  letter-spacing:.1em;
+}
+.storeVariantView{
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #4a484d;
+  background:#111113;
+  color:#d2cec6!important;
+  text-decoration:none;
+  font:9px/1 Arial,sans-serif;
+  letter-spacing:.15em;
+}
+.storeVariantView:hover{
+  border-color:#8a857e;
+  background:#18181b;
+  color:#fffaf2!important;
+}
+@media(max-width:760px){
+  .storeCardMediaLink.hasSecondary:not(.secondaryMobile):hover .storePrimaryImage,
+  .storeCover.hasSecondary:not(.secondaryMobile):hover .storePrimaryImage{
+    opacity:1;
+    transform:none;
+  }
+  .storeCardMediaLink.hasSecondary:not(.secondaryMobile):hover .storeSecondaryImage,
+  .storeCover.hasSecondary:not(.secondaryMobile):hover .storeSecondaryImage{
+    opacity:0;
+    transform:none;
+  }
+  .storeClassicCard.secondaryMobile .storeCardMediaLink.hasSecondary:active .storePrimaryImage,
+  .storeProduct.secondaryMobile .storeCover.hasSecondary:active .storePrimaryImage{opacity:0}
+  .storeClassicCard.secondaryMobile .storeCardMediaLink.hasSecondary:active .storeSecondaryImage,
+  .storeProduct.secondaryMobile .storeCover.hasSecondary:active .storeSecondaryImage{opacity:1}
+}
