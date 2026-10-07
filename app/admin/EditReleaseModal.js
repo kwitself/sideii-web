@@ -53,6 +53,18 @@ export default function EditReleaseModal({product,onClose,onSaved}){
  const publicUrl=path=>supabase.storage.from('release-artwork').getPublicUrl(path).data.publicUrl;
  const current=product.artwork_path?publicUrl(product.artwork_path):'';
  const existingGallery=useMemo(()=>gallery.map((path,i)=>({kind:'existing',path,preview:publicUrl(path),name:`Gallery ${i+1}`})),[gallery]);
+ const feedBlockers=[
+  storefront.visibility.google===false?'GOOGLE CHANNEL IS OFF':null,
+  storefront.visibility.store===false?'STORE VISIBILITY IS OFF':null,
+  !form.title.trim()?'TITLE IS MISSING':null,
+  !(preview||current)?'PRIMARY PRODUCT IMAGE IS MISSING':null,
+  !variants.some(v=>v.price!==''&&Number(v.price)>=0)?'NO PRICED VARIANT':null,
+  form.status!=='active'&&!variants.some(v=>v.preorder_enabled)?'PRODUCT IS NOT ACTIVE OR PRE-ORDERABLE':null
+ ].filter(Boolean);
+ const feedWarnings=[
+  !(seo.gtin||form.barcode||seo.mpn)?'NO GTIN / BARCODE / MPN — IDENTIFIER_EXISTS=NO':null,
+  !seo.google_category?'GOOGLE PRODUCT CATEGORY NOT SET':null
+ ].filter(Boolean);
 
  function validImage(f){return f&&f.type.startsWith('image/')&&f.size<=10*1024*1024}
  function pick(f){setDirty(true);if(preview)URL.revokeObjectURL(preview);if(!f){setFile(null);setPreview('');return}if(!validImage(f)){setMessage('Use JPG, PNG, WEBP or AVIF up to 10 MB.');return}setFile(f);setPreview(URL.createObjectURL(f));setMessage('')}
@@ -169,6 +181,8 @@ export default function EditReleaseModal({product,onClose,onSaved}){
    <label className="storefrontWide">GOOGLE PRODUCT CATEGORY<input value={seo.google_category||''} onChange={e=>setSeoValue('google_category',e.target.value)} placeholder="e.g. Media > Music & Sound Recordings"/></label>
    <label>CONDITION<select value={seo.condition||'new'} onChange={e=>setSeoValue('condition',e.target.value)}><option value="new">NEW</option><option value="used">USED</option><option value="refurbished">REFURBISHED</option></select></label>
   </div></section>
+
+  <section className="storefrontBlock feedReadiness"><header><span>GOOGLE FEED READINESS</span><p>Live eligibility check against the generated Merchant Center feed.</p></header><div className="feedReadinessBody"><div className={"feedReadinessState "+(feedBlockers.length?'blocked':'ready')}><b>{feedBlockers.length?'NOT READY':'READY FOR FEED'}</b><span>{feedBlockers.length?feedBlockers.length+' blocking issue(s)':'Variant data can be exported.'}</span></div>{feedBlockers.map(x=><p className="feedIssue blocker" key={x}>{x}</p>)}{feedWarnings.map(x=><p className="feedIssue warning" key={x}>{x}</p>)}<a href="/feeds/google.xml" target="_blank" rel="noreferrer">OPEN GOOGLE XML FEED ↗</a></div></section>
 
   <section className="storefrontBlock"><header><span>CHANNELS</span><p>These switches will control inclusion in each generated product feed.</p></header><div className="storefrontToggleGrid">
    {Object.entries({google:'GOOGLE SHOPPING',meta:'META CATALOG',pinterest:'PINTEREST',microsoft:'MICROSOFT',tiktok:'TIKTOK'}).map(([k,l])=><label className="storefrontToggle" key={k}><input type="checkbox" checked={storefront.visibility[k]!==false} onChange={e=>setStore('visibility',k,e.target.checked)}/><span>{l}</span></label>)}
