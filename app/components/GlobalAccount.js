@@ -169,8 +169,8 @@ export default function GlobalAccount(){
   if(session?.user)await loadAccount(session.user);
  }
 
- if(pathname?.startsWith('/admin'))return null;
  useEffect(()=>{if(!open)return;const onKey=e=>{if(e.key==='Escape')setOpen(false)};window.addEventListener('keydown',onKey);return()=>window.removeEventListener('keydown',onKey)},[open]);
+ if(pathname?.startsWith('/admin'))return null;
  return <>
   {!open&&<button className="globalAccountTrigger" aria-haspopup="dialog" aria-expanded={open} aria-label={t('ACCOUNT')} onClick={()=>{setMessage('');setOpen(true)}}>{signedIn?initials:'ACCOUNT'}</button>}
   <aside className={'globalAccountDrawer '+(open?'open':'')} role="dialog" aria-modal="true" aria-label={t('ACCOUNT')} aria-hidden={!open}>
