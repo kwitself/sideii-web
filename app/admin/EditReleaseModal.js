@@ -42,25 +42,27 @@ export default function EditReleaseModal({product,onClose,onSaved}){
  const [variants,setVariants]=useState(initialVariants.length?initialVariants:[cleanVariant({sku:`${product.catalogue_no||'SIDEII'}-CD`})]);
  const [removedVariants,setRemovedVariants]=useState([]);
  const [file,setFile]=useState(null); const [preview,setPreview]=useState(''); const [gallery,setGallery]=useState(Array.isArray(product.gallery_paths)?product.gallery_paths:[]); const [galleryFiles,setGalleryFiles]=useState([]);
- const [saving,setSaving]=useState(false); const [message,setMessage]=useState('');
- const set=(k,v)=>setForm(p=>({...p,[k]:v}));
- const setStore=(section,key,value)=>setStorefront(p=>({...p,[section]:{...p[section],[key]:value}}));
- const setSeoValue=(key,value)=>setSeo(p=>({...p,[key]:value}));
- const setCommerceValue=(key,value)=>setCommerce(p=>({...p,[key]:value}));
+ const [saving,setSaving]=useState(false); const [message,setMessage]=useState(''); const [dirty,setDirty]=useState(false);
+ const set=(k,v)=>{setDirty(true);setForm(p=>({...p,[k]:v}))};
+ const setStore=(section,key,value)=>{setDirty(true);setStorefront(p=>({...p,[section]:{...p[section],[key]:value}}))};
+ const setSeoValue=(key,value)=>{setDirty(true);setSeo(p=>({...p,[key]:value}))};
+ const setCommerceValue=(key,value)=>{setDirty(true);setCommerce(p=>({...p,[key]:value}))};
  useEffect(()=>()=>{if(preview)URL.revokeObjectURL(preview);galleryFiles.forEach(x=>URL.revokeObjectURL(x.preview))},[preview,galleryFiles]);
+ useEffect(()=>{const before=e=>{if(!dirty)return;e.preventDefault();e.returnValue=''};window.addEventListener('beforeunload',before);return()=>window.removeEventListener('beforeunload',before)},[dirty]);
+ const safeClose=()=>{if(dirty&&!window.confirm('You have unsaved changes. Close without saving?'))return;onClose()};
  const publicUrl=path=>supabase.storage.from('release-artwork').getPublicUrl(path).data.publicUrl;
  const current=product.artwork_path?publicUrl(product.artwork_path):'';
  const existingGallery=useMemo(()=>gallery.map((path,i)=>({kind:'existing',path,preview:publicUrl(path),name:`Gallery ${i+1}`})),[gallery]);
 
  function validImage(f){return f&&f.type.startsWith('image/')&&f.size<=10*1024*1024}
- function pick(f){if(preview)URL.revokeObjectURL(preview);if(!f){setFile(null);setPreview('');return}if(!validImage(f)){setMessage('Use JPG, PNG, WEBP or AVIF up to 10 MB.');return}setFile(f);setPreview(URL.createObjectURL(f));setMessage('')}
- function addGallery(files){const next=[...files].filter(validImage).map(f=>({file:f,preview:URL.createObjectURL(f),name:f.name}));if(next.length!==files.length)setMessage('Some files were skipped. Images must be 10 MB or smaller.');setGalleryFiles(p=>[...p,...next])}
- function removeExisting(path){setGallery(p=>p.filter(x=>x!==path))}
- function removeNew(i){setGalleryFiles(p=>{URL.revokeObjectURL(p[i].preview);return p.filter((_,n)=>n!==i)})}
- function moveExisting(i,dir){setGallery(p=>{const n=[...p],j=i+dir;if(j<0||j>=n.length)return p;[n[i],n[j]]=[n[j],n[i]];return n})}
- function updateVariant(i,k,v){setVariants(p=>p.map((x,n)=>n===i?{...x,[k]:v}:x))}
- function addVariant(){const format=!variants.some(v=>v.format==='cd')?'cd':!variants.some(v=>v.format==='cassette')?'cassette':!variants.some(v=>v.format==='vinyl')?'vinyl':'digital';setVariants(p=>[...p,cleanVariant({sku:`${form.catalogue_no||'SIDEII'}-${format==='cd'?'CD':format==='cassette'?'CS':format==='vinyl'?'LP':'DIG'}-${p.length+1}`,format,edition_name:form.title})])}
- function removeVariant(i){const v=variants[i];if(v.id)setRemovedVariants(p=>[...p,v.id]);setVariants(p=>p.filter((_,n)=>n!==i))}
+ function pick(f){setDirty(true);if(preview)URL.revokeObjectURL(preview);if(!f){setFile(null);setPreview('');return}if(!validImage(f)){setMessage('Use JPG, PNG, WEBP or AVIF up to 10 MB.');return}setFile(f);setPreview(URL.createObjectURL(f));setMessage('')}
+ function addGallery(files){setDirty(true);const next=[...files].filter(validImage).map(f=>({file:f,preview:URL.createObjectURL(f),name:f.name}));if(next.length!==files.length)setMessage('Some files were skipped. Images must be 10 MB or smaller.');setGalleryFiles(p=>[...p,...next])}
+ function removeExisting(path){setDirty(true);setGallery(p=>p.filter(x=>x!==path))}
+ function removeNew(i){setDirty(true);setGalleryFiles(p=>{URL.revokeObjectURL(p[i].preview);return p.filter((_,n)=>n!==i)})}
+ function moveExisting(i,dir){setDirty(true);setGallery(p=>{const n=[...p],j=i+dir;if(j<0||j>=n.length)return p;[n[i],n[j]]=[n[j],n[i]];return n})}
+ function updateVariant(i,k,v){setDirty(true);setVariants(p=>p.map((x,n)=>n===i?{...x,[k]:v}:x))}
+ function addVariant(){setDirty(true);const format=!variants.some(v=>v.format==='cd')?'cd':!variants.some(v=>v.format==='cassette')?'cassette':!variants.some(v=>v.format==='vinyl')?'vinyl':'digital';setVariants(p=>[...p,cleanVariant({sku:`${form.catalogue_no||'SIDEII'}-${format==='cd'?'CD':format==='cassette'?'CS':format==='vinyl'?'LP':'DIG'}-${p.length+1}`,format,edition_name:form.title})])}
+ function removeVariant(i){setDirty(true);const v=variants[i];if(v.id)setRemovedVariants(p=>[...p,v.id]);setVariants(p=>p.filter((_,n)=>n!==i))}
 
  async function save(){
   if(!variants.length){setMessage('Keep at least one edition.');setTab('media');return}
@@ -76,11 +78,11 @@ export default function EditReleaseModal({product,onClose,onSaved}){
    const {error:p}=await supabase.from('products').update({catalogue_no:form.catalogue_no.trim(),title:form.title.trim(),artist_project:form.artist_project.trim()||null,description:form.description.trim()||null,imprint:form.imprint,status:form.status,is_public:isPublic,has_shrinkwrap:form.has_shrinkwrap,release_date:form.release_date||null,credits:form.credits.trim()||null,tracklist:form.tracklist.split('\n').map(x=>x.trim()).filter(Boolean),product_origin:form.product_origin,original_label:form.product_origin==='distributed'?(form.original_label.trim()||null):null,original_catalogue_no:form.product_origin==='distributed'?(form.original_catalogue_no.trim()||null):null,barcode:form.barcode.trim()||null,hover_media_format:storefront.hover.format,storefront_config:storefront,seo_config:seo,commerce_config:commerce,artwork_path:artworkPath,gallery_paths:galleryPaths}).eq('id',product.id);if(p)throw p;
    for(const id of removedVariants){const {error}=await supabase.from('product_variants').delete().eq('id',id);if(error)throw error}
    for(const [i,v] of variants.entries()){const stock=Math.max(0,parseInt(v.stock||'0',10)||0),price=Math.max(0,parseFloat(v.price||'0')||0);const payload={product_id:product.id,sku:v.sku.trim()||`${form.catalogue_no}-${v.format.toUpperCase()}-${i+1}`,format:v.format,price,currency:'TRY',stock_qty:stock,manufactured_qty:Math.max(stock+Number(v.reserved_qty||0),Number(v.manufactured_qty||0)),reserved_qty:Number(v.reserved_qty||0),edition_name:v.edition_name.trim()||form.title.trim(),edition_details:v.edition_details.trim()||null,digital_formats:v.format==='digital'?v.digital_formats.split(',').map(x=>x.trim().toUpperCase()).filter(Boolean):[],audio_specs:v.format==='digital'?(v.audio_specs.trim()||null):null,vinyl_size:v.format==='vinyl'?v.vinyl_size:null,vinyl_speed:v.format==='vinyl'?v.vinyl_speed:null,vinyl_weight_g:v.format==='vinyl'?(parseInt(v.vinyl_weight_g||'0',10)||null):null,vinyl_color:v.format==='vinyl'?(v.vinyl_color.trim()||null):null,shipping_class:v.shipping_class.trim()||null,weight_g:v.weight_g===''?null:Math.max(0,parseInt(v.weight_g||'0',10)||0),low_stock_threshold:Math.max(0,parseInt(v.low_stock_threshold||'0',10)||0),preorder_enabled:!!v.preorder_enabled,preorder_limit:v.preorder_limit===''?null:Math.max(1,parseInt(v.preorder_limit||'1',10)||1),preorder_target:v.preorder_target===''?null:Math.max(1,parseInt(v.preorder_target||'1',10)||1),preorder_deadline:v.preorder_deadline||null,edition_numbering_enabled:!!v.edition_numbering_enabled,edition_total:v.edition_total===''?null:Math.max(1,parseInt(v.edition_total||'1',10)||1),active:v.active};const q=v.id?supabase.from('product_variants').update(payload).eq('id',v.id):supabase.from('product_variants').insert(payload);const {error}=await q;if(error)throw error}
-   await onSaved();onClose();
+   setDirty(false);await onSaved();onClose();
   }catch(e){setMessage(e?.message||'Update failed.')}finally{setSaving(false)}
  }
 
- return createPortal(<div className="editOverlay" onMouseDown={e=>{if(e.target===e.currentTarget)onClose()}}><section className="editModal releaseV2Modal"><header><div><span>EDIT / RELEASE V2</span><h2>{product.title}</h2></div><button onClick={onClose}>CLOSE ×</button></header>
+ return createPortal(<div className="editOverlay" onMouseDown={e=>{if(e.target===e.currentTarget)safeClose()}}><section className="editModal releaseV2Modal"><header><div><span>EDIT / RELEASE V2</span><h2>{product.title}</h2></div><button onClick={safeClose}>CLOSE ×</button></header>
  <nav className="editTabs">{[['release','RELEASE'],['media',`MEDIA · ${variants.length}`],['gallery',`GALLERY · ${gallery.length+galleryFiles.length}`],['storefront','STOREFRONT'],['commerce','COMMERCE'],['seo','SEO / FEEDS']].map(([v,l])=><button key={v} className={tab===v?'active':''} onClick={()=>setTab(v)}>{l}</button>)}</nav>
  {tab==='release'&&<div className="editBody"><div className="editFields">
  <label>PRODUCT ORIGIN<select value={form.product_origin} onChange={e=>set('product_origin',e.target.value)}><option value="own">OWN RELEASE</option><option value="distributed">SELECTED / DISTRIBUTION</option></select></label><label>IMPRINT<select value={form.imprint} onChange={e=>set('imprint',e.target.value)} disabled={form.product_origin==='distributed'}><option value="sideii">SIDE:II</option><option value="lethargia">LETHARGIA RECORDS</option></select></label>{form.product_origin==='distributed'&&<><label>ORIGINAL LABEL<input required value={form.original_label} onChange={e=>set('original_label',e.target.value)} placeholder="e.g. 4AD"/></label><label>ORIGINAL CATALOGUE NO.<input value={form.original_catalogue_no} onChange={e=>set('original_catalogue_no',e.target.value)}/></label></>}<label>BARCODE / EAN<input value={form.barcode} onChange={e=>set('barcode',e.target.value)}/></label><label>CATALOGUE NO.<input value={form.catalogue_no} onChange={e=>set('catalogue_no',e.target.value)}/></label><label>TITLE<input value={form.title} onChange={e=>set('title',e.target.value)}/></label><label>STATUS<select value={form.status} onChange={e=>set('status',e.target.value)}>{STATUS.map(([v,l])=><option value={v} key={v}>{l}</option>)}</select></label><label>RELEASE DATE<input type="date" value={form.release_date} onChange={e=>set('release_date',e.target.value)}/></label><label>ARTIST / PROJECT<input value={form.artist_project} onChange={e=>set('artist_project',e.target.value)}/></label>
@@ -172,5 +174,5 @@ export default function EditReleaseModal({product,onClose,onSaved}){
    {Object.entries({google:'GOOGLE SHOPPING',meta:'META CATALOG',pinterest:'PINTEREST',microsoft:'MICROSOFT',tiktok:'TIKTOK'}).map(([k,l])=><label className="storefrontToggle" key={k}><input type="checkbox" checked={storefront.visibility[k]!==false} onChange={e=>setStore('visibility',k,e.target.checked)}/><span>{l}</span></label>)}
   </div></section>
  </div>}
- {message&&<p className="workspaceMessage">{message}</p>}<footer><button className="ghostButton" onClick={onClose}>CANCEL</button><button className="saveButton" disabled={saving} onClick={save}>{saving?'SAVING…':'SAVE RELEASE V2 →'}</button></footer></section></div>, document.body)
+ {message&&<p className="workspaceMessage">{message}</p>}<footer>{dirty&&<span className="unsavedFlag">UNSAVED CHANGES</span>}<button className="ghostButton" onClick={safeClose}>CANCEL</button><button className="saveButton" disabled={saving} onClick={save}>{saving?'SAVING…':'SAVE RELEASE V2 →'}</button></footer></section></div>, document.body)
 }
