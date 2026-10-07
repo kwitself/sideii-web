@@ -55,13 +55,6 @@ export default function CommerceOpsPanel({products,onChanged}){
   setMessage('Request updated.');loadOps();
  }
 
- function patchVariant(id,key,value){
-  const p=products.find(x=>(x.product_variants||[]).some(v=>v.id===id));
-  const v=p?.product_variants?.find(x=>x.id===id);
-  if(v)v[key]=value;
-  // products are refreshed after save; mutating here only keeps compact form responsive.
-  onChanged?.('__local_only__');
- }
 
  return <section id="commerce-ops" className="adminSection commerceOps">
   <div className="sectionLabel"><span>07 / COMMERCE OPS</span><p>Sales, shipping, stock, pre-orders and customer requests.</p></div>
