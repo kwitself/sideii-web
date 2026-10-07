@@ -11,6 +11,7 @@ import DiscountsPanel from './DiscountsPanel';
 import CommerceOpsPanel from './CommerceOpsPanel';
 import ImpactPanel from './ImpactPanel';
 import CatalogueOpsPanel from './CatalogueOpsPanel';
+import MerchandisingPanel from './MerchandisingPanel';
 import GrowthOpsPanel from './GrowthOpsPanel';
 import ValueOpsPanel from './ValueOpsPanel';
 import LocalizationOpsPanel from './LocalizationOpsPanel';
@@ -75,7 +76,7 @@ export default function AdminDashboard(){
  useEffect(()=>{load()},[load]);
  useEffect(()=>{if(!selectedOrder)return;const onKey=e=>{if(e.key==='Escape')setSelectedOrder(null)};window.addEventListener('keydown',onKey);return()=>window.removeEventListener('keydown',onKey)},[selectedOrder]);
  useEffect(()=>{
-  const allowed=new Set(['overview','products','orders','inventory','customers','commerce','catalogue','growth','impact','fulfillment','localization','settings','launch']);
+  const allowed=new Set(['overview','products','merchandising','orders','inventory','customers','commerce','catalogue','growth','impact','fulfillment','localization','settings','launch']);
   const initial=String(window.location.hash||'').replace('#','');
   if(allowed.has(initial))setActiveView(initial);
   const onView=e=>{if(allowed.has(e?.detail))setActiveView(e.detail)};
@@ -252,6 +253,8 @@ export default function AdminDashboard(){
  {productView==='release'&&<ReleaseWorkspace onCreated={async()=>{await load();setProductView('all')}}/>}
  {productView==='merch'&&<MerchWorkspace onCreated={load} onContinue={product=>{setMerchSetup(true);setMerchProduct(product)}}/>}
  </section></>}
+
+ {activeView==='merchandising'&&<div className="adminModuleStack"><MerchandisingPanel products={products}/></div>}
 
  {activeView==='orders'&&<section id="orders" className="adminSection adminViewSection"><div className="sectionLabel"><span>03 / ORDERS</span><p>Live orders, payment and fulfilment.</p></div><div className="adminPanel orderList">{orders.length?orders.map(o=><article className="orderRow" key={o.id} onClick={()=>{setSelectedOrder(o);setShippingEdit({carrier:o.shipping_carrier||'',tracking:o.tracking_number||''})}}><div><strong>#SII-{String(o.order_no).padStart(4,'0')}</strong><small>{o.email} · {o.fulfillment_type?.toUpperCase()}</small></div><span>{o.payment_status} / {o.status}</span><b>{money(o.total,o.currency)}</b></article>):<div className="emptyNote">No orders yet.</div>}</div></section>}
 
