@@ -460,3 +460,153 @@
   .merchDetailSwitch{grid-template-columns:1fr 1fr!important;width:100%!important}
   .merchDetailSwitch button{min-width:0!important;justify-content:center}
 }
+
+
+/* SITE-WIDE POLISH / STORE — saturated minimalism */
+.storePage{
+  background:
+    radial-gradient(circle at 82% 4%,rgba(255,255,255,.028),transparent 32rem),
+    #09090a;
+}
+.storeHero{
+  padding:92px 0 56px;
+  border-bottom-color:#343238;
+}
+.storeHero>span{color:#807c75}
+.storeHero h1{margin:20px 0 22px;font-size:clamp(58px,7vw,92px)}
+.storeHero p{color:#aaa69f;max-width:760px}
+.storeEditorialLinks{margin-top:20px}
+.storeFilters{
+  padding-top:22px!important;
+  padding-bottom:22px!important;
+  border-bottom-color:#343238;
+}
+.storeFilters button{
+  border-color:#3d3b40;
+  background:#0d0d0f;
+  color:#918d86;
+}
+.storeFilters button:hover,.storeFilters button.active{
+  border-color:#8a857e;
+  background:#171719;
+  color:#eee9e1;
+}
+.storeCatalogue{padding:48px 0 100px}
+.storeProduct{
+  grid-template-columns:minmax(300px,380px) 1fr;
+  gap:56px;
+  padding:40px 0;
+  border-bottom-color:#343238;
+}
+.storeCover{
+  aspect-ratio:1;
+  overflow:hidden;
+  border:1px solid #3d3b40;
+  background:
+    radial-gradient(circle at 50% 44%,#19191c,#0c0c0e 72%);
+}
+.storeCover>div{width:100%;height:100%}
+.storeProductMeta h2{margin:12px 0 26px;font-size:clamp(34px,3.4vw,48px)}
+.storeProductMeta small{color:#8d8982}
+.storeVariants{border-top-color:#343238}
+.storeVariant{border-bottom-color:#343238;padding:15px 0}
+.storeVariant div>span{color:#817d77}
+.storeVariant>button{
+  min-height:42px;
+  border-color:#4a474d;
+  background:#111113;
+  color:#d2cdc5;
+}
+.storeVariant>button:hover:not(:disabled){
+  border-color:#8a857e;
+  background:#18181b;
+  color:#fffaf2;
+}
+.merchProduct .storeCover{
+  border-color:#403e43;
+  background:
+    radial-gradient(circle at 50% 40%,#1d1d20,#0b0b0d 72%);
+}
+
+/* Dedicated product stage: visual weight without extra decoration */
+.merchDetail{
+  grid-template-columns:minmax(0,1.3fr) minmax(360px,.7fr);
+  gap:58px;
+  padding:98px 0 88px;
+}
+.merchDetailRasterStage{
+  min-height:650px!important;
+  aspect-ratio:1.06/1!important;
+  border:1px solid #3b393f!important;
+  background:
+    radial-gradient(circle at 50% 44%,#1b1b1e 0,#0b0b0d 69%)!important;
+  overflow:hidden!important;
+}
+.merchDetailRasterStage img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  padding:3%!important;
+}
+.merchViewSelector>span{color:#77736d}
+.merchDetailSwitch{border-color:#454248}
+.merchDetailInfo{padding-top:34px}
+.merchBack{margin-bottom:34px;color:#918d86}
+.merchDetailInfo>span{color:#8d8982}
+.merchDetailInfo h1{margin:14px 0 20px;font-size:clamp(46px,5.2vw,78px)}
+.merchDetailInfo>p{color:#aaa69f;font-size:16px}
+.merchDetailFacts{
+  margin:28px 0;
+  border-color:#343238;
+}
+.merchDetailFacts>div{padding:14px 0}
+.merchDetailFacts span,.merchVariantChooser>span{color:#77736d}
+.merchVariantChooser button{
+  min-height:58px;
+  border-color:#3f3d42;
+  background:#0f0f11;
+  color:#bdb8b0;
+}
+.merchVariantChooser button small{font-size:8px;color:#77736d}
+.merchVariantChooser button.active{
+  border-color:#969088;
+  background:#19191c;
+  color:#f3eee6;
+}
+.merchBuyRow{margin-top:24px}
+.merchBuyRow strong{font-size:31px;color:#e0dbd3}
+.merchBuyRow button{
+  border-color:#d8d3ca;
+  background:#d8d3ca;
+  color:#0a0a0b;
+  font-weight:600;
+}
+.merchBuyRow button:hover:not(:disabled){
+  border-color:#f0ebe3;
+  background:#f0ebe3;
+  color:#09090a;
+}
+.merchBagLink{
+  border-color:#3d3b40;
+  background:#0e0e10;
+  color:#aaa69f;
+}
+.merchViewMeta{color:#817d77}
+.merchDetailGallery{gap:10px}
+.merchDetailGallery img{border-color:#3a383d}
+
+@media(max-width:900px){
+  .storeProduct{grid-template-columns:minmax(250px,320px) 1fr;gap:36px}
+  .merchDetailRasterStage{min-height:520px!important}
+}
+@media(max-width:760px){
+  .storeHero{padding:52px 0 34px}
+  .storeCatalogue{padding-top:28px}
+  .storeProduct{grid-template-columns:1fr;gap:22px;padding:30px 0}
+  .storeCover{max-width:none}
+  .merchDetailRasterStage{min-height:0!important;aspect-ratio:1/1.04!important}
+}
+@media(max-width:560px){
+  .merchDetailRasterStage{aspect-ratio:1/1.02!important}
+  .merchDetailInfo h1{font-size:44px}
+}
