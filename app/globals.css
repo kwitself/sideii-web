@@ -3262,3 +3262,20 @@ button,a{transition:color .18s ease,border-color .18s ease,background .18s ease,
     max-width:2160px!important;
   }
 }
+
+
+/* WIDE CONTENT INNER GUTTER — keep text off section edges */
+@media(min-width:761px){
+  main .shell:not(.nav),
+  footer .shell{
+    padding-left:clamp(22px,1.8vw,36px)!important;
+    padding-right:clamp(22px,1.8vw,36px)!important;
+  }
+}
+@media(min-width:1600px){
+  main .shell:not(.nav),
+  footer .shell{
+    padding-left:clamp(30px,2vw,48px)!important;
+    padding-right:clamp(30px,2vw,48px)!important;
+  }
+}
