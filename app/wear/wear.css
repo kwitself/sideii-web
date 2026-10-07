@@ -218,3 +218,23 @@
   .wearProducts{padding:62px 0 78px}
   .wearSystemInner{min-height:auto;padding:66px 0}
 }
+
+
+/* WWYS — support economy expansion */
+.wearFeatured{padding:82px 0 40px}
+.wearFeaturedCard{display:grid;grid-template-columns:1.15fr .85fr;min-height:580px;border:1px solid #343238;color:inherit;text-decoration:none;background:#0c0c0e}
+.wearFeaturedVisual{min-height:580px;background:radial-gradient(circle at 50% 44%,#202024,#0a0a0c 72%);display:grid;place-items:center;overflow:hidden;border-right:1px solid #343238}
+.wearFeaturedVisual img{width:100%;height:100%;object-fit:cover}
+.wearFeaturedCopy{padding:42px;display:flex;flex-direction:column;justify-content:center}
+.wearFeaturedCopy>small{font:8px/1 Arial,sans-serif;letter-spacing:.16em;color:#77736d}
+.wearFeaturedCopy h2{margin:18px 0 20px;font:clamp(44px,5vw,76px)/.88 Georgia,serif;font-weight:400;letter-spacing:-.045em}
+.wearFeaturedCopy>p{margin:0;color:#aaa69f;font:16px/1.65 Georgia,serif}
+.wearSupportStatement{margin-top:30px;padding-top:18px;border-top:1px solid #343238;display:grid;gap:8px}.wearSupportStatement span{font:8px/1 Arial,sans-serif;letter-spacing:.16em;color:#77736d}.wearSupportStatement b{font:18px/1.35 Georgia,serif;font-weight:400;color:#d4cfc7}
+.wearFeaturedAction{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-top:34px;padding-top:18px;border-top:1px solid #343238}.wearFeaturedAction strong{font:22px/1 Georgia,serif;font-weight:400}.wearFeaturedAction span{font:8px/1 Arial,sans-serif;letter-spacing:.15em;color:#aaa69f}
+.wearSupportModel{border-top:1px solid #343238;border-bottom:1px solid #343238;background:#0c0c0e}
+.wearSupportModelInner{padding:78px 0;display:grid;grid-template-columns:.45fr 1fr;gap:60px}.wearSupportModelInner>span{font:8px/1 Arial,sans-serif;letter-spacing:.22em;color:#77736d}.wearSupportModelInner h2{margin:0;font:clamp(42px,5vw,72px)/.9 Georgia,serif;font-weight:400;letter-spacing:-.045em}.wearSupportModelInner h2 i{font-weight:400;color:#aaa69f}.wearSupportModelInner>div>p{max-width:700px;margin:22px 0 0;color:#aaa69f;font:16px/1.65 Georgia,serif}
+.wearSupportStats{grid-column:2;display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid #343238;border-bottom:1px solid #343238}.wearSupportStats article{padding:20px 18px;border-right:1px solid #343238;display:grid;gap:10px}.wearSupportStats article:last-child{border-right:0}.wearSupportStats b{font:8px/1 Arial,sans-serif;letter-spacing:.15em;color:#8e8a83}.wearSupportStats span{font:14px/1.45 Georgia,serif;color:#aaa69f}
+.wearCardMeta em{grid-column:1/-1;font:7px/1 Arial,sans-serif;letter-spacing:.14em;font-style:normal;color:#77736d}
+.wearCardMeta p{grid-column:1/-1;margin:2px 0 0;font:13px/1.5 Georgia,serif;color:#918d86}
+@media(max-width:900px){.wearFeaturedCard{grid-template-columns:1fr}.wearFeaturedVisual{min-height:440px;border-right:0;border-bottom:1px solid #343238}.wearSupportModelInner{grid-template-columns:1fr;gap:28px}.wearSupportStats{grid-column:1}.wearFeaturedCopy{padding:30px}}
+@media(max-width:620px){.wearFeatured{padding-top:58px}.wearFeaturedVisual{min-height:340px}.wearFeaturedCopy{padding:24px}.wearSupportStats{grid-template-columns:1fr}.wearSupportStats article{border-right:0;border-bottom:1px solid #343238}.wearSupportStats article:last-child{border-bottom:0}}
