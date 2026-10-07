@@ -2777,3 +2777,19 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .productControlBar{grid-template-columns:1fr}
   .productSearchWrap{grid-column:auto}
 }
+
+
+/* CONTROL ROOM / UNSAVED STATE */
+.unsavedFlag{
+  margin-right:auto;
+  align-self:center;
+  color:#c8a987;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.14em;
+}
+.merchUnsavedFlag{
+  margin:14px 18px 0;
+  padding:10px 12px;
+  border:1px solid #514638;
+  background:#15110d;
+}
