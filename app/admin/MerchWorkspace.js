@@ -21,7 +21,7 @@ export default function MerchWorkspace({onCreated,onContinue}){
   setMessage('Merch product created. Opening product studio…');
   let createdProduct=null;
   if(createdId){
-   const {data}=await supabase.from('products').select('id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,gallery_images,status,is_public,product_origin,homepage_selected,product_type,merch_category,created_at,product_variants(id,sku,format,edition_name,price,currency,manufactured_qty,stock_qty,reserved_qty,active,option_size,option_color,option_style,weight_g,shipping_class)').eq('id',createdId).single();
+   const {data}=await supabase.from('products').select('id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,gallery_images,status,is_public,product_origin,homepage_selected,hover_media_format,storefront_config,seo_config,commerce_config,product_type,merch_category,created_at,product_variants(id,sku,format,edition_name,price,currency,manufactured_qty,stock_qty,reserved_qty,active,option_size,option_color,option_style,weight_g,shipping_class,low_stock_threshold,preorder_enabled,preorder_limit,preorder_target,preorder_deadline,edition_numbering_enabled,edition_total)').eq('id',createdId).single();
    createdProduct=data||null;
   }
   setForm(initial);setImagePreview('');if(onCreated)await onCreated();if(createdProduct&&onContinue)onContinue(createdProduct);
