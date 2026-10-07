@@ -3705,3 +3705,28 @@ button,a{transition:color .18s ease,border-color .18s ease,background .18s ease,
   .completeSetCard{grid-template-columns:1fr;min-height:0;padding-bottom:48px}
   .completeSetItems{grid-template-columns:1fr 1fr}
 }
+
+
+/* MOBILE QA — bag / checkout touch and readability */
+@media(max-width:760px){
+  .globalBagDrawer,
+  .globalAccountDrawer{overflow-y:auto;overscroll-behavior:contain}
+  .globalBagItems article{gap:12px}
+  .globalBagItems article b{font-size:14px}
+  .globalBagItems article small{font-size:10px;line-height:1.35}
+  .globalBagQty button,
+  .globalBagRemove,
+  .promoEntry button,
+  .globalBagCheckout,
+  .checkoutBack{
+    min-height:44px;
+  }
+  .globalBagQty button{min-width:42px}
+  .checkoutForm input,
+  .checkoutForm select,
+  .checkoutForm textarea{
+    min-height:44px;
+    font-size:16px;
+  }
+  .checkoutForm textarea{min-height:96px}
+}
