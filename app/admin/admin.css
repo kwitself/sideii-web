@@ -2654,3 +2654,126 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
     transition:none!important;
   }
 }
+
+
+/* CONTROL ROOM / PRODUCT SEARCH + BULK OPS */
+.productControlBar{
+  display:grid;
+  grid-template-columns:minmax(260px,1fr) 170px 150px auto;
+  gap:10px;
+  align-items:end;
+  margin-bottom:12px;
+}
+.productSearchWrap{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+.productSearchWrap span{
+  color:#77736d;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.14em;
+}
+.productSearchWrap input,
+.productControlBar select{
+  min-height:42px;
+  border:1px solid #353338;
+  background:#0b0b0d;
+  color:#d8d3ca;
+  padding:0 12px;
+  outline:none;
+  font:10px/1 Arial,sans-serif;
+  letter-spacing:.05em;
+}
+.productSearchWrap input:focus,
+.productControlBar select:focus{border-color:#77726b}
+.productControlBar>button{
+  min-height:42px;
+  border:1px solid #353338;
+  background:#101012;
+  color:#8f8a83;
+  padding:0 14px;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.13em;
+  cursor:pointer;
+}
+.bulkActionBar{
+  position:sticky;
+  top:10px;
+  z-index:12;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-height:48px;
+  margin-bottom:12px;
+  padding:6px 8px 6px 14px;
+  border:1px solid #4a474d;
+  background:rgba(16,16,18,.96);
+  backdrop-filter:blur(14px);
+  box-shadow:0 14px 40px rgba(0,0,0,.28);
+}
+.bulkActionBar>span{
+  margin-right:auto;
+  color:#c8c3bb;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.14em;
+}
+.bulkActionBar button{
+  min-height:34px;
+  padding:0 10px;
+  border:1px solid #38363b;
+  background:#0b0b0d;
+  color:#96918a;
+  font:7px/1 Arial,sans-serif;
+  letter-spacing:.11em;
+  cursor:pointer;
+}
+.bulkActionBar button:hover:not(:disabled){
+  border-color:#d8d3ca;
+  color:#e7e2da;
+}
+.bulkActionBar button:disabled{opacity:.4;cursor:wait}
+.productSelectHead{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.productSelectHead b{
+  font:inherit;
+  font-weight:400;
+}
+.productSelectHead input,
+.productSelectBox{
+  width:14px!important;
+  height:14px!important;
+  min-height:0!important;
+  flex:0 0 auto;
+  margin:0;
+  accent-color:#d8d3ca;
+  cursor:pointer;
+}
+.productRow{
+  transition:background .18s ease,border-color .18s ease;
+}
+.productRow.selected{
+  background:#151517;
+  box-shadow:inset 2px 0 0 #d8d3ca;
+}
+@media(max-width:1050px){
+  .productControlBar{grid-template-columns:1fr 1fr 1fr auto}
+}
+@media(max-width:760px){
+  .productControlBar{grid-template-columns:1fr 1fr}
+  .productSearchWrap{grid-column:1/-1}
+  .bulkActionBar{
+    overflow-x:auto;
+    position:relative;
+    top:auto;
+  }
+  .bulkActionBar>span{flex:0 0 auto}
+  .bulkActionBar button{flex:0 0 auto}
+}
+@media(max-width:520px){
+  .productControlBar{grid-template-columns:1fr}
+  .productSearchWrap{grid-column:auto}
+}
