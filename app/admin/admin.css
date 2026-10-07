@@ -3362,3 +3362,252 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
  .analyticsHeroKpis{grid-template-columns:1fr 1fr}
  .royaltyTableHead,.royaltyTableRow{grid-template-columns:minmax(0,1fr) 52px 84px}
 }
+
+
+/* CONTROL ROOM READABILITY PASS — dashboard language across all admin surfaces */
+.adminApp{
+  --admin-text:#d8d5ce;
+  --admin-muted:#8d8982;
+  --admin-dim:#6f6b70;
+  --admin-border:rgba(255,255,255,.10);
+  --admin-border-strong:rgba(255,255,255,.16);
+  --admin-surface:#0d0d0f;
+  --admin-surface-raised:#101012;
+  --admin-control-h:42px;
+}
+.adminApp{color:var(--admin-text)}
+.adminMain{padding-left:clamp(30px,3.4vw,58px);padding-right:clamp(30px,3.4vw,58px)}
+.adminSection{padding:46px 0;border-bottom-color:rgba(255,255,255,.07)}
+.sectionLabel{margin-bottom:20px;gap:20px}
+.adminTop>div>span,.sectionLabel>span,.lowerGrid article>span{
+  font-size:10px;
+  letter-spacing:.18em;
+  color:var(--admin-muted);
+}
+.sectionLabel p{
+  font-size:16px;
+  line-height:1.35;
+  color:#8e8a84;
+}
+.adminTop{min-height:158px}
+.adminTop h1{font-size:58px;margin-top:8px}
+.topActions{gap:8px;flex-wrap:wrap}
+.topActions a,.topActions button,
+.panelAction a,.panelAction button,
+.inventoryCard button,.lowerGrid button,
+.formActions button,.ghostButton,.saveButton{
+  min-height:42px;
+  padding:0 15px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:9px;
+  line-height:1;
+  letter-spacing:.10em;
+}
+.adminPanel{
+  border-color:var(--admin-border);
+  background:var(--admin-surface);
+}
+.adminPanel>header span,
+.adminPanel header>span,
+.adminPanel header div>span{
+  font-size:9px;
+  letter-spacing:.12em;
+}
+.adminPanel>header small,
+.adminPanel header>small,
+.adminPanel header div>small{
+  font-size:9px;
+  line-height:1.35;
+  color:var(--admin-muted);
+  opacity:.78;
+}
+
+/* Rail */
+.adminRail{width:auto;padding:30px 22px 24px}
+.adminBrand{padding-bottom:26px}
+.adminBrand span{font-size:40px}
+.adminBrand small,.railFoot small{font-size:9px;letter-spacing:.18em}
+.adminNav{padding-top:20px;gap:4px}
+.adminNav a{
+  min-height:44px;
+  height:auto;
+  padding:0 12px;
+  gap:12px;
+  font-size:10px;
+  letter-spacing:.05em;
+  color:#8b888d;
+}
+.adminNav a i{font-size:8px;min-width:16px}
+.railFoot>span{font-size:8px;letter-spacing:.16em}
+.railFoot b{font-size:10px;letter-spacing:.10em}
+
+/* Tabs / filters / bulk controls */
+.adminSubnav{margin-bottom:22px;border-color:var(--admin-border-strong)}
+.adminSubnav button{
+  min-height:42px;
+  padding:0 16px;
+  font-size:9px;
+  letter-spacing:.09em;
+}
+.productControlBar{gap:8px}
+.productSearchWrap span{font-size:9px;letter-spacing:.10em;color:var(--admin-muted)}
+.productSearchWrap input,.productControlBar select{
+  min-height:44px;
+  font-size:11px;
+  letter-spacing:.02em;
+  padding:0 13px;
+  border-color:var(--admin-border-strong);
+}
+.productControlBar>button{
+  min-height:44px;
+  font-size:9px;
+  letter-spacing:.08em;
+  padding:0 14px;
+}
+.bulkActionBar{min-height:52px}
+.bulkActionBar>span{font-size:9px;letter-spacing:.10em}
+.bulkActionBar button{min-height:38px;font-size:8.5px;letter-spacing:.07em;padding:0 11px}
+
+/* Tables / product lists */
+.tableHead{
+  min-height:48px;
+  height:auto;
+  font-size:9px;
+  letter-spacing:.12em;
+  color:#848087;
+}
+.productRow{
+  min-height:88px;
+  font-size:11px;
+  color:#aaa6a0;
+}
+.editionCell{gap:14px}
+.editionCell strong{font-size:17px}
+.editionCell small{font-size:9px;letter-spacing:.08em;color:#817d82}
+.formatPill{
+  padding:7px 9px;
+  font-size:9px;
+  letter-spacing:.08em;
+  border-color:var(--admin-border-strong);
+}
+.statusSelect{
+  min-height:36px;
+  width:142px;
+  padding:0 28px 0 10px;
+  font-size:9px;
+  letter-spacing:.07em;
+}
+.qaBadge{font-size:8.5px;padding:6px 8px}
+.rowActions{gap:10px;flex-wrap:wrap;align-items:center}
+.rowActions a,
+.rowActions .rowNavButton,
+.rowActions .editReleaseButton,
+.rowActions .finishMiniButton,
+.rowActions .selectedMiniButton,
+.rowActions .deleteReleaseButton{
+  min-height:28px;
+  display:inline-flex;
+  align-items:center;
+  padding:0 3px;
+  font-size:8.5px;
+  line-height:1;
+  letter-spacing:.07em;
+}
+
+/* Forms across Control Room */
+.adminApp label{
+  font-size:9px;
+}
+.formGrid label>span,.editFields label,
+.storefrontGrid label,.growthForm label>span,
+.shippingSettings label span,.impactFormGrid label span,
+.catalogueDepthFields label span,.catalogueCostFields label span,
+.commerceVariantRow label,.wearOpsGrid>label>span,
+.royaltyForm label>span{
+  font-size:9px!important;
+  letter-spacing:.09em!important;
+  color:var(--admin-muted)!important;
+}
+.formGrid input,.formGrid select,.formGrid textarea,
+.editFields input,.editFields select,.editFields textarea,
+.storefrontGrid input,.storefrontGrid select,.storefrontGrid textarea,
+.growthForm input,.growthForm select,.growthForm textarea,
+.shippingSettings input,.shippingSettings select,
+.impactFormGrid input,.impactFormGrid select,.impactFormGrid textarea,
+.catalogueDepthFields input,.catalogueCostFields input,
+.commerceVariantRow input,.commerceVariantRow select,
+.wearOpsGrid input,.wearOpsGrid textarea,.wearOpsGrid select,
+.royaltyForm input,.royaltyForm select{
+  min-height:42px!important;
+  font-size:11px!important;
+  line-height:1.35!important;
+  color:#d8d4cc!important;
+}
+textarea{line-height:1.5!important}
+.storefrontToggle span,.catalogueCheck span,.shippingToggle span,.commerceCheck span{
+  font-size:9px!important;
+  letter-spacing:.07em!important;
+}
+
+/* Modal readability */
+.editModal{width:min(1060px,96vw);padding:30px}
+.editModal header span{font-size:9px;letter-spacing:.14em}
+.editModal h2{font-size:36px}
+.editModal header button{font-size:9px;letter-spacing:.10em;min-height:34px;padding:0 6px}
+.editTabs button{font-size:9px!important;letter-spacing:.08em!important;min-height:42px!important}
+.workspaceMessage,.dbNotice{font-size:11px!important;line-height:1.45}
+.emptyNote{font-size:11px!important;line-height:1.5!important}
+
+/* Cards and operational rows */
+.dashboardPanels>article>header{min-height:50px}
+.dashboardPanels>article>header span{font-size:9px;letter-spacing:.11em}
+.dashboardPanels>article>header button{font-size:8.5px;letter-spacing:.08em}
+.dashboardLine{min-height:54px}
+.dashboardLine b{font-size:10px}
+.dashboardLine small{font-size:9px}
+.inventoryRow,.commerceRateRow,.commerceAlertRow,.commerceReturnRow,
+.ownerContentRow,.catalogueAlertRow,.valueMilestoneRow{
+  font-size:10px;
+}
+.inventoryRow small,.commerceRateRow small,.commerceAlertRow small,
+.ownerContentRow small,.catalogueAlertRow small,.valueMilestoneRow small{
+  font-size:9px!important;
+  line-height:1.35;
+}
+
+/* Analytics inherits same legibility */
+.analyticsHead span{font-size:9px}
+.analyticsRange button{font-size:9px;min-height:38px}
+.analyticsHero>header span,.analyticsHeroKpis span{font-size:9px}
+.analyticsHero>header small{font-size:9px}
+.analyticsHeroKpis b{font-size:16px}
+.analyticsPanel.compact header span,.profitSplit.compact header span{font-size:9px}
+.analyticsPanel.compact header small,.profitSplit.compact header small{font-size:8px}
+.analyticsBars span,.analyticsBars strong{font-size:9px}
+.artistShareRow b{font-size:10px}.artistShareRow small{font-size:8.5px}.artistShareRow strong{font-size:10px}
+.analyticsEmpty b{font-size:9px}.analyticsEmpty span{font-size:10px}
+.royaltyTableHead span{font-size:8px}
+.royaltyTableRow b{font-size:10px}.royaltyTableRow small{font-size:8.5px}.royaltyTableRow em,.royaltyTableRow strong{font-size:10px}
+
+/* Focus / interaction polish */
+.adminApp button,.adminApp a,.adminApp input,.adminApp select,.adminApp textarea{transition:border-color .18s ease,background .18s ease,color .18s ease,opacity .18s ease}
+.adminApp button:focus-visible,.adminApp a:focus-visible,.adminApp input:focus-visible,.adminApp select:focus-visible,.adminApp textarea:focus-visible{
+  outline:1px solid #bdb8af;
+  outline-offset:2px;
+}
+.adminApp button:hover:not(:disabled){border-color:#77726b;color:#e4e0d8}
+.saveButton:hover:not(:disabled),.primaryAction:hover:not(:disabled){filter:brightness(1.06)}
+
+@media(max-width:980px){
+  .adminMain{padding-left:24px;padding-right:24px}
+  .sectionLabel{align-items:flex-start;flex-direction:column;gap:8px}
+}
+@media(max-width:700px){
+  .adminTop h1{font-size:46px}
+  .adminMain{padding-left:16px;padding-right:16px}
+  .topActions{width:100%}
+  .topActions a,.topActions button{flex:1}
+  .productControlBar{grid-template-columns:1fr}
+}
