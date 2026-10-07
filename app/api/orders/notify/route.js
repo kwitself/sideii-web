@@ -37,7 +37,7 @@ export async function POST(request){
   }
 
   const items=(payload.items||[]).map(function(x){
-   const download=x.download_url?'\nDownload: '+x.download_url:'';
+   const download=x.download_available?' · DIGITAL DOWNLOAD AVAILABLE IN YOUR ACCOUNT':'';
    return String(x.title||'')+' · '+String(x.format||'')+' · QTY '+String(x.quantity||0)+download;
   }).join('\n');
 
