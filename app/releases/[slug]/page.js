@@ -18,8 +18,8 @@ export async function generateMetadata({ params }) {
   return {
     title,
     description,
-    ...(seo.canonical?{alternates:{canonical:seo.canonical}}:{}),
-    openGraph:{title,description,images:ogImage?[ogImage]:[]},
+    alternates:{canonical:seo.canonical||('/releases/'+slug)},
+    openGraph:{title,description,url:seo.canonical||('/releases/'+slug),images:ogImage?[ogImage]:[]},
   };
 }
 
