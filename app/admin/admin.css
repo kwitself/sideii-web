@@ -4156,3 +4156,6 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .variantEditInline{grid-template-columns:1fr}
   .orderPromo,.orderSupportTotal{align-items:flex-start}
 }
+
+.internationalToggle{border-color:rgba(255,255,255,.16)!important}
+.internationalToggle:has(input:checked){border-color:rgba(221,216,207,.44)!important;background:#151517!important}
