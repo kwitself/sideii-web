@@ -2987,3 +2987,252 @@ button,a{transition:color .18s ease,border-color .18s ease,background .18s ease,
   .productionSection>.shell{padding:80px 0}
   .footerInner{min-height:auto}
 }
+
+
+/* SITE-WIDE POLISH / COMMERCE + ACCOUNT */
+.globalBagDrawer,
+.globalAccountDrawer{
+  width:min(520px,96vw)!important;
+  padding:30px!important;
+  background:
+    radial-gradient(circle at 82% 4%,rgba(255,255,255,.035),transparent 24rem),
+    #0e0e10!important;
+  border-left-color:#454248!important;
+}
+.globalBagDrawer>span,
+.globalAccountDrawer>span{
+  display:block;
+  padding-bottom:14px;
+  border-bottom:1px solid #343238;
+  color:#aaa69f;
+  font-size:10px!important;
+}
+.globalBagClose,
+.globalAccountClose{
+  color:#aaa69f!important;
+  padding:4px 0;
+}
+.globalBagItems{margin-top:24px}
+.globalBagItems article{
+  grid-template-columns:68px 1fr auto;
+  gap:16px;
+  padding:17px 0;
+  border-bottom-color:#343238;
+}
+.globalBagItems img{width:68px;height:68px;border:1px solid #343238}
+.globalBagItems b{font-size:16px;color:#ddd8cf}
+.globalBagItems small{color:#8d8982}
+.globalBagQty{
+  width:max-content;
+  gap:0;
+  border:1px solid #3a383d;
+  background:#0b0b0d;
+}
+.globalBagQty button{
+  width:32px;height:30px;
+  color:#aaa69f;
+}
+.globalBagQty span{
+  min-width:32px;text-align:center;
+  font-size:10px;color:#d2cdc5;
+}
+.globalBagTotal{
+  margin-top:8px;
+  padding:20px 0;
+  border-top:1px solid #343238;
+}
+.globalBagTotal span{color:#918d86}
+.globalBagTotal strong{font:22px/1 Georgia,serif;font-weight:400;color:#e0dbd3}
+.globalBagCheckout{
+  min-height:50px;
+  padding:0 18px!important;
+  font-size:10px!important;
+  font-weight:600;
+}
+.promoBox{border-top-color:#343238;padding-top:16px}
+.promoEntry input{border-color:#3f3d42;background:#0a0a0b}
+.promoEntry button{border-color:#4a474d;background:#151517;color:#d2cdc5}
+.cartShipping,.cartDiscount{color:#918d86}
+
+/* Checkout — stronger hierarchy without visual noise */
+.globalCheckout{margin-top:24px}
+.globalCheckout h3{
+  margin:0 0 20px;
+  font-size:36px;
+  color:#e4dfd7;
+}
+.globalCheckout label{
+  margin-bottom:14px;
+  color:#8d8982;
+}
+.globalCheckout input,
+.globalCheckout textarea,
+.checkoutForm select{
+  min-height:44px!important;
+  border-color:#3f3d42!important;
+  background:#0a0a0b!important;
+  color:#ddd8d0!important;
+}
+.globalCheckout textarea{min-height:86px!important}
+.checkoutSavedAddresses,
+.checkoutInvoice,
+.checkoutGift,
+.checkoutStoreValue{
+  margin:18px 0!important;
+  padding:16px!important;
+  border:1px solid #343238!important;
+  background:#101012!important;
+}
+.checkoutSavedAddressHead{
+  padding-bottom:10px;
+  border-bottom:1px solid #2f2e32;
+}
+.checkoutSavedAddressPreview{
+  margin-top:10px;
+  padding:12px;
+  border:1px solid #2f2e32;
+  background:#0b0b0d;
+}
+.checkoutSummary{
+  margin:20px 0 16px;
+  border-color:#454248;
+}
+.checkoutSummaryHead,.checkoutSummaryItem,.checkoutSummaryRow{
+  border-bottom-color:#302f33;
+  padding:13px 0;
+}
+.checkoutSummaryHead>span,.checkoutSummaryRow>span{color:#918d86}
+.checkoutSummaryItem>span{font-size:14px;color:#ddd8d0}
+.checkoutSummaryItem>span small{font-size:9px;color:#77736d}
+.checkoutSummaryTotal{
+  padding:17px 0;
+  border-top:1px solid #454248;
+}
+.checkoutSummaryTotal>span,.checkoutSummaryTotal>strong{
+  font-size:12px;
+  color:#eee9e1;
+}
+
+/* Account — editorial account drawer instead of utility stack */
+.accountAuth h3{
+  margin:28px 0 22px;
+  font:32px/1 Georgia,serif;
+  font-weight:400;
+  color:#e0dbd3;
+}
+.accountTabs{
+  margin-top:20px;
+  border-bottom:1px solid #343238;
+}
+.accountTabs button{
+  min-height:42px;
+  color:#918d86;
+}
+.accountTabs button.active{color:#eee9e1;border-bottom-color:#d8d3ca}
+.accountIdentity{
+  margin:22px 0 20px;
+  padding:0 0 18px;
+  border-bottom:1px solid #343238;
+}
+.accountIdentity b{
+  display:block;
+  font:28px/1 Georgia,serif;
+  font-weight:400;
+  color:#e0dbd3;
+}
+.accountIdentity small{
+  display:block;
+  margin-top:8px;
+  color:#918d86;
+  font-size:10px;
+}
+.accountProfile,
+.accountAddressForm{
+  padding-bottom:20px;
+  border-bottom:1px solid #343238;
+}
+.accountProfile label,
+.accountAddressForm label{
+  color:#8d8982!important;
+  font-size:10px!important;
+}
+.accountSectionHead{
+  padding-bottom:10px;
+  border-bottom:1px solid #343238;
+}
+.accountSectionHead span{color:#aaa69f!important;font-size:10px!important}
+.accountSectionHead small{color:#77736d!important}
+.accountAddressBook,
+.accountSavedBag,
+.accountWishlist,
+.accountCollectorSummary,
+.accountStoreCredit,
+.accountCollection,
+.accountOwnerContent,
+.accountOrders{
+  margin-top:24px!important;
+  padding-top:0!important;
+  border-top:0!important;
+}
+.accountAddressList article,
+.accountWishlist article,
+.accountCollection article,
+.accountOwnerContent article{
+  border-bottom-color:#302f33!important;
+  padding:14px 0!important;
+}
+.accountSavedBagButton,
+.accountOrderRow{
+  border-color:#3d3b40!important;
+  background:#0f0f11!important;
+}
+.accountSavedBagButton:hover,
+.accountOrderRow:hover{
+  border-color:#716d66!important;
+  background:#151517!important;
+}
+.collectorSummaryGrid{gap:10px}
+.collectorSummaryGrid>div{
+  min-height:78px;
+  padding:13px;
+  border-color:#3a383d;
+  background:#101012;
+}
+.collectorSummaryGrid span{font-size:8px;color:#77736d}
+.collectorSummaryGrid b{font-size:18px;color:#ddd8d0}
+.accountOrderDetail{
+  border-color:#454248!important;
+  background:#101012!important;
+}
+.accountOrderDetailHead{
+  border-bottom-color:#343238!important;
+}
+.accountOrderMeta>div,
+.accountOrderAddress,
+.accountOrderInvoice,
+.accountOrderTracking,
+.accountOrderGift,
+.accountOrderNote,
+.accountOrderRequest{
+  border-color:#343238!important;
+  background:#0d0d0f!important;
+}
+.accountSignout{
+  margin-top:26px!important;
+  border:1px solid #3d3b40!important;
+  background:#0f0f11!important;
+  color:#aaa69f!important;
+  min-height:44px;
+}
+.accountSignout:hover{border-color:#716d66!important;color:#eee9e1!important}
+
+@media(max-width:760px){
+  .globalBagDrawer,
+  .globalAccountDrawer{
+    width:100vw!important;
+    padding:22px 18px calc(24px + env(safe-area-inset-bottom))!important;
+  }
+  .globalBagItems article{grid-template-columns:58px 1fr auto}
+  .globalBagItems img{width:58px;height:58px}
+  .globalCheckout h3{font-size:32px}
+}
