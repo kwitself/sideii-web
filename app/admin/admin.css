@@ -2000,3 +2000,24 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .merchGallery article > div:first-child:not(:last-child){min-height:0!important;height:100%!important;width:100%!important;background:transparent!important}
 .merchGallery article{overflow:hidden}
 .merchHeroImage{overflow:hidden}
+
+
+/* Compact mockup scale inside admin gallery cards */
+.merchGallery article > div:first-child:not(:last-child){
+  display:grid!important;
+  place-items:center!important;
+  padding:10px!important;
+  box-sizing:border-box!important;
+}
+.merchGallery article > div:first-child:not(:last-child) > div{
+  transform:scale(.72);
+  transform-origin:center center;
+}
+.merchGallery article{
+  min-height:180px;
+}
+@media(max-width:760px){
+  .merchGallery article > div:first-child:not(:last-child) > div{
+    transform:scale(.78);
+  }
+}
