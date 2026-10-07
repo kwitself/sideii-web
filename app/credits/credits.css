@@ -20,3 +20,13 @@
 .creditRelease p{margin:0 0 14px;color:#77736d;font:13px Georgia,serif}
 .creditRelease b{display:inline-flex;padding:7px 9px;border:1px solid #343337;color:#9a9690;font:7px/1 Arial,sans-serif;letter-spacing:.12em;font-weight:400}
 @media(max-width:760px){.creditsHero,.creditDetailHero{padding:76px 0 58px}.creditsList>a{grid-template-columns:42px 1fr}.creditsList b{grid-column:2}.creditsList h2{font-size:36px}.creditRelease{grid-template-columns:1fr;gap:24px}}
+
+/* FINAL UI AUDIT */
+.creditsHero>span,.creditDetailHero>span,.creditRelease small{font-size:9px}
+.creditsList>a{transition:background .18s ease,padding .18s ease}
+.creditsList>a:hover{background:linear-gradient(90deg,rgba(255,255,255,.02),transparent 70%);padding-left:10px}
+.creditsList b{font-size:9px}
+.creditRelease{transition:background .18s ease}
+.creditRelease:hover{background:linear-gradient(90deg,rgba(255,255,255,.018),transparent 70%)}
+.creditRelease b{font-size:8px;padding:8px 10px}
+@media(max-width:760px){.creditsList,.creditCatalogue{padding:52px 0 84px}.creditsList>a{padding:22px 0}.creditRelease h2{font-size:42px}.creditRelease p{font-size:14px}}
