@@ -13,7 +13,7 @@ export const metadata={
 };
 
 export default async function WearPage(){
-  const products=(await getStoreReleases()).filter(x=>x.isMerch);
+  const products=(await getStoreReleases()).filter(x=>x.isMerch&&x.storefrontConfig?.visibility?.wear!==false);
   return <main className="wearPage">
     <GlobalHeader/>
     <section className="wearHero shell">
