@@ -28,7 +28,7 @@ export async function POST(request){
    return Response.json({ok:true,email_sent:false,reason:'already_claimed_or_not_found'});
   }
 
-  const recipient=application.notification_email||'';
+  const recipient=String(process.env.SIDEII_APPLICATION_TO||'').trim();
   if(!recipient){
    return Response.json({ok:true,email_sent:false,reason:'notification_email_not_configured'});
   }
