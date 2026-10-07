@@ -1269,3 +1269,36 @@
 @media(max-width:520px){
   .storeDiscoveryControls{grid-template-columns:1fr!important}
 }
+
+
+.storeActiveFilters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+.storeActiveFilters button{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  min-height:32px;
+  border:1px solid #3d3a40;
+  background:#111113;
+  color:#98938c;
+  padding:0 10px;
+  font:7px/1 Arial,sans-serif;
+  letter-spacing:.1em;
+  cursor:pointer;
+}
+.storeActiveFilters button:hover{
+  border-color:#77726b;
+  color:#e2ddd5;
+}
+.storeActiveFilters button b{
+  color:#666269;
+  font-size:11px;
+  font-weight:400;
+}
+@media(max-width:700px){
+  .storeActiveFilters{gap:6px}
+  .storeActiveFilters button{min-height:34px;font-size:8px}
+}
