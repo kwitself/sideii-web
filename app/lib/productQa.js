@@ -9,7 +9,9 @@ export function evaluateProductQa(product={}){
  const add=(severity,code,label,tab,detail='')=>issues.push({severity,code,label,tab,detail});
 
  if(!String(product.title||'').trim())add('blocker','title','TITLE MISSING','release');
- if(!product.artwork_path&&!Array.isArray(product.gallery_images))add('blocker','image','PRIMARY IMAGE MISSING','release');
+ const gallery=Array.isArray(product.gallery_images)?product.gallery_images:[];
+ const hasGalleryImage=gallery.some(x=>typeof x==='string'?!!x:!!(x?.url||x?.preview_url||x?.previewUrl||x?.mockup?.designUrl));
+ if(!product.artwork_path&&!product.cover_url&&!hasGalleryImage)add('blocker','image','PRIMARY IMAGE MISSING','release');
  if(!variants.length)add('blocker','variants','NO SELLABLE VARIANT','media');
  if(variants.some(v=>!String(v.sku||'').trim()))add('blocker','sku','SKU MISSING','media');
  if(variants.some(v=>!Number.isFinite(Number(v.price))||Number(v.price)<0))add('blocker','price','INVALID / MISSING PRICE','media');
