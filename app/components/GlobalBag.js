@@ -115,8 +115,8 @@ export default function GlobalBag(){
    if(event==='SIGNED_OUT'){
     setCartSyncReady(false);
     setStoreValue(v=>({...v,use_credit:false,credit_available:0}));
-    setCart([]);
-    writeCart([]);
+    const local=readCart();
+    setCart(local);
     window.dispatchEvent(new CustomEvent('sideii-saved-cart',{detail:[]}));
    }
   });
