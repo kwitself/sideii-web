@@ -1302,3 +1302,46 @@
   .storeActiveFilters{gap:6px}
   .storeActiveFilters button{min-height:34px;font-size:8px}
 }
+
+
+/* OCT 07 2026 — STORE FINAL POLISH */
+.storeHero,.storeFilters,.storeDiscoveryTools,.storeImprintContext{min-width:0}
+.storeFilters,.storeDiscoveryTools{gap:14px}
+.storeSearchField{min-width:0}
+.storeSearchField input{width:100%;min-width:0}
+.storeDiscoveryControls{display:flex;flex-wrap:wrap;gap:8px}
+.storeClassicGrid{
+  grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr))!important;
+  gap:clamp(18px,2.2vw,34px)!important;
+}
+.storeClassicGrid>*{min-width:0}
+.storeClassicMedia{overflow:hidden}
+.storeClassicMeta{min-width:0}
+.storeClassicMeta h2,.storeClassicMeta h3,.storeClassicMeta b{overflow-wrap:anywhere}
+.storeClassicAction,.storeVariant>button,.waitlistButton{
+  min-height:44px;
+}
+.storeEditorialList>*{min-width:0}
+.storeVariant{
+  grid-template-columns:minmax(0,1fr) minmax(90px,auto) minmax(118px,auto)!important;
+}
+.storeVariant>div{min-width:0}
+.storeVariant b,.storeVariant span{overflow-wrap:anywhere}
+.storeActiveFilters{display:flex;flex-wrap:wrap;gap:7px}
+.storeNoResults{padding-left:0!important;padding-right:0!important}
+@media(max-width:900px){
+  .storeHero{padding-top:80px!important}
+  .storeDiscoveryTools{align-items:stretch!important;flex-direction:column!important}
+  .storeDiscoveryControls{width:100%}
+  .storeDiscoveryControls select,.storeDiscoveryControls button{flex:1 1 150px}
+}
+@media(max-width:620px){
+  .storeHero h1{font-size:clamp(42px,13vw,58px)!important}
+  .storeClassicGrid{grid-template-columns:1fr 1fr!important;gap:14px!important}
+  .storeClassicMeta{padding-top:10px}
+  .storeVariant{grid-template-columns:1fr auto!important;gap:12px!important}
+  .storeVariant>button{grid-column:1/-1;width:100%}
+}
+@media(max-width:430px){
+  .storeClassicGrid{grid-template-columns:1fr!important}
+}
