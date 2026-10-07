@@ -18,3 +18,11 @@
 .policyNote a{display:inline-flex;margin-top:24px;padding:13px 15px;border:1px solid #3a393d;text-decoration:none;color:#aaa69e;font:8px/1 Arial,sans-serif;letter-spacing:.15em}
 @media(max-width:900px){.policyHero{padding:78px 0 64px}.policyHero h1{font-size:54px}.policyLayout{grid-template-columns:1fr;gap:36px;padding-top:48px}.policyLayout aside{position:static;display:grid;grid-template-columns:repeat(2,1fr);gap:0}.policyLayout aside>span{grid-column:1/-1}.policySections h2{font-size:36px}}
 @media(max-width:560px){.policyHero{padding:54px 0}.policyHero h1{font-size:44px}.policyHero p{font-size:14px}.policyLayout{padding:36px 0 72px}.policyLayout aside{grid-template-columns:1fr}.policySections article{padding-bottom:38px;margin-bottom:38px}.policySections h2{font-size:32px}.policySections p{font-size:14px}.policySections .policyNote{padding:20px}}
+
+
+/* FINAL UI AUDIT */
+.policyHero>span,.policyLayout aside>span,.policySections article>span{font-size:9px}
+.policyLayout aside a{font-size:10px;transition:.18s}
+.policyLayout aside a:hover{padding-left:6px;background:#0d0d0f}
+.policyNote a{min-height:42px;align-items:center;padding:0 14px;font-size:9px}
+.policyNote a:hover{border-color:#77736d;background:#151517;color:#eee9e1}
