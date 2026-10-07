@@ -3730,3 +3730,29 @@ button,a{transition:color .18s ease,border-color .18s ease,background .18s ease,
   }
   .checkoutForm textarea{min-height:96px}
 }
+
+
+/* FINAL INTERACTION QA — visible keyboard focus across storefront */
+.storePage a:focus-visible,
+.storePage button:focus-visible,
+.productPage a:focus-visible,
+.productPage button:focus-visible,
+.wearPage a:focus-visible,
+.wearPage button:focus-visible,
+.collectionsPage a:focus-visible,
+.collectionsPage button:focus-visible,
+.bundlesPage a:focus-visible,
+.bundlesPage button:focus-visible,
+.globalBagDrawer a:focus-visible,
+.globalBagDrawer button:focus-visible,
+.globalBagDrawer input:focus-visible,
+.globalBagDrawer select:focus-visible,
+.globalBagDrawer textarea:focus-visible,
+.globalAccountDrawer a:focus-visible,
+.globalAccountDrawer button:focus-visible,
+.globalAccountDrawer input:focus-visible,
+.globalAccountDrawer select:focus-visible,
+.globalAccountDrawer textarea:focus-visible{
+  outline:1px solid #d7d2ca!important;
+  outline-offset:3px;
+}
