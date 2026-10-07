@@ -16,14 +16,9 @@ export async function GET(request){
       return Response.json({ok:false,error:'Admin access required'},{status:403});
     }
 
-    const {data:applicationSettings}=await sb
-      .from('application_settings')
-      .select('notification_email')
-      .eq('id',1)
-      .maybeSingle();
-
     const siteUrl=String(process.env.NEXT_PUBLIC_SITE_URL||'').trim();
     const domainReady=!!siteUrl&&!/\.vercel\.app\/?$/i.test(siteUrl);
+    const applicationTo=String(process.env.SIDEII_APPLICATION_TO||'').trim();
     const emailReady=!!process.env.RESEND_API_KEY&&!!process.env.SIDEII_ORDER_FROM&&!!process.env.SIDEII_APPLICATION_FROM;
     const paymentReady=!!process.env.PAYMENT_SECRET_KEY&&!!process.env.PAYMENT_WEBHOOK_SECRET;
     const carrierReady=!!process.env.CARRIER_API_KEY;
@@ -35,7 +30,7 @@ export async function GET(request){
         supabase:{ready:true,label:'Supabase',detail:'Production URL + publishable key configured.'},
         domain:{ready:domainReady,label:'Canonical domain',detail:domainReady?siteUrl:'Set NEXT_PUBLIC_SITE_URL to the real production domain.'},
         email:{ready:emailReady,label:'Transactional email',detail:emailReady?'Resend and sender identities configured.':'Configure RESEND_API_KEY and verified sender addresses.'},
-        applicationInbox:{ready:!!applicationSettings?.notification_email,label:'Application inbox',detail:applicationSettings?.notification_email?'Notification recipient configured.':'Set the production application notification email in Settings.'},
+        applicationInbox:{ready:!!applicationTo,label:'Application inbox',detail:applicationTo?'Server-only recipient configured.':'Set SIDEII_APPLICATION_TO in the server environment.'},
         payment:{ready:paymentReady,label:'Payment provider',detail:paymentReady?'Payment credentials detected.':'Provider selection / payment webhook credentials not configured.'},
         carrier:{ready:carrierReady,label:'Carrier integration',detail:carrierReady?'Carrier credentials detected.':'Live carrier API not configured; fixed-rate shipping remains available.'},
         fx:{ready:fxReady,label:'Live FX',detail:fxReady?'Live FX credentials detected.':'Current non-TRY rates remain manual / QA display rates.'}
