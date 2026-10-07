@@ -71,7 +71,6 @@ export async function POST(request){
 
   if(!res.ok){
    const detail=await res.text();
-   await client.rpc('release_production_application_notification',{p_id:applicationId});
    return Response.json({ok:false,email_sent:false,detail},{status:502});
   }
   return Response.json({ok:true,email_sent:true});
