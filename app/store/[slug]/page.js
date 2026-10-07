@@ -11,7 +11,11 @@ export async function generateMetadata({params}){
  const {slug}=await params;
  const product=await getStoreProduct(slug);
  if(!product||!product.isMerch)return {};
- return {title:`${product.title} — SIDE:II Store`,description:product.lead};
+ const seo=product.seoConfig||{};
+ const title=seo.title||`${product.title} — SIDE:II Store`;
+ const description=seo.description||product.lead;
+ const ogImage=seo.og_image||product.cover||null;
+ return {title,description,...(seo.canonical?{alternates:{canonical:seo.canonical}}:{}),openGraph:{title,description,images:ogImage?[ogImage]:[]}};
 }
 
 export default async function StoreProductPage({params}){
