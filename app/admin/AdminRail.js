@@ -5,18 +5,19 @@ import {useEffect,useState} from 'react';
 const items=[
  ['overview','01','Dashboard'],
  ['products','02','Products'],
- ['merchandising','03','Merchandising'],
- ['orders','04','Orders'],
- ['inventory','05','Inventory'],
- ['customers','06','Customers'],
- ['commerce','07','Commerce'],
- ['catalogue','08','Catalogue'],
- ['growth','09','Growth'],
- ['impact','10','Impact'],
- ['fulfillment','11','Fulfillment'],
- ['localization','12','Localization'],
- ['settings','13','Settings'],
- ['launch','14','Launch']
+ ['preview','03','Preview'],
+ ['merchandising','04','Merchandising'],
+ ['orders','05','Orders'],
+ ['inventory','06','Inventory'],
+ ['customers','07','Customers'],
+ ['commerce','08','Commerce'],
+ ['catalogue','09','Catalogue'],
+ ['growth','10','Growth'],
+ ['impact','11','Impact'],
+ ['fulfillment','12','Fulfillment'],
+ ['localization','13','Localization'],
+ ['settings','14','Settings'],
+ ['launch','15','Launch']
 ];
 
 const valid=new Set(items.map(x=>x[0]));
