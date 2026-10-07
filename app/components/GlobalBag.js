@@ -1,5 +1,5 @@
 'use client';
-import {useEffect,useMemo,useState} from 'react';
+import {useEffect,useMemo,useRef,useState} from 'react';
 import {usePathname} from 'next/navigation';
 import {supabase} from '../lib/supabase';
 import {MAX_CART_LINE_QTY,readCart,writeCart} from '../lib/cart';
@@ -20,6 +20,7 @@ const promoErrorMessage=m=>{
  return 'This code is not valid.';
 };
 export default function GlobalBag(){
+ const drawerRef=useRef(null);
  const {money:fmt,t}=useLocaleCurrency();
  const pathname=usePathname(),[cart,setCart]=useState([]),[open,setOpen]=useState(false),[checkout,setCheckout]=useState(false),[busy,setBusy]=useState(false),[done,setDone]=useState(null),[error,setError]=useState(''),[quote,setQuote]=useState(null),[promoInput,setPromoInput]=useState(''),[promoCode,setPromoCode]=useState(''),[promoBusy,setPromoBusy]=useState(false),[quoteError,setQuoteError]=useState('');
  const[form,setForm]=useState({name:'',email:'',phone:'',address:'',country:'TR',state_region:'',city:'',district:'',postal:'',notes:''});
@@ -211,8 +212,24 @@ export default function GlobalBag(){
  }
  async function placeOrder(e){e.preventDefault();if(busy)return;setError('');const email=form.email.trim(),phone=form.phone.replace(/\s|\(|\)|-/g,'');if(form.name.trim().length<2)return setError('Enter your full name.');if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return setError('Enter a valid email address.');if(physical&&form.country==='TR'&&!/^(?:\+90|0)?5\d{9}$/.test(phone))return setError('Enter a valid Turkish mobile number.');if(physical&&form.country!=='TR'&&!/^\+?[0-9]{7,15}$/.test(phone))return setError('Enter a valid international phone number including country code.');if(physical&&form.address.trim().length<10)return setError('Enter a complete delivery address.');if(physical&&!form.city)return setError('Enter a city.');if(physical&&form.country==='TR'&&!form.district)return setError('Select a district.');if(invoice.type==='company'&&invoice.company.trim().length<2)return setError('Enter the company name for the invoice.');if(invoice.type==='company'&&!invoice.tax_office.trim())return setError('Enter the tax office for the invoice.');if(invoice.type==='company'&&invoice.tax_number.trim().length<5)return setError('Enter a valid tax number for the invoice.');if(!invoice.same_as_shipping&&invoice.address.trim().length<10)return setError('Enter a complete invoice address.');if(!supabase)return setError('Store connection unavailable.');setBusy(true);const address=physical?{line1:form.address,city:form.city,district:form.district||null,state_region:form.state_region||null,postal_code:form.postal,country:form.country||'TR'}:null;const items=cart.map(x=>({variant_id:x.variantId,quantity:x.qty}));const invoicePayload={type:invoice.type,company:invoice.type==='company'?invoice.company.trim():null,tax_office:invoice.type==='company'?invoice.tax_office.trim():null,tax_number:invoice.type==='company'?invoice.tax_number.trim():null,address:invoice.same_as_shipping?address:(invoice.address.trim()?{line1:invoice.address.trim()}:null)};let data=null;try{const created=await supabase.rpc('create_store_order_v4',{p_email:email,p_full_name:form.name.trim(),p_phone:physical?phone:null,p_address:address,p_notes:form.notes||null,p_items:items,p_promo_code:promoCode||null,p_invoice:invoicePayload});if(created.error){setError(created.error.message);return}data=created.data;let finalData=data;if(data?.order_id&&(storeValue.gift_valid||storeValue.use_credit)){const {data:valueData,error:valueError}=await supabase.rpc('reserve_order_value',{p_order_id:data.order_id,p_email:email,p_gift_code:storeValue.gift_valid?storeValue.gift_code.trim():null,p_use_store_credit:!!storeValue.use_credit});if(valueError){finalData={...finalData,store_value_error:'Order created, but gift card / store credit could not be applied. Do not place the order again.'}}else if(valueData)finalData={...finalData,...valueData}}if(gift.enabled&&data?.order_id){const {error:giftError}=await supabase.rpc('set_order_gift_details',{p_order_id:data.order_id,p_email:email,p_is_gift:true,p_gift_message:gift.message||null,p_hide_prices:!!gift.hide_prices});if(giftError)finalData={...finalData,gift_update_error:'Order created, but gift options could not be saved. Do not place the order again.'}}setDone(finalData);setStoreValue(v=>({...v,gift_code:'',gift_valid:false,gift_available:0,use_credit:false,message:''}));update([]);setCheckout(false);try{fetch('/api/orders/notify',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({order_id:data?.order_id,email})})}catch{}}finally{setBusy(false)}}
  const close=()=>{setOpen(false);setCheckout(false);setError('')};
- useEffect(()=>{if(!open)return;const onKey=e=>{if(e.key==='Escape')close()};window.addEventListener('keydown',onKey);return()=>window.removeEventListener('keydown',onKey)},[open]);
- return <>{!open&&<button className="globalBagTrigger" aria-haspopup="dialog" aria-expanded={open} aria-label={`${t('BAG')} · ${cart.reduce((s,x)=>s+x.qty,0)}`} onClick={()=>{setDone(null);setOpen(true)}}>{t('BAG')} · {cart.reduce((s,x)=>s+x.qty,0)}</button>}<aside className={'globalBagDrawer '+(open?'open':'')} role="dialog" aria-modal="true" aria-label={t('SHOPPING BAG')} aria-hidden={!open}><button className="globalBagClose" onClick={close}>{t('CLOSE')} ×</button><span>{t('SHOPPING BAG')}</span>
+ useEffect(()=>{if(!open)return;
+  const previousOverflow=document.body.style.overflow;
+  document.body.style.overflow='hidden';
+  const node=drawerRef.current;
+  const focusables=()=>node?[...node.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')]:[];
+  requestAnimationFrame(()=>focusables()[0]?.focus());
+  const onKey=e=>{
+   if(e.key==='Escape'){close();return}
+   if(e.key!=='Tab')return;
+   const items=focusables();if(!items.length)return;
+   const first=items[0],last=items[items.length-1];
+   if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+   else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+  };
+  window.addEventListener('keydown',onKey);
+  return()=>{document.body.style.overflow=previousOverflow;window.removeEventListener('keydown',onKey)}
+ },[open]);
+ return <>{!open&&<button className="globalBagTrigger" aria-haspopup="dialog" aria-expanded={open} aria-label={`${t('BAG')} · ${cart.reduce((s,x)=>s+x.qty,0)}`} onClick={()=>{setDone(null);setOpen(true)}}>{t('BAG')} · {cart.reduce((s,x)=>s+x.qty,0)}</button>}<aside ref={drawerRef} className={'globalBagDrawer '+(open?'open':'')} role="dialog" aria-modal="true" aria-label={t('SHOPPING BAG')} aria-hidden={!open}><button className="globalBagClose" onClick={close}>{t('CLOSE')} ×</button><span>{t('SHOPPING BAG')}</span>
  {done?<div className="orderDone"><b>{t('ORDER RECEIVED')}</b><strong>#SII-{String(done.order_no).padStart(4,'0')}</strong><p>{fmt(done.total)}</p><small>Payment is not collected yet.</small>{done.store_value_total>0&&<em className="orderDoneStoreValue">{t('STORE VALUE APPLIED')} · {fmt(done.store_value_total)}</em>}{done.store_value_error&&<em className="orderDoneStoreValue error">{done.store_value_error}</em>}{done.gift_update_error&&<em className="orderDoneStoreValue error">{done.gift_update_error}</em>}</div>
  :checkout?<form className="checkoutForm globalCheckout" onSubmit={placeOrder}><h3>{t('Checkout')}</h3>{physical&&savedAddresses.length>0&&<div className="checkoutSavedAddresses">
   <div className="checkoutSavedAddressHead"><span>{t('SAVED ADDRESS')}</span><small>{savedAddresses.length}</small></div>
