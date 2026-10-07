@@ -4015,3 +4015,61 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .adminApp input[type="checkbox"]:checked::after{
   transform:translate(-50%,-54%) scale(1)!important;
 }
+
+
+/* WWYS SUPPORT — admin orders + analytics */
+.analyticsHeroKpis{
+  grid-template-columns:repeat(5,minmax(0,1fr));
+}
+.analyticsHeroKpis .supportKpi{
+  border-top-color:rgba(213,199,166,.28);
+}
+.analyticsHeroKpis .supportKpi b{
+  color:#d5c7a6;
+}
+.supportAnalytics{
+  border-color:rgba(213,199,166,.18);
+}
+.orderSupportBadge{
+  display:inline-flex;
+  align-items:center;
+  min-height:22px;
+  margin-left:8px;
+  padding:0 7px;
+  border:1px solid rgba(213,199,166,.34);
+  color:#d5c7a6;
+  font:8px/1 Arial,sans-serif;
+  font-style:normal;
+  letter-spacing:.07em;
+  vertical-align:middle;
+}
+.orderItemSupport{
+  display:block;
+  margin-top:6px;
+  color:#d5c7a6;
+  font:8.5px/1.25 Arial,sans-serif;
+  font-style:normal;
+  letter-spacing:.08em;
+}
+.orderSupportTotal{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  padding:13px 0;
+  border-top:1px solid rgba(213,199,166,.24);
+  color:#bdb5a5;
+  font:9px/1 Arial,sans-serif;
+  letter-spacing:.10em;
+}
+.orderSupportTotal strong{
+  color:#d5c7a6;
+  font:18px/1 Georgia,serif;
+  font-weight:400;
+}
+@media(max-width:1180px){
+  .analyticsHeroKpis{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:820px){
+  .analyticsHeroKpis{grid-template-columns:1fr 1fr}
+}
