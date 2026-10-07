@@ -1987,3 +1987,16 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   width:min(var(--object-width,460px),82vw)!important;
   transform:translate(-50%,-50%)!important;
 }
+
+
+/* Shared merch preview containment — admin surfaces */
+.adminMerchThumb{
+  width:48px;height:48px;min-width:48px;overflow:hidden;
+  border:1px solid #3a393d;background:#0b0b0d;
+}
+.adminMerchThumb > div{min-height:0!important;height:100%!important;width:100%!important}
+.adminMerchThumb svg{max-width:100%;max-height:100%}
+.merchHeroImage > div{min-height:0!important;height:100%!important;width:100%!important;background:transparent!important}
+.merchGallery article > div:first-child:not(:last-child){min-height:0!important;height:100%!important;width:100%!important;background:transparent!important}
+.merchGallery article{overflow:hidden}
+.merchHeroImage{overflow:hidden}
