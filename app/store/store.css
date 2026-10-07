@@ -1064,13 +1064,13 @@
   color:#fffaf2!important;
 }
 @media(max-width:760px){
-  .storeCardMediaLink.hasSecondary:not(.secondaryMobile):hover .storePrimaryImage,
-  .storeCover.hasSecondary:not(.secondaryMobile):hover .storePrimaryImage{
+  .storeClassicCard:not(.secondaryMobile) .storeCardMediaLink.hasSecondary:hover .storePrimaryImage,
+  .storeProduct:not(.secondaryMobile) .storeCover.hasSecondary:hover .storePrimaryImage{
     opacity:1;
     transform:none;
   }
-  .storeCardMediaLink.hasSecondary:not(.secondaryMobile):hover .storeSecondaryImage,
-  .storeCover.hasSecondary:not(.secondaryMobile):hover .storeSecondaryImage{
+  .storeClassicCard:not(.secondaryMobile) .storeCardMediaLink.hasSecondary:hover .storeSecondaryImage,
+  .storeProduct:not(.secondaryMobile) .storeCover.hasSecondary:hover .storeSecondaryImage{
     opacity:0;
     transform:none;
   }
