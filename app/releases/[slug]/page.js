@@ -10,10 +10,15 @@ export async function generateMetadata({ params }) {
   const { slug } = await params;
   const release = await getDatabaseRelease(slug);
   if (!release) return {};
+  const seo=release.seoConfig||{};
+  const title=seo.title||`${release.catalogue} · ${release.title}`;
+  const description=seo.description||`${release.artist} — ${release.title}. ${release.formatDetail}.`;
+  const ogImage=seo.og_image||release.cover||null;
   return {
-    title: `${release.catalogue} · ${release.title}`,
-    description: `${release.artist} — ${release.title}. ${release.formatDetail}.`,
-    openGraph:{title:`${release.artist} — ${release.title}`,description:release.lead,images:release.cover?[release.cover]:[]},
+    title,
+    description,
+    ...(seo.canonical?{alternates:{canonical:seo.canonical}}:{}),
+    openGraph:{title,description,images:ogImage?[ogImage]:[]},
   };
 }
 
