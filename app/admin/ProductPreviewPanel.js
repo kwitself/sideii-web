@@ -37,7 +37,7 @@ function stockText(product){
  return available>0?available+' IN STOCK':preorder?'PRE-ORDER':'SOLD OUT';
 }
 function productImage(product){
- return publicArtwork(product)||firstGallery(product);
+ return product?.preview_cover_url||publicArtwork(product)||firstGallery(product);
 }
 function isMerch(product){return product?.product_type==='merch'}
 function mockupProduct(p){
@@ -61,9 +61,9 @@ function CardImage({product,className='',style=null}) {
  return src?<img className={className} src={src} alt="" style={style||undefined}/>:<div className={'previewMissing '+className}>NO IMAGE</div>;
 }
 
-export default function ProductPreviewPanel({products=[],preferredProductId=null}){
+export default function ProductPreviewPanel({products=[],preferredProductId=null,embedded=false,initialMode='editorial'}){
  const [selectedId,setSelectedId]=useState(preferredProductId||products[0]?.id||'');
- const [mode,setMode]=useState('editorial');
+ const [mode,setMode]=useState(initialMode);
  const [zoom,setZoom]=useState('fit');
 
  useEffect(()=>{
@@ -94,16 +94,16 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
  ].filter(Boolean);
  const feedWarnings=[!(product.seo_config?.gtin||product.barcode||product.seo_config?.mpn)?'IDENTIFIER MISSING':null,!product.seo_config?.google_category?'GOOGLE CATEGORY MISSING':null].filter(Boolean);
 
- return <section className="adminSection adminViewSection previewSystem">
-  <div className="sectionLabel"><span>03 / PRODUCT PREVIEW SYSTEM</span><p>Inspect storefront and feed output before publishing.</p></div>
-  <div className="previewToolbar adminPanel">
-   <label><span>PRODUCT</span><select value={product.id} onChange={e=>setSelectedId(e.target.value)}>{products.map(p=><option key={p.id} value={p.id}>{p.catalogue_no||'NO CAT'} · {p.title}</option>)}</select></label>
+ return <section className={(embedded?'previewSystem previewEmbedded':'adminSection adminViewSection previewSystem')}>
+  {!embedded&&<div className="sectionLabel"><span>03 / PRODUCT PREVIEW SYSTEM</span><p>Inspect storefront and feed output before publishing.</p></div>}
+  <div className={(embedded?'previewToolbar previewToolbarEmbedded':'previewToolbar adminPanel')}>
+   {!embedded&&<label><span>PRODUCT</span><select value={product.id} onChange={e=>setSelectedId(e.target.value)}>{products.map(p=><option key={p.id} value={p.id}>{p.catalogue_no||'NO CAT'} · {p.title}</option>)}</select></label>}
    <div className="previewModeTabs">{MODES.map(([id,label])=><button key={id} type="button" className={mode===id?'active':''} onClick={()=>setMode(id)}>{label}</button>)}</div>
    <div className="previewZoom"><button className={zoom==='fit'?'active':''} onClick={()=>setZoom('fit')}>FIT</button><button className={zoom==='100'?'active':''} onClick={()=>setZoom('100')}>100%</button></div>
   </div>
 
   <div className="previewLayout">
-   <aside className="previewInspector adminPanel">
+   {!embedded&&<aside className="previewInspector adminPanel">
     <div><span>STATUS</span><b>{String(product.status||'draft').toUpperCase()}</b></div>
     <div><span>STORE</span><b>{visibility.store===false?'HIDDEN':'VISIBLE'}</b></div>
     <div><span>SEARCH</span><b>{visibility.search===false?'HIDDEN':'VISIBLE'}</b></div>
@@ -113,9 +113,9 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
     <div><span>IMAGE FIT</span><b>{String(imageFit).toUpperCase()}</b></div>
     <div><span>CTA</span><b>{String(cta).toUpperCase()}</b></div>
     <div className="previewSeoReadout"><span>SEO TITLE</span><b>{seo.title}</b><small>{seo.description}</small></div><div className="previewSeoReadout"><span>FEED CHECK</span><b>{feedBlockers.length?feedBlockers.join(' · '):'READY'}</b>{feedWarnings.length>0&&<small>{feedWarnings.join(' · ')}</small>}</div>
-   </aside>
+   </aside>}
 
-   <div className={'previewStage adminPanel preview-'+mode+' zoom-'+zoom}>
+   <div className={(embedded?'previewStage previewStageEmbedded ':'previewStage adminPanel ')+'preview-'+mode+' zoom-'+zoom}>
     <div className="previewStageTop"><span>LIVE COMPONENT PREVIEW</span><b>{MODES.find(x=>x[0]===mode)?.[1]}</b></div>
 
     {mode==='editorial'&&<div className="previewEditorialCard">
@@ -140,6 +140,6 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
     {mode==='meta'&&<div className="previewMetaPost"><div className="previewMetaHead"><b>SIDE:II</b><span>Sponsored</span></div><CardImage product={product} className="previewMetaImage" style={imageStyle}/><div className="previewMetaCopy"><small>{visibility.meta===false?'META CHANNEL OFF':'SIDEII.COM'}</small><h3>{seo.title}</h3><p>{seo.description}</p><div><b>{previewPrice||'PRICE HIDDEN'}</b><button>SHOP NOW</button></div></div></div>}
    </div>
   </div>
-  <div className="previewFootnote">Preview uses current draft product data. Nothing is published or made public from this screen.</div>
+  <div className="previewFootnote">{embedded?'LIVE DRAFT · SAVE NOT REQUIRED FOR PREVIEW':'Preview uses current draft product data. Nothing is published or made public from this screen.'}</div>
  </section>;
 }
