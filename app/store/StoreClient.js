@@ -118,7 +118,7 @@ export default function StoreClient({releases}){
       {r.status==='AVAILABLE'&&waitlistVariant===v.id&&<div className="storeWaitlist"><input type="email" placeholder="EMAIL FOR RESTOCK ALERT" value={waitlistEmail} onChange={e=>setWaitlistEmail(e.target.value)}/><button type="button" disabled={waitlistBusy} onClick={()=>joinWaitlist(v)}>{waitlistBusy?'SAVING…':'NOTIFY ME'}</button>{waitlistMessage&&<small>{waitlistMessage}</small>}</div>}
      </div>})}</div>
     </div>
-   </article>)}
+   </article>})}
    </div>}
    {filtered.length===0&&(filter==='lethargia'?<div className="storeNoResults storeNoResultsLethargia"><small>LETHARGIA / CATALOGUE IN PREPARATION</small><h3>No public editions yet.</h3><p>The first Lethargia releases will appear here automatically when they are made public in Control Room.</p><Link href="/imprints/lethargia">OPEN LETHARGIA RECORDS ↗</Link></div>:<div className="storeNoResults">NO PRODUCTS IN THIS SELECTION.</div>)}
   </section>
