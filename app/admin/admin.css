@@ -3787,3 +3787,390 @@ textarea{line-height:1.5!important}
 .wearOpsIntro p{
   font-family:var(--admin-serif);
 }
+
+
+/* CONTROL ROOM UI POLISH V2 — global scale / readability / interaction */
+.adminApp{
+  --admin-fs-xs:9.5px;
+  --admin-fs-sm:10.5px;
+  --admin-fs-md:12px;
+  --admin-fs-body:13px;
+  --admin-fs-lg:15px;
+  --admin-control-h:46px;
+  grid-template-columns:246px minmax(0,1fr);
+  font-size:var(--admin-fs-body);
+  line-height:1.45;
+  background:#09090a;
+}
+.adminMain{
+  max-width:1860px;
+  padding-left:clamp(34px,3.2vw,54px);
+  padding-right:clamp(34px,3.2vw,54px);
+  padding-bottom:72px;
+}
+
+/* Top bar / page identity */
+.adminTop{
+  min-height:170px;
+  padding:18px 0;
+}
+.adminTop>div>span,
+.sectionLabel>span,
+.lowerGrid article>span{
+  font-size:11px;
+  letter-spacing:.13em;
+  color:#9a968f;
+}
+.adminTop h1{
+  font-size:62px;
+  line-height:.95;
+  letter-spacing:-.045em;
+}
+.sectionLabel{
+  margin-bottom:22px;
+}
+.sectionLabel p{
+  font-size:17px;
+  color:#aaa69f;
+  max-width:760px;
+}
+
+/* Rail */
+.adminRail{
+  padding:32px 24px 26px;
+  border-right-color:rgba(255,255,255,.09);
+}
+.adminBrand span{font-size:42px}
+.adminBrand small,.railFoot small{
+  font-size:10px;
+  letter-spacing:.13em;
+}
+.adminNav{
+  gap:5px;
+  padding-top:22px;
+}
+.adminNav a{
+  min-height:48px;
+  padding:0 13px;
+  font-size:11px;
+  letter-spacing:.035em;
+  color:#99959b;
+}
+.adminNav a i{
+  font-size:9px;
+  min-width:18px;
+  color:#656268;
+}
+.adminNav a:hover{
+  background:#111113;
+  border-color:rgba(255,255,255,.10);
+  color:#e8e4dc;
+}
+.adminNav a.active{
+  background:#141416;
+  border-color:rgba(255,255,255,.14);
+  color:#f1ede5;
+}
+.railFoot>span{font-size:9px}
+.railFoot b{font-size:11px}
+
+/* Panels */
+.adminPanel{
+  border-color:rgba(255,255,255,.105);
+  background:#0d0d0f;
+}
+.adminPanel>header,
+.adminPanel header{
+  color:#d7d3cc;
+}
+.adminPanel>header span,
+.adminPanel header>span,
+.adminPanel header div>span{
+  font-size:10px;
+  letter-spacing:.09em;
+  color:#bbb6af;
+}
+.adminPanel>header small,
+.adminPanel header>small,
+.adminPanel header div>small{
+  font-size:10px;
+  color:#8f8b84;
+  opacity:1;
+}
+
+/* Buttons */
+.topActions a,.topActions button,
+.panelAction a,.panelAction button,
+.inventoryCard button,.lowerGrid button,
+.formActions button,.ghostButton,.saveButton,
+.productControlBar>button,
+.bulkActionBar button,
+.adminSubnav button,
+.previewToolbar button,
+.merchControlTabs button{
+  min-height:44px;
+  padding:0 16px;
+  font-size:10px!important;
+  letter-spacing:.065em!important;
+  font-weight:500;
+}
+.saveButton,.primaryAction{
+  background:#ddd8cf!important;
+  color:#0a0a0b!important;
+  border-color:#ddd8cf!important;
+}
+.ghostButton{
+  color:#c1bcb4!important;
+  border-color:rgba(255,255,255,.16)!important;
+  background:#101012!important;
+}
+.adminApp button:disabled{
+  opacity:.38;
+}
+.adminApp button:hover:not(:disabled),
+.adminApp a:hover{
+  transition-duration:.14s;
+}
+
+/* Form controls */
+.adminApp input,
+.adminApp select,
+.adminApp textarea{
+  font-size:13px!important;
+  line-height:1.4!important;
+}
+.formGrid input,.formGrid select,
+.editFields input,.editFields select,
+.storefrontGrid input,.storefrontGrid select,
+.growthForm input,.growthForm select,
+.shippingSettings input,.shippingSettings select,
+.impactFormGrid input,.impactFormGrid select,
+.catalogueDepthFields input,.catalogueCostFields input,
+.commerceVariantRow input,.commerceVariantRow select,
+.wearOpsGrid input,.wearOpsGrid select,
+.royaltyForm input,.royaltyForm select,
+.productSearchWrap input,.productControlBar select{
+  min-height:46px!important;
+  padding-left:13px!important;
+  padding-right:13px!important;
+}
+.formGrid textarea,.editFields textarea,
+.storefrontGrid textarea,.growthForm textarea,
+.impactFormGrid textarea,.wearOpsGrid textarea{
+  min-height:112px!important;
+  padding:13px!important;
+}
+.formGrid label>span,.editFields label,
+.storefrontGrid label,.growthForm label>span,
+.shippingSettings label span,.impactFormGrid label span,
+.catalogueDepthFields label span,.catalogueCostFields label span,
+.commerceVariantRow label,.wearOpsGrid>label>span,
+.royaltyForm label>span,.productSearchWrap span{
+  font-size:10px!important;
+  letter-spacing:.065em!important;
+  color:#a39f98!important;
+}
+.storefrontToggle span,.catalogueCheck span,
+.shippingToggle span,.commerceCheck span{
+  font-size:10px!important;
+}
+
+/* Tables / rows */
+.tableHead{
+  min-height:52px;
+  font-size:10px;
+  letter-spacing:.075em;
+  color:#918d94;
+}
+.productRow{
+  min-height:96px;
+  font-size:12px;
+  color:#b7b2ab;
+}
+.editionCell strong{
+  font-size:18px;
+  color:#e2ded6;
+}
+.editionCell small{
+  font-size:10px;
+  color:#918d92;
+}
+.formatPill{
+  font-size:10px;
+  padding:8px 10px;
+}
+.statusSelect{
+  min-height:40px;
+  font-size:10px;
+  width:148px;
+}
+.qaBadge{
+  font-size:9.5px;
+  padding:7px 9px;
+}
+.rowActions a,
+.rowActions .rowNavButton,
+.rowActions .editReleaseButton,
+.rowActions .finishMiniButton,
+.rowActions .selectedMiniButton,
+.rowActions .deleteReleaseButton{
+  min-height:32px;
+  font-size:9.5px;
+  letter-spacing:.05em;
+  color:#aaa69f;
+}
+
+/* Tabs */
+.adminSubnav button{
+  min-height:46px;
+  font-size:10px!important;
+}
+.adminSubnav button.active{
+  background:#ddd8cf;
+  color:#0a0a0b;
+}
+
+/* Dashboard metrics */
+#overview .overviewMetricGrid article{
+  min-height:128px;
+  padding:18px 20px;
+}
+#overview .overviewMetricGrid article span{
+  font-size:10px;
+  letter-spacing:.10em;
+}
+#overview .overviewMetricGrid article strong{
+  font-size:40px;
+}
+#overview .overviewMetricGrid article small{
+  font-size:10px;
+  color:#85817b;
+  opacity:1;
+}
+.analyticsHead span{font-size:10px}
+.analyticsHead h2{font-size:38px}
+.analyticsRange button{min-height:40px;font-size:10px!important}
+.analyticsHero>header span,
+.analyticsHeroKpis span{
+  font-size:10px;
+}
+.analyticsHero>header small{
+  font-size:10px;
+}
+.analyticsHeroKpis b{
+  font-size:20px;
+}
+.analyticsPanel.compact header span,
+.profitSplit.compact header span{
+  font-size:10px;
+}
+.analyticsPanel.compact header small,
+.profitSplit.compact header small{
+  font-size:9px;
+}
+.analyticsBars span,.analyticsBars strong{
+  font-size:10px;
+}
+.artistShareRow b{font-size:11px}
+.artistShareRow small{font-size:9.5px}
+.artistShareRow strong{font-size:11px}
+.analyticsEmpty b{font-size:10px}
+.analyticsEmpty span{font-size:11px}
+.royaltyTableHead span{font-size:9px}
+.royaltyTableRow b{font-size:11px}
+.royaltyTableRow small{font-size:9.5px}
+.royaltyTableRow em,.royaltyTableRow strong{font-size:11px}
+
+/* Operational rows */
+.dashboardPanels>article>header{
+  min-height:54px;
+  padding:0 18px;
+}
+.dashboardPanels>article>header span{
+  font-size:10px;
+}
+.dashboardPanels>article>header button{
+  font-size:9.5px;
+}
+.dashboardLine{
+  min-height:60px;
+  padding-left:18px;
+  padding-right:18px;
+}
+.dashboardLine b{font-size:11px}
+.dashboardLine small{font-size:10px}
+.inventoryRow,.commerceRateRow,.commerceAlertRow,.commerceReturnRow,
+.ownerContentRow,.catalogueAlertRow,.valueMilestoneRow{
+  font-size:11px;
+}
+.inventoryRow small,.commerceRateRow small,.commerceAlertRow small,
+.ownerContentRow small,.catalogueAlertRow small,.valueMilestoneRow small{
+  font-size:10px!important;
+}
+
+/* Messages / notes / utility text */
+.workspaceMessage,.dbNotice,.emptyNote,
+.launchReadinessNote,.finalQaNote{
+  font-size:11px!important;
+  line-height:1.55!important;
+}
+.adminSession{
+  font-size:10px;
+}
+.adminSession button{
+  font-size:10px;
+}
+
+/* Modal system */
+.editModal{
+  width:min(1120px,96vw);
+  padding:32px;
+}
+.editModal h2{
+  font-size:40px;
+}
+.editModal header span{
+  font-size:10px;
+}
+.editModal header button{
+  min-height:38px;
+  font-size:10px;
+}
+.editTabs button{
+  min-height:46px!important;
+  font-size:10px!important;
+}
+.orderModal,.qaModal{
+  font-size:12px;
+}
+
+/* Contrast and surfaces */
+.adminPanel,
+.metricGrid article,
+.productRow,
+.tableHead,
+.dashboardPanels>article{
+  border-color:rgba(255,255,255,.095);
+}
+.productRow:hover,
+.inventoryRow:hover,
+.dashboardLine:hover{
+  background:rgba(255,255,255,.018);
+}
+
+/* Responsive */
+@media(max-width:1280px){
+  .adminApp{grid-template-columns:224px minmax(0,1fr)}
+  .adminRail{padding-left:18px;padding-right:18px}
+  .adminNav a{font-size:10.5px}
+}
+@media(max-width:980px){
+  .adminTop h1{font-size:54px}
+  .adminMain{padding-left:24px;padding-right:24px}
+}
+@media(max-width:700px){
+  .adminApp{font-size:12px}
+  .adminTop h1{font-size:46px}
+  .sectionLabel p{font-size:15px}
+  .adminSubnav button{font-size:9.5px!important}
+}
