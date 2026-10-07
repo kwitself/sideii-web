@@ -55,3 +55,10 @@
 .releaseCredits{margin-top:34px;padding-top:25px;border-top:1px solid #28272a;max-width:720px}.releaseCredits b,.releaseGallery>span{font:8px Arial,sans-serif;letter-spacing:.2em;color:#77747a}.releaseCredits p{white-space:pre-line;margin-top:12px}
 .releaseGallery{padding-top:55px;padding-bottom:20px}.releaseGallery>div{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}.releaseGallery img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border:1px solid #29282b}
 @media(max-width:760px){.releaseGallery>div{grid-template-columns:1fr 1fr}}
+
+/* FINAL RELEASE UI AUDIT */
+.catalogueCassetteLabel{font-size:8px}
+.releaseCredits b,.releaseGallery>span{font-size:9px}
+.releaseGallery img{transition:transform .24s ease,border-color .24s ease}
+.releaseGallery img:hover{transform:scale(1.012);border-color:#555158}
+@media(max-width:760px){.releaseGallery{padding-top:42px}.releaseGallery>div{gap:8px}.releaseCredits{margin-top:28px}}
