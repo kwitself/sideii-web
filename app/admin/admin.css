@@ -3855,3 +3855,94 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .wearOpsGrid .wearOpsWide{grid-column:1}
   .wearOpsGrid .storefrontToggle{align-self:stretch}
 }
+
+
+/* FINAL CHECKBOX SYSTEM — minimal square + crisp check */
+.adminApp input[type="checkbox"]{
+  -webkit-appearance:none!important;
+  appearance:none!important;
+  width:16px!important;
+  height:16px!important;
+  min-width:16px!important;
+  min-height:16px!important;
+  margin:0;
+  position:relative;
+  display:inline-grid!important;
+  place-items:center!important;
+  border:1px solid rgba(255,255,255,.34)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  cursor:pointer;
+  transition:background .14s ease,border-color .14s ease,transform .14s ease;
+}
+.adminApp input[type="checkbox"]::after{
+  content:'';
+  width:7px;
+  height:4px;
+  border-left:1.5px solid #0b0b0d;
+  border-bottom:1.5px solid #0b0b0d;
+  transform:translateY(-1px) rotate(-45deg) scale(0);
+  transform-origin:center;
+  transition:transform .14s ease;
+}
+.adminApp input[type="checkbox"]:checked{
+  background:#ddd8cf!important;
+  border-color:#ddd8cf!important;
+}
+.adminApp input[type="checkbox"]:checked::after{
+  transform:translateY(-1px) rotate(-45deg) scale(1);
+}
+.adminApp input[type="checkbox"]:hover{
+  border-color:rgba(255,255,255,.58)!important;
+}
+.adminApp input[type="checkbox"]:focus-visible{
+  outline:1px solid rgba(221,216,207,.72)!important;
+  outline-offset:3px;
+}
+.adminApp input[type="checkbox"]:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+}
+
+.adminApp .storefrontToggle,
+.adminApp .catalogueCheck,
+.adminApp .shippingToggle,
+.adminApp .commerceCheck{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  min-height:48px;
+  padding:0 13px;
+  border:1px solid rgba(255,255,255,.12);
+  background:#0b0b0d;
+  transition:background .14s ease,border-color .14s ease,color .14s ease;
+}
+.adminApp .storefrontToggle:hover,
+.adminApp .catalogueCheck:hover,
+.adminApp .shippingToggle:hover,
+.adminApp .commerceCheck:hover{
+  border-color:rgba(255,255,255,.20);
+  background:#101012;
+}
+.adminApp .storefrontToggle:has(input:checked),
+.adminApp .catalogueCheck:has(input:checked),
+.adminApp .shippingToggle:has(input:checked),
+.adminApp .commerceCheck:has(input:checked){
+  background:#121214;
+  border-color:rgba(221,216,207,.36);
+}
+.adminApp .storefrontToggle span,
+.adminApp .catalogueCheck span,
+.adminApp .shippingToggle span,
+.adminApp .commerceCheck span{
+  color:#bdb8b0!important;
+  font-size:10.5px!important;
+  letter-spacing:.065em!important;
+}
+.adminApp .storefrontToggle:has(input:checked) span,
+.adminApp .catalogueCheck:has(input:checked) span,
+.adminApp .shippingToggle:has(input:checked) span,
+.adminApp .commerceCheck:has(input:checked) span{
+  color:#eee9e1!important;
+}
