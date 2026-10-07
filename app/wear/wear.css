@@ -142,3 +142,79 @@
   .wearCardMeta h3{font-size:29px}
   .wearCardIndex,.wearVisualTag{font-size:6px}
 }
+
+
+/* SITE-WIDE POLISH / WEAR — saturated minimalism */
+.wearPage{
+  background:
+    radial-gradient(circle at 82% 2%,rgba(255,255,255,.03),transparent 32rem),
+    #09090a;
+}
+.wearHero{
+  min-height:70vh;
+  padding:94px 0 58px;
+  border-bottom-color:#343238;
+  background:
+    radial-gradient(circle at 78% 38%,rgba(255,255,255,.05),transparent 30%),
+    linear-gradient(180deg,#09090a,#0d0d0f);
+}
+.wearHero h1{margin:18px 0 24px}
+.wearHero h1 i{color:#aaa69f}
+.wearHero>p{font-size:18px;color:#aaa69f}
+.wearHeroMeta{
+  margin-top:36px;
+  border-top-color:#343238;
+}
+.wearHeroMeta small{color:#77736d}
+.wearHeroMeta a,.wearEmpty a,.wearSystemFoot a{
+  border-color:#4a474d;
+  background:#111113;
+  color:#d2cdc5;
+}
+.wearManifest{
+  gap:56px;
+  padding:78px 0;
+  border-bottom-color:#343238;
+}
+.wearManifest h2{margin-bottom:18px}
+.wearManifest p{font-size:17px;color:#aaa69f}
+.wearObjectSystem{border-bottom-color:#343238}
+.wearObjectSystem article{
+  min-height:160px;
+  border-right-color:#343238;
+}
+.wearObjectSystem b{color:#918d86}
+.wearObjectSystem p{color:#aaa69f}
+.wearProducts{padding:76px 0 94px}
+.wearSectionHead{margin-bottom:24px}
+.wearSectionHead p{color:#807c75}
+.wearGrid{gap:24px}
+.wearVisual{
+  border-color:#3d3b40;
+  background:
+    radial-gradient(circle at 50% 42%,#1d1d20,#0b0b0d 72%);
+  box-shadow:none;
+}
+.wearCardMeta{
+  padding:16px 2px 13px;
+  border-bottom-color:#3a383d;
+}
+.wearCardMeta small{color:#817d77}
+.wearCardMeta h3{font-size:34px}
+.wearCardMeta span{color:#c0bbb3}
+.wearSystem{
+  border-color:#343238;
+  background:
+    radial-gradient(circle at 78% 50%,rgba(255,255,255,.045),transparent 32%),
+    #0d0d0f;
+}
+.wearSystemInner{min-height:48vh;padding:76px 0}
+.wearSystemInner p i{color:#aaa69f}
+.wearSystemFoot{border-top-color:#343238}
+
+@media(max-width:800px){
+  .wearHero{min-height:auto;padding:74px 0 50px}
+  .wearManifest{padding:62px 0}
+  .wearProducts{padding:62px 0 78px}
+  .wearSystemInner{min-height:auto;padding:66px 0}
+}
