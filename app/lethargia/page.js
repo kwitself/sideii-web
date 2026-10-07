@@ -25,14 +25,14 @@ export default async function Lethargia(){
     .lethFooterLogo{display:block;width:154px;height:auto;object-fit:contain}
     .lethargiaGlobalHeader{border-bottom-color:#2b1519}
     .lethImprintBar{min-height:72px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;border-bottom:1px solid #2b1519}
-    .lethImprintBar>span{font:7px/1 Arial,sans-serif;letter-spacing:.2em;color:#674b50}
+    .lethImprintBar>span{font:9px/1 Arial,sans-serif;letter-spacing:.16em;color:#76565c}
     .lethImprintBar nav{justify-self:end;display:flex;gap:24px}
-    .lethImprintBar nav a{font:8px/1 Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#87646a;text-decoration:none}
+    .lethImprintBar nav a{display:inline-flex;align-items:center;min-height:40px;font:9px/1 Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#9b737b;text-decoration:none}
     .lethImprintBar nav a:hover{color:#d2bbc0}
 
     .lethHeroStats{display:flex;gap:24px;flex-wrap:wrap;margin-top:28px;padding-top:18px;border-top:1px solid rgba(255,255,255,.08);width:min(650px,80vw)}
-    .lethHeroStats span{font:7px/1.3 Arial,sans-serif;letter-spacing:.15em;color:#6f6265}.lethHeroStats b{font:12px/1 Georgia,serif;color:#9a878b;font-weight:400;margin-right:5px}.lethManifest,.lethReleases,.lethStore{scroll-margin-top:44px}
-    .lethRelease{text-decoration:none;color:inherit}.lethEmpty{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.06);padding:44px 0 50px;color:#756a6c}.lethEmpty small{display:block;margin-bottom:14px;font:7px/1 Arial,sans-serif;letter-spacing:.16em;color:#6c4f55}.lethEmpty h3{max-width:760px;margin:0;color:#d7d0cb;font:32px/1.05 Georgia,serif;font-weight:400}.lethEmpty p{max-width:620px;margin:14px 0 22px;color:#756f70;font:12px/1.55 Georgia,serif}.lethEmpty a{display:inline-block;padding:9px 11px;border:1px solid rgba(105,65,73,.5);color:#a27d84;text-decoration:none;font:7px/1 Arial,sans-serif;letter-spacing:.14em}.lethEmpty a:hover{border-color:#a27d84;color:#d8c4c8}
+    .lethHeroStats span{font:9px/1.3 Arial,sans-serif;letter-spacing:.12em;color:#817276}.lethHeroStats b{font:12px/1 Georgia,serif;color:#9a878b;font-weight:400;margin-right:5px}.lethManifest,.lethReleases,.lethStore{scroll-margin-top:44px}
+    .lethRelease{text-decoration:none;color:inherit}.lethEmpty{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.06);padding:44px 0 50px;color:#756a6c}.lethEmpty small{display:block;margin-bottom:14px;font:9px/1 Arial,sans-serif;letter-spacing:.14em;color:#7d5b62}.lethEmpty h3{max-width:760px;margin:0;color:#d7d0cb;font:32px/1.05 Georgia,serif;font-weight:400}.lethEmpty p{max-width:620px;margin:14px 0 22px;color:#756f70;font:12px/1.55 Georgia,serif}.lethEmpty a{display:inline-flex;align-items:center;min-height:42px;padding:0 13px;border:1px solid rgba(105,65,73,.5);color:#b08a91;text-decoration:none;font:9px/1 Arial,sans-serif;letter-spacing:.12em}.lethEmpty a:hover{border-color:#a27d84;color:#d8c4c8}
 
 
 
@@ -48,7 +48,7 @@ export default async function Lethargia(){
     .lethRelease.release.cd .physicalMedia{box-sizing:border-box!important;width:72%!important;height:auto!important;aspect-ratio:1/1!important;border-radius:50%!important;right:2%!important;top:8%!important}
     .lethRelease.release.cd .physicalMedia:before{box-sizing:border-box}
     .lethRelease.release.cd .physicalMedia:after{box-sizing:border-box;width:24%!important;height:auto!important;aspect-ratio:1/1!important;left:38%!important;top:38%!important}
-    @media(max-width:800px){.lethargiaPage .shell{width:calc(100% - 36px)}.lethOrb{right:-35vw!important;width:92vw!important;opacity:.16!important}.lethHero{background:radial-gradient(circle at 95% 50%,rgba(72,24,31,.08),transparent 42%)}.lethBrandLogo{width:min(420px,82vw)}.lethNavLogo{width:112px}.lethImprintBar{grid-template-columns:1fr auto;min-height:62px}.lethImprintBar>span{display:none}.lethImprintBar nav{gap:14px}.lethImprintBar nav a{font-size:7px}}
+    @media(max-width:800px){.lethargiaPage .shell{width:calc(100% - 36px)}.lethOrb{right:-35vw!important;width:92vw!important;opacity:.16!important}.lethHero{background:radial-gradient(circle at 95% 50%,rgba(72,24,31,.08),transparent 42%)}.lethBrandLogo{width:min(420px,82vw)}.lethNavLogo{width:112px}.lethImprintBar{grid-template-columns:1fr auto;min-height:62px}.lethImprintBar>span{display:none}.lethImprintBar nav{gap:14px}.lethImprintBar nav a{font-size:8.5px}}
   `}</style>
   <GlobalHeader className="lethargiaGlobalHeader"/>
   <div className="lethImprintBar shell"><Link href="/imprints/lethargia" className="lethWord"><img className="lethNavLogo" src="/brand/lethargia/lethargia-logo.png" alt="Lethargia Records" /></Link><span>A SIDE:II IMPRINT</span><nav><a href="#manifesto">Manifesto</a><a href="#releases">Releases</a><a href="#store">Store</a></nav></div>
