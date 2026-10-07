@@ -65,6 +65,8 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
  const [selectedId,setSelectedId]=useState(preferredProductId||products[0]?.id||'');
  const [mode,setMode]=useState(initialMode);
  const [zoom,setZoom]=useState('fit');
+ const [viewport,setViewport]=useState('desktop');
+ const [hoverSim,setHoverSim]=useState(false);
 
  useEffect(()=>{
   if(preferredProductId&&products.some(p=>p.id===preferredProductId))setSelectedId(preferredProductId);
@@ -81,6 +83,9 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
  const imageFit=card.image_fit||'contain';
  const imagePosition=card.image_position==='custom'?((card.crop_x??50)+'% '+(card.crop_y??50)+'%'):(card.image_position||'center');
  const imageStyle={objectFit:imageFit,objectPosition:imagePosition};
+ const galleryUrls=(Array.isArray(product.gallery_images)?product.gallery_images:[]).map(x=>typeof x==='string'?x:(x?.url||x?.preview_url||x?.previewUrl)).filter(Boolean);
+ const secondaryImage=isMerch(product)?(mockupProduct(product).mockups?.back?.previewCleanUrl||mockupProduct(product).mockups?.back?.preview_url||galleryUrls[1]||galleryUrls[0]||null):(galleryUrls[1]||galleryUrls[0]||null);
+ const secondaryEnabled=card.secondary_hover!==false&&!!secondaryImage;
  const previewPrice=card.price_mode==='hidden'?'':card.price_mode==='from'&&!priceText(product).startsWith('FROM ')?'FROM '+priceText(product):priceText(product);
  const rawStock=stockText(product);
  const previewStock=card.stock===false||card.stock_mode==='hidden'?'':card.stock_mode==='status'?(rawStock.includes('PRE-ORDER')?'PRE-ORDER':rawStock.includes('SOLD OUT')?'SOLD OUT':rawStock.includes('DIGITAL')?'DIGITAL':'IN STOCK'):rawStock;
@@ -99,7 +104,7 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
   <div className={(embedded?'previewToolbar previewToolbarEmbedded':'previewToolbar adminPanel')}>
    {!embedded&&<label><span>PRODUCT</span><select value={product.id} onChange={e=>setSelectedId(e.target.value)}>{products.map(p=><option key={p.id} value={p.id}>{p.catalogue_no||'NO CAT'} · {p.title}</option>)}</select></label>}
    <div className="previewModeTabs">{MODES.map(([id,label])=><button key={id} type="button" className={mode===id?'active':''} onClick={()=>setMode(id)}>{label}</button>)}</div>
-   <div className="previewZoom"><button className={zoom==='fit'?'active':''} onClick={()=>setZoom('fit')}>FIT</button><button className={zoom==='100'?'active':''} onClick={()=>setZoom('100')}>100%</button></div>
+   <div className="previewViewportTabs"><button className={viewport==='desktop'?'active':''} onClick={()=>setViewport('desktop')}>DESKTOP</button><button className={viewport==='tablet'?'active':''} onClick={()=>setViewport('tablet')}>TABLET</button><button className={viewport==='mobile'?'active':''} onClick={()=>setViewport('mobile')}>MOBILE</button></div><div className="previewZoom"><button className={zoom==='fit'?'active':''} onClick={()=>setZoom('fit')}>FIT</button><button className={zoom==='100'?'active':''} onClick={()=>setZoom('100')}>100%</button>{secondaryEnabled&&<button className={hoverSim?'active':''} onClick={()=>setHoverSim(v=>!v)}>HOVER {hoverSim?'ON':'OFF'}</button>}</div>
   </div>
 
   <div className="previewLayout">
@@ -112,19 +117,19 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
     <div><span>STOCK</span><b>{previewStock||'STOCK HIDDEN'}</b></div>
     <div><span>IMAGE FIT</span><b>{String(imageFit).toUpperCase()}</b></div>
     <div><span>CTA</span><b>{String(cta).toUpperCase()}</b></div>
-    <div className="previewSeoReadout"><span>SEO TITLE</span><b>{seo.title}</b><small>{seo.description}</small></div><div className="previewSeoReadout"><span>FEED CHECK</span><b>{feedBlockers.length?feedBlockers.join(' · '):'READY'}</b>{feedWarnings.length>0&&<small>{feedWarnings.join(' · ')}</small>}</div>
+    <div className="previewSeoReadout"><span>SEO TITLE</span><b>{seo.title}</b><small>{seo.title.length}/70 · DESCRIPTION {seo.description.length}/160</small><small>{seo.description}</small></div><div className="previewSeoReadout"><span>FEED CHECK</span><b>{feedBlockers.length?feedBlockers.join(' · '):'READY'}</b>{feedWarnings.length>0&&<small>{feedWarnings.join(' · ')}</small>}</div>
    </aside>}
 
-   <div className={(embedded?'previewStage previewStageEmbedded ':'previewStage adminPanel ')+'preview-'+mode+' zoom-'+zoom}>
+   <div className={(embedded?'previewStage previewStageEmbedded ':'previewStage adminPanel ')+'preview-'+mode+' zoom-'+zoom+' viewport-'+viewport+(hoverSim?' hoverSim':'')}>
     <div className="previewStageTop"><span>LIVE COMPONENT PREVIEW</span><b>{MODES.find(x=>x[0]===mode)?.[1]}</b></div>
 
     {mode==='editorial'&&<div className="previewEditorialCard">
-      <div className="previewEditorialMedia"><CardImage product={product} className="previewObjectImage" style={imageStyle}/><span>{product.catalogue_no||'SIDE:II'}</span></div>
+      <div className="previewEditorialMedia"><CardImage product={product} className="previewObjectImage previewPrimaryImage" style={imageStyle}/>{secondaryEnabled&&<img src={secondaryImage} className="previewSecondaryImage" alt="" style={imageStyle}/>}<span>{product.catalogue_no||'SIDE:II'}</span></div>
       <div className="previewEditorialCopy"><small>{product.imprint==='lethargia'?'LETHARGIA':'SIDE:II'} / {product.merch_category||primary.format||'EDITION'}</small><h2>{product.title}</h2><p>{product.artist_project||product.description||'Independent edition.'}</p><div><b>{previewPrice||'PRICE HIDDEN'}</b><span>{previewStock||'STOCK HIDDEN'}</span></div><button>{String(cta).replaceAll('_',' ').toUpperCase()}</button></div>
     </div>}
 
     {mode==='classic'&&<div className="previewClassicWrap"><article className={'previewClassicCard title-'+(card.title_scale||'regular')}>
-      <div className="previewClassicMedia"><CardImage product={product} className="previewObjectImage" style={imageStyle}/>{cfg.badge?.mode!=='none'&&<span className="previewBadge">{cfg.badge?.mode==='manual'?(cfg.badge.text||'BADGE'):(product.status==='forthcoming'?'COMING SOON':Number(primary.stock_qty||0)<=0?(primary.preorder_enabled?'PRE-ORDER':'SOLD OUT'):'NEW')}</span>}</div>
+      <div className="previewClassicMedia"><CardImage product={product} className="previewObjectImage previewPrimaryImage" style={imageStyle}/>{secondaryEnabled&&<img src={secondaryImage} className="previewSecondaryImage" alt="" style={imageStyle}/>}{cfg.badge?.mode!=='none'&&<span className="previewBadge">{cfg.badge?.mode==='manual'?(cfg.badge.text||'BADGE'):(product.status==='forthcoming'?'COMING SOON':Number(primary.stock_qty||0)<=0?(primary.preorder_enabled?'PRE-ORDER':'SOLD OUT'):'NEW')}</span>}</div>
       <div className="previewClassicText"><small>{product.catalogue_no||product.original_catalogue_no||'SIDE:II'}</small><h3>{product.title}</h3><p>{product.artist_project||product.merch_category||product.imprint}</p><div><b>{previewPrice||'PRICE HIDDEN'}</b><span>{previewStock||'STOCK HIDDEN'}</span></div><button>{String(cta).replaceAll('_',' ').toUpperCase()}</button></div>
     </article></div>}
 
