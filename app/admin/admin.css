@@ -3676,3 +3676,51 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .royaltyTableHead,.royaltyTableRow{grid-template-columns:minmax(0,1fr) 52px 84px}
 }
 
+
+
+/* FORM CONTROL RESET — remove native inset / bevel from text fields */
+.adminApp input,
+.adminApp select,
+.adminApp textarea,
+.adminAuth input{
+  -webkit-appearance:none!important;
+  appearance:none!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+  background-image:none!important;
+  outline:none;
+  border:1px solid rgba(255,255,255,.16)!important;
+  background:#0b0b0d!important;
+  color:#ddd8d0!important;
+}
+.adminApp input:hover,
+.adminApp select:hover,
+.adminApp textarea:hover,
+.adminAuth input:hover{
+  border-color:rgba(255,255,255,.24)!important;
+}
+.adminApp input:focus,
+.adminApp select:focus,
+.adminApp textarea:focus,
+.adminAuth input:focus{
+  border-color:#77726b!important;
+  box-shadow:none!important;
+}
+.adminApp input::placeholder,
+.adminApp textarea::placeholder,
+.adminAuth input::placeholder{
+  color:#666269!important;
+  opacity:1;
+}
+.adminApp select{
+  background-color:#0b0b0d!important;
+}
+.adminApp input[type="number"]{
+  -moz-appearance:textfield!important;
+}
+.adminApp input[type="number"]::-webkit-outer-spin-button,
+.adminApp input[type="number"]::-webkit-inner-spin-button{
+  -webkit-appearance:none!important;
+  margin:0;
+}
