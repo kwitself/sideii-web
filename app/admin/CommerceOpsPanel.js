@@ -41,7 +41,8 @@ export default function CommerceOpsPanel({products,onChanged}){
    p_preorder_limit:v.preorder_limit===''?null:(Number(v.preorder_limit)||null),
    p_edition_numbering_enabled:!!v.edition_numbering_enabled,
    p_edition_total:v.edition_total===''?null:(Number(v.edition_total)||null),
-   p_digital_download_url:v.digital_download_url||''
+   p_digital_download_url:v.digital_download_url||'',
+   p_iyzilink_url:v.iyzilink_url||''
   });
   setBusy('');if(error)return setMessage(error.message);
   setMessage(v.sku+' commerce settings saved.');
@@ -80,7 +81,7 @@ export default function CommerceOpsPanel({products,onChanged}){
   </div>
 
   <article className="adminPanel commerceVariants">
-   <header><span>VARIANT COMMERCE SETTINGS</span><small>Shipping class · low stock · pre-order · limited numbering · digital delivery.</small></header>
+   <header><span>VARIANT COMMERCE SETTINGS</span><small>Shipping class · stock · pre-order · limited numbering · digital delivery · iyzico Link.</small></header>
    {variants.map(v=><VariantRow key={v.id} initial={v} saving={busy==='variant:'+v.id} onSave={saveVariant}/>)}
   </article>
 
@@ -98,9 +99,10 @@ function VariantRow({initial,onSave,saving}){
   low_stock_threshold:initial.low_stock_threshold??0,
   preorder_limit:initial.preorder_limit??'',
   edition_total:initial.edition_total??'',
-  digital_download_url:initial.digital_download_url||''
+  digital_download_url:initial.digital_download_url||'',
+  iyzilink_url:initial.iyzilink_url||''
  }));
- useEffect(()=>setV(x=>({...x,...initial,digital_download_url:initial.digital_download_url||'',preorder_limit:initial.preorder_limit??'',edition_total:initial.edition_total??''})),[initial]);
+ useEffect(()=>setV(x=>({...x,...initial,digital_download_url:initial.digital_download_url||'',iyzilink_url:initial.iyzilink_url||'',preorder_limit:initial.preorder_limit??'',edition_total:initial.edition_total??''})),[initial]);
  return <div className="commerceVariantRow">
    <div className="commerceVariantTitle"><b>{v.productTitle}</b><small>{v.sku} · {String(v.format).toUpperCase()}</small></div>
    <label>SHIP CLASS<select value={v.shipping_class||'standard'} onChange={e=>setV({...v,shipping_class:e.target.value})}><option value="standard">STANDARD</option><option value="vinyl">VINYL</option><option value="merch">MERCH</option></select></label>
@@ -110,6 +112,7 @@ function VariantRow({initial,onSave,saving}){
    <label className="commerceCheck"><input type="checkbox" checked={!!v.edition_numbering_enabled} onChange={e=>setV({...v,edition_numbering_enabled:e.target.checked})}/><span>NUMBERED</span></label>
    <label>EDITION TOTAL<input type="number" min="1" disabled={!v.edition_numbering_enabled} value={v.edition_total} onChange={e=>setV({...v,edition_total:e.target.value})}/></label>
    {v.format==='digital'&&<label className="commerceWide">DOWNLOAD URL<input placeholder="https://..." value={v.digital_download_url} onChange={e=>setV({...v,digital_download_url:e.target.value})}/></label>}
+   <label className="commerceWide iyziLinkField">IYZICO LINK<input type="url" placeholder="https://..." value={v.iyzilink_url} onChange={e=>setV({...v,iyzilink_url:e.target.value})}/><small>Used only for a single-item / single-quantity order. Mixed carts stay payment-pending.</small></label>
    <button className="saveButton" disabled={saving} onClick={()=>onSave(v)}>{saving?'SAVING…':'SAVE'}</button>
   </div>
 }
