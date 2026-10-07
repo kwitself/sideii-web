@@ -2333,3 +2333,63 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   outline:none;
 }
 .storefrontGrid textarea:focus{border-color:#8b867f}
+
+
+/* CONTROL ROOM 2.0 / COMMERCE + MERCH CONTROL */
+.commerceVariantList{
+  display:grid;
+  gap:12px;
+  padding:18px;
+}
+.commerceVariantCard{
+  border:1px solid #343238;
+  background:#0b0b0d;
+}
+.commerceVariantCard>header{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:center;
+  padding:12px 14px;
+  border-bottom:1px solid #302f33;
+}
+.commerceVariantCard>header b{
+  font:11px/1 Arial,sans-serif;
+  letter-spacing:.12em;
+  color:#d7d2ca;
+}
+.commerceVariantCard>header small{
+  color:#77736d;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.12em;
+}
+.merchControlPanel{
+  margin-top:18px;
+  border:1px solid #454248;
+  background:#0d0d0f;
+}
+.merchControlPanel>.mockupHead{
+  border-bottom:1px solid #343238;
+}
+.merchControlTabs{
+  display:flex;
+  width:100%;
+  border-bottom:1px solid #343238;
+}
+.merchControlTabs button{
+  flex:1;
+  min-height:42px;
+}
+.merchControlActions{
+  padding:0 18px 18px;
+  display:flex;
+  justify-content:flex-end;
+}
+.merchControlActions .saveButton{
+  min-width:220px;
+}
+@media(max-width:760px){
+  .merchControlTabs{overflow-x:auto}
+  .merchControlTabs button{flex:0 0 auto;min-width:132px}
+  .merchControlActions .saveButton{width:100%;min-width:0}
+}
