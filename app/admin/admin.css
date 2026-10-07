@@ -4174,3 +4174,44 @@ textarea{line-height:1.5!important}
   .sectionLabel p{font-size:15px}
   .adminSubnav button{font-size:9.5px!important}
 }
+
+
+/* BUTTON RESET — remove native bevel / double-border look */
+.adminApp button,
+.adminApp input[type="button"],
+.adminApp input[type="submit"],
+.adminApp input[type="reset"],
+.adminAuth button{
+  -webkit-appearance:none!important;
+  appearance:none!important;
+  border-style:solid;
+  border-width:1px;
+  border-radius:0;
+  box-shadow:none!important;
+  text-shadow:none!important;
+  background-image:none!important;
+}
+.adminApp .saveButton,
+.adminAuth .saveButton,
+.formActions .saveButton,
+.inventoryRow button.saveButton{
+  border:1px solid #ddd8cf!important;
+  outline:0;
+  box-shadow:none!important;
+  background:#ddd8cf!important;
+  color:#0a0a0b!important;
+}
+.adminApp .ghostButton,
+.adminApp .panelAction button{
+  box-shadow:none!important;
+}
+.adminApp button::-moz-focus-inner,
+.adminAuth button::-moz-focus-inner{
+  border:0;
+  padding:0;
+}
+.adminApp button:focus-visible,
+.adminAuth button:focus-visible{
+  outline:1px solid #bdb8af!important;
+  outline-offset:2px;
+}
