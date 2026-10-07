@@ -3389,3 +3389,89 @@ button,a{transition:color .18s ease,border-color .18s ease,background .18s ease,
   .release:hover .catalogueHoverCd{transform:translateX(26%) rotate(-30deg)}
   .release:hover .catalogueHoverCassette{transform:translateX(24%) rotate(1deg)}
 }
+
+
+/* STOREFRONT CONFIG / HOVER MOTION */
+.release .catalogueHoverVinyl,
+.release .catalogueHoverCd,
+.release .catalogueHoverCassette{
+  transform:scale(var(--hover-scale,1));
+  transform-origin:center;
+}
+.release.hoverDir-left .catalogueHoverVinyl,
+.release.hoverDir-left .catalogueHoverCd,
+.release.hoverDir-left .catalogueHoverCassette{
+  right:auto;
+  left:-1%;
+}
+.release.hoverMotion-none:hover .catalogueHoverVinyl,
+.release.hoverMotion-none:hover .catalogueHoverCd,
+.release.hoverMotion-none:hover .catalogueHoverCassette{
+  transform:scale(var(--hover-scale,1))!important;
+}
+.release.hoverMotion-subtle:hover .catalogueHoverVinyl,
+.release.hoverMotion-subtle:hover .catalogueHoverCd,
+.release.hoverMotion-subtle:hover .catalogueHoverCassette{
+  transform:translateX(10%) rotate(8deg) scale(var(--hover-scale,1))!important;
+}
+.release.hoverDir-left.hoverMotion-subtle:hover .catalogueHoverVinyl,
+.release.hoverDir-left.hoverMotion-subtle:hover .catalogueHoverCd,
+.release.hoverDir-left.hoverMotion-subtle:hover .catalogueHoverCassette{
+  transform:translateX(-10%) rotate(-8deg) scale(var(--hover-scale,1))!important;
+}
+.release.hoverMotion-reveal .catalogueHoverVinyl,
+.release.hoverMotion-reveal .catalogueHoverCd,
+.release.hoverMotion-reveal .catalogueHoverCassette{
+  opacity:.15;
+}
+.release.hoverMotion-reveal:hover .catalogueHoverVinyl,
+.release.hoverMotion-reveal:hover .catalogueHoverCd,
+.release.hoverMotion-reveal:hover .catalogueHoverCassette{
+  opacity:1;
+  transform:translateX(22%) scale(var(--hover-scale,1))!important;
+}
+.release.hoverDir-left.hoverMotion-reveal:hover .catalogueHoverVinyl,
+.release.hoverDir-left.hoverMotion-reveal:hover .catalogueHoverCd,
+.release.hoverDir-left.hoverMotion-reveal:hover .catalogueHoverCassette{
+  transform:translateX(-22%) scale(var(--hover-scale,1))!important;
+}
+.release.hoverMotion-rotate:hover .catalogueHoverVinyl,
+.release.hoverMotion-rotate:hover .catalogueHoverCd{
+  transform:rotate(110deg) scale(var(--hover-scale,1))!important;
+}
+.release.hoverMotion-rotate:hover .catalogueHoverCassette{
+  transform:rotate(5deg) scale(var(--hover-scale,1))!important;
+}
+.release.hoverDir-left.hoverMotion-slide:hover .catalogueHoverVinyl{
+  transform:translateX(-42%) rotate(-68deg) scale(var(--hover-scale,1))!important;
+}
+.release.hoverDir-left.hoverMotion-slide:hover .catalogueHoverCd{
+  transform:translateX(-42%) rotate(45deg) scale(var(--hover-scale,1))!important;
+}
+.release.hoverDir-left.hoverMotion-slide:hover .catalogueHoverCassette{
+  transform:translateX(-34%) rotate(-2deg) scale(var(--hover-scale,1))!important;
+}
+.release.hoverDir-right.hoverMotion-slide:hover .catalogueHoverVinyl{
+  transform:translateX(42%) rotate(68deg) scale(var(--hover-scale,1))!important;
+}
+.release.hoverDir-right.hoverMotion-slide:hover .catalogueHoverCd{
+  transform:translateX(42%) rotate(-45deg) scale(var(--hover-scale,1))!important;
+}
+.release.hoverDir-right.hoverMotion-slide:hover .catalogueHoverCassette{
+  transform:translateX(34%) rotate(2deg) scale(var(--hover-scale,1))!important;
+}
+@media(max-width:760px){
+  .release:not(.hoverMobile):hover .catalogueHoverVinyl,
+  .release:not(.hoverMobile):hover .catalogueHoverCd,
+  .release:not(.hoverMobile):hover .catalogueHoverCassette{
+    transform:scale(var(--hover-scale,1))!important;
+  }
+}
+
+/* Classic card storefront-config details */
+.storeClassicCard.compact .storeClassicMeta{padding:10px}
+.storeClassicCard.compact .storeClassicMeta h3{font-size:18px;margin:6px 0 10px}
+.storeClassicCard.compact .storeClassicAction{margin-top:9px}
+.storeClassicBadge.warm{border-color:#62594d;color:#ddd0b7}
+.storeClassicBadge.alert{border-color:#67444a;color:#d6a5ae}
+.storeClassicBadge.muted{opacity:.68}
