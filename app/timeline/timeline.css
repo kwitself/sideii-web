@@ -17,3 +17,11 @@
 .timelineRecord a{color:#aaa69f;text-decoration:none;font:8px Arial,sans-serif;letter-spacing:.14em}
 .timelineEmpty{padding:60px 0;color:#66636a;font:9px Arial,sans-serif;letter-spacing:.16em}
 @media(max-width:700px){.timelineHero{padding:76px 0 58px}.timelineList article{grid-template-columns:52px 1fr}.timelineLine{grid-template-columns:30px 1fr}.timelineRecord{padding-bottom:38px}}
+
+/* FINAL UI AUDIT */
+.timelineHero>span,.timelineRecord small{font-size:9px}
+.timelineRecord>div span{font-size:8px;padding:7px 9px}
+.timelineRecord a{display:inline-flex;align-items:center;min-height:40px;padding:0 2px;font-size:9px}
+.timelineRecord a:hover{color:#eee9e1}
+.timelineRecord{transition:background .18s ease}
+@media(max-width:700px){.timelineList{padding:52px 0 84px}.timelineRecord h2{font-size:40px}.timelineRecord p{font-size:14px;line-height:1.5}.timelineLine span{font-size:18px}}
