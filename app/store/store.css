@@ -610,3 +610,268 @@
   .merchDetailRasterStage{aspect-ratio:1/1.02!important}
   .merchDetailInfo h1{font-size:44px}
 }
+
+
+/* STORE DUAL VIEW — editorial + classic */
+.storeFilters{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;
+  gap:14px 20px!important;
+  align-items:center!important;
+}
+.storeFilters>div{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  align-items:center;
+}
+.storeViewToggle{
+  justify-self:end;
+  flex-wrap:nowrap!important;
+  gap:0!important;
+  border:1px solid #3d3b40;
+  background:#0b0b0d;
+}
+.storeViewToggle>span{
+  padding:0 11px;
+  color:#66635e;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.16em;
+}
+.storeViewToggle button{
+  min-height:36px;
+  border:0!important;
+  border-left:1px solid #3d3b40!important;
+  padding:0 12px!important;
+  background:transparent!important;
+  color:#77736d!important;
+  font-size:8px!important;
+}
+.storeViewToggle button.active{
+  background:#ded8cf!important;
+  color:#0a0a0b!important;
+}
+.storeCatalogue.classicMode{
+  padding-top:34px;
+}
+.storeClassicGrid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:18px;
+}
+.storeClassicCard{
+  min-width:0;
+  border:1px solid #343238;
+  background:#0f0f11;
+  display:flex;
+  flex-direction:column;
+  transition:transform .22s ease,border-color .22s ease,background .22s ease;
+}
+.storeClassicCard:hover{
+  transform:translateY(-3px);
+  border-color:#5a565d;
+  background:#121214;
+}
+.storeClassicMedia{
+  position:relative;
+  aspect-ratio:1;
+  overflow:hidden;
+  border-bottom:1px solid #343238;
+  background:
+    radial-gradient(circle at 50% 44%,#1c1c1f,#0b0b0d 72%);
+}
+.storeClassicMedia>a{
+  display:block;
+  width:100%;
+  height:100%;
+}
+.storeClassicMedia>a>img,
+.storeClassicMedia>a>.storeClassicPlaceholder{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+.storeClassicMedia>a>img{padding:5%}
+.storeClassicMedia>a>div{
+  width:100%!important;
+  height:100%!important;
+}
+.storeClassicPlaceholder{
+  display:grid!important;
+  place-items:center;
+  color:#4e4a50;
+  font:20px/1 Georgia,serif;
+  letter-spacing:.08em;
+}
+.storeClassicWish{
+  position:absolute;
+  z-index:4;
+  top:12px;
+  right:12px;
+  width:38px;
+  height:38px;
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:50%;
+  background:rgba(11,11,13,.86);
+  color:#b5b0a8;
+  display:grid;
+  place-items:center;
+  font:18px/1 Georgia,serif;
+  cursor:pointer;
+  backdrop-filter:blur(8px);
+}
+.storeClassicWish:hover{
+  border-color:#8a857e;
+  color:#fffaf2;
+}
+.storeClassicWish.active{
+  background:#ded8cf;
+  border-color:#ded8cf;
+  color:#0a0a0b;
+}
+.storeClassicBadge{
+  position:absolute;
+  z-index:4;
+  left:12px;
+  top:12px;
+  min-height:25px;
+  display:inline-flex;
+  align-items:center;
+  padding:0 9px;
+  border:1px solid rgba(255,255,255,.11);
+  background:rgba(11,11,13,.88);
+  color:#c4bfb7;
+  font:7px/1 Arial,sans-serif;
+  letter-spacing:.14em;
+  backdrop-filter:blur(8px);
+}
+.storeClassicBadge.sold-out{color:#8d8982}
+.storeClassicBadge.pre-order{color:#cab3b8;border-color:#5a444a}
+.storeClassicBadge.limited{color:#d9d0bc;border-color:#665f4c}
+.storeClassicMeta{
+  display:flex;
+  flex:1;
+  flex-direction:column;
+  padding:15px 14px 14px;
+}
+.storeClassicMeta>small{
+  display:block;
+  min-height:18px;
+  color:#77736d;
+  font:8px/1.35 Arial,sans-serif;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+.storeClassicMeta>a{
+  color:inherit;
+  text-decoration:none;
+}
+.storeClassicMeta h3{
+  margin:8px 0 16px;
+  font:22px/1.02 Georgia,serif;
+  font-weight:400;
+  letter-spacing:-.025em;
+  color:#ddd8d0;
+}
+.storeClassicPrice{
+  margin-top:auto;
+  min-height:32px;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:end;
+}
+.storeClassicPrice strong{
+  font:22px/1 Georgia,serif;
+  font-weight:400;
+  color:#eee9e1;
+}
+.storeClassicPrice span{
+  text-align:right;
+  color:#77736d;
+  font:7px/1.3 Arial,sans-serif;
+  letter-spacing:.12em;
+}
+.storeClassicAction{
+  margin-top:13px;
+}
+.storeClassicAction button,
+.storeClassicAction a{
+  width:100%;
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #4a474d;
+  background:#151517;
+  color:#d3cec6;
+  text-decoration:none;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.15em;
+  cursor:pointer;
+}
+.storeClassicAction button:hover:not(:disabled),
+.storeClassicAction a:hover{
+  border-color:#d8d3ca;
+  background:#d8d3ca;
+  color:#0a0a0b;
+}
+.storeClassicAction button:disabled{
+  opacity:.38;
+  cursor:not-allowed;
+}
+.storeClassicCard.lethargia{
+  border-color:#39252a;
+  background:#100c0d;
+}
+.storeClassicCard.lethargia .storeClassicMedia{
+  border-bottom-color:#39252a;
+  background:radial-gradient(circle at 50% 44%,#1d1114,#0c090a 72%);
+}
+.storeClassicCard.merch .storeClassicMedia>a>img{
+  padding:2%;
+}
+.storeEditorialList>.storeProduct:first-child{border-top:0}
+
+@media(max-width:1180px){
+  .storeClassicGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .storeFilters{grid-template-columns:1fr 1fr}
+  .storeViewToggle{grid-column:1/-1;justify-self:end}
+}
+@media(max-width:760px){
+  .storeFilters{
+    display:flex!important;
+    flex-direction:column;
+    align-items:stretch!important;
+    gap:11px!important;
+  }
+  .storeFilters>div{
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .storeFilters>div::-webkit-scrollbar{display:none}
+  .storeViewToggle{
+    width:100%;
+    overflow:visible!important;
+    justify-content:flex-end;
+  }
+  .storeViewToggle>span{margin-right:auto}
+  .storeViewToggle button{flex:0 0 auto}
+  .storeClassicGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .storeClassicMeta{padding:12px 10px 10px}
+  .storeClassicMeta h3{font-size:19px;margin:7px 0 13px}
+  .storeClassicPrice strong{font-size:18px}
+  .storeClassicAction button,.storeClassicAction a{min-height:40px;font-size:7px}
+  .storeClassicWish{top:8px;right:8px;width:34px;height:34px}
+  .storeClassicBadge{left:8px;top:8px;min-height:23px;padding:0 7px;font-size:6px}
+}
+@media(max-width:420px){
+  .storeClassicGrid{gap:8px}
+  .storeClassicMeta{padding:10px 9px 9px}
+  .storeClassicMeta>small{font-size:6px}
+  .storeClassicMeta h3{font-size:17px}
+  .storeClassicPrice{align-items:flex-start;flex-direction:column;gap:4px}
+  .storeClassicPrice span{text-align:left}
+}
