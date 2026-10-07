@@ -11,7 +11,7 @@ export default async function Home() {
   const releases = await getDatabaseReleases();
   const selected = await getHomepageSelectedReleases();
   const storeReleases = await getHomepageStoreReleases(3);
-  const featured = selected.length ? selected : releases.slice(0,3);
+  const featured = selected.length ? selected : releases.filter(r=>r.storefrontConfig?.visibility?.homepage!==false).slice(0,3);
   return <main><HomeSectionRail/>
     <GlobalHeader/>
     <section id="top" className="hero shell"><div className="sideWave" aria-hidden="true"><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/></div><div className="heroCore"><div className="eyebrow">INDEPENDENT PHYSICAL MUSIC LABEL · EST. MMXXVI</div><div className="heroLogo"><img src="/brand/sideii-logo-silver.png" alt="Side II" /></div><p className="tagline">Music, in another form.</p></div><a className="scrollCue" href="#manifesto"><span>EXPLORE</span><b>↓</b></a><div className="heroFoot"><span>SELECTED RELEASES</span><span>CD · CASSETTE · LIMITED EDITIONS</span></div></section>
