@@ -79,14 +79,23 @@ export default function GlobalBag(){
  useEffect(()=>{
   if(!supabase)return;
   let live=true;
+  const clampSavedQty=item=>{
+   const globalMax=MAX_CART_LINE_QTY;
+   const productMax=Number(item?.productMaxQty)>0?Number(item.productMaxQty):globalMax;
+   const preorderMax=item?.preorderEnabled&&Number(item?.preorderLimit)>0?Number(item.preorderLimit):globalMax;
+   const stockMax=item?.digital||item?.preorderEnabled||item?.stock==null?globalMax:Math.max(0,Number(item.stock||0));
+   const max=Math.max(1,Math.min(globalMax,productMax,preorderMax,stockMax||1));
+   return {...item,qty:Math.max(1,Math.min(Number(item?.qty||1),max))};
+  };
   const mergeCarts=(local,remote)=>{
    const map=new Map();
-   for(const item of [...(remote||[]),...(local||[])]){
+   for(const raw of [...(remote||[]),...(local||[])]){
+    const item=clampSavedQty(raw);
     const key=String(item.key||item.variantId||item.sku||'');
     if(!key)continue;
     const prev=map.get(key);
     if(!prev)map.set(key,item);
-    else map.set(key,{...prev,...item,qty:Math.max(Number(prev.qty||1),Number(item.qty||1))});
+    else map.set(key,clampSavedQty({...prev,...item,qty:Math.max(Number(prev.qty||1),Number(item.qty||1))}));
    }
    return [...map.values()];
   };
@@ -161,7 +170,11 @@ export default function GlobalBag(){
       if(!base.error)setQuote(base.data);
       setPromoCode(code);setPromoInput(code);setQuoteError(msg);return;
     }
-    setQuoteError(msg);return;
+    setPromoCode('');
+    setQuoteError(msg);
+    const base=await supabase.rpc('quote_store_order_v4',{p_items:items,p_promo_code:null,p_email:form.email.trim()||null});
+    if(!base.error)setQuote(base.data);else setQuote(null);
+    return;
   }
   setPromoCode(code);setPromoInput(code);setQuote(data);
  }
