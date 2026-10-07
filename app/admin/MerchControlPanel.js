@@ -3,7 +3,7 @@ import {useEffect,useMemo,useState} from 'react';
 import {supabase} from '../lib/supabase';
 
 const STOREFRONT_DEFAULTS={
- card:{image_fit:'contain',image_position:'center',wishlist:true,quick_add:true,density:'regular',metadata:true,price_mode:'standard',cta:'auto'},
+ card:{image_fit:'contain',image_position:'center',crop_x:50,crop_y:50,secondary_hover:true,secondary_mobile:false,title_scale:'regular',stock_mode:'quantity',wishlist:true,quick_add:true,density:'regular',metadata:true,price_mode:'standard',cta:'auto',classic_cta:'inherit',editorial_cta:'inherit'},
  badge:{mode:'auto',text:'',tone:'neutral'},
  hover:{format:'none',animation:'subtle',scale:1,direction:'right',mobile:false},
  visibility:{store:true,homepage:true,wear:true,collections:true,search:true,archive:true,related:true,google:true,meta:true,pinterest:true,microsoft:true,tiktok:true},
@@ -78,10 +78,18 @@ export default function MerchControlPanel({product,onSaved}){
   {tab==='storefront'&&<div className="storefrontEditor">
    <section className="storefrontBlock"><header><span>CARD / PRESENTATION</span><p>Control store card density, artwork and primary interactions.</p></header><div className="storefrontGrid">
     <label>IMAGE FIT<select value={storefront.card.image_fit} onChange={e=>setStore('card','image_fit',e.target.value)}><option value="contain">CONTAIN</option><option value="cover">COVER</option></select></label>
-    <label>IMAGE POSITION<select value={storefront.card.image_position} onChange={e=>setStore('card','image_position',e.target.value)}><option value="center">CENTER</option><option value="top">TOP</option><option value="bottom">BOTTOM</option></select></label>
+    <label>IMAGE POSITION<select value={storefront.card.image_position} onChange={e=>setStore('card','image_position',e.target.value)}><option value="center">CENTER</option><option value="top">TOP</option><option value="bottom">BOTTOM</option><option value="left">LEFT</option><option value="right">RIGHT</option><option value="custom">CUSTOM X / Y</option></select></label>
+    {storefront.card.image_position==='custom'&&<><label>CROP X %<input type="number" min="0" max="100" value={storefront.card.crop_x??50} onChange={e=>setStore('card','crop_x',Math.max(0,Math.min(100,Number(e.target.value)||0)))}/></label><label>CROP Y %<input type="number" min="0" max="100" value={storefront.card.crop_y??50} onChange={e=>setStore('card','crop_y',Math.max(0,Math.min(100,Number(e.target.value)||0)))}/></label></>}
     <label>CARD DENSITY<select value={storefront.card.density} onChange={e=>setStore('card','density',e.target.value)}><option value="regular">REGULAR</option><option value="compact">COMPACT</option></select></label>
+    <label>TITLE SCALE<select value={storefront.card.title_scale||'regular'} onChange={e=>setStore('card','title_scale',e.target.value)}><option value="small">SMALL</option><option value="regular">REGULAR</option><option value="large">LARGE</option></select></label>
+    <label>STOCK DISPLAY<select value={storefront.card.stock_mode||'quantity'} onChange={e=>setStore('card','stock_mode',e.target.value)}><option value="quantity">QUANTITY</option><option value="status">STATUS ONLY</option><option value="hidden">HIDDEN</option></select></label>
+    <label>PRICE MODE<select value={storefront.card.price_mode||'standard'} onChange={e=>setStore('card','price_mode',e.target.value)}><option value="standard">STANDARD</option><option value="from">FROM PRICE</option><option value="hidden">HIDDEN</option></select></label>
     <label>CTA<select value={storefront.card.cta} onChange={e=>setStore('card','cta',e.target.value)}><option value="auto">AUTO</option><option value="add">ADD TO BAG</option><option value="options">SELECT OPTIONS</option><option value="view">VIEW PRODUCT</option></select></label>
+    <label>CLASSIC CTA<select value={storefront.card.classic_cta||'inherit'} onChange={e=>setStore('card','classic_cta',e.target.value)}><option value="inherit">INHERIT</option><option value="add">ADD / PRE-ORDER</option><option value="options">SELECT OPTIONS</option><option value="view">VIEW PRODUCT</option></select></label>
+    <label>EDITORIAL CTA<select value={storefront.card.editorial_cta||'inherit'} onChange={e=>setStore('card','editorial_cta',e.target.value)}><option value="inherit">INHERIT</option><option value="quick">QUICK ACTION</option><option value="view">VIEW PRODUCT</option></select></label>
     <label>DEFAULT SIDE<select value={storefront.detail.default_side} onChange={e=>setStore('detail','default_side',e.target.value)}><option value="front">FRONT</option><option value="back">BACK</option></select></label>
+    <label className="storefrontToggle"><input type="checkbox" checked={storefront.card.secondary_hover!==false} onChange={e=>setStore('card','secondary_hover',e.target.checked)}/><span>SECOND IMAGE HOVER</span></label>
+    <label className="storefrontToggle"><input type="checkbox" checked={!!storefront.card.secondary_mobile} onChange={e=>setStore('card','secondary_mobile',e.target.checked)}/><span>SECONDARY HOVER ON MOBILE</span></label>
     <label className="storefrontToggle"><input type="checkbox" checked={storefront.card.wishlist!==false} onChange={e=>setStore('card','wishlist',e.target.checked)}/><span>SHOW WISHLIST</span></label>
     <label className="storefrontToggle"><input type="checkbox" checked={storefront.card.quick_add!==false} onChange={e=>setStore('card','quick_add',e.target.checked)}/><span>ALLOW QUICK ADD</span></label>
     <label className="storefrontToggle"><input type="checkbox" checked={storefront.card.metadata!==false} onChange={e=>setStore('card','metadata',e.target.checked)}/><span>SHOW METADATA</span></label>
