@@ -4073,3 +4073,86 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 @media(max-width:820px){
   .analyticsHeroKpis{grid-template-columns:1fr 1fr}
 }
+
+
+/* FINAL ADMIN MODULE AUDIT — previously unscoped module states */
+.finalQaSection,.fulfillmentMediaOps,.localizationOps,.impactSection,.merchandisingOps{
+  scroll-margin-top:24px;
+}
+.applicationNotificationSettings{
+  margin-top:22px;
+  padding-top:22px;
+  border-top:1px solid rgba(255,255,255,.09);
+}
+.applicationNotificationSettings h3{
+  margin:0 0 8px;
+  color:#d9d4cc;
+  font:18px/1.1 Georgia,serif;
+  font-weight:400;
+}
+.applicationNotificationSettings>p{
+  max-width:720px;
+  color:#8e8a83;
+  font:12px/1.5 Georgia,serif;
+}
+.orderPromo,.orderSupportTotal{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:18px;
+  padding:12px 0;
+  border-top:1px solid rgba(255,255,255,.09);
+  color:#aaa59d;
+  font-size:9px;
+  letter-spacing:.08em;
+}
+.orderPromo strong{color:#c5a0a7;font:16px/1 Georgia,serif;font-weight:400}
+.shipNowButton{border-color:#8d887f!important}
+.qaOverlay{backdrop-filter:blur(8px)}
+.finalQaSection .finalQaPanel{overflow:hidden}
+.fulfillmentMediaOps .adminPanel,.localizationOps .adminPanel,.merchandisingOps .adminPanel{background:#0d0d0f}
+.commerceEditor,.seoEditor{
+  display:grid;
+  gap:18px;
+  padding:18px 0 4px;
+}
+.commerceEditor>header,.seoEditor>header{
+  padding-bottom:12px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.mockupActionButton{
+  min-height:44px;
+  padding:0 14px;
+  border:1px solid rgba(255,255,255,.16);
+  background:#111113;
+  color:#c7c2ba;
+  font-size:9.5px;
+  letter-spacing:.06em;
+}
+.mockupActionButton:hover{border-color:#77736c;background:#171719;color:#eee9e1}
+.mockupDanger{border-color:rgba(137,82,91,.58)!important;color:#c99da5!important}
+.variantEditInline{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  padding:16px;
+  border:1px solid rgba(255,255,255,.10);
+  background:#0b0b0d;
+}
+.variantEditInline label{display:grid;gap:7px}
+.variantEditInline .saveButton,.variantEditInline .ghostButton{align-self:end}
+.modalBackdrop{overscroll-behavior:contain}
+.bundleProducts{overflow:hidden}
+.bundleProducts>header input{min-height:42px;font-size:12px!important}
+.valueBrief{margin-bottom:22px}
+.artworkField .artworkPicker,.wrapChoice .finishToggle{
+  border-color:rgba(255,255,255,.13);
+  background:#0c0c0e;
+}
+@media(max-width:980px){
+  .variantEditInline{grid-template-columns:1fr 1fr}
+}
+@media(max-width:620px){
+  .variantEditInline{grid-template-columns:1fr}
+  .orderPromo,.orderSupportTotal{align-items:flex-start}
+}
