@@ -73,7 +73,7 @@ export default function StoreClient({releases}){
    if(local.length)await supabase.from('customer_wishlist').upsert(local.map(x=>({...x,user_id:user.id})),{onConflict:'user_id,product_slug'});
   };
   load();
-  const {data:sub}=supabase?.auth.onAuthStateChange((_e,s)=>{const u=s?.user||null;setWishlistUser(u);if(u)load()})||{data:{subscription:{unsubscribe(){}}}};
+  const {data:sub}=supabase?.auth.onAuthStateChange((event,s)=>{const u=s?.user||null;setWishlistUser(u);if(u)load();else if(event==='SIGNED_OUT'){setWishlist([]);writeWishlist([])}})||{data:{subscription:{unsubscribe(){}}}};
   const sync=e=>setWishlist(e.detail||readWishlist());
   window.addEventListener('sideii-wishlist',sync);
   return()=>{live=false;sub.subscription.unsubscribe();window.removeEventListener('sideii-wishlist',sync)};
