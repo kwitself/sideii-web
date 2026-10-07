@@ -1,5 +1,5 @@
 'use client';
-import {useMemo,useState} from 'react';
+import {useEffect,useMemo,useState} from 'react';
 import {supabase} from '../lib/supabase';
 
 const STOREFRONT_DEFAULTS={
@@ -20,12 +20,13 @@ export default function MerchControlPanel({product,onSaved}){
  const [seo,setSeo]=useState(()=>({...SEO_DEFAULTS,...(product.seo_config||{})}));
  const [commerce,setCommerce]=useState(()=>({...COMMERCE_DEFAULTS,...(product.commerce_config||{})}));
  const [variants,setVariants]=useState(()=>Array.isArray(product.product_variants)?product.product_variants.map(v=>({...v})):[]);
- const [busy,setBusy]=useState(false),[msg,setMsg]=useState('');
- const setStore=(section,key,value)=>setStorefront(p=>({...p,[section]:{...p[section],[key]:value}}));
- const setSeoValue=(key,value)=>setSeo(p=>({...p,[key]:value}));
- const setCommerceValue=(key,value)=>setCommerce(p=>({...p,[key]:value}));
- const updateVariant=(id,key,value)=>setVariants(p=>p.map(v=>v.id===id?{...v,[key]:value}:v));
+ const [busy,setBusy]=useState(false),[msg,setMsg]=useState(''),[dirty,setDirty]=useState(false);
+ const setStore=(section,key,value)=>{setDirty(true);setStorefront(p=>({...p,[section]:{...p[section],[key]:value}}))};
+ const setSeoValue=(key,value)=>{setDirty(true);setSeo(p=>({...p,[key]:value}))};
+ const setCommerceValue=(key,value)=>{setDirty(true);setCommerce(p=>({...p,[key]:value}))};
+ const updateVariant=(id,key,value)=>{setDirty(true);setVariants(p=>p.map(v=>v.id===id?{...v,[key]:value}:v))};
  const primary=useMemo(()=>variants[0]||null,[variants]);
+ useEffect(()=>{const before=e=>{if(!dirty)return;e.preventDefault();e.returnValue=''};window.addEventListener('beforeunload',before);return()=>window.removeEventListener('beforeunload',before)},[dirty]);
 
  async function save(){
   setBusy(true);setMsg('');
@@ -52,7 +53,7 @@ export default function MerchControlPanel({product,onSaved}){
     const {error}=await supabase.from('product_variants').update(payload).eq('id',v.id);
     if(error)throw error;
    }
-   setMsg('Control Room settings saved.');
+   setDirty(false);setMsg('Control Room settings saved.');
    if(onSaved)await onSaved();
   }catch(e){setMsg(e?.message||'Save failed.')}finally{setBusy(false)}
  }
@@ -125,7 +126,7 @@ export default function MerchControlPanel({product,onSaved}){
    </div></section>
   </div>}
 
-  {msg&&<p className="workspaceMessage">{msg}</p>}
+  {dirty&&<p className="unsavedFlag merchUnsavedFlag">UNSAVED CHANGES</p>}{msg&&<p className="workspaceMessage">{msg}</p>}
   <div className="formActions merchControlActions"><button type="button" className="saveButton" disabled={busy} onClick={save}>{busy?'SAVING…':'SAVE CONTROL SETTINGS →'}</button></div>
  </section>;
 }
