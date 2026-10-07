@@ -3967,3 +3967,51 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .adminApp input[type="checkbox"]:checked::after{
   transform:scale(1)!important;
 }
+
+
+/* CHECKBOX FINAL CENTERING — optically center the glyph at every size */
+.adminApp input[type="checkbox"]{
+  -webkit-appearance:none!important;
+  appearance:none!important;
+  width:16px!important;
+  height:16px!important;
+  min-width:16px!important;
+  min-height:16px!important;
+  margin:0;
+  position:relative!important;
+  display:block!important;
+  border:1px solid rgba(255,255,255,.34)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  cursor:pointer;
+  overflow:visible!important;
+}
+.adminApp input[type="checkbox"]::after{
+  content:'✓'!important;
+  position:absolute!important;
+  top:50%!important;
+  left:50%!important;
+  width:auto!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:#0b0b0d!important;
+  font-family:Arial,Helvetica,sans-serif!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  line-height:1!important;
+  transform:translate(-50%,-54%) scale(0)!important;
+  transform-origin:center center!important;
+  transition:transform .14s ease!important;
+  pointer-events:none;
+}
+.adminApp input[type="checkbox"]:checked{
+  background:#ddd8cf!important;
+  border-color:#ddd8cf!important;
+}
+.adminApp input[type="checkbox"]:checked::after{
+  transform:translate(-50%,-54%) scale(1)!important;
+}
