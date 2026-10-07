@@ -205,7 +205,7 @@ export default function AdminDashboard(){
   setSelectedOrder(prev=>prev?{...prev,status:nextStatus,payment_status:nextPayment,shipping_carrier:carrier,tracking_number:tracking,shipped_at:nextStatus==='shipped'?(prev.shipped_at||new Date().toISOString()):prev.shipped_at}:prev);
   setOrders(prev=>prev.map(x=>x.id===order.id?{...x,status:nextStatus,payment_status:nextPayment,shipping_carrier:carrier,tracking_number:tracking}:x));
   const mailType=(status&&['preparing','shipped','completed'].includes(nextStatus))?nextStatus:null;
-  if(mailType){try{fetch('/api/orders/notify',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({order_id:order.id,email:order.email,type:mailType})})}catch{}}
+  if(mailType){try{const {data:sessionData}=await supabase.auth.getSession();const token=sessionData.session?.access_token;if(token)fetch('/api/orders/notify-v2',{method:'POST',headers:{'content-type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({order_id:order.id,type:mailType})})}catch{}}
  }
 
  async function saveShippingSettings(e){
