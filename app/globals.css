@@ -3279,3 +3279,113 @@ button,a{transition:color .18s ease,border-color .18s ease,background .18s ease,
     padding-right:clamp(30px,2vw,48px)!important;
   }
 }
+
+
+/* ADMIN-CONFIGURABLE CATALOGUE HOVER OBJECTS */
+.catalogueHoverVinyl,
+.catalogueHoverCd,
+.catalogueHoverCassette{
+  position:absolute;
+  z-index:1;
+  transition:transform .85s cubic-bezier(.16,.8,.18,1),opacity .25s ease;
+  pointer-events:none;
+}
+.catalogueHoverVinyl{
+  width:82%;
+  aspect-ratio:1;
+  right:-1%;
+  top:9%;
+  filter:drop-shadow(0 28px 34px rgba(0,0,0,.7));
+}
+.catalogueHoverVinylDisc{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  overflow:hidden;
+  background:radial-gradient(circle at 43% 38%,#2d2d30 0,#111113 22%,#070708 68%,#171719 100%);
+  box-shadow:inset 0 0 0 1px #3a393c,inset 0 0 38px #000,0 24px 55px #000;
+}
+.catalogueHoverGrooves{
+  position:absolute;
+  inset:3%;
+  border-radius:50%;
+  background:repeating-radial-gradient(circle,transparent 0 2px,rgba(255,255,255,.055) 2.5px 3px,transparent 3.5px 6px);
+  opacity:.72;
+}
+.catalogueHoverLabel{
+  position:absolute;
+  inset:36%;
+  border-radius:50%;
+  overflow:hidden;
+  background:#171719;
+  box-shadow:0 0 0 1px #111;
+}
+.catalogueHoverLabel>img{
+  position:absolute;
+  inset:-12%;
+  width:124%;
+  height:124%;
+  object-fit:cover;
+  filter:blur(5px) saturate(.78) brightness(.72);
+  transform:scale(1.08);
+}
+.catalogueHoverLabel>span{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:radial-gradient(circle,transparent 0 42%,rgba(0,0,0,.08) 58%,rgba(0,0,0,.32) 100%);
+  z-index:1;
+}
+.catalogueHoverLabel>i{
+  position:absolute;
+  z-index:2;
+  left:47%;
+  top:47%;
+  width:6%;
+  aspect-ratio:1;
+  border-radius:50%;
+  background:#080809;
+}
+.catalogueHoverVinylDisc.vinyl-white{background:radial-gradient(circle at 40% 36%,#fff,#ddd 35%,#aaa 100%)}
+.catalogueHoverVinylDisc.vinyl-clear,
+.catalogueHoverVinylDisc.vinyl-transparent{background:radial-gradient(circle at 40% 36%,rgba(255,255,255,.62),rgba(190,190,200,.22) 50%,rgba(100,100,110,.3))}
+.catalogueHoverVinylDisc.vinyl-red,
+.catalogueHoverVinylDisc.vinyl-burgundy{background:radial-gradient(circle at 40% 36%,#812c3b,#3e1119 55%,#16090c)}
+.catalogueHoverVinylDisc.vinyl-blue{background:radial-gradient(circle at 40% 36%,#354c68,#13202e 55%,#090d12)}
+
+.catalogueHoverCd{
+  width:72%;
+  aspect-ratio:1;
+  right:8%;
+  top:14%;
+  filter:drop-shadow(0 26px 32px rgba(0,0,0,.55));
+}
+.catalogueHoverCdDisc{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:conic-gradient(from 18deg,rgba(214,224,232,.96),rgba(247,241,224,.98) 10%,rgba(166,206,220,.92) 18%,rgba(232,217,244,.94) 28%,rgba(244,239,222,.98) 39%,rgba(164,197,211,.94) 52%,rgba(238,224,246,.95) 63%,rgba(247,241,224,.98) 75%,rgba(175,211,220,.93) 87%,rgba(224,229,233,.97));
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:inset 0 0 18px rgba(255,255,255,.7),0 24px 58px rgba(0,0,0,.72);
+  -webkit-mask:radial-gradient(circle,transparent 0 7.8%,#000 8.3% 100%);
+  mask:radial-gradient(circle,transparent 0 7.8%,#000 8.3% 100%);
+}
+
+.catalogueHoverCassette{
+  width:72%;
+  aspect-ratio:1.58/1;
+  right:0;
+  top:28%;
+}
+
+.release:hover .catalogueHoverVinyl{transform:translateX(42%) rotate(68deg)}
+.release:hover .catalogueHoverCd{transform:translateX(42%) rotate(-45deg)}
+.release:hover .catalogueHoverCassette{transform:translateX(34%) rotate(2deg)}
+.release.hover-none:hover .cover{transform:translateY(-3px)!important}
+
+@media(max-width:760px){
+  .catalogueHoverVinyl{width:78%;right:1%;top:11%}
+  .release:hover .catalogueHoverVinyl{transform:translateX(28%) rotate(45deg)}
+  .release:hover .catalogueHoverCd{transform:translateX(26%) rotate(-30deg)}
+  .release:hover .catalogueHoverCassette{transform:translateX(24%) rotate(1deg)}
+}
