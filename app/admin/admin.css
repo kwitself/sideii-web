@@ -3792,3 +3792,66 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .adminApp .commerceCheck:has(input:checked) span{
   color:#eee9e1!important;
 }
+
+
+/* WWYS FORM RHYTHM — separate controls into readable card sections */
+.wearOpsList{
+  display:grid;
+  gap:20px;
+}
+.wearOpsRow{
+  padding:20px 22px 22px;
+}
+.wearOpsRow>header{
+  margin:-2px 0 18px;
+  padding-bottom:16px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.wearOpsRow>header h3{
+  margin-top:6px;
+}
+.wearOpsGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px 18px;
+  align-items:start;
+}
+.wearOpsGrid>label{
+  min-width:0;
+}
+.wearOpsGrid>label:not(.storefrontToggle){
+  display:grid;
+  gap:8px;
+  padding-top:2px;
+}
+.wearOpsGrid>label:not(.storefrontToggle)>span{
+  display:block;
+  min-height:12px;
+  margin-bottom:1px;
+}
+.wearOpsGrid .storefrontToggle{
+  min-height:54px;
+  padding:0 14px;
+  align-self:end;
+}
+.wearOpsGrid .wearOpsWide{
+  grid-column:1/-1;
+}
+.wearOpsGrid textarea{
+  min-height:136px!important;
+  resize:vertical;
+}
+.wearOpsRow>footer{
+  margin-top:20px;
+  padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.wearOpsRow>footer .saveButton{
+  min-width:132px;
+}
+@media(max-width:820px){
+  .wearOpsRow{padding:18px}
+  .wearOpsGrid{grid-template-columns:1fr;gap:14px}
+  .wearOpsGrid .wearOpsWide{grid-column:1}
+  .wearOpsGrid .storefrontToggle{align-self:stretch}
+}
