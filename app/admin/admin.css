@@ -2058,3 +2058,31 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 }
 .merchHeroImage,.merchGallery article{overflow:hidden;background:transparent!important}
 .merchGallery article{min-height:190px!important}
+
+
+/* Mockup PNG export controls */
+.mockupExportButtons{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:8px;
+}
+.mockupExportButtons button{
+  min-height:40px;
+  border:1px solid #3a393d;
+  background:#0a0a0b;
+  color:#aaa69f;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.12em;
+  cursor:pointer;
+}
+.mockupExportButtons button:hover:not(:disabled){
+  border-color:#716d75;
+  color:#eee9e1;
+  background:#121214;
+}
+.mockupExportButtons button:disabled{opacity:.25;cursor:not-allowed}
+@media(max-width:620px){
+  .mockupExportButtons{grid-template-columns:1fr}
+}
