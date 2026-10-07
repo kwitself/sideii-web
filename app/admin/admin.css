@@ -3946,3 +3946,24 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .adminApp .commerceCheck:has(input:checked) span{
   color:#eee9e1!important;
 }
+
+
+/* CHECKBOX HOTFIX — use a real check glyph, not drawn borders */
+.adminApp input[type="checkbox"]::after{
+  content:'✓'!important;
+  width:auto!important;
+  height:auto!important;
+  border:0!important;
+  background:transparent!important;
+  color:#0b0b0d!important;
+  font-family:Arial,Helvetica,sans-serif!important;
+  font-size:11px!important;
+  line-height:1!important;
+  font-weight:700!important;
+  transform:scale(0)!important;
+  transform-origin:center!important;
+  margin:0!important;
+}
+.adminApp input[type="checkbox"]:checked::after{
+  transform:scale(1)!important;
+}
