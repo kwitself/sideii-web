@@ -38,5 +38,5 @@
 
 /* Artwork cleanup for dark merch surfaces */
 .darkSurfaceArtwork{
-  mix-blend-mode:screen;
+  mix-blend-mode:lighten;
 }
