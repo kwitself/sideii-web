@@ -98,3 +98,18 @@ export async function getRelatedProducts(productId,limit=6){
  const byId=new Map((all||[]).map(x=>[x.id,x]));
  return ordered.map(x=>byId.get(x.product_id)).filter(Boolean);
 }
+
+
+export async function getProductBundles(productId,limit=3){
+ const sb=client(); if(!sb||!productId)return [];
+ const {data,error}=await sb.rpc('get_product_bundles',{p_product_id:productId,p_limit:limit});
+ if(error)return [];
+ const rows=Array.isArray(data)?data:[];
+ if(!rows.length)return [];
+ const products=await getStoreReleases();
+ const byId=new Map(products.map(x=>[x.id,x]));
+ return rows.map(b=>({
+  ...b,
+  items:(Array.isArray(b.items)?b.items:[]).map(x=>({...x,product:byId.get(x.product_id)||null})).filter(x=>x.product)
+ })).filter(b=>b.items.length>=2);
+}
