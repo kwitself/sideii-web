@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { supabase } from '../lib/supabase';
+import ProductPreviewPanel from './ProductPreviewPanel';
 
 const STATUS=[['draft','DRAFT'],['forthcoming','FORTHCOMING'],['active','AVAILABLE'],['archived','ARCHIVED']];
 const FORMATS=['cd','cassette','vinyl','digital'];
@@ -53,6 +54,30 @@ export default function EditReleaseModal({product,onClose,onSaved}){
  const publicUrl=path=>supabase.storage.from('release-artwork').getPublicUrl(path).data.publicUrl;
  const current=product.artwork_path?publicUrl(product.artwork_path):'';
  const existingGallery=useMemo(()=>gallery.map((path,i)=>({kind:'existing',path,preview:publicUrl(path),name:`Gallery ${i+1}`})),[gallery]);
+ const livePreviewProduct=useMemo(()=>({
+  ...product,
+  catalogue_no:form.catalogue_no,
+  title:form.title,
+  artist_project:form.artist_project,
+  description:form.description,
+  imprint:form.imprint,
+  status:form.status,
+  barcode:form.barcode,
+  storefront_config:storefront,
+  seo_config:seo,
+  preview_cover_url:preview||current||null,
+  gallery_images:[
+   ...existingGallery.map(x=>({url:x.preview})),
+   ...galleryFiles.map(x=>({url:x.preview}))
+  ],
+  product_variants:variants.map(v=>({
+   ...v,
+   price:Number(v.price||0),
+   stock_qty:Number(v.stock||0),
+   reserved_qty:Number(v.reserved_qty||0),
+   preorder_enabled:!!v.preorder_enabled
+  }))
+ }),[product,form,storefront,seo,preview,current,existingGallery,galleryFiles,variants]);
  const feedBlockers=[
   storefront.visibility.google===false?'GOOGLE CHANNEL IS OFF':null,
   storefront.visibility.store===false?'STORE VISIBILITY IS OFF':null,
@@ -102,7 +127,7 @@ export default function EditReleaseModal({product,onClose,onSaved}){
  </div><aside className="editArtwork">{(preview||current)?<img src={preview||current} alt=""/>:<div>NO ARTWORK</div>}<small>{file?'NEW ARTWORK':'CURRENT ARTWORK'}</small></aside></div>}
  {tab==='media'&&<div className="editionManager"><div className="editionManagerHead"><div><span>EDITIONS / MEDIA</span><p>CD, cassette, vinyl and digital editions with independent SKU, price and availability.</p></div><button onClick={addVariant}>＋ ADD EDITION</button></div>{variants.map((v,i)=><article className="editionEditor" key={v.id||`new-${i}`}><header><strong>{String(i+1).padStart(2,'0')} / {v.format.toUpperCase()}</strong><button onClick={()=>removeVariant(i)} disabled={variants.length===1}>REMOVE</button></header><div><label>FORMAT<select value={v.format} onChange={e=>updateVariant(i,'format',e.target.value)}>{FORMATS.map(x=><option key={x} value={x}>{x.toUpperCase()}</option>)}</select></label><label>SKU<input value={v.sku} onChange={e=>updateVariant(i,'sku',e.target.value)}/></label><label>PRICE / TRY<input type="number" min="0" step=".01" value={v.price} onChange={e=>updateVariant(i,'price',e.target.value)}/></label>{v.format==='digital'?<label>AVAILABILITY<input value="UNLIMITED" disabled/></label>:<label>STOCK<input type="number" min="0" value={v.stock} onChange={e=>updateVariant(i,'stock',e.target.value)}/></label>}{v.format==='vinyl'&&<><label>VINYL SIZE<select value={v.vinyl_size} onChange={e=>updateVariant(i,'vinyl_size',e.target.value)}><option>12 INCH</option><option>10 INCH</option><option>7 INCH</option></select></label><label>SPEED<select value={v.vinyl_speed} onChange={e=>updateVariant(i,'vinyl_speed',e.target.value)}><option>33 RPM</option><option>45 RPM</option><option>78 RPM</option></select></label><label>WEIGHT / G<input type="number" min="0" value={v.vinyl_weight_g} onChange={e=>updateVariant(i,'vinyl_weight_g',e.target.value)}/></label><label>VINYL COLOR<input value={v.vinyl_color} onChange={e=>updateVariant(i,'vinyl_color',e.target.value)} placeholder="BLACK"/></label></>}{v.format==='digital'&&<><label className="editionWide">DOWNLOAD FORMATS<input value={v.digital_formats} onChange={e=>updateVariant(i,'digital_formats',e.target.value)} placeholder="WAV, FLAC, MP3"/></label><label className="editionWide">AUDIO MASTER<input value={v.audio_specs} onChange={e=>updateVariant(i,'audio_specs',e.target.value)} placeholder="24 BIT / 44.1 kHz"/></label></>}<label className="editionWide">EDITION / PRESSING<input value={v.edition_details} onChange={e=>updateVariant(i,'edition_details',e.target.value)} placeholder="First pressing · 100 copies"/></label><label className="editionActive"><input type="checkbox" checked={v.active} onChange={e=>updateVariant(i,'active',e.target.checked)}/> ACTIVE EDITION</label></div></article>)}</div>}
  {tab==='gallery'&&<div className="galleryManager"><div className="galleryManagerHead"><div><span>OBJECT / GALLERY</span><p>Back cover, booklet, disc face and product photography. Order is preserved.</p></div><label>＋ ADD IMAGES<input type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif" onChange={e=>{addGallery(e.target.files||[]);e.target.value=''}}/></label></div><div className="galleryAdminGrid">{existingGallery.map((g,i)=><article key={g.path}><img src={g.preview} alt=""/><div><span>{String(i+1).padStart(2,'0')}</span><button disabled={i===0} onClick={()=>moveExisting(i,-1)}>↑</button><button disabled={i===gallery.length-1} onClick={()=>moveExisting(i,1)}>↓</button><button onClick={()=>removeExisting(g.path)}>REMOVE</button></div></article>)}{galleryFiles.map((g,i)=><article key={g.preview} className="galleryNew"><img src={g.preview} alt=""/><div><span>NEW</span><button onClick={()=>removeNew(i)}>REMOVE</button></div></article>)}{gallery.length+galleryFiles.length===0&&<div className="galleryEmpty">NO GALLERY IMAGES YET<br/><small>Primary artwork remains the catalogue cover.</small></div>}</div></div>}
- {tab==='storefront'&&<div className="storefrontEditor">
+ {tab==='storefront'&&<div className="storefrontEditor"><ProductPreviewPanel products={[livePreviewProduct]} preferredProductId={livePreviewProduct.id} embedded initialMode="classic"/>
   <section className="storefrontBlock"><header><span>CARD / PRESENTATION</span><p>Control how this product is presented in catalogue and store cards.</p></header><div className="storefrontGrid">
    <label>IMAGE FIT<select value={storefront.card.image_fit} onChange={e=>setStore('card','image_fit',e.target.value)}><option value="contain">CONTAIN</option><option value="cover">COVER</option></select></label>
    <label>IMAGE POSITION<select value={storefront.card.image_position} onChange={e=>setStore('card','image_position',e.target.value)}><option value="center">CENTER</option><option value="top">TOP</option><option value="bottom">BOTTOM</option><option value="left">LEFT</option><option value="right">RIGHT</option><option value="custom">CUSTOM X / Y</option></select></label>
@@ -172,7 +197,7 @@ export default function EditReleaseModal({product,onClose,onSaved}){
    </div></article>)}
   </div></section>
  </div>}
- {tab==='seo'&&<div className="storefrontEditor seoEditor">
+ {tab==='seo'&&<div className="storefrontEditor seoEditor"><ProductPreviewPanel products={[livePreviewProduct]} preferredProductId={livePreviewProduct.id} embedded initialMode="google"/>
   <section className="storefrontBlock"><header><span>SEO / SEARCH</span><p>Override product metadata only when needed. Blank fields fall back to catalogue data.</p></header><div className="storefrontGrid">
    <label className="storefrontWide">SEO TITLE<input maxLength="70" value={seo.title||''} onChange={e=>setSeoValue('title',e.target.value)} placeholder={form.title||'Product title'}/></label>
    <label className="storefrontWide">META DESCRIPTION<textarea rows="3" value={seo.description||''} onChange={e=>setSeoValue('description',e.target.value)} placeholder={form.description||'Product description'}/></label>
