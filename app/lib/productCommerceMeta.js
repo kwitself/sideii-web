@@ -24,14 +24,15 @@ export function schemaCondition(product){
  return conditionValue(product)==='used'?'https://schema.org/UsedCondition':conditionValue(product)==='refurbished'?'https://schema.org/RefurbishedCondition':'https://schema.org/NewCondition';
 }
 
-export function availabilityValue(variant){
+export function availabilityValue(variant,product=null){
  if(variant?.preorderEnabled)return 'preorder';
+ if(product&&product.status!=='AVAILABLE')return 'out_of_stock';
  if(variant?.format==='digital'||variant?.media==='digital'||variant?.stock==null)return 'in_stock';
  return Number(variant?.stock||0)>0?'in_stock':'out_of_stock';
 }
 
-export function schemaAvailability(variant){
- const value=availabilityValue(variant);
+export function schemaAvailability(variant,product=null){
+ const value=availabilityValue(variant,product);
  return value==='preorder'?'https://schema.org/PreOrder':value==='in_stock'?'https://schema.org/InStock':'https://schema.org/OutOfStock';
 }
 
@@ -56,16 +57,16 @@ export function productSchema(product){
  const images=productImages(product);
  const brand={ '@type':'Brand',name:brandName(product)};
  const common={
-  name:product.title,
+  name:product.rawTitle||product.title,
   description:productDescription(product),
   ...(images.length?{image:images}:{}),
   brand
  };
  const makeVariant=v=>({
   '@type':'Product',
-  name:[product.title,v.size,v.color,v.style,v.formatLabel].filter(Boolean).join(' · '),
+  name:[product.rawTitle||product.title,v.size,v.color,v.style,v.formatLabel].filter(Boolean).join(' · '),
   sku:v.sku||undefined,
-  ...(product.seoConfig?.gtin?{gtin:product.seoConfig.gtin}:{}),
+  ...((product.seoConfig?.gtin||product.barcode)?{gtin:product.seoConfig?.gtin||product.barcode}:{}),
   ...(product.seoConfig?.mpn?{mpn:product.seoConfig.mpn}:{}),
   ...(v.size?{size:v.size}:{}),
   ...(v.color?{color:v.color}:{}),
@@ -75,7 +76,7 @@ export function productSchema(product){
    url:productUrl(product,v),
    price:Number(v.price),
    priceCurrency:v.currency||'TRY',
-   availability:schemaAvailability(v),
+   availability:schemaAvailability(v,product),
    itemCondition:schemaCondition(product)
   }
  });
