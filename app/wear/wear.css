@@ -238,3 +238,19 @@
 .wearCardMeta p{grid-column:1/-1;margin:2px 0 0;font:13px/1.5 Georgia,serif;color:#918d86}
 @media(max-width:900px){.wearFeaturedCard{grid-template-columns:1fr}.wearFeaturedVisual{min-height:440px;border-right:0;border-bottom:1px solid #343238}.wearSupportModelInner{grid-template-columns:1fr;gap:28px}.wearSupportStats{grid-column:1}.wearFeaturedCopy{padding:30px}}
 @media(max-width:620px){.wearFeatured{padding-top:58px}.wearFeaturedVisual{min-height:340px}.wearFeaturedCopy{padding:24px}.wearSupportStats{grid-template-columns:1fr}.wearSupportStats article{border-right:0;border-bottom:1px solid #343238}.wearSupportStats article:last-child{border-bottom:0}}
+
+
+/* MOBILE QA — WWYS readability */
+@media(max-width:620px){
+  .wearFeaturedCopy>small,
+  .wearSupportStatement span,
+  .wearFeaturedAction span,
+  .wearSupportModelInner>span,
+  .wearSupportStats b{font-size:9px}
+  .wearFeaturedCopy>p{font-size:17px}
+  .wearSupportStatement b{font-size:19px}
+  .wearSupportStats span{font-size:15px}
+  .wearCardMeta em{font-size:8px}
+  .wearCardMeta p{font-size:14px}
+  .wearFeaturedAction{align-items:flex-start;flex-direction:column}
+}
