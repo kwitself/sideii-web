@@ -59,10 +59,11 @@ export default function MerchMockupPreview({
  const gradientId=('merch-'+type+'-'+String(product?.slug||product?.id||side||'preview')).replace(/[^a-zA-Z0-9_-]/g,'-');
  const guideClass=showGuides?styles.guidesOn:styles.guidesOff;
  const modeClass=displayMode==='hero'?styles.hero:displayMode==='gallery'?styles.gallery:displayMode==='thumb'?styles.thumb:'';
+ const interactiveClass=interactive?styles.interactiveFrame:'';
  const clipProps={ref:printClipRef,onWheel:interactive?onArtworkWheel:undefined};
  if(raster&&m.previewCleanUrl)return <div className={styles.frame+' '+modeClass+' '+className}><img className={styles.rasterPreview} src={m.previewCleanUrl} alt=""/></div>;
 
- if(type==='apparel')return <div className={styles.frame+' '+guideClass+' '+modeClass+' '+className}>
+ if(type==='apparel')return <div className={styles.frame+' '+guideClass+' '+modeClass+' '+interactiveClass+' '+className}>
   <div className={styles.tee+' '+styles[m.garment==='regular'?'regular':'oversized']}>
    <svg viewBox="0 0 420 500" role="img" aria-label={front?'T-shirt front':'T-shirt back'}>
     <path fill={fill} d="M82 82 L158 48 Q210 68 262 48 L338 82 L392 151 L350 194 L316 171 L316 438 Q210 447 104 438 L104 171 L70 194 L28 151 Z"/>
@@ -77,7 +78,7 @@ export default function MerchMockupPreview({
   </div>
  </div>;
 
- return <div className={styles.frame+' '+guideClass+' '+modeClass+' '+className}>
+ return <div className={styles.frame+' '+guideClass+' '+modeClass+' '+interactiveClass+' '+className}>
   <div className={styles.object+' '+styles[type]}>
    <svg className={styles.objectSvg} viewBox="0 0 420 420" role="img" aria-label={type+' mockup'}>
     <defs><linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#fff" stopOpacity=".10"/><stop offset="38%" stopColor={fill}/><stop offset="100%" stopColor="#000" stopOpacity=".35"/></linearGradient></defs>
