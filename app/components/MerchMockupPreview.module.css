@@ -34,3 +34,9 @@
   .regular{width:min(88%,300px)}
   .object{width:min(92%,330px)}
 }
+
+
+/* Artwork cleanup for dark merch surfaces */
+.darkSurfaceArtwork{
+  mix-blend-mode:screen;
+}
