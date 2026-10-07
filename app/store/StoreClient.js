@@ -146,6 +146,12 @@ export default function StoreClient({releases}){
   const alpha=set=>[...set].sort((a,b)=>String(a).localeCompare(String(b)));
   return {categories:sort,sizes:alpha(sizes),colors:alpha(colors)};
  },[uniqueReleases]);
+ const searchSuggestions=useMemo(()=>{
+  const seen=new Set(),out=[];
+  const push=value=>{const v=String(value||'').trim();const key=normalizeSearch(v);if(!v||!key||seen.has(key))return;seen.add(key);out.push(v)};
+  for(const r of uniqueReleases){push(r.rawTitle||r.title);push(r.artist);push(r.catalogue);push(r.originalCatalogue);for(const v of r.variants||[])push(v.sku)}
+  return out.slice(0,80);
+ },[uniqueReleases]);
  const filtered=useMemo(()=>uniqueReleases.filter(r=>{
   if(r.storefrontConfig?.visibility?.store===false)return false;
   if(filter!=='all'&&(filter==='selected'?r.productOrigin!=='distributed':r.imprint!==filter))return false;
@@ -185,6 +191,19 @@ export default function StoreClient({releases}){
  },[filtered,sortMode,search]);
  const resetDiscovery=()=>{setFilter('all');setFormatFilter('all');setSearch('');setAvailability('all');setCollectionFilter('all');setCategoryFilter('all');setSizeFilter('all');setColorFilter('all');setLimitedOnly(false);setPreorderOnly(false);setMinPrice('');setMaxPrice('');setSortMode('newest')};
  const activeFilterCount=[filter!=='all',formatFilter!=='all',availability!=='all',collectionFilter!=='all',categoryFilter!=='all',sizeFilter!=='all',colorFilter!=='all',limitedOnly,preorderOnly,minPrice!=='',maxPrice!==''].filter(Boolean).length;
+ const activeChips=[
+  filter!=='all'&&{key:'imprint',label:filter==='selected'?'SELECTED':filter.toUpperCase(),clear:()=>setFilter('all')},
+  formatFilter!=='all'&&{key:'media',label:formatFilter.toUpperCase(),clear:()=>setFormatFilter('all')},
+  availability!=='all'&&{key:'availability',label:availability.toUpperCase(),clear:()=>setAvailability('all')},
+  collectionFilter!=='all'&&{key:'collection',label:'COLLECTION · '+collectionFilter.toUpperCase(),clear:()=>setCollectionFilter('all')},
+  categoryFilter!=='all'&&{key:'category',label:'CATEGORY · '+String(categoryFilter).toUpperCase(),clear:()=>setCategoryFilter('all')},
+  sizeFilter!=='all'&&{key:'size',label:'SIZE · '+String(sizeFilter).toUpperCase(),clear:()=>setSizeFilter('all')},
+  colorFilter!=='all'&&{key:'color',label:'COLOUR · '+String(colorFilter).toUpperCase(),clear:()=>setColorFilter('all')},
+  limitedOnly&&{key:'limited',label:'LIMITED',clear:()=>setLimitedOnly(false)},
+  preorderOnly&&{key:'preorder',label:'PRE-ORDER',clear:()=>setPreorderOnly(false)},
+  minPrice!==''&&{key:'min',label:'MIN · '+minPrice,clear:()=>setMinPrice('')},
+  maxPrice!==''&&{key:'max',label:'MAX · '+maxPrice,clear:()=>setMaxPrice('')}
+ ].filter(Boolean);
  const add=(r,v)=>{addCartItem(r,v);window.dispatchEvent(new Event('sideii-open-bag'))};
  const productHref=r=>r.isMerch?('/store/'+r.slug):('/releases/'+r.slug);
  const cardPosition=card=>card?.image_position==='custom'?((card.crop_x??50)+'% '+(card.crop_y??50)+'%'):(card?.image_position||'center');
@@ -206,7 +225,7 @@ export default function StoreClient({releases}){
   <section className="storeHero shell"><span>STORE / CATALOGUE</span><h1>Available<br/><i>editions.</i></h1><p>Physical objects and digital masters from SIDE:II and its imprints.</p><div className="storeEditorialLinks"><Link className="storeWearEntry" href="/wear">{t('WEAR WHAT YOU SUPPORT')} →</Link><Link className="storeWearEntry" href="/collections">{t('COLLECTIONS')} →</Link><Link className="storeWearEntry" href="/bundles">{t('BUNDLES')} →</Link><Link className="storeWearEntry" href="/archive">{t('ARCHIVE')} →</Link></div></section>
   <section className="storeFilters shell"><div>{[['all','ALL'],['sideii','SIDE:II'],['lethargia','LETHARGIA'],['selected','SELECTED']].map(([v,l])=><button key={v} className={filter===v?'active':''} onClick={()=>setFilter(v)}>{l}</button>)}</div><div>{[['all','ALL MEDIA'],['merch','MERCH'],['vinyl','VINYL'],['cd','CD'],['cassette','CASSETTE'],['digital','DIGITAL']].map(([v,l])=><button key={v} className={formatFilter===v?'active':''} onClick={()=>setFormatFilter(v)}>{l}</button>)}</div><div className="storeViewToggle" role="group" aria-label="Store view"><span>VIEW</span><button type="button" className={viewMode==='editorial'?'active':''} aria-pressed={viewMode==='editorial'} onClick={()=>setViewMode('editorial')}>EDITORIAL</button><button type="button" className={viewMode==='classic'?'active':''} aria-pressed={viewMode==='classic'} onClick={()=>setViewMode('classic')}>CLASSIC</button></div></section>
   <section className="storeDiscoveryTools shell">
-   <div className="storeSearchField"><span>SEARCH CATALOGUE</span><input value={search} onChange={e=>{setSearch(e.target.value);if(e.target.value.trim()&&sortMode==='newest')setSortMode('relevance')}} placeholder="Title, artist, catalogue, SKU, colour, collection…"/>{search&&<button type="button" className="storeSearchClear" onClick={()=>{setSearch('');if(sortMode==='relevance')setSortMode('newest')}}>CLEAR ×</button>}</div>
+   <div className="storeSearchField"><span>SEARCH CATALOGUE</span><input list="store-search-suggestions" value={search} onChange={e=>{setSearch(e.target.value);if(e.target.value.trim()&&sortMode==='newest')setSortMode('relevance')}} placeholder="Title, artist, catalogue, SKU, colour, collection…"/><datalist id="store-search-suggestions">{searchSuggestions.map(x=><option value={x} key={x}/>)}</datalist>{search&&<button type="button" className="storeSearchClear" onClick={()=>{setSearch('');if(sortMode==='relevance')setSortMode('newest')}}>CLEAR ×</button>}</div>
    <div className="storeDiscoveryControls">
     <label><span>AVAILABILITY</span><select value={availability} onChange={e=>setAvailability(e.target.value)}><option value="all">ALL</option><option value="in-stock">IN STOCK</option><option value="preorder">PRE-ORDER</option><option value="sold-out">SOLD OUT</option></select></label>
     <label><span>COLLECTION</span><select value={collectionFilter} onChange={e=>setCollectionFilter(e.target.value)}><option value="all">ALL COLLECTIONS</option>{collectionOptions.map(x=><option value={x.slug} key={x.slug}>{String(x.name).toUpperCase()}</option>)}</select></label>
@@ -219,6 +238,7 @@ export default function StoreClient({releases}){
     <label className={"storeDiscoveryToggle "+(preorderOnly?'active':'')}><input type="checkbox" checked={preorderOnly} onChange={e=>setPreorderOnly(e.target.checked)}/><span>PRE-ORDER ONLY</span></label>
     <label className={"storeDiscoveryToggle "+(limitedOnly?'active':'')}><input type="checkbox" checked={limitedOnly} onChange={e=>setLimitedOnly(e.target.checked)}/><span>LIMITED ONLY</span></label>
    </div>
+   {activeChips.length>0&&<div className="storeActiveFilters">{activeChips.map(chip=><button type="button" key={chip.key} onClick={chip.clear}><span>{chip.label}</span><b>×</b></button>)}</div>}
    <div className="storeDiscoveryMeta"><span>{filtered.length} / {uniqueReleases.filter(r=>r.storefrontConfig?.visibility?.store!==false).length} OBJECTS{activeFilterCount?' · '+activeFilterCount+' ACTIVE FILTER'+(activeFilterCount===1?'':'S'):''}{search.trim()?' · SEARCH RANKED':''}</span><button type="button" onClick={resetDiscovery}>RESET DISCOVERY</button></div>
   </section>
   {filter==='lethargia'&&<section className="storeImprintContext shell"><div><small>A SIDE:II IMPRINT</small><img src="/brand/lethargia/lethargia-logo.png" alt="Lethargia Records"/></div><p>Independent editions developed under their own visual and physical logic.</p><Link href="/imprints/lethargia">OPEN IMPRINT ↗</Link></section>}
