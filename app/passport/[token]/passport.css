@@ -14,3 +14,12 @@
 .passportStatus.active{border-color:#40513d}.passportStatus.active span{color:#8fab86}.passportStatus.revoked{border-color:#573c42}.passportStatus.revoked span{color:#a77f87}
 .passportFoot{padding:70px 0 100px}.passportFoot p{max-width:650px;font:18px/1.6 Georgia,serif;color:#88847e}.passportFoot a{display:inline-flex;margin-top:16px;padding:12px 14px;border:1px solid #3a393d;color:#aaa69f;text-decoration:none;font:8px/1 Arial,sans-serif;letter-spacing:.15em}
 @media(max-width:760px){.passportHero{padding:76px 0 54px}.passportCard{grid-template-columns:1fr;gap:28px;padding:52px 0}.passportSeal{width:140px;height:140px}.passportSeal span{font-size:58px}.passportFacts{grid-template-columns:1fr}.passportStatus{grid-column:1}.passportFoot{padding:54px 0 80px}}
+
+
+/* FINAL UI AUDIT */
+.passportHero>span,.passportFoot>span,.passportFacts span,.passportSeal small{font-size:9px}
+.passportFacts>div{padding:18px 0}
+.passportStatus{padding:20px}
+.passportFoot a{min-height:42px;align-items:center;padding:0 14px;font-size:9px}
+.passportFoot a:hover{border-color:#77736d;background:#151517;color:#eee9e1}
+@media(max-width:760px){.passportFacts b{font-size:17px}.passportFoot p{font-size:16px}}
