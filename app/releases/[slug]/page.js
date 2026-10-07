@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getDatabaseRelease, getProductCredits, getPublicPressKit } from '../../lib/catalogue';
 import EditionSelector from './EditionSelector';
 import GlobalHeader from '../../components/GlobalHeader';
+import {jsonLd,productSchema} from '../../lib/productCommerceMeta';
 
 export const revalidate = 0;
 
@@ -31,8 +32,10 @@ export default async function ReleasePage({ params }) {
   const [titleA, titleB] = release.displayTitle;
   const detail = release.storefrontConfig?.detail||{};
   const isCassette = release.media === 'cassette';
+  const schema=productSchema(release);
 
   return <main className={'productPage '+(release.imprint==='lethargia'?'productPageLethargia':'productPageSideii')}>
+    {schema&&<script type="application/ld+json" dangerouslySetInnerHTML={{__html:jsonLd(schema)}}/>}
     <GlobalHeader/>
     <section className="productHero shell">
       <div className="productReleaseLayout"><div className={'productInfo releaseHeroIdentity '+(release.imprint==='lethargia'?'releaseHeroLethargia':'releaseHeroSideii')}>
