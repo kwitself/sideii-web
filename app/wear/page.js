@@ -52,7 +52,7 @@ export default async function WearPage(){
     </section>}
 
     <section className="wearSupportModel">
-     <div className="shell wearSupportModelInner"><span>03 / SUPPORT MODEL</span><div><h2>Wear the object.<br/><i>Fund the next one.</i></h2><p>WWYS treats apparel and objects as part of the label economy: an object can support the artist, future physical production and declared impact commitments instead of existing as anonymous filler merchandise.</p></div><div className="wearSupportStats"><article><b>ARTIST</b><span>Share rules can be tracked per release in Control Room.</span></article><article><b>PRODUCTION</b><span>Recorded unit costs keep support and margin visible.</span></article><article><b>IMPACT</b><span>Eligible objects can connect to verified impact campaigns.</span></article></div></div>
+     <div className="shell wearSupportModelInner"><span>03 / SUPPORT MODEL</span><div><h2>Wear the object.<br/><i>Fund the next one.</i></h2><p>WWYS treats apparel and objects as part of the label economy: an object can support the artist, future physical production and declared impact commitments instead of existing as anonymous filler merchandise.</p></div><div className="wearSupportStats"><article><b>ARTIST</b><span>Selected objects can return a defined share of value to the artist behind the work.</span></article><article><b>PRODUCTION</b><span>Physical production is treated as a visible part of the object, not an invisible afterthought.</span></article><article><b>IMPACT</b><span>Eligible objects can connect to declared and verifiable support commitments.</span></article></div></div>
     </section>
 
     <section className="wearProducts shell">
