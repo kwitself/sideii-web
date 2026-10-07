@@ -166,8 +166,17 @@ export default function GlobalAccount(){
   const {error}=await supabase.rpc('request_order_action',{p_order_id:selectedOrder.id,p_type:type,p_reason:requestReason||null});
   setRequestBusy(false);
   if(error){setMessage(error.message);return}
-  setMessage(type==='cancel'?'Cancellation request sent.':'Return request sent.');
+  setMessage(type==='cancel'?'Cancellation request sent.':type==='refund'?'Refund request sent.':'Return request sent.');
+  setRequestReason('');
   if(session?.user)await loadAccount(session.user);
+ }
+
+ async function downloadDigitalItem(item){
+  if(!item?.id||!item.download_available||!session?.user)return;
+  setMessage('');
+  const {data,error}=await supabase.rpc('create_my_digital_download_grant',{p_order_item_id:item.id});
+  if(error||!data){setMessage(error?.message||'Digital download unavailable.');return}
+  window.open('/api/download/'+encodeURIComponent(String(data)),'_blank','noopener,noreferrer');
  }
 
  useEffect(()=>{if(!open)return;
@@ -288,7 +297,7 @@ export default function GlobalAccount(){
        <div><span>ORDERED</span><b>{new Date(selectedOrder.created_at).toLocaleString('tr-TR')}</b></div>
        <div><span>FULFILMENT</span><b>{String(selectedOrder.fulfillment_type||'—').toUpperCase()}</b></div>
       </div>
-      <div className="accountOrderItems">{(selectedOrder.items||[]).map((it,i)=><article key={it.id||i}><div><b>{it.title}</b><small>{it.format||''}{it.sku?' · '+it.sku:''} · QTY {it.quantity}{it.preorder?' · PRE-ORDER':''}</small>{Array.isArray(it.edition_numbers)&&it.edition_numbers.length>0&&<small>EDITION · {it.edition_numbers.map(n=>'#'+String(n).padStart(3,'0')).join(' / ')}</small>}{it.download_url&&<a className="accountDownloadLink" href={it.download_url} target="_blank" rel="noreferrer">DOWNLOAD DIGITAL EDITION ↗</a>}</div><strong>{money(it.line_total)}</strong></article>)}</div>
+      <div className="accountOrderItems">{(selectedOrder.items||[]).map((it,i)=><article key={it.id||i}><div><b>{it.title}</b><small>{it.format||''}{it.sku?' · '+it.sku:''} · QTY {it.quantity}{it.preorder?' · PRE-ORDER':''}</small>{Array.isArray(it.edition_numbers)&&it.edition_numbers.length>0&&<small>EDITION · {it.edition_numbers.map(n=>'#'+String(n).padStart(3,'0')).join(' / ')}</small>}{it.download_available&&<button type="button" className="accountDownloadLink" onClick={()=>downloadDigitalItem(it)}>DOWNLOAD DIGITAL EDITION ↗</button>}</div><strong>{money(it.line_total)}</strong></article>)}</div>
       <div className="accountOrderTotals">
        <div><span>SUBTOTAL</span><b>{money(selectedOrder.subtotal)}</b></div>
        {Number(selectedOrder.discount_total||0)>0&&<div><span>DISCOUNT{selectedOrder.promo_code?' · '+selectedOrder.promo_code:''}</span><b>−{money(selectedOrder.discount_total)}</b></div>}
@@ -306,7 +315,7 @@ export default function GlobalAccount(){
       <div className="accountOrderRequest">
        <span>ORDER REQUESTS</span>
        {(selectedOrder.return_requests||[]).length>0&&<div className="accountOrderRequestHistory">{selectedOrder.return_requests.map(r=><p key={r.id}>{String(r.request_type).toUpperCase()} · {String(r.status).toUpperCase()} · {new Date(r.created_at).toLocaleDateString('tr-TR')}</p>)}</div>}
-       {['pending','preparing','shipped','completed'].includes(selectedOrder.status)&&<><textarea placeholder="Optional reason / note" value={requestReason} onChange={e=>setRequestReason(e.target.value)}/><div>{['pending','preparing'].includes(selectedOrder.status)&&<button type="button" disabled={requestBusy} onClick={()=>requestOrderAction('cancel')}>REQUEST CANCELLATION</button>}{['shipped','completed'].includes(selectedOrder.status)&&<button type="button" disabled={requestBusy} onClick={()=>requestOrderAction('return')}>REQUEST RETURN</button>}</div></>}
+       {['pending','preparing','shipped','completed'].includes(selectedOrder.status)&&<><textarea maxLength="1000" placeholder="Optional reason / note" value={requestReason} onChange={e=>setRequestReason(e.target.value)}/><div>{selectedOrder.payment_status==='unpaid'&&['pending','preparing'].includes(selectedOrder.status)&&<button type="button" disabled={requestBusy} onClick={()=>requestOrderAction('cancel')}>REQUEST CANCELLATION</button>}{selectedOrder.payment_status==='paid'&&['pending','preparing'].includes(selectedOrder.status)&&<button type="button" disabled={requestBusy} onClick={()=>requestOrderAction('refund')}>REQUEST REFUND</button>}{selectedOrder.payment_status==='paid'&&['shipped','completed'].includes(selectedOrder.status)&&<button type="button" disabled={requestBusy} onClick={()=>requestOrderAction('return')}>REQUEST RETURN</button>}</div></>}
       </div>
      </section>}
     <button className="accountSignout" onClick={signOut}>{t('SIGN OUT')}</button>
