@@ -29,7 +29,6 @@ export default function MerchandisingPanel({products=[]}){
  const [busy,setBusy]=useState('');
  const [message,setMessage]=useState('');
  const [query,setQuery]=useState('');
- const [bundles,setBundles]=useState([]),[bundleForm,setBundleForm]=useState({id:null,slug:'',name:'',description:'',discount_type:'percent',discount_value:0,active:true,starts_at:'',ends_at:'',items:[]});
 
  async function load(preferCollectionId=null,preferBundleId=null){
   if(!supabase)return;
@@ -61,7 +60,7 @@ export default function MerchandisingPanel({products=[]}){
   setSelected(c);
   setForm({
    id:c.id,slug:c.slug||'',name:c.name||'',kind:c.kind||'core',description:c.description||'',
-   active:c.active!==false,starts_at:localDate(c.starts_at),ends_at:localDate(c.ends_at),sort_order:c.sort_order??0,collection_mode:c.collection_mode||'manual',rule_config:{product_type:c.rule_config?.product_type||'',imprint:c.rule_config?.imprint||'',merch_category:c.rule_config?.merch_category||''},
+   active:c.active!==false,starts_at:localDate(c.starts_at),ends_at:localDate(c.ends_at),sort_order:c.sort_order??0,
    collection_mode:c.collection_mode||'manual',
    rule_config:{product_type:'',imprint:'',merch_category:'',sort:'newest',...(c.rule_config||{})}
   });
@@ -76,8 +75,8 @@ export default function MerchandisingPanel({products=[]}){
   const {data,error}=await supabase.rpc('admin_save_merchandising_collection',{
    p_id:form.id||null,p_slug:slug,p_name:form.name.trim(),p_kind:form.kind,
    p_description:form.description||'',p_active:!!form.active,
-   p_starts_at:iso(form.starts_at),p_ends_at:iso(form.ends_at),p_sort_order:Number(form.sort_order)||0,p_collection_mode:form.collection_mode||'manual',p_rule_config:form.collection_mode==='dynamic'?form.rule_config:{},
-   p_collection_mode:form.collection_mode||'manual',p_rule_config:form.rule_config||{}
+   p_starts_at:iso(form.starts_at),p_ends_at:iso(form.ends_at),p_sort_order:Number(form.sort_order)||0,
+   p_collection_mode:form.collection_mode||'manual',p_rule_config:form.collection_mode==='dynamic'?(form.rule_config||{}):{}
   });
   setBusy('');
   if(error){setMessage(error.message);return}
@@ -192,45 +191,6 @@ export default function MerchandisingPanel({products=[]}){
   await load(null,id);
  }
 
-
- async function saveBundle(e){
-  e.preventDefault();setBusy('bundle');setMessage('');
-  const slug=slugify(bundleForm.slug||bundleForm.name);
-  if(!slug||!bundleForm.name.trim()){setMessage('Bundle name and slug are required.');setBusy('');return}
-  const {data,error}=await supabase.rpc('admin_save_bundle',{
-   p_id:bundleForm.id||null,p_slug:slug,p_name:bundleForm.name.trim(),p_description:bundleForm.description||'',
-   p_discount_type:bundleForm.discount_type,p_discount_value:Number(bundleForm.discount_value)||0,
-   p_active:!!bundleForm.active,p_starts_at:iso(bundleForm.starts_at),p_ends_at:iso(bundleForm.ends_at)
-  });
-  if(error){setBusy('');setMessage(error.message);return}
-  const bundleId=data||bundleForm.id;
-  const wanted=new Map((bundleForm.items||[]).map(x=>[x.product_id,Math.max(1,Number(x.quantity)||1)]));
-  const existing=(bundles.find(x=>x.id===bundleForm.id)?.items||[]);
-  for(const old of existing){
-   if(!wanted.has(old.product_id))await supabase.rpc('admin_set_bundle_item',{p_bundle_id:bundleId,p_product_id:old.product_id,p_quantity:1,p_enabled:false});
-  }
-  for(const [productId,quantity] of wanted){
-   await supabase.rpc('admin_set_bundle_item',{p_bundle_id:bundleId,p_product_id:productId,p_quantity:quantity,p_enabled:true});
-  }
-  setBusy('');setMessage('Bundle saved.');
-  setBundleForm({id:null,slug:'',name:'',description:'',discount_type:'percent',discount_value:0,active:true,starts_at:'',ends_at:'',items:[]});
-  await load(selected?.id||null);
- }
-
- function editBundle(b){
-  setBundleForm({...b,starts_at:localDate(b.starts_at),ends_at:localDate(b.ends_at),items:Array.isArray(b.items)?b.items:[]});
- }
- function toggleBundleProduct(productId){
-  setBundleForm(x=>{
-   const items=Array.isArray(x.items)?x.items:[];
-   const exists=items.some(i=>i.product_id===productId);
-   return {...x,items:exists?items.filter(i=>i.product_id!==productId):[...items,{product_id:productId,quantity:1}]};
-  });
- }
- function bundleQty(productId,quantity){
-  setBundleForm(x=>({...x,items:(x.items||[]).map(i=>i.product_id===productId?{...i,quantity:Math.max(1,Number(quantity)||1)}:i)}));
- }
-
  return <section className="adminSection merchandisingOps">
   <div className="sectionLabel"><span>MERCHANDISING</span><p>Collections, dynamic discovery, bundles and complete-the-set relationships.</p></div>
   <div className="adminSubnav merchandisingTabs"><button className={workspace==='collections'?'active':''} onClick={()=>setWorkspace('collections')}>COLLECTIONS</button><button className={workspace==='bundles'?'active':''} onClick={()=>setWorkspace('bundles')}>BUNDLES / COMPLETE THE SET</button></div>
@@ -314,27 +274,6 @@ export default function MerchandisingPanel({products=[]}){
    </div>
   </div>}
  
-  <div className="bundleOps">
-   <form className="adminPanel bundleEditor" onSubmit={saveBundle}>
-    <header><div><span>COMPLETE THE SET / BUNDLES</span><small>Cross-sell groups with an optional bundle discount.</small></div><button type="button" onClick={()=>setBundleForm({id:null,slug:'',name:'',description:'',discount_type:'percent',discount_value:0,active:true,starts_at:'',ends_at:'',items:[]})}>＋ NEW</button></header>
-    <div className="bundleFields">
-     <label>NAME<input value={bundleForm.name} onChange={e=>setBundleForm({...bundleForm,name:e.target.value,slug:bundleForm.id?bundleForm.slug:(bundleForm.slug||slugify(e.target.value))})}/></label>
-     <label>SLUG<input value={bundleForm.slug} onChange={e=>setBundleForm({...bundleForm,slug:slugify(e.target.value)})}/></label>
-     <label>DISCOUNT<select value={bundleForm.discount_type} onChange={e=>setBundleForm({...bundleForm,discount_type:e.target.value})}><option value="percent">PERCENT</option><option value="fixed">FIXED</option></select></label>
-     <label>VALUE<input type="number" min="0" step=".01" value={bundleForm.discount_value} onChange={e=>setBundleForm({...bundleForm,discount_value:e.target.value})}/></label>
-     <label>STARTS<input type="datetime-local" value={bundleForm.starts_at} onChange={e=>setBundleForm({...bundleForm,starts_at:e.target.value})}/></label>
-     <label>ENDS<input type="datetime-local" value={bundleForm.ends_at} onChange={e=>setBundleForm({...bundleForm,ends_at:e.target.value})}/></label>
-     <label className="collectionWide">DESCRIPTION<textarea rows="2" value={bundleForm.description||''} onChange={e=>setBundleForm({...bundleForm,description:e.target.value})}/></label>
-     <label className="storefrontToggle"><input type="checkbox" checked={!!bundleForm.active} onChange={e=>setBundleForm({...bundleForm,active:e.target.checked})}/><span>ACTIVE</span></label>
-    </div>
-    <div className="bundleProductPicker">{products.map(p=>{const item=(bundleForm.items||[]).find(i=>i.product_id===p.id);return <div className={item?'selected':''} key={p.id}><label><input type="checkbox" checked={!!item} onChange={()=>toggleBundleProduct(p.id)}/><span><b>{p.title}</b><small>{p.catalogue_no} · {p.product_type==='merch'?(p.merch_category||'MERCH'):p.imprint}</small></span></label>{item&&<input className="bundleQty" type="number" min="1" value={item.quantity||1} onChange={e=>bundleQty(p.id,e.target.value)}/>}</div>})}</div>
-    <div className="formActions"><button className="saveButton" disabled={busy==='bundle'||(bundleForm.items||[]).length<2}>{busy==='bundle'?'SAVING…':'SAVE BUNDLE'}</button></div>
-   </form>
-   <aside className="adminPanel bundleLibrary">
-    <header><span>ACTIVE SETS</span><small>{bundles.length} bundle(s)</small></header>
-    {bundles.length===0?<p className="emptyNote">No bundles yet.</p>:bundles.map(b=><button type="button" key={b.id} onClick={()=>editBundle(b)}><div><b>{b.name}</b><small>{(b.items||[]).length} ITEMS · {b.discount_type==='percent'?b.discount_value+'%':b.discount_value+' TRY'} OFF</small></div><span>{b.active?'LIVE':'OFF'}</span></button>)}
-   </aside>
-  </div>
 
  </section>;
 }
