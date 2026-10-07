@@ -5,17 +5,18 @@ import {useEffect,useState} from 'react';
 const items=[
  ['overview','01','Dashboard'],
  ['products','02','Products'],
- ['orders','03','Orders'],
- ['inventory','04','Inventory'],
- ['customers','05','Customers'],
- ['commerce','06','Commerce'],
- ['catalogue','07','Catalogue'],
- ['growth','08','Growth'],
- ['impact','09','Impact'],
- ['fulfillment','10','Fulfillment'],
- ['localization','11','Localization'],
- ['settings','12','Settings'],
- ['launch','13','Launch']
+ ['merchandising','03','Merchandising'],
+ ['orders','04','Orders'],
+ ['inventory','05','Inventory'],
+ ['customers','06','Customers'],
+ ['commerce','07','Commerce'],
+ ['catalogue','08','Catalogue'],
+ ['growth','09','Growth'],
+ ['impact','10','Impact'],
+ ['fulfillment','11','Fulfillment'],
+ ['localization','12','Localization'],
+ ['settings','13','Settings'],
+ ['launch','14','Launch']
 ];
 
 const valid=new Set(items.map(x=>x[0]));
