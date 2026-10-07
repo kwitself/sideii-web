@@ -24,6 +24,9 @@ function storefrontConfig(value={},legacyHover='auto'){
  };
 }
 
+const SEO_DEFAULTS={title:'',description:'',canonical:'',og_image:'',structured_data:true,brand:'SIDE:II',gtin:'',mpn:'',google_category:'',condition:'new'};
+function seoConfig(value={}){return {...SEO_DEFAULTS,...(value||{})}}
+
 const cleanVariant=(v={})=>({id:v.id||null,sku:v.sku||'',format:v.format||'cd',price:String(v.price??0),stock:String(v.stock_qty??0),reserved_qty:Number(v.reserved_qty||0),manufactured_qty:Number(v.manufactured_qty||0),edition_name:v.edition_name||'',edition_details:v.edition_details||'',digital_formats:Array.isArray(v.digital_formats)?v.digital_formats.join(', '):'WAV, FLAC, MP3',audio_specs:v.audio_specs||'24 BIT / 44.1 kHz',vinyl_size:v.vinyl_size||'12 INCH',vinyl_speed:v.vinyl_speed||'33 RPM',vinyl_weight_g:String(v.vinyl_weight_g||180),vinyl_color:v.vinyl_color||'BLACK',active:v.active!==false});
 
 export default function EditReleaseModal({product,onClose,onSaved}){
@@ -31,12 +34,14 @@ export default function EditReleaseModal({product,onClose,onSaved}){
  const [tab,setTab]=useState('release');
  const [form,setForm]=useState({catalogue_no:product.catalogue_no||'',title:product.title||'',artist_project:product.artist_project||'',description:product.description||'',imprint:product.imprint||'sideii',status:product.status||'draft',has_shrinkwrap:!!product.has_shrinkwrap,release_date:product.release_date||'',credits:product.credits||'',tracklist:Array.isArray(product.tracklist)?product.tracklist.join('\n'):'',product_origin:product.product_origin||'own',original_label:product.original_label||'',original_catalogue_no:product.original_catalogue_no||'',barcode:product.barcode||''});
  const [storefront,setStorefront]=useState(()=>storefrontConfig(product.storefront_config,product.hover_media_format));
+ const [seo,setSeo]=useState(()=>seoConfig(product.seo_config));
  const [variants,setVariants]=useState(initialVariants.length?initialVariants:[cleanVariant({sku:`${product.catalogue_no||'SIDEII'}-CD`})]);
  const [removedVariants,setRemovedVariants]=useState([]);
  const [file,setFile]=useState(null); const [preview,setPreview]=useState(''); const [gallery,setGallery]=useState(Array.isArray(product.gallery_paths)?product.gallery_paths:[]); const [galleryFiles,setGalleryFiles]=useState([]);
  const [saving,setSaving]=useState(false); const [message,setMessage]=useState('');
  const set=(k,v)=>setForm(p=>({...p,[k]:v}));
  const setStore=(section,key,value)=>setStorefront(p=>({...p,[section]:{...p[section],[key]:value}}));
+ const setSeoValue=(key,value)=>setSeo(p=>({...p,[key]:value}));
  useEffect(()=>()=>{if(preview)URL.revokeObjectURL(preview);galleryFiles.forEach(x=>URL.revokeObjectURL(x.preview))},[preview,galleryFiles]);
  const publicUrl=path=>supabase.storage.from('release-artwork').getPublicUrl(path).data.publicUrl;
  const current=product.artwork_path?publicUrl(product.artwork_path):'';
@@ -63,7 +68,7 @@ export default function EditReleaseModal({product,onClose,onSaved}){
    const removed=(Array.isArray(product.gallery_paths)?product.gallery_paths:[]).filter(x=>!gallery.includes(x));if(removed.length)await supabase.storage.from('release-artwork').remove(removed);
    const galleryPaths=[...gallery,...uploaded];
    const isPublic=['active','forthcoming'].includes(form.status);
-   const {error:p}=await supabase.from('products').update({catalogue_no:form.catalogue_no.trim(),title:form.title.trim(),artist_project:form.artist_project.trim()||null,description:form.description.trim()||null,imprint:form.imprint,status:form.status,is_public:isPublic,has_shrinkwrap:form.has_shrinkwrap,release_date:form.release_date||null,credits:form.credits.trim()||null,tracklist:form.tracklist.split('\n').map(x=>x.trim()).filter(Boolean),product_origin:form.product_origin,original_label:form.product_origin==='distributed'?(form.original_label.trim()||null):null,original_catalogue_no:form.product_origin==='distributed'?(form.original_catalogue_no.trim()||null):null,barcode:form.barcode.trim()||null,hover_media_format:storefront.hover.format,storefront_config:storefront,artwork_path:artworkPath,gallery_paths:galleryPaths}).eq('id',product.id);if(p)throw p;
+   const {error:p}=await supabase.from('products').update({catalogue_no:form.catalogue_no.trim(),title:form.title.trim(),artist_project:form.artist_project.trim()||null,description:form.description.trim()||null,imprint:form.imprint,status:form.status,is_public:isPublic,has_shrinkwrap:form.has_shrinkwrap,release_date:form.release_date||null,credits:form.credits.trim()||null,tracklist:form.tracklist.split('\n').map(x=>x.trim()).filter(Boolean),product_origin:form.product_origin,original_label:form.product_origin==='distributed'?(form.original_label.trim()||null):null,original_catalogue_no:form.product_origin==='distributed'?(form.original_catalogue_no.trim()||null):null,barcode:form.barcode.trim()||null,hover_media_format:storefront.hover.format,storefront_config:storefront,seo_config:seo,artwork_path:artworkPath,gallery_paths:galleryPaths}).eq('id',product.id);if(p)throw p;
    for(const id of removedVariants){const {error}=await supabase.from('product_variants').delete().eq('id',id);if(error)throw error}
    for(const [i,v] of variants.entries()){const stock=Math.max(0,parseInt(v.stock||'0',10)||0),price=Math.max(0,parseFloat(v.price||'0')||0);const payload={product_id:product.id,sku:v.sku.trim()||`${form.catalogue_no}-${v.format.toUpperCase()}-${i+1}`,format:v.format,price,currency:'TRY',stock_qty:stock,manufactured_qty:Math.max(stock+Number(v.reserved_qty||0),Number(v.manufactured_qty||0)),reserved_qty:Number(v.reserved_qty||0),edition_name:v.edition_name.trim()||form.title.trim(),edition_details:v.edition_details.trim()||null,digital_formats:v.format==='digital'?v.digital_formats.split(',').map(x=>x.trim().toUpperCase()).filter(Boolean):[],audio_specs:v.format==='digital'?(v.audio_specs.trim()||null):null,vinyl_size:v.format==='vinyl'?v.vinyl_size:null,vinyl_speed:v.format==='vinyl'?v.vinyl_speed:null,vinyl_weight_g:v.format==='vinyl'?(parseInt(v.vinyl_weight_g||'0',10)||null):null,vinyl_color:v.format==='vinyl'?(v.vinyl_color.trim()||null):null,active:v.active};const q=v.id?supabase.from('product_variants').update(payload).eq('id',v.id):supabase.from('product_variants').insert(payload);const {error}=await q;if(error)throw error}
    await onSaved();onClose();
@@ -71,7 +76,7 @@ export default function EditReleaseModal({product,onClose,onSaved}){
  }
 
  return createPortal(<div className="editOverlay" onMouseDown={e=>{if(e.target===e.currentTarget)onClose()}}><section className="editModal releaseV2Modal"><header><div><span>EDIT / RELEASE V2</span><h2>{product.title}</h2></div><button onClick={onClose}>CLOSE ×</button></header>
- <nav className="editTabs">{[['release','RELEASE'],['media',`MEDIA · ${variants.length}`],['gallery',`GALLERY · ${gallery.length+galleryFiles.length}`],['storefront','STOREFRONT']].map(([v,l])=><button key={v} className={tab===v?'active':''} onClick={()=>setTab(v)}>{l}</button>)}</nav>
+ <nav className="editTabs">{[['release','RELEASE'],['media',`MEDIA · ${variants.length}`],['gallery',`GALLERY · ${gallery.length+galleryFiles.length}`],['storefront','STOREFRONT'],['seo','SEO / FEEDS']].map(([v,l])=><button key={v} className={tab===v?'active':''} onClick={()=>setTab(v)}>{l}</button>)}</nav>
  {tab==='release'&&<div className="editBody"><div className="editFields">
  <label>PRODUCT ORIGIN<select value={form.product_origin} onChange={e=>set('product_origin',e.target.value)}><option value="own">OWN RELEASE</option><option value="distributed">SELECTED / DISTRIBUTION</option></select></label><label>IMPRINT<select value={form.imprint} onChange={e=>set('imprint',e.target.value)} disabled={form.product_origin==='distributed'}><option value="sideii">SIDE:II</option><option value="lethargia">LETHARGIA RECORDS</option></select></label>{form.product_origin==='distributed'&&<><label>ORIGINAL LABEL<input required value={form.original_label} onChange={e=>set('original_label',e.target.value)} placeholder="e.g. 4AD"/></label><label>ORIGINAL CATALOGUE NO.<input value={form.original_catalogue_no} onChange={e=>set('original_catalogue_no',e.target.value)}/></label></>}<label>BARCODE / EAN<input value={form.barcode} onChange={e=>set('barcode',e.target.value)}/></label><label>CATALOGUE NO.<input value={form.catalogue_no} onChange={e=>set('catalogue_no',e.target.value)}/></label><label>TITLE<input value={form.title} onChange={e=>set('title',e.target.value)}/></label><label>STATUS<select value={form.status} onChange={e=>set('status',e.target.value)}>{STATUS.map(([v,l])=><option value={v} key={v}>{l}</option>)}</select></label><label>RELEASE DATE<input type="date" value={form.release_date} onChange={e=>set('release_date',e.target.value)}/></label><label>ARTIST / PROJECT<input value={form.artist_project} onChange={e=>set('artist_project',e.target.value)}/></label>
  <label className="editWide">TRACKLIST · ONE TRACK PER LINE<textarea rows="6" value={form.tracklist} onChange={e=>set('tracklist',e.target.value)}/></label><label className="editWide">CREDITS<textarea rows="5" value={form.credits} onChange={e=>set('credits',e.target.value)}/></label><label className="editWide">DESCRIPTION<textarea rows="4" value={form.description} onChange={e=>set('description',e.target.value)}/></label><label className="editWide">PRIMARY ARTWORK<input type="file" accept="image/jpeg,image/png,image/webp,image/avif" onChange={e=>pick(e.target.files?.[0]||null)}/></label><label className="editWide editCheck"><input type="checkbox" checked={form.has_shrinkwrap} onChange={e=>set('has_shrinkwrap',e.target.checked)}/><span>SHRINKWRAP / CELLOPHANE</span></label>
@@ -113,6 +118,27 @@ export default function EditReleaseModal({product,onClose,onSaved}){
    <label>DEFAULT SIDE<select value={storefront.detail.default_side} onChange={e=>setStore('detail','default_side',e.target.value)}><option value="front">FRONT</option><option value="back">BACK</option></select></label>
    <label>GALLERY LAYOUT<select value={storefront.detail.gallery_layout} onChange={e=>setStore('detail','gallery_layout',e.target.value)}><option value="grid">GRID</option><option value="strip">STRIP</option><option value="masonry">MASONRY</option></select></label>
    {Object.entries({facts:'FACTS',tracklist:'TRACKLIST',credits:'CREDITS',object_note:'THE OBJECT',press_kit:'PRESS KIT',listening_preview:'LISTENING PREVIEW',related:'RELATED PRODUCTS',sticky_buy:'STICKY BUY PANEL'}).map(([k,l])=><label className="storefrontToggle" key={k}><input type="checkbox" checked={storefront.detail[k]!==false} onChange={e=>setStore('detail',k,e.target.checked)}/><span>{l}</span></label>)}
+  </div></section>
+ </div>}
+ {tab==='seo'&&<div className="storefrontEditor seoEditor">
+  <section className="storefrontBlock"><header><span>SEO / SEARCH</span><p>Override product metadata only when needed. Blank fields fall back to catalogue data.</p></header><div className="storefrontGrid">
+   <label className="storefrontWide">SEO TITLE<input maxLength="70" value={seo.title||''} onChange={e=>setSeoValue('title',e.target.value)} placeholder={form.title||'Product title'}/></label>
+   <label className="storefrontWide">META DESCRIPTION<textarea rows="3" value={seo.description||''} onChange={e=>setSeoValue('description',e.target.value)} placeholder={form.description||'Product description'}/></label>
+   <label className="storefrontWide">CANONICAL URL<input value={seo.canonical||''} onChange={e=>setSeoValue('canonical',e.target.value)} placeholder="https://domain.com/releases/..."/></label>
+   <label className="storefrontWide">OG IMAGE URL<input value={seo.og_image||''} onChange={e=>setSeoValue('og_image',e.target.value)} placeholder="Leave blank to use product cover"/></label>
+   <label className="storefrontToggle"><input type="checkbox" checked={seo.structured_data!==false} onChange={e=>setSeoValue('structured_data',e.target.checked)}/><span>STRUCTURED DATA / PRODUCT SCHEMA</span></label>
+  </div></section>
+
+  <section className="storefrontBlock"><header><span>PRODUCT IDENTIFIERS</span><p>Shared by Google Shopping and future commerce feeds.</p></header><div className="storefrontGrid">
+   <label>BRAND<input value={seo.brand||''} onChange={e=>setSeoValue('brand',e.target.value)} placeholder="SIDE:II"/></label>
+   <label>GTIN / EAN<input value={seo.gtin||''} onChange={e=>setSeoValue('gtin',e.target.value)} placeholder={form.barcode||'Barcode / EAN'}/></label>
+   <label>MPN<input value={seo.mpn||''} onChange={e=>setSeoValue('mpn',e.target.value)} placeholder={form.catalogue_no||'Catalogue / manufacturer part no.'}/></label>
+   <label className="storefrontWide">GOOGLE PRODUCT CATEGORY<input value={seo.google_category||''} onChange={e=>setSeoValue('google_category',e.target.value)} placeholder="e.g. Media > Music & Sound Recordings"/></label>
+   <label>CONDITION<select value={seo.condition||'new'} onChange={e=>setSeoValue('condition',e.target.value)}><option value="new">NEW</option><option value="used">USED</option><option value="refurbished">REFURBISHED</option></select></label>
+  </div></section>
+
+  <section className="storefrontBlock"><header><span>CHANNELS</span><p>These switches will control inclusion in each generated product feed.</p></header><div className="storefrontToggleGrid">
+   {Object.entries({google:'GOOGLE SHOPPING',meta:'META CATALOG',pinterest:'PINTEREST',microsoft:'MICROSOFT',tiktok:'TIKTOK'}).map(([k,l])=><label className="storefrontToggle" key={k}><input type="checkbox" checked={storefront.visibility[k]!==false} onChange={e=>setStore('visibility',k,e.target.checked)}/><span>{l}</span></label>)}
   </div></section>
  </div>}
  {message&&<p className="workspaceMessage">{message}</p>}<footer><button className="ghostButton" onClick={onClose}>CANCEL</button><button className="saveButton" disabled={saving} onClick={save}>{saving?'SAVING…':'SAVE RELEASE V2 →'}</button></footer></section></div>, document.body)
