@@ -382,3 +382,81 @@
 
 @media(max-width:900px){.merchDetailObject{width:min(430px,82%)}}
 @media(max-width:560px){.merchDetailObject{width:min(340px,88%)}}
+
+
+/* Merch view selector v3 */
+.merchViewSelector{
+  position:sticky;
+  top:18px;
+  z-index:6;
+  width:max-content;
+  margin-bottom:18px;
+}
+.merchViewSelector>span{
+  display:block;
+  margin:0 0 7px 2px;
+  color:#5f5c61;
+  font:7px/1 Arial,sans-serif;
+  letter-spacing:.2em;
+}
+.merchDetailSwitch{
+  position:static!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(92px,1fr));
+  gap:0!important;
+  width:auto!important;
+  margin:0!important;
+  padding:0!important;
+  border:1px solid #35343a;
+  background:rgba(8,8,10,.9)!important;
+  backdrop-filter:blur(10px);
+}
+.merchDetailSwitch button{
+  position:relative;
+  min-width:92px!important;
+  min-height:44px;
+  padding:8px 14px!important;
+  border:0!important;
+  border-right:1px solid #2f2e33!important;
+  background:transparent!important;
+  color:#6f6c72!important;
+  display:grid;
+  grid-template-columns:auto 1fr;
+  align-items:center;
+  gap:9px;
+  text-align:left;
+  transition:background .18s ease,color .18s ease;
+}
+.merchDetailSwitch button:last-child{border-right:0!important}
+.merchDetailSwitch button i{
+  font:7px/1 Arial,sans-serif;
+  font-style:normal;
+  letter-spacing:.12em;
+  color:#4f4c52;
+}
+.merchDetailSwitch button b{
+  font:8px/1 Arial,sans-serif;
+  font-weight:400;
+  letter-spacing:.16em;
+}
+.merchDetailSwitch button:hover{
+  background:#111114!important;
+  color:#b9b4ad!important;
+}
+.merchDetailSwitch button.active{
+  background:#e5dfd6!important;
+  color:#111113!important;
+}
+.merchDetailSwitch button.active i{color:#5e5953}
+.merchDetailSwitch button.active:after{
+  content:'';
+  position:absolute;
+  left:10px;right:10px;bottom:-1px;
+  height:1px;
+  background:#f5efe7;
+}
+@media(max-width:560px){
+  .merchViewSelector{width:100%;position:static}
+  .merchDetailSwitch{grid-template-columns:1fr 1fr!important;width:100%!important}
+  .merchDetailSwitch button{min-width:0!important;justify-content:center}
+}
