@@ -123,7 +123,7 @@ export default function MerchandisingPanel({products=[]}){
       <label>STARTS<input type="datetime-local" value={form.starts_at} onChange={e=>setForm({...form,starts_at:e.target.value})}/></label>
       <label>ENDS<input type="datetime-local" value={form.ends_at} onChange={e=>setForm({...form,ends_at:e.target.value})}/></label>
       <label className="collectionWide">DESCRIPTION<textarea rows="3" value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/></label>
-      <label className="storefrontToggle"><input type="checkbox" checked={!!form.active} onChange={e=>setForm({...form,active:e.target.checked)}/><span>PUBLIC / ACTIVE</span></label>
+      <label className="storefrontToggle"><input type="checkbox" checked={!!form.active} onChange={e=>setForm({...form,active:e.target.checked})}/><span>PUBLIC / ACTIVE</span></label>
      </div>
      <div className="formActions"><button type="button" className="ghostButton" onClick={newCollection}>RESET</button><button className="saveButton" disabled={busy==='collection'}>{busy==='collection'?'SAVING…':'SAVE COLLECTION'}</button></div>
     </form>
