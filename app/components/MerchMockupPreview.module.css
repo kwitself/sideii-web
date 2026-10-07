@@ -38,5 +38,15 @@
 
 /* Artwork cleanup for dark merch surfaces */
 .darkSurfaceArtwork{
-  mix-blend-mode:lighten;
+  mix-blend-mode:screen;
 }
+
+
+/* Stable shared renderer display modes */
+.hero .object{width:min(72%,320px)}
+.hero .tee{width:min(76%,330px)}
+.gallery .object{width:min(44%,190px)}
+.gallery .tee{width:min(50%,210px)}
+.thumb .object{width:min(82%,42px)}
+.thumb .tee{width:min(84%,42px)}
+.hero,.gallery,.thumb{background:transparent!important}
