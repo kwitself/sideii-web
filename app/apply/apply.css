@@ -47,3 +47,6 @@
  .applicationGroupHead{grid-template-columns:34px 1fr}
  .applicationSuccess h2{font-size:42px}
 }
+
+/* FINAL UI AUDIT */
+.applyHero>span,.applyIntro span,.applicationGroupHead>span,.productionApplicationForm label,.applicationServices>span,.applicationSuccess>span{font-size:9px}.productionApplicationForm input,.productionApplicationForm textarea{min-height:46px;font-size:14px}.applicationServices button{min-height:44px;font-size:9px}.applicationSubmit{min-height:54px;font-size:10px;transition:.18s}.applicationSubmit:hover:not(:disabled){filter:brightness(1.08)}.applicationPrivacy{font-size:9px}.applicationSuccess button{min-height:44px;padding:0 18px;font-size:9px}@media(max-width:760px){.applyFormWrap{padding-bottom:92px}.productionApplicationForm{max-width:none}}
