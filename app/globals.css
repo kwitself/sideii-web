@@ -3475,3 +3475,130 @@ button,a{transition:color .18s ease,border-color .18s ease,background .18s ease,
 .storeClassicBadge.warm{border-color:#62594d;color:#ddd0b7}
 .storeClassicBadge.alert{border-color:#67444a;color:#d6a5ae}
 .storeClassicBadge.muted{opacity:.68}
+
+
+/* PRODUCT DISCOVERY / RELATED + RECENT */
+.productDiscovery{
+  display:grid;
+  gap:34px;
+  padding-top:34px;
+  padding-bottom:74px;
+}
+.discoveryBlock{
+  border-top:1px solid #2c2b2f;
+  padding-top:18px;
+}
+.discoveryBlock>header{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:20px;
+  margin-bottom:16px;
+}
+.discoveryBlock>header span{
+  color:#a8a39c;
+  font:9px/1 Arial,sans-serif;
+  letter-spacing:.18em;
+}
+.discoveryBlock>header small{
+  color:#625f64;
+  font:9px/1.3 Georgia,serif;
+  font-style:italic;
+}
+.discoveryGrid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+.discoveryCard{
+  min-width:0;
+  display:grid;
+  grid-template-columns:112px minmax(0,1fr);
+  gap:14px;
+  align-items:center;
+  padding:10px;
+  border:1px solid #2d2c30;
+  background:#0d0d0f;
+  color:inherit;
+  text-decoration:none;
+  transition:transform .24s cubic-bezier(.22,.8,.24,1),border-color .24s ease,background .24s ease;
+}
+.discoveryCard:hover{
+  transform:translateY(-3px);
+  border-color:#4a474c;
+  background:#121214;
+}
+.discoveryVisual{
+  width:112px;
+  aspect-ratio:1;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  border:1px solid #343237;
+  background:#09090a;
+}
+.discoveryVisual img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform .42s cubic-bezier(.22,.8,.24,1);
+}
+.discoveryCard:hover .discoveryVisual img{transform:scale(1.035)}
+.discoveryVisual>span{
+  color:#59565b;
+  font:18px/1 Georgia,serif;
+}
+.discoveryCard>div:last-child{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+.discoveryCard small,
+.discoveryCard b{
+  color:#68646a;
+  font:7px/1.2 Arial,sans-serif;
+  letter-spacing:.11em;
+  font-weight:400;
+}
+.discoveryCard h3{
+  overflow:hidden;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  margin:0;
+  color:#d8d4cc;
+  font:19px/.98 Georgia,serif;
+  font-weight:400;
+}
+.recentlyViewed{opacity:.88}
+.recentGrid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.recentGrid .discoveryCard{
+  grid-template-columns:82px minmax(0,1fr);
+}
+.recentGrid .discoveryVisual{width:82px}
+.recentGrid .discoveryCard h3{font-size:16px}
+@media(max-width:1100px){
+  .discoveryGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .recentGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+  .productDiscovery{padding-top:26px;padding-bottom:52px}
+  .discoveryBlock>header{align-items:flex-start;flex-direction:column;gap:7px}
+  .discoveryGrid,
+  .recentGrid{
+    display:flex;
+    overflow-x:auto;
+    gap:10px;
+    padding-bottom:6px;
+    scroll-snap-type:x proximity;
+  }
+  .discoveryCard,
+  .recentGrid .discoveryCard{
+    flex:0 0 82%;
+    grid-template-columns:92px minmax(0,1fr);
+    scroll-snap-align:start;
+  }
+  .discoveryVisual,
+  .recentGrid .discoveryVisual{width:92px}
+}
