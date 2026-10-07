@@ -3714,3 +3714,76 @@ textarea{line-height:1.5!important}
   }
   .analyticsChartWrap .analyticsSpark{height:220px}
 }
+
+
+/* CONTROL ROOM TYPE SYSTEM — match the rest of the admin */
+.adminApp{
+  --admin-sans:Arial,Helvetica,sans-serif;
+  --admin-serif:Georgia,'Times New Roman',serif;
+  font-family:var(--admin-sans);
+}
+.adminTop h1,
+.formIntro h2,
+.editModal h2,
+.lowerGrid h2,
+.wearOpsIntro h2,
+.analyticsHead h2,
+.analyticsHero>header>strong,
+.analyticsHeroKpis b,
+.profitSplitTotal b,
+.analyticsTrendFoot b,
+.metricGrid strong,
+.qaScore strong,
+.inventoryRing strong{
+  font-family:var(--admin-serif)!important;
+  font-weight:400;
+}
+.analyticsHead h2{
+  font-size:34px;
+  line-height:.98;
+  letter-spacing:-.035em;
+}
+.analyticsHead h2 em{
+  font-family:var(--admin-serif);
+  font-style:italic;
+  font-weight:400;
+}
+.analyticsHero>header>strong{
+  font-size:38px;
+  letter-spacing:-.025em;
+}
+.analyticsHeroKpis b{
+  font-size:18px;
+  letter-spacing:-.015em;
+}
+.profitSplitTotal b{
+  font-size:18px;
+}
+.analyticsBars strong,
+.artistShareRow strong,
+.royaltyTableRow strong{
+  font-family:var(--admin-serif);
+  font-weight:400;
+}
+.adminNav,
+.adminSubnav,
+.topActions,
+.productControlBar,
+.bulkActionBar,
+.tableHead,
+.rowActions,
+.statusSelect,
+.qaBadge,
+.analyticsRange,
+.adminPanel header,
+.adminApp input,
+.adminApp select,
+.adminApp textarea,
+.adminApp button{
+  font-family:var(--admin-sans)!important;
+}
+.sectionLabel p,
+.formIntro p,
+.wearOpsIntro p{
+  font-family:var(--admin-serif);
+}
