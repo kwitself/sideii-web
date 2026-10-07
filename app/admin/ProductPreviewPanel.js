@@ -61,7 +61,7 @@ function CardImage({product,className='',style=null}) {
  return src?<img className={className} src={src} alt="" style={style||undefined}/>:<div className={'previewMissing '+className}>NO IMAGE</div>;
 }
 
-export default function ProductPreviewPanel({products=[],preferredProductId=null,embedded=false,initialMode='editorial'}){
+export default function ProductPreviewPanel({products=[],preferredProductId=null,embedded=false,initialMode='editorial',onEditProduct=null}){
  const [selectedId,setSelectedId]=useState(preferredProductId||products[0]?.id||'');
  const [mode,setMode]=useState(initialMode);
  const [zoom,setZoom]=useState('fit');
@@ -89,15 +89,18 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
  const previewPrice=card.price_mode==='hidden'?'':card.price_mode==='from'&&!priceText(product).startsWith('FROM ')?'FROM '+priceText(product):priceText(product);
  const rawStock=stockText(product);
  const previewStock=card.stock===false||card.stock_mode==='hidden'?'':card.stock_mode==='status'?(rawStock.includes('PRE-ORDER')?'PRE-ORDER':rawStock.includes('SOLD OUT')?'SOLD OUT':rawStock.includes('DIGITAL')?'DIGITAL':'IN STOCK'):rawStock;
- const feedBlockers=[
-  visibility.google===false?'GOOGLE CHANNEL OFF':null,
-  visibility.store===false?'STORE VISIBILITY OFF':null,
-  !String(product.title||'').trim()?'TITLE MISSING':null,
-  !productImage(product)&&!(isMerch(product)&&Object.values(mockupProduct(product).mockups||{}).some(Boolean))?'PRIMARY IMAGE MISSING':null,
-  !variants.some(v=>Number.isFinite(Number(v.price)))?'PRICE MISSING':null,
-  product.status!=='active'&&!variants.some(v=>v.preorder_enabled)?'NOT ACTIVE / PRE-ORDERABLE':null
+ const feedFixes=[
+  visibility.google===false?{text:'GOOGLE CHANNEL OFF',tab:'seo'}:null,
+  visibility.store===false?{text:'STORE VISIBILITY OFF',tab:'storefront'}:null,
+  !String(product.title||'').trim()?{text:'TITLE MISSING',tab:'release'}:null,
+  !productImage(product)&&!(isMerch(product)&&Object.values(mockupProduct(product).mockups||{}).some(Boolean))?{text:'PRIMARY IMAGE MISSING',tab:'release'}:null,
+  !variants.some(v=>Number.isFinite(Number(v.price)))?{text:'PRICE MISSING',tab:'media'}:null,
+  product.status!=='active'&&!variants.some(v=>v.preorder_enabled)?{text:'NOT ACTIVE / PRE-ORDERABLE',tab:'release'}:null
  ].filter(Boolean);
+ const feedBlockers=feedFixes.map(x=>x.text);
  const feedWarnings=[!(product.seo_config?.gtin||product.barcode||product.seo_config?.mpn)?'IDENTIFIER MISSING':null,!product.seo_config?.google_category?'GOOGLE CATEGORY MISSING':null].filter(Boolean);
+ const seoTitleWarn=seo.title.length>70;
+ const seoDescriptionWarn=seo.description.length>160;
 
  return <section className={(embedded?'previewSystem previewEmbedded':'adminSection adminViewSection previewSystem')}>
   {!embedded&&<div className="sectionLabel"><span>03 / PRODUCT PREVIEW SYSTEM</span><p>Inspect storefront and feed output before publishing.</p></div>}
@@ -117,7 +120,7 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
     <div><span>STOCK</span><b>{previewStock||'STOCK HIDDEN'}</b></div>
     <div><span>IMAGE FIT</span><b>{String(imageFit).toUpperCase()}</b></div>
     <div><span>CTA</span><b>{String(cta).toUpperCase()}</b></div>
-    <div className="previewSeoReadout"><span>SEO TITLE</span><b>{seo.title}</b><small>{seo.title.length}/70 · DESCRIPTION {seo.description.length}/160</small><small>{seo.description}</small></div><div className="previewSeoReadout"><span>FEED CHECK</span><b>{feedBlockers.length?feedBlockers.join(' · '):'READY'}</b>{feedWarnings.length>0&&<small>{feedWarnings.join(' · ')}</small>}</div>
+    <div className={'previewSeoReadout '+(seoTitleWarn||seoDescriptionWarn?'warning':'')}><span>SEO TITLE</span><b>{seo.title}</b><small>{seoTitleWarn?'TITLE TOO LONG · ':''}{seo.title.length}/70 · {seoDescriptionWarn?'DESCRIPTION TOO LONG · ':''}{seo.description.length}/160</small><small>{seo.description}</small></div><div className="previewSeoReadout"><span>FEED CHECK</span><b>{feedBlockers.length?feedBlockers.join(' · '):'READY'}</b>{feedWarnings.length>0&&<small>{feedWarnings.join(' · ')}</small>}{!embedded&&onEditProduct&&feedFixes.length>0&&<div className="previewFixes">{feedFixes.map((x,i)=><button key={x.text+i} onClick={()=>onEditProduct(product,x.tab)}>FIX {x.text}</button>)}</div>}</div>
    </aside>}
 
    <div className={(embedded?'previewStage previewStageEmbedded ':'previewStage adminPanel ')+'preview-'+mode+' zoom-'+zoom+' viewport-'+viewport+(hoverSim?' hoverSim':'')}>
