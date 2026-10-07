@@ -16,7 +16,7 @@ export async function generateMetadata({params}){
  const title=seo.title||`${product.title} — SIDE:II Store`;
  const description=seo.description||product.lead;
  const ogImage=seo.og_image||product.cover||null;
- return {title,description,...(seo.canonical?{alternates:{canonical:seo.canonical}}:{}),openGraph:{title,description,images:ogImage?[ogImage]:[]}};
+ return {title,description,alternates:{canonical:seo.canonical||('/store/'+slug)},openGraph:{title,description,url:seo.canonical||('/store/'+slug),images:ogImage?[ogImage]:[]}};
 }
 
 export default async function StoreProductPage({params}){
