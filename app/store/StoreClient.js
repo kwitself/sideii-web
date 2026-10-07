@@ -8,11 +8,40 @@ import {readWishlist,writeWishlist,wishlistItemFromProduct} from '../lib/wishlis
 import {useLocaleCurrency} from '../components/LocaleCurrencyProvider';
 import MerchMockupPreview from '../components/MerchMockupPreview';
 
+const normalizeSearch=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+const searchTokens=value=>normalizeSearch(value).split(/\s+/).filter(Boolean);
+const productSearchFields=r=>({
+ title:normalizeSearch([r.rawTitle,r.title].filter(Boolean).join(' ')),
+ artist:normalizeSearch(r.artist),
+ catalogue:normalizeSearch([r.catalogue,r.originalCatalogue].filter(Boolean).join(' ')),
+ taxonomy:normalizeSearch([r.imprint,r.merchCategory,r.productOrigin,...(r.collections||[]).flatMap(x=>[x.slug,x.name])].filter(Boolean).join(' ')),
+ variants:normalizeSearch((r.variants||[]).flatMap(v=>[v.sku,v.format,v.formatLabel,v.formatDetail,v.size,v.color,v.style,v.vinylColor]).filter(Boolean).join(' '))
+});
+const relevanceScore=(r,query)=>{
+ const tokens=searchTokens(query);if(!tokens.length)return 0;
+ const f=productSearchFields(r);
+ let score=0;
+ for(const token of tokens){
+  if(f.title===token)score+=100;else if(f.title.startsWith(token))score+=70;else if(f.title.includes(token))score+=50;
+  if(f.catalogue===token)score+=90;else if(f.catalogue.includes(token))score+=55;
+  if(f.artist.includes(token))score+=38;
+  if(f.variants.includes(token))score+=32;
+  if(f.taxonomy.includes(token))score+=20;
+ }
+ return score;
+};
+const matchesSearch=(r,query)=>{
+ const tokens=searchTokens(query);if(!tokens.length)return true;
+ const f=productSearchFields(r),all=[f.title,f.artist,f.catalogue,f.taxonomy,f.variants].join(' ');
+ return tokens.every(token=>all.includes(token));
+};
+
 export default function StoreClient({releases}){
  const {money:fmt,t}=useLocaleCurrency();
  const [filter,setFilter]=useState('all'),[formatFilter,setFormatFilter]=useState('all');
  const [search,setSearch]=useState(''),[availability,setAvailability]=useState('all'),[collectionFilter,setCollectionFilter]=useState('all'),[sortMode,setSortMode]=useState('newest');
  const [limitedOnly,setLimitedOnly]=useState(false),[preorderOnly,setPreorderOnly]=useState(false),[minPrice,setMinPrice]=useState(''),[maxPrice,setMaxPrice]=useState('');
+ const [categoryFilter,setCategoryFilter]=useState('all'),[sizeFilter,setSizeFilter]=useState('all'),[colorFilter,setColorFilter]=useState('all');
  const [filtersReady,setFiltersReady]=useState(false);
  const [viewMode,setViewMode]=useState('editorial');
  const [wishlist,setWishlist]=useState([]),[wishlistUser,setWishlistUser]=useState(null);
@@ -29,9 +58,10 @@ export default function StoreClient({releases}){
   setSearch(q.get('q')||'');
   if(['in-stock','preorder','sold-out'].includes(q.get('availability')))setAvailability(q.get('availability'));
   setCollectionFilter(q.get('collection')||'all');
+  setCategoryFilter(q.get('category')||'all');setSizeFilter(q.get('size')||'all');setColorFilter(q.get('color')||'all');
   setLimitedOnly(q.get('limited')==='1');setPreorderOnly(q.get('preorder')==='1');
   setMinPrice(q.get('min')||'');setMaxPrice(q.get('max')||'');
-  if(['newest','price-asc','price-desc','title'].includes(q.get('sort')))setSortMode(q.get('sort'));
+  if(['newest','relevance','price-asc','price-desc','title'].includes(q.get('sort')))setSortMode(q.get('sort'));
   if(q.get('checkout')==='1'){
    window.dispatchEvent(new Event('sideii-open-bag'));
    q.delete('checkout');window.history.replaceState({},'',window.location.pathname+(q.toString()?'?'+q.toString():''));
@@ -48,12 +78,12 @@ export default function StoreClient({releases}){
   const q=new URLSearchParams(window.location.search);
   const setOrDelete=(k,v,empty='all')=>{if(v&&v!==empty)q.set(k,String(v));else q.delete(k)};
   setOrDelete('imprint',filter);setOrDelete('media',formatFilter);setOrDelete('q',search,'');
-  setOrDelete('availability',availability);setOrDelete('collection',collectionFilter);
+  setOrDelete('availability',availability);setOrDelete('collection',collectionFilter);setOrDelete('category',categoryFilter);setOrDelete('size',sizeFilter);setOrDelete('color',colorFilter);
   limitedOnly?q.set('limited','1'):q.delete('limited');preorderOnly?q.set('preorder','1'):q.delete('preorder');
   setOrDelete('min',minPrice,'');setOrDelete('max',maxPrice,'');setOrDelete('sort',sortMode,'newest');
   const next=window.location.pathname+(q.toString()?'?'+q.toString():'');
   window.history.replaceState({},'',next);
- },[filtersReady,filter,formatFilter,search,availability,collectionFilter,limitedOnly,preorderOnly,minPrice,maxPrice,sortMode]);
+ },[filtersReady,filter,formatFilter,search,availability,collectionFilter,categoryFilter,sizeFilter,colorFilter,limitedOnly,preorderOnly,minPrice,maxPrice,sortMode]);
 
  useEffect(()=>{
   let live=true;
@@ -106,16 +136,27 @@ export default function StoreClient({releases}){
   for(const r of uniqueReleases)for(const x of r.collections||[])if(x?.slug)map.set(x.slug,x.name||x.slug);
   return [...map.entries()].map(([slug,name])=>({slug,name})).sort((a,b)=>String(a.name).localeCompare(String(b.name)));
  },[uniqueReleases]);
+ const facetOptions=useMemo(()=>{
+  const categories=new Set(),sizes=new Set(),colors=new Set();
+  for(const r of uniqueReleases){
+   if(r.merchCategory)categories.add(r.merchCategory);
+   for(const v of r.variants||[]){if(v.size)sizes.add(v.size);if(v.color)colors.add(v.color);if(v.vinylColor)colors.add(v.vinylColor)}
+  }
+  const sort=[...categories].sort((a,b)=>String(a).localeCompare(String(b)));
+  const alpha=set=>[...set].sort((a,b)=>String(a).localeCompare(String(b)));
+  return {categories:sort,sizes:alpha(sizes),colors:alpha(colors)};
+ },[uniqueReleases]);
  const filtered=useMemo(()=>uniqueReleases.filter(r=>{
   if(r.storefrontConfig?.visibility?.store===false)return false;
   if(filter!=='all'&&(filter==='selected'?r.productOrigin!=='distributed':r.imprint!==filter))return false;
   if(formatFilter!=='all'&&(formatFilter==='merch'?!r.isMerch:!r.variants.some(v=>v.format===formatFilter)))return false;
-  const q=search.trim().toLowerCase();
-  if(q){
-   const hay=[r.rawTitle,r.title,r.artist,r.catalogue,r.originalCatalogue,r.imprint,r.merchCategory,...(r.variants||[]).flatMap(v=>[v.sku,v.format,v.formatLabel,v.size,v.color,v.style])].filter(Boolean).join(' ').toLowerCase();
+  if(search.trim()){
    if(r.storefrontConfig?.visibility?.search===false)return false;
-   if(!hay.includes(q))return false;
+   if(!matchesSearch(r,search))return false;
   }
+  if(categoryFilter!=='all'&&String(r.merchCategory||'')!==categoryFilter)return false;
+  if(sizeFilter!=='all'&&!(r.variants||[]).some(v=>String(v.size||'')===sizeFilter))return false;
+  if(colorFilter!=='all'&&!(r.variants||[]).some(v=>String(v.color||v.vinylColor||'')===colorFilter))return false;
   const variants=r.variants||[];
   const hasPreorder=r.status==='AVAILABLE'&&variants.some(v=>!!v.preorderEnabled);
   const hasAvailable=r.status==='AVAILABLE'&&variants.some(v=>v.format==='digital'||v.stock==null||Number(v.stock)>0);
@@ -132,16 +173,18 @@ export default function StoreClient({releases}){
    if(!priceMatch)return false;
   }
   return true;
- }),[uniqueReleases,filter,formatFilter,search,availability,collectionFilter,limitedOnly,preorderOnly,minPrice,maxPrice]);
+ }),[uniqueReleases,filter,formatFilter,search,availability,collectionFilter,categoryFilter,sizeFilter,colorFilter,limitedOnly,preorderOnly,minPrice,maxPrice]);
  const sortedFiltered=useMemo(()=>{
   const rows=[...filtered];
   const firstPrice=r=>Math.min(...(r.variants||[]).map(v=>Number(v.price)).filter(Number.isFinite),Number.POSITIVE_INFINITY);
-  if(sortMode==='price-asc')rows.sort((a,b)=>firstPrice(a)-firstPrice(b));
+  if(sortMode==='relevance'&&search.trim())rows.sort((a,b)=>relevanceScore(b,search)-relevanceScore(a,search));
+  else if(sortMode==='price-asc')rows.sort((a,b)=>firstPrice(a)-firstPrice(b));
   else if(sortMode==='price-desc')rows.sort((a,b)=>firstPrice(b)-firstPrice(a));
   else if(sortMode==='title')rows.sort((a,b)=>String(a.rawTitle||a.title).localeCompare(String(b.rawTitle||b.title)));
   return rows;
- },[filtered,sortMode]);
- const resetDiscovery=()=>{setFilter('all');setFormatFilter('all');setSearch('');setAvailability('all');setCollectionFilter('all');setLimitedOnly(false);setPreorderOnly(false);setMinPrice('');setMaxPrice('');setSortMode('newest')};
+ },[filtered,sortMode,search]);
+ const resetDiscovery=()=>{setFilter('all');setFormatFilter('all');setSearch('');setAvailability('all');setCollectionFilter('all');setCategoryFilter('all');setSizeFilter('all');setColorFilter('all');setLimitedOnly(false);setPreorderOnly(false);setMinPrice('');setMaxPrice('');setSortMode('newest')};
+ const activeFilterCount=[filter!=='all',formatFilter!=='all',availability!=='all',collectionFilter!=='all',categoryFilter!=='all',sizeFilter!=='all',colorFilter!=='all',limitedOnly,preorderOnly,minPrice!=='',maxPrice!==''].filter(Boolean).length;
  const add=(r,v)=>{addCartItem(r,v);window.dispatchEvent(new Event('sideii-open-bag'))};
  const productHref=r=>r.isMerch?('/store/'+r.slug):('/releases/'+r.slug);
  const cardPosition=card=>card?.image_position==='custom'?((card.crop_x??50)+'% '+(card.crop_y??50)+'%'):(card?.image_position||'center');
@@ -163,17 +206,20 @@ export default function StoreClient({releases}){
   <section className="storeHero shell"><span>STORE / CATALOGUE</span><h1>Available<br/><i>editions.</i></h1><p>Physical objects and digital masters from SIDE:II and its imprints.</p><div className="storeEditorialLinks"><Link className="storeWearEntry" href="/wear">{t('WEAR WHAT YOU SUPPORT')} →</Link><Link className="storeWearEntry" href="/collections">{t('COLLECTIONS')} →</Link><Link className="storeWearEntry" href="/bundles">{t('BUNDLES')} →</Link><Link className="storeWearEntry" href="/archive">{t('ARCHIVE')} →</Link></div></section>
   <section className="storeFilters shell"><div>{[['all','ALL'],['sideii','SIDE:II'],['lethargia','LETHARGIA'],['selected','SELECTED']].map(([v,l])=><button key={v} className={filter===v?'active':''} onClick={()=>setFilter(v)}>{l}</button>)}</div><div>{[['all','ALL MEDIA'],['merch','MERCH'],['vinyl','VINYL'],['cd','CD'],['cassette','CASSETTE'],['digital','DIGITAL']].map(([v,l])=><button key={v} className={formatFilter===v?'active':''} onClick={()=>setFormatFilter(v)}>{l}</button>)}</div><div className="storeViewToggle" role="group" aria-label="Store view"><span>VIEW</span><button type="button" className={viewMode==='editorial'?'active':''} aria-pressed={viewMode==='editorial'} onClick={()=>setViewMode('editorial')}>EDITORIAL</button><button type="button" className={viewMode==='classic'?'active':''} aria-pressed={viewMode==='classic'} onClick={()=>setViewMode('classic')}>CLASSIC</button></div></section>
   <section className="storeDiscoveryTools shell">
-   <div className="storeSearchField"><span>SEARCH CATALOGUE</span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Title, artist, catalogue, SKU…"/></div>
+   <div className="storeSearchField"><span>SEARCH CATALOGUE</span><input value={search} onChange={e=>{setSearch(e.target.value);if(e.target.value.trim()&&sortMode==='newest')setSortMode('relevance')}} placeholder="Title, artist, catalogue, SKU, colour, collection…"/>{search&&<button type="button" className="storeSearchClear" onClick={()=>{setSearch('');if(sortMode==='relevance')setSortMode('newest')}}>CLEAR ×</button>}</div>
    <div className="storeDiscoveryControls">
     <label><span>AVAILABILITY</span><select value={availability} onChange={e=>setAvailability(e.target.value)}><option value="all">ALL</option><option value="in-stock">IN STOCK</option><option value="preorder">PRE-ORDER</option><option value="sold-out">SOLD OUT</option></select></label>
     <label><span>COLLECTION</span><select value={collectionFilter} onChange={e=>setCollectionFilter(e.target.value)}><option value="all">ALL COLLECTIONS</option>{collectionOptions.map(x=><option value={x.slug} key={x.slug}>{String(x.name).toUpperCase()}</option>)}</select></label>
+    <label><span>CATEGORY</span><select value={categoryFilter} onChange={e=>setCategoryFilter(e.target.value)}><option value="all">ALL CATEGORIES</option>{facetOptions.categories.map(x=><option value={x} key={x}>{String(x).toUpperCase()}</option>)}</select></label>
+    <label><span>SIZE</span><select value={sizeFilter} onChange={e=>setSizeFilter(e.target.value)}><option value="all">ALL SIZES</option>{facetOptions.sizes.map(x=><option value={x} key={x}>{String(x).toUpperCase()}</option>)}</select></label>
+    <label><span>COLOUR</span><select value={colorFilter} onChange={e=>setColorFilter(e.target.value)}><option value="all">ALL COLOURS</option>{facetOptions.colors.map(x=><option value={x} key={x}>{String(x).toUpperCase()}</option>)}</select></label>
     <label><span>MIN PRICE</span><input type="number" min="0" step="1" value={minPrice} onChange={e=>setMinPrice(e.target.value)} placeholder="0"/></label>
     <label><span>MAX PRICE</span><input type="number" min="0" step="1" value={maxPrice} onChange={e=>setMaxPrice(e.target.value)} placeholder="ANY"/></label>
-    <label><span>SORT</span><select value={sortMode} onChange={e=>setSortMode(e.target.value)}><option value="newest">NEWEST</option><option value="price-asc">PRICE LOW → HIGH</option><option value="price-desc">PRICE HIGH → LOW</option><option value="title">TITLE A → Z</option></select></label>
+    <label><span>SORT</span><select value={sortMode} onChange={e=>setSortMode(e.target.value)}><option value="newest">NEWEST</option><option value="relevance">RELEVANCE</option><option value="price-asc">PRICE LOW → HIGH</option><option value="price-desc">PRICE HIGH → LOW</option><option value="title">TITLE A → Z</option></select></label>
     <label className={"storeDiscoveryToggle "+(preorderOnly?'active':'')}><input type="checkbox" checked={preorderOnly} onChange={e=>setPreorderOnly(e.target.checked)}/><span>PRE-ORDER ONLY</span></label>
     <label className={"storeDiscoveryToggle "+(limitedOnly?'active':'')}><input type="checkbox" checked={limitedOnly} onChange={e=>setLimitedOnly(e.target.checked)}/><span>LIMITED ONLY</span></label>
    </div>
-   <div className="storeDiscoveryMeta"><span>{filtered.length} / {uniqueReleases.filter(r=>r.storefrontConfig?.visibility?.store!==false).length} OBJECTS</span><button type="button" onClick={resetDiscovery}>RESET DISCOVERY</button></div>
+   <div className="storeDiscoveryMeta"><span>{filtered.length} / {uniqueReleases.filter(r=>r.storefrontConfig?.visibility?.store!==false).length} OBJECTS{activeFilterCount?' · '+activeFilterCount+' ACTIVE FILTER'+(activeFilterCount===1?'':'S'):''}{search.trim()?' · SEARCH RANKED':''}</span><button type="button" onClick={resetDiscovery}>RESET DISCOVERY</button></div>
   </section>
   {filter==='lethargia'&&<section className="storeImprintContext shell"><div><small>A SIDE:II IMPRINT</small><img src="/brand/lethargia/lethargia-logo.png" alt="Lethargia Records"/></div><p>Independent editions developed under their own visual and physical logic.</p><Link href="/imprints/lethargia">OPEN IMPRINT ↗</Link></section>}
   <section className={"storeCatalogue shell "+(viewMode==='classic'?'classicMode':'editorialMode')}>
@@ -208,7 +254,7 @@ export default function StoreClient({releases}){
     </div>
    </article>})}
    </div>}
-   {filtered.length===0&&(filter==='lethargia'?<div className="storeNoResults storeNoResultsLethargia"><small>LETHARGIA / CATALOGUE IN PREPARATION</small><h3>No public editions yet.</h3><p>The first Lethargia releases will appear here automatically when they are made public in Control Room.</p><Link href="/imprints/lethargia">OPEN LETHARGIA RECORDS ↗</Link></div>:<div className="storeNoResults">NO PRODUCTS IN THIS SELECTION.</div>)}
+   {filtered.length===0&&(filter==='lethargia'?<div className="storeNoResults storeNoResultsLethargia"><small>LETHARGIA / CATALOGUE IN PREPARATION</small><h3>No public editions yet.</h3><p>The first Lethargia releases will appear here automatically when they are made public in Control Room.</p><Link href="/imprints/lethargia">OPEN LETHARGIA RECORDS ↗</Link></div>:<div className="storeNoResults discoveryEmpty"><small>NO MATCHES</small><h3>Nothing fits this search yet.</h3><p>Try removing a filter or broadening the search terms.</p><button type="button" onClick={resetDiscovery}>RESET DISCOVERY</button></div>)}
   </section>
  </main>;
 }
