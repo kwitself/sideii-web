@@ -4,6 +4,7 @@ import { getDatabaseRelease, getProductCredits, getPublicPressKit, getRelatedPro
 import EditionSelector from './EditionSelector';
 import GlobalHeader from '../../components/GlobalHeader';
 import ProductDiscovery from '../../components/ProductDiscovery';
+import CompleteTheSet from '../../components/CompleteTheSet';
 import {jsonLd,productSchema} from '../../lib/productCommerceMeta';
 
 export const revalidate = 0;
@@ -34,7 +35,7 @@ export default async function ReleasePage({ params }) {
   const detail = release.storefrontConfig?.detail||{};
   const isCassette = release.media === 'cassette';
   const schema=productSchema(release);
-  const related=detail.related===false?[]:await getRelatedProducts(release.id,6);
+  const [related,bundles]=await Promise.all([detail.related===false?Promise.resolve([]):getRelatedProducts(release.id,6),getProductBundles(release.id,3)]);
   const bundles=detail.related===false?[]:await getProductBundles(release.id,3);
 
   return <main className={'productPage '+(release.imprint==='lethargia'?'productPageLethargia':'productPageSideii')}>
