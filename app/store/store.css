@@ -875,3 +875,120 @@
   .storeClassicPrice{align-items:flex-start;flex-direction:column;gap:4px}
   .storeClassicPrice span{text-align:left}
 }
+
+
+/* STORE SEARCH / DISCOVERY */
+.storeDiscoveryTools{
+  display:grid;
+  gap:12px;
+  padding-top:18px!important;
+  padding-bottom:18px!important;
+  border-bottom:1px solid #343238;
+}
+.storeSearchField{
+  display:grid;
+  grid-template-columns:150px minmax(0,1fr);
+  gap:16px;
+  align-items:center;
+}
+.storeSearchField>span,
+.storeDiscoveryControls label>span{
+  color:#77736d;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.14em;
+}
+.storeSearchField input{
+  width:100%;
+  min-height:46px;
+  border:1px solid #403e43;
+  background:#0b0b0d;
+  color:#e3ded6;
+  padding:0 14px;
+  outline:none;
+  font:13px/1 Arial,sans-serif;
+}
+.storeSearchField input:focus{border-color:#817c75}
+.storeDiscoveryControls{
+  display:grid;
+  grid-template-columns:1.1fr 1.5fr .7fr .7fr auto auto;
+  gap:8px;
+  align-items:end;
+}
+.storeDiscoveryControls>label:not(.storeDiscoveryToggle){
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+.storeDiscoveryControls select,
+.storeDiscoveryControls input[type="number"]{
+  width:100%;
+  min-height:40px;
+  border:1px solid #353338;
+  background:#0b0b0d;
+  color:#aaa69f;
+  padding:0 10px;
+  outline:none;
+  font:9px/1 Arial,sans-serif;
+  letter-spacing:.06em;
+}
+.storeDiscoveryToggle{
+  min-height:40px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:0 11px;
+  border:1px solid #353338;
+  background:#0b0b0d;
+  color:#77736d;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.storeDiscoveryToggle input{
+  width:13px;
+  height:13px;
+  accent-color:#d8d3ca;
+}
+.storeDiscoveryToggle span{
+  font:7px/1 Arial,sans-serif!important;
+  letter-spacing:.1em!important;
+}
+.storeDiscoveryToggle.active{
+  border-color:#77726b;
+  background:#151517;
+  color:#ddd8d0;
+}
+.storeDiscoveryMeta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  min-height:30px;
+}
+.storeDiscoveryMeta span{
+  color:#69656a;
+  font:7px/1 Arial,sans-serif;
+  letter-spacing:.14em;
+}
+.storeDiscoveryMeta button{
+  appearance:none;
+  border:0;
+  background:transparent;
+  color:#77736d;
+  padding:0;
+  font:7px/1 Arial,sans-serif;
+  letter-spacing:.12em;
+  cursor:pointer;
+}
+.storeDiscoveryMeta button:hover{color:#ddd8d0}
+@media(max-width:1050px){
+  .storeDiscoveryControls{
+    grid-template-columns:1fr 1fr 1fr 1fr;
+  }
+  .storeDiscoveryToggle{justify-content:center}
+}
+@media(max-width:700px){
+  .storeSearchField{grid-template-columns:1fr;gap:7px}
+  .storeDiscoveryControls{grid-template-columns:1fr 1fr}
+  .storeDiscoveryToggle{justify-content:flex-start}
+  .storeDiscoveryMeta{align-items:flex-start;flex-direction:column}
+}
