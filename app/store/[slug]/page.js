@@ -4,6 +4,7 @@ import {getStoreProduct} from '../../lib/catalogue';
 import MerchProductClient from './MerchProductClient';
 import '../store.css';
 import GlobalHeader from '../../components/GlobalHeader';
+import {jsonLd,productSchema} from '../../lib/productCommerceMeta';
 
 export const revalidate=0;
 
@@ -22,7 +23,9 @@ export default async function StoreProductPage({params}){
  const {slug}=await params;
  const product=await getStoreProduct(slug);
  if(!product||!product.isMerch)notFound();
+ const schema=productSchema(product);
  return <main className="storePage merchDetailPage">
+  {schema&&<script type="application/ld+json" dangerouslySetInnerHTML={{__html:jsonLd(schema)}}/>}
   <GlobalHeader/>
   <MerchProductClient product={product}/>
  </main>
