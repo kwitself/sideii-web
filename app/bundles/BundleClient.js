@@ -64,7 +64,7 @@ export default function BundleClient({bundles=[],products=[]}){
   <GlobalHeader/>
   <section className="bundlesHero shell"><span>STORE / BUNDLES</span><h1>More than<br/><i>one object.</i></h1><p>Collector sets combine catalogue objects into a single purchase. Eligible bundle savings are calculated again by the store backend at checkout.</p></section>
   <section className="bundleList shell">
-   {message&&<p className="bundleMessage">{message}</p>}
+   {message&&<p className="bundleMessage" role="status" aria-live="polite">{message}</p>}
    {bundles.length===0?<div className="bundleEmpty"><small>BUNDLES / IN PREPARATION</small><h2>No public collector bundles yet.</h2></div>:bundles.map((b,i)=>{const x=bundlePreview(b);return <article id={b.slug} key={b.id}>
     <div className="bundleIndex">{String(i+1).padStart(2,'0')}</div>
     <div className="bundleInfo"><small>{b.discount_type==='percent'?b.discount_value+'% SET SAVING':money(b.discount_value)+' SET SAVING'}</small><h2>{b.name}</h2><p>{b.description||'A SIDE:II collector set.'}</p><div className="bundleItems">{x.valid.map(r=><span key={r.product.id}>{r.product.catalogue} · {r.product.title} × {r.cfg.quantity}</span>)}</div></div>
