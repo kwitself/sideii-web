@@ -23,7 +23,7 @@ export default function AdminAnalyticsPanel({products=[]}){
  async function load(){
   setBusy(true);setMessage('');
   const since=range==='all'?null:new Date(Date.now()-Number(range)*86400000).toISOString();
-  let oq=supabase.from('orders').select('id,total,subtotal,discount_total,shipping_total,payment_status,status,created_at,order_items(id,variant_id,quantity,line_total,format)').order('created_at');
+  let oq=supabase.from('orders').select('id,total,subtotal,discount_total,shipping_total,support_total,payment_status,status,created_at,order_items(id,variant_id,quantity,line_total,support_amount,format)').order('created_at');
   if(since)oq=oq.gte('created_at',since);
   const [o,c,r,rr]=await Promise.all([oq,supabase.rpc('admin_list_product_costs'),supabase.rpc('admin_list_royalty_rules'),supabase.rpc('admin_royalty_report')]);
   if(o.error)setMessage(o.error.message);else setOrders(o.data||[]);
@@ -35,17 +35,18 @@ export default function AdminAnalyticsPanel({products=[]}){
  const variantMap=useMemo(()=>{const m={};products.forEach(p=>(p.product_variants||[]).forEach(v=>m[v.id]={...v,product:p}));return m},[products]);
  const costMap=useMemo(()=>Object.fromEntries(costs.map(x=>[x.product_id,Number(x.unit_cost||0)+Number(x.packaging_cost||0)+Number(x.handling_cost||0)])),[costs]);
  const paid=orders.filter(o=>o.payment_status==='paid');
- const revenue=paid.reduce((s,o)=>s+Number(o.total||0),0),units=paid.flatMap(o=>o.order_items||[]).reduce((s,i)=>s+Number(i.quantity||0),0);
+ const revenue=paid.reduce((s,o)=>s+Number(o.total||0),0),units=paid.flatMap(o=>o.order_items||[]).reduce((s,i)=>s+Number(i.quantity||0),0),supportTotal=paid.reduce((s,o)=>s+Number(o.support_total||0),0),supportOrders=paid.filter(o=>Number(o.support_total||0)>0).length;
  const aov=paid.length?revenue/paid.length:0;
  const cogs=paid.flatMap(o=>o.order_items||[]).reduce((s,i)=>{const p=variantMap[i.variant_id]?.product;return s+(p?Number(costMap[p.id]||0)*Number(i.quantity||0):0)},0);
  const grossProfit=Math.max(0,revenue-cogs);
- const productGross={}; const formatGross={};
- paid.flatMap(o=>o.order_items||[]).forEach(i=>{const p=variantMap[i.variant_id]?.product; if(p)productGross[p.id]=(productGross[p.id]||0)+Number(i.line_total||0); const f=String(i.format||variantMap[i.variant_id]?.format||'other').toUpperCase();formatGross[f]=(formatGross[f]||0)+Number(i.line_total||0)});
+ const productGross={}; const formatGross={}; const supportGross={};
+ paid.flatMap(o=>o.order_items||[]).forEach(i=>{const p=variantMap[i.variant_id]?.product; if(p){productGross[p.id]=(productGross[p.id]||0)+Number(i.line_total||0);supportGross[p.id]=(supportGross[p.id]||0)+Number(i.support_amount||0)} const f=String(i.format||variantMap[i.variant_id]?.format||'other').toUpperCase();formatGross[f]=(formatGross[f]||0)+Number(i.line_total||0)});
  const artistRows=rules.filter(r=>r.active).map(r=>{const gross=Number(productGross[r.product_id]||0),cost=Number(costMap[r.product_id]||0);const qty=paid.flatMap(o=>o.order_items||[]).filter(i=>variantMap[i.variant_id]?.product?.id===r.product_id).reduce((s,i)=>s+Number(i.quantity||0),0);const profit=Math.max(0,gross-cost*qty);return {...r,gross,profit,artistShare:profit*Number(r.share_percent||0)/100,label:products.find(p=>p.id===r.product_id)?.title||'PRODUCT'}}).sort((a,b)=>b.artistShare-a.artistShare);
  const artistTotal=artistRows.reduce((s,x)=>s+x.artistShare,0),labelProfit=Math.max(0,grossProfit-artistTotal);
  const days=range==='all'?30:Number(range); const buckets=Math.min(days,30); const trend=Array.from({length:buckets},(_,idx)=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-(buckets-1-idx));const next=new Date(d);next.setDate(d.getDate()+1);return {label:d.toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit'}),value:paid.filter(o=>{const t=new Date(o.created_at);return t>=d&&t<next}).reduce((s,o)=>s+Number(o.total||0),0)}});
  const topProducts=Object.entries(productGross).map(([id,value])=>({label:products.find(p=>p.id===id)?.title||'Product',value,display:money(value)})).sort((a,b)=>b.value-a.value).slice(0,6);
  const formats=Object.entries(formatGross).map(([label,value])=>({label,value,display:money(value)})).sort((a,b)=>b.value-a.value);
+ const supportProducts=Object.entries(supportGross).filter(([,value])=>Number(value)>0).map(([id,value])=>({label:products.find(p=>p.id===id)?.title||'Product',value,display:money(value)})).sort((a,b)=>b.value-a.value).slice(0,6);
 
  async function saveRule(e){
   e.preventDefault();setBusy(true);setMessage('');
@@ -66,6 +67,7 @@ export default function AdminAnalyticsPanel({products=[]}){
       <div><span>AOV</span><b>{money(aov)}</b></div>
       <div><span>GROSS PROFIT</span><b>{money(grossProfit)}</b></div>
       <div><span>ARTIST SHARE</span><b>{money(artistTotal)}</b></div>
+      <div className="supportKpi"><span>WWYS SUPPORT</span><b>{money(supportTotal)}</b></div>
      </div>
      <div className="analyticsChartWrap"><Sparkline points={trend}/>{!paid.length&&<div className="analyticsEmpty"><b>NO PAID SALES YET</b><span>Revenue activity will appear here when the first paid order lands.</span></div>}</div>
     </article>
@@ -74,6 +76,7 @@ export default function AdminAnalyticsPanel({products=[]}){
    <aside className="analyticsSide">
     <article className="adminPanel analyticsPanel compact"><header><span>TOP PRODUCTS</span><small>PAID REVENUE</small></header>{topProducts.length?<Bars rows={topProducts}/>:<div className="analyticsEmpty small"><b>NO SALES DATA</b><span>Top products will rank here.</span></div>}</article>
     <article className="adminPanel analyticsPanel compact"><header><span>FORMAT MIX</span><small>{units} UNITS</small></header>{formats.length?<Bars rows={formats}/>:<div className="analyticsEmpty small"><b>NO FORMAT DATA</b><span>Vinyl, CD, cassette, digital and merch mix will appear here.</span></div>}</article>
+    <article className="adminPanel analyticsPanel compact supportAnalytics"><header><span>WWYS SUPPORT</span><small>{supportOrders} PAID ORDERS</small></header>{supportProducts.length?<Bars rows={supportProducts}/>:<div className="analyticsEmpty small"><b>NO SUPPORT YET</b><span>Extra support will rank here by product.</span></div>}</article>
     <article className="adminPanel profitSplit compact"><header><span>PROFIT SPLIT</span><small>ESTIMATE</small></header><div className="profitSplitTotal"><div><span>ARTISTS</span><b>{money(artistTotal)}</b></div><div><span>LABEL / OPS</span><b>{money(labelProfit)}</b></div></div>{artistRows.slice(0,3).map(x=><div className="artistShareRow" key={x.id}><div><b>{x.payee_name}</b><small>{Number(x.share_percent)}% · {x.label}</small></div><strong>{money(x.artistShare)}</strong></div>)}{!artistRows.length&&<div className="analyticsEmpty small"><b>NO SHARE RULES</b><span>Add an artist rule below.</span></div>}</article>
    </aside>
   </div>
