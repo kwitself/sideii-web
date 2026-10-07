@@ -3076,3 +3076,62 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .collectionProducts>header{align-items:flex-start;flex-direction:column;padding:14px}
   .collectionProducts>header input{width:100%}
 }
+
+
+/* MERCHANDISING / DYNAMIC + BUNDLES */
+.merchandisingTabs{margin-bottom:14px}
+.dynamicPreview{
+  margin:0 18px 18px;
+  padding:14px;
+  border:1px solid #343238;
+  background:#0a0a0c;
+}
+.dynamicPreview>span{
+  display:block;
+  margin-bottom:10px;
+  color:#8e8982;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.14em;
+}
+.dynamicPreview>div{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.dynamicPreview b{
+  padding:7px 9px;
+  border:1px solid #2f2d31;
+  background:#111113;
+  color:#817d77;
+  font:7px/1 Arial,sans-serif;
+  letter-spacing:.08em;
+  font-weight:400;
+}
+.bundleProductHead,
+.bundleProductRow{
+  grid-template-columns:minmax(220px,1fr) 110px 90px 120px;
+}
+.bundleQty{
+  width:72px;
+  min-height:34px;
+  border:1px solid #353338;
+  background:#09090a;
+  color:#d2cec7;
+  padding:0 9px;
+  outline:none;
+}
+.bundleQty:disabled{opacity:.3}
+.bundleRole{
+  color:#706c72;
+  font:7px/1 Arial,sans-serif;
+  letter-spacing:.1em;
+}
+.bundleEditor .collectionFields{
+  grid-template-columns:1fr 1fr .8fr .7fr;
+}
+@media(max-width:760px){
+  .bundleProductHead{display:none}
+  .bundleProductRow{grid-template-columns:1fr 1fr}
+  .bundleProductRow>div:first-child{grid-column:1/-1}
+  .bundleEditor .collectionFields{grid-template-columns:1fr}
+}
