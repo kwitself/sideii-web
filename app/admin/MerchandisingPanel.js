@@ -60,7 +60,7 @@ export default function MerchandisingPanel({products=[]}){
   setSelected(c);
   setForm({
    id:c.id,slug:c.slug||'',name:c.name||'',kind:c.kind||'core',description:c.description||'',
-   active:c.active!==false,starts_at:localDate(c.starts_at),ends_at:localDate(c.ends_at),sort_order:c.sort_order??0,
+   active:c.active!==false,starts_at:localDate(c.starts_at),ends_at:localDate(c.ends_at),sort_order:c.sort_order??0,collection_mode:c.collection_mode||'manual',rule_config:{product_type:c.rule_config?.product_type||'',imprint:c.rule_config?.imprint||'',merch_category:c.rule_config?.merch_category||''},
    collection_mode:c.collection_mode||'manual',
    rule_config:{product_type:'',imprint:'',merch_category:'',sort:'newest',...(c.rule_config||{})}
   });
@@ -75,7 +75,7 @@ export default function MerchandisingPanel({products=[]}){
   const {data,error}=await supabase.rpc('admin_save_merchandising_collection',{
    p_id:form.id||null,p_slug:slug,p_name:form.name.trim(),p_kind:form.kind,
    p_description:form.description||'',p_active:!!form.active,
-   p_starts_at:iso(form.starts_at),p_ends_at:iso(form.ends_at),p_sort_order:Number(form.sort_order)||0,
+   p_starts_at:iso(form.starts_at),p_ends_at:iso(form.ends_at),p_sort_order:Number(form.sort_order)||0,p_collection_mode:form.collection_mode||'manual',p_rule_config:form.collection_mode==='dynamic'?form.rule_config:{},
    p_collection_mode:form.collection_mode||'manual',p_rule_config:form.rule_config||{}
   });
   setBusy('');
@@ -236,6 +236,7 @@ export default function MerchandisingPanel({products=[]}){
       <div className="collectionOrder"><button type="button" disabled={!enabled} onClick={()=>move(p.id,-1)}>↑</button><b>{enabled?item.sort_order:'—'}</b><button type="button" disabled={!enabled} onClick={()=>move(p.id,1)}>↓</button></div>
      </div>})}
     </article>}
+    {selected&&selected.collection_mode==='dynamic'&&<article className="adminPanel dynamicCollectionNote"><span>DYNAMIC COLLECTION</span><h3>Products are matched automatically.</h3><p>Change the rule above to update membership. Manual product ordering is intentionally disabled for dynamic collections.</p><div><b>TYPE</b><strong>{selected.rule_config?.product_type||'ANY'}</strong><b>IMPRINT</b><strong>{selected.rule_config?.imprint||'ANY'}</strong><b>CATEGORY</b><strong>{selected.rule_config?.merch_category||'ANY'}</strong></div></article>}
    </div>
   </div>}
 
