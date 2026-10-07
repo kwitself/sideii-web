@@ -52,8 +52,6 @@ export default function AdminDashboard(){
  const [shippingEdit,setShippingEdit]=useState({carrier:'',tracking:''});
  const [shippingSettings,setShippingSettings]=useState({enabled:true,international_enabled:false,standard_rate:0,vinyl_rate:0,free_shipping_threshold:''});
  const [shippingSaving,setShippingSaving]=useState(false);
- const [applicationSettings,setApplicationSettings]=useState({notification_email:'',sender_name:'SIDE:II Applications'});
- const [applicationSettingsSaving,setApplicationSettingsSaving]=useState(false);
  const [activeView,setActiveView]=useState('overview');
  const [productView,setProductView]=useState('all');
  const [productSearch,setProductSearch]=useState('');
@@ -67,15 +65,14 @@ export default function AdminDashboard(){
  const load=useCallback(async()=>{
   if(!supabase)return;
   setLoading(true); setMessage('');
-  const [p,o,c,s,a]=await Promise.all([
+  const [p,o,c,s]=await Promise.all([
    supabase.from('products').select('id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,gallery_images,has_shrinkwrap,release_date,credits,tracklist,status,is_public,product_origin,original_label,original_catalogue_no,barcode,homepage_selected,storefront_config,seo_config,commerce_config,product_type,merch_category,created_at,updated_at,product_variants(id,sku,format,edition_name,edition_details,price,currency,manufactured_qty,stock_qty,reserved_qty,low_stock_threshold,active,digital_formats,audio_specs,vinyl_size,vinyl_speed,vinyl_weight_g,vinyl_color,option_size,option_color,option_style,weight_g,shipping_class,preorder_enabled,preorder_limit,preorder_target,preorder_deadline,edition_numbering_enabled,edition_total,next_edition_number,digital_download_url)').order('created_at',{ascending:false}),
    supabase.from('orders').select('id,order_no,email,status,payment_status,subtotal,discount_total,promo_code,shipping_total,support_total,total,currency,shipping_name,shipping_phone,shipping_address,notes,fulfillment_type,shipping_carrier,tracking_number,shipped_at,created_at,invoice_type,invoice_company,invoice_tax_office,invoice_tax_number,invoice_address,order_items(id,sku,title,format,quantity,unit_price,line_total,support_amount,preorder,edition_numbers)').order('created_at',{ascending:false}).limit(8),
    supabase.from('customers').select('id,email,full_name,created_at').order('created_at',{ascending:false}).limit(8),
-   supabase.from('shipping_settings').select('enabled,international_enabled,standard_rate,vinyl_rate,free_shipping_threshold').eq('id',1).maybeSingle(),
-   supabase.from('application_settings').select('notification_email,sender_name').eq('id',1).maybeSingle()
+   supabase.from('shipping_settings').select('enabled,international_enabled,standard_rate,vinyl_rate,free_shipping_threshold').eq('id',1).maybeSingle()
   ]);
   if(p.error){setMessage(p.error.message);setProducts([])}else setProducts(p.data||[]);
-  setOrders(o.error?[]:(o.data||[])); setCustomers(c.error?[]:(c.data||[])); if(!s.error&&s.data)setShippingSettings({...s.data,free_shipping_threshold:s.data.free_shipping_threshold??''}); if(!a.error&&a.data)setApplicationSettings({notification_email:a.data.notification_email||'',sender_name:a.data.sender_name||'SIDE:II Applications'}); setLoading(false);
+  setOrders(o.error?[]:(o.data||[])); setCustomers(c.error?[]:(c.data||[])); if(!s.error&&s.data)setShippingSettings({...s.data,free_shipping_threshold:s.data.free_shipping_threshold??''}); setLoading(false);
   return p.error?[]:(p.data||[]);
  },[]);
 
@@ -227,21 +224,6 @@ export default function AdminDashboard(){
   setMessage('Shipping settings saved.');
  }
 
- async function saveApplicationSettings(e){
-  e.preventDefault();
-  if(!supabase)return;
-  setApplicationSettingsSaving(true);setMessage('');
-  const {data,error}=await supabase.rpc('admin_save_application_settings',{
-   p_notification_email:applicationSettings.notification_email,
-   p_sender_name:applicationSettings.sender_name
-  });
-  setApplicationSettingsSaving(false);
-  if(error){setMessage('Application settings failed: '+error.message);return}
-  const saved=Array.isArray(data)?data[0]:data;
-  if(saved)setApplicationSettings({notification_email:saved.notification_email||'',sender_name:saved.sender_name||'SIDE:II Applications'});
-  setMessage('Application notification settings saved.');
- }
-
  async function saveStock(v){
   const next=Math.max(0,Number.parseInt(v.stock_qty||'0',10)||0);
   const reserved=Math.max(0,Number.parseInt(v.reserved_qty||'0',10)||0);
@@ -284,7 +266,7 @@ export default function AdminDashboard(){
 
  {activeView==='customers'&&<section id="customers" className="adminSection adminSectionStandalone adminViewSection"><div className="lowerGrid singleAdminCard"><article><span>05 / CUSTOMERS</span><h2>Audience,<br/><em>{customers.length?'connected.':'when ready.'}</em></h2><p>{customers.length?`${customers.length} customer record(s) in Supabase.`:'Customer records will appear here after commerce is enabled.'}</p></article></div></section>}
 {activeView==='commerce'&&<div className="adminModuleStack"><DiscountsPanel/><CommerceOpsPanel products={products} onChanged={load}/><ValueOpsPanel/></div>}
-{activeView==='settings'&&<section id="settings" className="adminSection adminSectionStandalone"><div className="lowerGrid singleAdminCard"><article><span>08 / SETTINGS</span><h2>Store<br/><em>configuration.</em></h2><p>Shipping and production-application settings.</p><form className="shippingSettings" onSubmit={saveShippingSettings}><label className="shippingToggle"><input type="checkbox" checked={!!shippingSettings.enabled} onChange={e=>setShippingSettings({...shippingSettings,enabled:e.target.checked})}/><span>SHIPPING CALCULATION ACTIVE</span></label><label className="shippingToggle internationalToggle"><input type="checkbox" checked={!!shippingSettings.international_enabled} onChange={e=>setShippingSettings({...shippingSettings,international_enabled:e.target.checked})}/><span>INTERNATIONAL SALES / SHIPPING</span></label><div className="shippingFields"><label><span>CD / CASSETTE RATE · ₺</span><input type="number" min="0" step="0.01" inputMode="decimal" value={shippingSettings.standard_rate} onChange={e=>setShippingSettings({...shippingSettings,standard_rate:e.target.value})}/></label><label><span>VINYL RATE · ₺</span><input type="number" min="0" step="0.01" inputMode="decimal" value={shippingSettings.vinyl_rate} onChange={e=>setShippingSettings({...shippingSettings,vinyl_rate:e.target.value})}/></label><label><span>FREE SHIPPING FROM · ₺</span><input type="number" min="0" step="0.01" inputMode="decimal" placeholder="NO THRESHOLD" value={shippingSettings.free_shipping_threshold} onChange={e=>setShippingSettings({...shippingSettings,free_shipping_threshold:e.target.value})}/></label></div><button className="saveButton" disabled={shippingSaving}>{shippingSaving?'SAVING…':'SAVE SHIPPING'}</button></form><form className="shippingSettings applicationNotificationSettings" onSubmit={saveApplicationSettings}><h3>PRODUCTION APPLICATIONS</h3><p>Choose where new CD / merch production requests should be sent. You can leave it blank until your domain email is ready.</p><div className="shippingFields"><label><span>NOTIFICATION EMAIL</span><input type="email" placeholder="applications@yourdomain.com" value={applicationSettings.notification_email} onChange={e=>setApplicationSettings({...applicationSettings,notification_email:e.target.value})}/></label><label><span>SENDER NAME</span><input value={applicationSettings.sender_name} onChange={e=>setApplicationSettings({...applicationSettings,sender_name:e.target.value})}/></label></div><button className="saveButton" disabled={applicationSettingsSaving}>{applicationSettingsSaving?'SAVING…':'SAVE APPLICATION EMAIL'}</button></form></article></div></section>}
+{activeView==='settings'&&<section id="settings" className="adminSection adminSectionStandalone"><div className="lowerGrid singleAdminCard"><article><span>08 / SETTINGS</span><h2>Store<br/><em>configuration.</em></h2><p>Shipping settings and server-side production application delivery.</p><form className="shippingSettings" onSubmit={saveShippingSettings}><label className="shippingToggle"><input type="checkbox" checked={!!shippingSettings.enabled} onChange={e=>setShippingSettings({...shippingSettings,enabled:e.target.checked})}/><span>SHIPPING CALCULATION ACTIVE</span></label><label className="shippingToggle internationalToggle"><input type="checkbox" checked={!!shippingSettings.international_enabled} onChange={e=>setShippingSettings({...shippingSettings,international_enabled:e.target.checked})}/><span>INTERNATIONAL SALES / SHIPPING</span></label><div className="shippingFields"><label><span>CD / CASSETTE RATE · ₺</span><input type="number" min="0" step="0.01" inputMode="decimal" value={shippingSettings.standard_rate} onChange={e=>setShippingSettings({...shippingSettings,standard_rate:e.target.value})}/></label><label><span>VINYL RATE · ₺</span><input type="number" min="0" step="0.01" inputMode="decimal" value={shippingSettings.vinyl_rate} onChange={e=>setShippingSettings({...shippingSettings,vinyl_rate:e.target.value})}/></label><label><span>FREE SHIPPING FROM · ₺</span><input type="number" min="0" step="0.01" inputMode="decimal" placeholder="NO THRESHOLD" value={shippingSettings.free_shipping_threshold} onChange={e=>setShippingSettings({...shippingSettings,free_shipping_threshold:e.target.value})}/></label></div><button className="saveButton" disabled={shippingSaving}>{shippingSaving?'SAVING…':'SAVE SHIPPING'}</button></form><div className="shippingSettings applicationNotificationSettings"><h3>PRODUCTION APPLICATIONS</h3><p>Application recipient is server-only. Configure <code>SIDEII_APPLICATION_TO</code> in the server environment and verify it in Launch Readiness.</p></div></article></div></section>}
 {activeView==='impact'&&<div className="adminModuleStack"><ImpactPanel products={products}/></div>}
 {activeView==='catalogue'&&<div className="adminModuleStack"><CatalogueOpsPanel products={products}/></div>}
 {activeView==='growth'&&<div className="adminModuleStack"><GrowthOpsPanel products={products}/></div>}
