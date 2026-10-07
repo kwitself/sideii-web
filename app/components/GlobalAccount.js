@@ -172,12 +172,13 @@ export default function GlobalAccount(){
 
  useEffect(()=>{if(!open)return;
   const previousOverflow=document.body.style.overflow;
+  const previousFocus=document.activeElement;
   document.body.style.overflow='hidden';
   const node=drawerRef.current;
   const focusables=()=>node?[...node.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')]:[];
   requestAnimationFrame(()=>focusables()[0]?.focus());
   const onKey=e=>{
-   if(e.key==='Escape'){setOpen(false);return}
+   if(e.key==='Escape'){if(selectedOrder){closeOrderDetail()}else setOpen(false);return}
    if(e.key!=='Tab')return;
    const items=focusables();if(!items.length)return;
    const first=items[0],last=items[items.length-1];
@@ -185,8 +186,8 @@ export default function GlobalAccount(){
    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
   };
   window.addEventListener('keydown',onKey);
-  return()=>{document.body.style.overflow=previousOverflow;window.removeEventListener('keydown',onKey)}
- },[open]);
+  return()=>{document.body.style.overflow=previousOverflow;window.removeEventListener('keydown',onKey);requestAnimationFrame(()=>previousFocus?.focus?.())}
+ },[open,selectedOrder,closingOrder]);
  if(pathname?.startsWith('/admin'))return null;
  return <>
   {!open&&<button className="globalAccountTrigger" aria-haspopup="dialog" aria-expanded={open} aria-label={t('ACCOUNT')} onClick={()=>{setMessage('');setOpen(true)}}>{signedIn?initials:'ACCOUNT'}</button>}
