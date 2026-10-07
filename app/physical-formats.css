@@ -35,3 +35,16 @@
   .productCassette{width:70%;top:29%}
   .productCassetteWindow i{width:26px;border-width:4px}
 }
+
+/* FINAL FORMAT UI AUDIT */
+.productCassetteLabel{font-size:8px}
+.productVisual{isolation:isolate}
+@media(max-width:760px){
+ .productVisual.cd .productCover,.productVisual.cassette .productCover{inset:8% 6% 8% 10%}
+ .productCdObject{width:64%;right:0}
+ .productCassette{width:68%;right:0}
+}
+@media(prefers-reduced-motion:reduce){
+ .productVisual .productCover,.productCdObject,.productCassette{transition:none!important}
+ .productVisual.cd:hover .productCdObject,.productVisual.cassette:hover .productCassette,.productVisual:hover .productCover{transform:none!important}
+}
