@@ -13,10 +13,17 @@ function resolveMockup(product,mockup,side){
  return (side&&product.mockups?.[side])||product.mockups?.front||product.mockups?.back||null;
 }
 
-function Artwork({mockup,interactive,onPointerDown}){
+function isDarkHex(hex){
+ const v=String(hex||'').replace('#','');
+ if(!/^[0-9a-fA-F]{6}$/.test(v))return true;
+ const r=parseInt(v.slice(0,2),16),g=parseInt(v.slice(2,4),16),b=parseInt(v.slice(4,6),16);
+ return (r*299+g*587+b*114)/1000<92;
+}
+
+function Artwork({mockup,interactive,onPointerDown,darkSurface=false}){
  if(!mockup?.designUrl)return null;
  return <img
-  className={styles.artwork+(interactive?' '+styles.draggable:'')}
+  className={styles.artwork+(darkSurface?' '+styles.darkSurfaceArtwork:'')+(interactive?' '+styles.draggable:'')}
   src={mockup.designUrl}
   alt=""
   draggable="false"
@@ -61,7 +68,7 @@ export default function MerchMockupPreview({
    </svg>
    <div {...clipProps} className={styles.printClip+' '+styles.teePrint+(interactive?' '+styles.interactive:'')}>
     {showGuides&&<><i className={styles.guideX}/><i className={styles.guideY}/>{snapGuides.x&&<i className={styles.guideX+' '+styles.snap}/>} {snapGuides.y&&<i className={styles.guideY+' '+styles.snap}/>}</>}
-    <Artwork mockup={m} interactive={interactive} onPointerDown={onArtworkPointerDown}/>
+    <Artwork mockup={m} interactive={interactive} onPointerDown={onArtworkPointerDown} darkSurface={isDarkHex(fill)}/>
    </div>
   </div>
  </div>;
@@ -101,7 +108,7 @@ export default function MerchMockupPreview({
    </svg>
    <div {...clipProps} className={styles.printClip+' '+styles[type+'Print']+(interactive?' '+styles.interactive:'')}>
     {showGuides&&<><i className={styles.guideX}/><i className={styles.guideY}/>{snapGuides.x&&<i className={styles.guideX+' '+styles.snap}/>} {snapGuides.y&&<i className={styles.guideY+' '+styles.snap}/>}</>}
-    <Artwork mockup={m} interactive={interactive} onPointerDown={onArtworkPointerDown}/>
+    <Artwork mockup={m} interactive={interactive} onPointerDown={onArtworkPointerDown} darkSurface={isDarkHex(fill)}/>
    </div>
   </div>
  </div>;
