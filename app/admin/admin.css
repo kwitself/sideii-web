@@ -2320,3 +2320,16 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .storefrontToggleGrid{grid-template-columns:1fr 1fr}
   .storefrontWide{grid-column:auto}
 }
+
+.storefrontGrid textarea{
+  width:100%;
+  min-height:92px;
+  resize:vertical;
+  border:1px solid #3f3d42;
+  background:#0a0a0b;
+  color:#ddd8d0;
+  padding:11px;
+  font:11px/1.5 Arial,sans-serif;
+  outline:none;
+}
+.storefrontGrid textarea:focus{border-color:#8b867f}
