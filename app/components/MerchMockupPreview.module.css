@@ -50,3 +50,5 @@
 .thumb .object{width:min(82%,42px)}
 .thumb .tee{width:min(84%,42px)}
 .hero,.gallery,.thumb{background:transparent!important}
+
+.rasterPreview{display:block;width:100%;height:100%;object-fit:contain;background:transparent}
