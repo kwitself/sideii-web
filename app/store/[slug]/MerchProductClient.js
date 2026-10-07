@@ -28,7 +28,7 @@ export default function MerchProductClient({product}){
  return <section className="merchDetail shell">
   <div className="merchDetailVisual">
    <div className="merchViewSelector"><span>PRODUCT VIEW</span><div className="merchDetailSwitch" role="tablist" aria-label="Product view">{hasFront&&<button type="button" role="tab" aria-selected={side==='front'} className={side==='front'?'active':''} onClick={()=>setSide('front')}><i>01</i><b>FRONT</b></button>}{hasBack&&<button type="button" role="tab" aria-selected={side==='back'} className={side==='back'?'active':''} onClick={()=>setSide('back')}><i>02</i><b>BACK</b></button>}</div></div>
-   <MerchMockupPreview product={product} side={side} raster/><div className="merchViewMeta"><span>{side.toUpperCase()} VIEW</span><small>{String(product.merchCategory||'MERCH').toUpperCase()}</small></div>
+   <MerchMockupPreview product={product} side={side} raster className="merchDetailRasterStage"/><div className="merchViewMeta"><span>{side.toUpperCase()} VIEW</span><small>{String(product.merchCategory||'MERCH').toUpperCase()}</small></div>
    {gallery.length>0&&<div className="merchDetailGallery">{gallery.slice(0,4).map((g,i)=><img key={g.id||g.url||i} src={g.url} alt={product.title+' view '+(i+1)}/>)}</div>}
   </div>
   <div className="merchDetailInfo">
