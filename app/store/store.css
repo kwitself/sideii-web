@@ -1184,3 +1184,88 @@
 .discoveryCard{transition:background .18s ease,border-color .18s ease,transform .18s ease}
 .discoveryCard:hover{transform:translateY(-2px)}
 @media(max-width:760px){.storeHero{padding-top:72px}.storeDiscoveryTools{padding:14px}.merchDetailInfo h1{font-size:clamp(40px,12vw,58px)}.productDiscovery{padding-bottom:74px}}
+
+
+/* SEARCH & DISCOVERY ENGINE */
+.storeSearchField{
+  position:relative;
+}
+.storeSearchField input{
+  padding-right:92px!important;
+}
+.storeSearchClear{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  min-height:30px;
+  padding:0 9px;
+  border:1px solid #3c393f;
+  background:#111113;
+  color:#85817b;
+  font:7px/1 Arial,sans-serif;
+  letter-spacing:.12em;
+  cursor:pointer;
+}
+.storeSearchClear:hover{
+  border-color:#77726b;
+  color:#ddd8d0;
+}
+.storeDiscoveryControls{
+  grid-template-columns:repeat(5,minmax(120px,1fr))!important;
+}
+.storeDiscoveryControls .storeDiscoveryToggle{
+  align-self:end;
+}
+.discoveryEmpty{
+  display:grid;
+  justify-items:start;
+  gap:10px;
+  padding:72px 0!important;
+}
+.discoveryEmpty small{
+  color:#69656a;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.18em;
+}
+.discoveryEmpty h3{
+  margin:0;
+  color:#d8d3cb;
+  font:30px/1 Georgia,serif;
+  font-weight:400;
+  letter-spacing:-.02em;
+}
+.discoveryEmpty p{
+  margin:0;
+  color:#77736d;
+  font:13px/1.5 Georgia,serif;
+}
+.discoveryEmpty button{
+  margin-top:8px;
+  min-height:42px;
+  border:1px solid #454248;
+  background:#121214;
+  color:#c4bfb7;
+  padding:0 14px;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.14em;
+  cursor:pointer;
+}
+.discoveryEmpty button:hover{
+  border-color:#817c75;
+  color:#eee9e1;
+}
+@media(max-width:1180px){
+  .storeDiscoveryControls{grid-template-columns:repeat(4,minmax(120px,1fr))!important}
+}
+@media(max-width:900px){
+  .storeDiscoveryControls{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:700px){
+  .storeSearchField{grid-template-columns:1fr!important}
+  .storeSearchClear{top:auto;bottom:8px;transform:none}
+  .storeDiscoveryControls{grid-template-columns:1fr 1fr!important}
+}
+@media(max-width:520px){
+  .storeDiscoveryControls{grid-template-columns:1fr!important}
+}
