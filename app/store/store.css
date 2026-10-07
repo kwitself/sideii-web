@@ -1169,3 +1169,18 @@
     text-align:left;
   }
 }
+
+/* FINAL UI AUDIT */
+.storeHero>span,.storeDiscoveryHead>span,.storeDiscoveryMeta span,.storeViewToggle>span,.merchDetailInfo>span,.merchViewMeta span,.merchVariantChooser>span{font-size:9px!important}
+.storeClassicMeta>small,.storeClassicStock,.storeClassicBadge{font-size:9px!important}
+.storeClassicAction button,.storeClassicAction a,.storeVariantView{font-size:9.5px!important;min-height:44px}
+.storeClassicCard{transition:transform .2s ease,border-color .2s ease,background .2s ease}
+.storeClassicCard:hover{transform:translateY(-2px)}
+.storeDiscoveryTools{border-color:#343238;background:#0c0c0e}
+.storeDiscoveryControls select,.storeDiscoveryControls input,.storeSearchField input{min-height:46px!important;font-size:13px!important}
+.merchBuyRow button,.merchBagLink,.merchWaitlist button{min-height:46px}
+.merchSupportCallout span{font-size:9px}
+.productDiscovery header>span,.productDiscovery header>small,.discoveryCard small,.completeSetMeta small,.completeSetCard>strong{font-size:9px}
+.discoveryCard{transition:background .18s ease,border-color .18s ease,transform .18s ease}
+.discoveryCard:hover{transform:translateY(-2px)}
+@media(max-width:760px){.storeHero{padding-top:72px}.storeDiscoveryTools{padding:14px}.merchDetailInfo h1{font-size:clamp(40px,12vw,58px)}.productDiscovery{padding-bottom:74px}}
