@@ -6,7 +6,7 @@ const KEY='sideii-recently-viewed';
 const pathFor=p=>p?.isMerch?'/store/'+p.slug:'/releases/'+p.slug;
 const snapshot=p=>({id:p.id,slug:p.slug,title:p.rawTitle||p.title,cover:p.cover||null,isMerch:!!p.isMerch,catalogue:p.catalogue||'',artist:p.artist||'',format:p.format||'',merchCategory:p.merchCategory||''});
 
-export default function ProductDiscovery({current,related=[]}){
+export default function ProductDiscovery({current,related=[],bundles=[]}){
  const [recent,setRecent]=useState([]);
 
  useEffect(()=>{
@@ -20,9 +20,18 @@ export default function ProductDiscovery({current,related=[]}){
  },[current.id,current.slug]);
 
  const relatedClean=(related||[]).filter(x=>x&&x.slug&&x.slug!==current.slug).slice(0,6);
- if(!relatedClean.length&&!recent.length)return null;
+ const bundleRows=(bundles||[]).filter(b=>Array.isArray(b.items)&&b.items.length>=2).slice(0,3);
+ if(!relatedClean.length&&!recent.length&&!bundleRows.length)return null;
 
  return <section className="productDiscovery shell">
+  {bundleRows.length>0&&<div className="discoveryBlock completeSetBlock">
+   <header><span>COMPLETE THE SET</span><small>Bundle savings are recalculated at checkout.</small></header>
+   <div className="completeSetGrid">{bundleRows.map(b=><Link href={'/bundles#'+b.slug} className="completeSetCard" key={b.id}>
+    <div className="completeSetMeta"><small>{b.discount_type==='percent'?b.discount_value+'% SET SAVING':b.discount_value+' SET SAVING'}</small><h3>{b.name}</h3><p>{b.description||'A SIDE:II collector set.'}</p></div>
+    <div className="completeSetItems">{b.items.slice(0,4).map(x=><span key={x.product_id}>{x.product?.cover?<img src={x.product.cover} alt=""/>:<i/>}<b>{x.product?.rawTitle||x.product?.title||'OBJECT'}</b><em>×{x.quantity||1}</em></span>)}</div>
+    <strong>VIEW BUNDLE →</strong>
+   </Link>)}</div>
+  </div>}
   {relatedClean.length>0&&<div className="discoveryBlock">
    <header><span>YOU MAY ALSO LIKE</span><small>Curated by collection, imprint and format.</small></header>
    <div className="discoveryGrid">{relatedClean.map(p=><Link href={pathFor(p)} className="discoveryCard" key={p.id||p.slug}>
