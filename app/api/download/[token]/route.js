@@ -1,0 +1,33 @@
+import {createClient} from '@supabase/supabase-js';
+
+export const runtime='nodejs';
+
+export async function GET(request,{params}){
+ try{
+  const {token}=await params;
+  const url=process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serverKey=process.env.SUPABASE_SECRET_KEY;
+  if(!url||!serverKey)return new Response('Download service unavailable',{status:503});
+
+  const sb=createClient(url,serverKey,{auth:{persistSession:false,autoRefreshToken:false}});
+  const {data:target,error}=await sb.rpc('consume_digital_download_grant',{p_token:token});
+  if(error||!target)return new Response('Download link expired or unavailable',{status:410});
+
+  const value=String(target);
+  if(value.startsWith('/')){
+   const destination=new URL(value,request.url);
+   if(destination.origin!==new URL(request.url).origin)return new Response('Invalid download target',{status:400});
+   return Response.redirect(destination,302);
+  }
+
+  const destination=new URL(value);
+  const allowed=new Set(String(process.env.DIGITAL_DOWNLOAD_ALLOWED_HOSTS||'').split(',').map(x=>x.trim().toLowerCase()).filter(Boolean));
+  if(destination.protocol!=='https:'||!allowed.has(destination.hostname.toLowerCase())){
+   return new Response('Download host is not allowed',{status:403});
+  }
+
+  return Response.redirect(destination,302);
+ }catch(error){
+  return new Response(String(error?.message||error),{status:400});
+ }
+}
