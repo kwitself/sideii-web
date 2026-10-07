@@ -48,7 +48,8 @@ export default function MerchMockupPreview({
  onArtworkWheel=null,
  snapGuides={x:false,y:false},
  showGuides=false,
- displayMode='default'
+ displayMode='default',
+ raster=false
 }){
  const m=resolveMockup(product,mockup,side);
  if(!m)return null;
@@ -59,6 +60,7 @@ export default function MerchMockupPreview({
  const guideClass=showGuides?styles.guidesOn:styles.guidesOff;
  const modeClass=displayMode==='hero'?styles.hero:displayMode==='gallery'?styles.gallery:displayMode==='thumb'?styles.thumb:'';
  const clipProps={ref:printClipRef,onWheel:interactive?onArtworkWheel:undefined};
+ if(raster&&m.previewCleanUrl)return <div className={styles.frame+' '+modeClass+' '+className}><img className={styles.rasterPreview} src={m.previewCleanUrl} alt=""/></div>;
 
  if(type==='apparel')return <div className={styles.frame+' '+guideClass+' '+modeClass+' '+className}>
   <div className={styles.tee+' '+styles[m.garment==='regular'?'regular':'oversized']}>
