@@ -2778,3 +2778,212 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 @media(max-width:760px){
   .primaryNav>a:nth-of-type(3){display:inline-flex!important}
 }
+
+
+/* SITE-WIDE UI/UX POLISH — density without clutter */
+:root{
+  --sii-bg:#09090a;
+  --sii-surface:#0d0d0f;
+  --sii-surface-2:#111113;
+  --sii-line:#302f33;
+  --sii-line-soft:#242426;
+  --sii-text:#f0ede7;
+  --sii-muted:#918d86;
+  --sii-dim:#66635e;
+  --sii-strong:#d8d3ca;
+}
+html{background:var(--sii-bg)}
+body{
+  background:
+    radial-gradient(circle at 76% -8%,rgba(255,255,255,.028),transparent 31rem),
+    var(--sii-bg);
+  color:var(--sii-text);
+}
+::selection{background:#d8d3ca;color:#0a0a0b}
+a,button,input,select,textarea{font-family:inherit}
+button,input,select,textarea{border-radius:0}
+button,a{transition:color .18s ease,border-color .18s ease,background .18s ease,opacity .18s ease}
+.shell{width:min(1440px,calc(100% - 64px))}
+
+/* Shared navigation: compact, weighted and present */
+.globalSiteHeader{
+  height:82px;
+  border-bottom-color:#302f33;
+  background:linear-gradient(180deg,rgba(9,9,10,.98),rgba(9,9,10,.9));
+}
+.globalSiteHeader .brand{width:124px}
+.primaryNav>a,.navExplore>button{color:#aaa69f}
+.navApply{
+  background:#111113!important;
+  border-color:#46444a!important;
+  color:#e2ddd5!important;
+}
+.navExploreMenu{
+  border-color:#444147;
+  background:rgba(13,13,15,.97);
+}
+.navExploreMenu a{min-height:39px;color:#9a9690}
+.navExploreMenu a:hover{background:#18181b;color:#f0ece5}
+
+/* Homepage rhythm: less dead air, more editorial weight */
+.hero{
+  min-height:calc(88vh - 82px);
+  padding:48px 0 84px;
+}
+.heroCore{width:min(980px,82%)}
+.heroLogo{width:min(820px,92%);margin:22px 0 18px}
+.heroFoot{
+  bottom:22px;
+  border-top-color:#302f33;
+  padding-top:13px;
+  color:#77736d;
+}
+.eyebrow,.sectionHead>span,.imprintInner>span,.store>span{color:#807c75}
+.capabilityStrip{
+  background:linear-gradient(180deg,#0c0c0e,#0a0a0b);
+  border-color:#302f33;
+}
+.capabilityStrip>div{
+  min-height:126px;
+  border-color:#302f33;
+}
+.capabilityStrip b{font-size:18px;color:#ddd8cf}
+.capabilityStrip small{color:#77736c}
+.statement{
+  min-height:64vh;
+  gap:82px;
+  border-bottom-color:#302f33;
+}
+.statement>p{font-size:clamp(56px,7.5vw,112px)}
+.statement>div p{font-size:22px;color:#d0ccc4}
+.statement>div span,.statement small{color:#77736d}
+.section{padding:112px 0}
+.sectionHead{margin-bottom:54px}
+.sectionHead h2{font-size:clamp(56px,7vw,104px)}
+.releaseGrid{gap:26px}
+.cover{
+  border-color:#3b393f;
+  background:linear-gradient(145deg,#171719,#101012);
+}
+.releaseMeta{
+  padding:19px 2px 10px;
+  border-bottom-color:#343238;
+}
+.releaseMeta h3{font-size:28px;margin:10px 0 12px}
+.releaseMeta span,.releaseMeta p{color:#918d86}
+.catalogueFoot{margin-top:38px}
+.forthcoming{color:#aaa69f}
+
+/* About / production / store should feel full, not sparse */
+.about{gap:64px}
+.aboutCopy{padding-top:92px}
+.aboutIndex{margin-bottom:30px;border-bottom-color:#302f33;color:#77736d}
+.aboutCopy p{color:#d2cec6}
+.aboutCopy p:nth-of-type(2){color:#918d86;margin-top:34px}
+.formats{margin-top:52px;border-top-color:#302f33}
+.formats span{padding:17px 0;border-bottom-color:#302f33;color:#aaa69f}
+.productionSection{
+  border-color:#302f33;
+  background:
+    radial-gradient(circle at 76% 18%,rgba(255,255,255,.045),transparent 30%),
+    linear-gradient(180deg,#0d0d0f,#101012);
+}
+.productionSection>.shell{padding:104px 0}
+.productionHead{padding-bottom:44px;border-bottom-color:#343238}
+.productionHead p{color:#aaa69f}
+.editionObjects{
+  height:390px;
+  border-color:#343238;
+  background:
+    radial-gradient(circle at 54% 48%,rgba(255,255,255,.055),transparent 39%),
+    linear-gradient(180deg,#0e0e10,#111113);
+}
+.productionFlow article{
+  min-height:260px;
+  border-color:#343238;
+}
+.productionFlow article:hover{background:#151517}
+.productionFlow article h3{color:#e0dcd4}
+.productionFlow article p{color:#918d86}
+.productionCta{border-top-color:#343238}
+.productionCta p{color:#c5c0b8}
+
+.storeWrap{
+  background:
+    radial-gradient(circle at 80% 20%,rgba(255,255,255,.035),transparent 28%),
+    linear-gradient(180deg,#0c0c0e,#111113);
+  border-color:#302f33;
+}
+.store{min-height:74vh;padding:88px 0}
+.store h2{margin:38px 0}
+.storeMark{color:#1b1b1e}
+.storeRow{border-top-color:#3a383e}
+.store p{color:#c5c0b8}
+.store small{color:#77736d}
+.storeEntry,.productionCta a,.productButton{
+  border-color:#4a474d!important;
+  background:#111113!important;
+  color:#d5d0c8!important;
+}
+.storeEntry:hover,.productionCta a:hover,.productButton:hover{
+  border-color:#8d8880!important;
+  background:#18181b!important;
+  color:#fffaf1!important;
+}
+.closingInner{min-height:52vh}
+.closingInner>span{color:#77736d}
+.closingInner p i{color:#aaa69f}
+.footerInner{min-height:250px}
+.footerNav a,.footerMeta span{color:#77736d}
+.footerLogo small{color:#6f6c67}
+
+/* Shared commerce controls: minimalist, but never faint */
+.globalBagTrigger,
+.globalAccountTrigger,
+.localeCurrencyTrigger{
+  border-color:#454248!important;
+  background:#0f0f11!important;
+  color:#c5c0b8!important;
+  box-shadow:0 10px 34px rgba(0,0,0,.34);
+}
+.globalBagDrawer,
+.globalAccountDrawer{
+  border-color:#444147!important;
+  background:#0e0e10!important;
+}
+.globalBagCheckout,
+.accountPrimary{
+  border-color:#d8d3ca!important;
+  background:#d8d3ca!important;
+  color:#0a0a0b!important;
+}
+.checkoutForm input,
+.checkoutForm textarea,
+.checkoutForm select,
+.globalAccountDrawer input,
+.globalAccountDrawer textarea,
+.globalAccountDrawer select{
+  border-color:#3f3d42!important;
+  background:#0a0a0b!important;
+}
+.checkoutForm input:focus,
+.checkoutForm textarea:focus,
+.checkoutForm select:focus,
+.globalAccountDrawer input:focus,
+.globalAccountDrawer textarea:focus,
+.globalAccountDrawer select:focus{
+  border-color:#8b867f!important;
+  outline:none;
+}
+
+/* Responsive density */
+@media(max-width:760px){
+  .shell{width:calc(100% - 32px)}
+  .globalSiteHeader{height:70px}
+  .hero{min-height:calc(82svh - 70px);padding:34px 0 78px}
+  .section{padding:82px 0}
+  .statement{padding:78px 0;gap:38px}
+  .store{padding:78px 0}
+  .productionSection>.shell{padding:80px 0}
+  .footerInner{min-height:auto}
+}
