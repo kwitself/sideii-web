@@ -2038,6 +2038,7 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 }
 
 
+
 /* FINAL merch editor zoom authority — single source */
 .mockupStudioV2 .teeZoomObject,
 .mockupStudioV2 .teeZoomObject.template-apparel,
@@ -2045,9 +2046,11 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .mockupStudioV2 .teeZoomObject.template-lighter,
 .mockupStudioV2 .teeZoomObject.template-beanie,
 .mockupStudioV2 .teeZoomObject.template-patch{
-  width:min(var(--object-width,460px),92%)!important;
+  width:var(--object-width,460px)!important;
+  min-width:0!important;
   max-width:none!important;
   max-height:none!important;
+  flex:0 0 auto!important;
 }
 .mockupStudioV2 .teeZoomObject > div{
   width:100%!important;
@@ -2060,20 +2063,11 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .mockupBody.mockupFullscreen .teeZoomObject.template-lighter,
 .mockupBody.mockupFullscreen .teeZoomObject.template-beanie,
 .mockupBody.mockupFullscreen .teeZoomObject.template-patch{
-  width:min(var(--object-width,460px),82vw)!important;
+  width:var(--object-width,460px)!important;
+  min-width:0!important;
   max-width:none!important;
   transform:translate(-50%,-50%)!important;
 }
-@media(max-width:760px){
-  .mockupStudioV2 .teeZoomObject,
-  .mockupStudioV2 .teeZoomObject.template-apparel,
-  .mockupStudioV2 .teeZoomObject.template-mug,
-  .mockupStudioV2 .teeZoomObject.template-lighter,
-  .mockupStudioV2 .teeZoomObject.template-beanie,
-  .mockupStudioV2 .teeZoomObject.template-patch{
-    width:min(var(--object-width,360px),90%)!important;
-  }
-  .mockupBody.mockupFullscreen .teeZoomObject{
-    width:min(var(--object-width,360px),88vw)!important;
-  }
+.teeZoomStage{
+  overflow:hidden;
 }
