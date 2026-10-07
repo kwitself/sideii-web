@@ -256,7 +256,7 @@ export default function AdminDashboard(){
  {productView==='merch'&&<MerchWorkspace onCreated={load} onContinue={product=>{setMerchSetup(true);setMerchProduct(product)}}/>}
  </section></>}
 
- {activeView==='preview'&&<div className="adminModuleStack"><ProductPreviewPanel products={products} preferredProductId={previewProductId}/></div>}
+ {activeView==='preview'&&<div className="adminModuleStack"><ProductPreviewPanel products={products} preferredProductId={previewProductId} onEditProduct={(p,tab)=>{if(p.product_type==='merch'){setMerchSetup(false);setMerchProduct({...p,__initialTab:tab})}else setEditRelease({...p,__initialTab:tab})}}/></div>}
 
  {activeView==='merchandising'&&<div className="adminModuleStack"><MerchandisingPanel products={products}/></div>}
 
