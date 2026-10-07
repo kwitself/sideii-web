@@ -3936,3 +3936,39 @@ button,a{transition:color .18s ease,border-color .18s ease,background .18s ease,
   .checkoutSupportRow{grid-template-columns:1fr}
   .checkoutSupportRow label{width:100%}
 }
+
+/* FINAL UI AUDIT — SITE-WIDE */
+.globalSiteHeader .brand{display:flex;align-items:center}
+.primaryNav>a,.navExplore>button{min-height:40px;display:inline-flex;align-items:center}
+.navExplore:focus-within .navExploreMenu{opacity:1;visibility:visible;pointer-events:auto;transform:none}
+.homeFormatFilters button{min-height:42px;font-size:9px!important}
+.releaseMeta span,.releaseMeta p,.eyebrow,.heroFoot span,.capabilityStrip small,.statement>div span,.statement small,.imprintKicker,.imprintMeta small,.aboutIndex,.productionHead>span,.productionFlow article>b,.store>span,.footerNav a,.footerMeta span{font-size:9px!important}
+.releaseMeta h3{line-height:1.05}
+.homeStoreCard{transition:background .18s ease,border-color .18s ease,transform .18s ease}
+.homeStoreCard:hover{transform:translateY(-2px)}
+.footerNav a{min-height:34px;display:inline-flex;align-items:center}
+.globalBagTrigger,.globalAccountTrigger,.localeCurrencyTrigger{min-height:40px}
+.globalBagClose,.globalAccountClose{min-height:36px}
+.globalBagRemove{min-height:34px;padding:0 8px}
+.globalBagItems article>strong{font-size:16px}
+.checkoutSavedAddressHead span,.checkoutSavedAddressHead small,.checkoutSummaryHead>span,.checkoutSummaryHead>small{font-size:9px!important}
+@media(max-width:760px){
+ .globalSiteHeader .brand{width:100px}
+ .primaryNav{gap:8px}
+ .primaryNav>a,.navExplore>button{min-height:38px;font-size:8.5px}
+ .heroCore{width:100%}
+ .capabilityStrip{grid-template-columns:1fr 1fr}
+ .capabilityStrip>div{min-height:108px}
+ .releaseGrid{gap:34px}
+ .globalBagDrawer,.globalAccountDrawer{width:100vw!important;max-width:100vw!important;padding:22px!important}
+ .footerNav{gap:6px 18px}
+}
+@media(max-width:520px){
+ .primaryNav>a:nth-of-type(1),.primaryNav>a:nth-of-type(2){display:none}
+ .navExplore>button{padding-inline:4px}
+ .capabilityStrip{grid-template-columns:1fr}
+ .capabilityStrip>div{min-height:92px}
+ .statement>div p{font-size:18px}
+ .productionCta{align-items:stretch;flex-direction:column}
+ .productionCta a{width:100%;justify-content:center}
+}
