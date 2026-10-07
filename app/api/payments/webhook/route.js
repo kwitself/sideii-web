@@ -1,5 +1,6 @@
 import {createHmac,timingSafeEqual,createHash} from 'node:crypto';
 import {createClient} from '@supabase/supabase-js';
+import {sendOrderEmailPayload} from '../../../lib/server/orderEmail';
 
 export const runtime='nodejs';
 
@@ -62,6 +63,13 @@ export async function POST(request){
 
   if(error){
    return Response.json({ok:false,error:error.message},{status:400});
+  }
+
+  if(data?.event_type==='payment.succeeded'&&!data?.duplicate){
+   try{
+    const claimed=await sb.rpc('claim_server_order_email',{p_order_id:orderId,p_type:'paid'});
+    if(!claimed.error&&claimed.data)await sendOrderEmailPayload(claimed.data);
+   }catch{}
   }
 
   return Response.json(data||{ok:true});
