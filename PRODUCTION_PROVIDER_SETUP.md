@@ -21,6 +21,7 @@ Required for current production email flows:
 - `RESEND_API_KEY`
 - `SIDEII_ORDER_FROM`
 - `SIDEII_APPLICATION_FROM`
+- `SIDEII_APPLICATION_TO`
 
 The sender addresses must use a verified production email domain before launch.
 
@@ -35,19 +36,37 @@ The sender addresses must use a verified production email domain before launch.
 
 ## Payment provider
 
-Not connected yet.
+The provider-neutral payment boundary is implemented, but a real payment provider is not connected yet.
 
-Before launch, implement and test:
+Already implemented:
 
-- server-side payment-session / payment-intent creation;
-- signed provider webhook verification;
-- idempotent transition to `payment_status=paid`;
-- failed-payment handling;
-- refund webhook / reconciliation;
-- no client-side trust of payment success;
-- order-value finalization only after verified payment.
+- signed HMAC-SHA256 webhook ingress at `/api/payments/webhook`;
+- raw-body verification through `PAYMENT_WEBHOOK_SECRET`;
+- server-only Supabase access through `SUPABASE_SECRET_KEY`;
+- payment event ledger with provider/event idempotency;
+- amount and currency verification against the order;
+- duplicate-event conflict detection;
+- payment success transition only from verified server events;
+- refund/store-value/passport/impact finalization hooks;
+- refund inventory release/return finalization;
+- unpaid stock reservation expiry and anti-reservation-abuse limits;
+- no client-side trust of payment success.
 
-Do not expose payment secret keys to `NEXT_PUBLIC_*` variables.
+Required server variables:
+
+- `PAYMENT_PROVIDER`
+- `PAYMENT_SECRET_KEY`
+- `PAYMENT_WEBHOOK_SECRET`
+- `SUPABASE_SECRET_KEY`
+
+Still provider-specific:
+
+- payment-session / payment-intent creation;
+- mapping the chosen provider's native webhook format/signature to the normalized SIDE:II webhook contract;
+- provider-side refund initiation/reconciliation;
+- live sandbox and production credential QA.
+
+Never expose payment or Supabase secret keys through `NEXT_PUBLIC_*` variables.
 
 ## Shipping / carrier
 
