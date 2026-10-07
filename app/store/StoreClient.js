@@ -11,7 +11,7 @@ import MerchMockupPreview from '../components/MerchMockupPreview';
 export default function StoreClient({releases}){
  const {money:fmt,t}=useLocaleCurrency();
  const [filter,setFilter]=useState('all'),[formatFilter,setFormatFilter]=useState('all');
- const [search,setSearch]=useState(''),[availability,setAvailability]=useState('all'),[collectionFilter,setCollectionFilter]=useState('all');
+ const [search,setSearch]=useState(''),[availability,setAvailability]=useState('all'),[collectionFilter,setCollectionFilter]=useState('all'),[sortMode,setSortMode]=useState('newest');
  const [limitedOnly,setLimitedOnly]=useState(false),[preorderOnly,setPreorderOnly]=useState(false),[minPrice,setMinPrice]=useState(''),[maxPrice,setMaxPrice]=useState('');
  const [filtersReady,setFiltersReady]=useState(false);
  const [viewMode,setViewMode]=useState('editorial');
@@ -31,6 +31,7 @@ export default function StoreClient({releases}){
   setCollectionFilter(q.get('collection')||'all');
   setLimitedOnly(q.get('limited')==='1');setPreorderOnly(q.get('preorder')==='1');
   setMinPrice(q.get('min')||'');setMaxPrice(q.get('max')||'');
+  if(['newest','price-asc','price-desc','title'].includes(q.get('sort')))setSortMode(q.get('sort'));
   if(q.get('checkout')==='1'){
    window.dispatchEvent(new Event('sideii-open-bag'));
    q.delete('checkout');window.history.replaceState({},'',window.location.pathname+(q.toString()?'?'+q.toString():''));
@@ -49,10 +50,10 @@ export default function StoreClient({releases}){
   setOrDelete('imprint',filter);setOrDelete('media',formatFilter);setOrDelete('q',search,'');
   setOrDelete('availability',availability);setOrDelete('collection',collectionFilter);
   limitedOnly?q.set('limited','1'):q.delete('limited');preorderOnly?q.set('preorder','1'):q.delete('preorder');
-  setOrDelete('min',minPrice,'');setOrDelete('max',maxPrice,'');
+  setOrDelete('min',minPrice,'');setOrDelete('max',maxPrice,'');setOrDelete('sort',sortMode,'newest');
   const next=window.location.pathname+(q.toString()?'?'+q.toString():'');
   window.history.replaceState({},'',next);
- },[filtersReady,filter,formatFilter,search,availability,collectionFilter,limitedOnly,preorderOnly,minPrice,maxPrice]);
+ },[filtersReady,filter,formatFilter,search,availability,collectionFilter,limitedOnly,preorderOnly,minPrice,maxPrice,sortMode]);
 
  useEffect(()=>{
   let live=true;
@@ -112,11 +113,12 @@ export default function StoreClient({releases}){
   const q=search.trim().toLowerCase();
   if(q){
    const hay=[r.rawTitle,r.title,r.artist,r.catalogue,r.originalCatalogue,r.imprint,r.merchCategory,...(r.variants||[]).flatMap(v=>[v.sku,v.format,v.formatLabel,v.size,v.color,v.style])].filter(Boolean).join(' ').toLowerCase();
+   if(r.storefrontConfig?.visibility?.search===false)return false;
    if(!hay.includes(q))return false;
   }
   const variants=r.variants||[];
-  const hasPreorder=variants.some(v=>!!v.preorderEnabled);
-  const hasAvailable=variants.some(v=>v.format==='digital'||v.stock==null||Number(v.stock)>0);
+  const hasPreorder=r.status==='AVAILABLE'&&variants.some(v=>!!v.preorderEnabled);
+  const hasAvailable=r.status==='AVAILABLE'&&variants.some(v=>v.format==='digital'||v.stock==null||Number(v.stock)>0);
   const soldOut=!hasAvailable&&!hasPreorder;
   if(availability==='in-stock'&&!hasAvailable)return false;
   if(availability==='preorder'&&!hasPreorder)return false;
@@ -131,7 +133,15 @@ export default function StoreClient({releases}){
   }
   return true;
  }),[uniqueReleases,filter,formatFilter,search,availability,collectionFilter,limitedOnly,preorderOnly,minPrice,maxPrice]);
- const resetDiscovery=()=>{setSearch('');setAvailability('all');setCollectionFilter('all');setLimitedOnly(false);setPreorderOnly(false);setMinPrice('');setMaxPrice('')};
+ const sortedFiltered=useMemo(()=>{
+  const rows=[...filtered];
+  const firstPrice=r=>Math.min(...(r.variants||[]).map(v=>Number(v.price)).filter(Number.isFinite),Number.POSITIVE_INFINITY);
+  if(sortMode==='price-asc')rows.sort((a,b)=>firstPrice(a)-firstPrice(b));
+  else if(sortMode==='price-desc')rows.sort((a,b)=>firstPrice(b)-firstPrice(a));
+  else if(sortMode==='title')rows.sort((a,b)=>String(a.rawTitle||a.title).localeCompare(String(b.rawTitle||b.title)));
+  return rows;
+ },[filtered,sortMode]);
+ const resetDiscovery=()=>{setFilter('all');setFormatFilter('all');setSearch('');setAvailability('all');setCollectionFilter('all');setLimitedOnly(false);setPreorderOnly(false);setMinPrice('');setMaxPrice('');setSortMode('newest')};
  const add=(r,v)=>{addCartItem(r,v);window.dispatchEvent(new Event('sideii-open-bag'))};
  const productHref=r=>r.isMerch?('/store/'+r.slug):('/releases/'+r.slug);
 
@@ -146,6 +156,7 @@ export default function StoreClient({releases}){
     <label><span>COLLECTION</span><select value={collectionFilter} onChange={e=>setCollectionFilter(e.target.value)}><option value="all">ALL COLLECTIONS</option>{collectionOptions.map(x=><option value={x.slug} key={x.slug}>{String(x.name).toUpperCase()}</option>)}</select></label>
     <label><span>MIN PRICE</span><input type="number" min="0" step="1" value={minPrice} onChange={e=>setMinPrice(e.target.value)} placeholder="0"/></label>
     <label><span>MAX PRICE</span><input type="number" min="0" step="1" value={maxPrice} onChange={e=>setMaxPrice(e.target.value)} placeholder="ANY"/></label>
+    <label><span>SORT</span><select value={sortMode} onChange={e=>setSortMode(e.target.value)}><option value="newest">NEWEST</option><option value="price-asc">PRICE LOW → HIGH</option><option value="price-desc">PRICE HIGH → LOW</option><option value="title">TITLE A → Z</option></select></label>
     <label className={"storeDiscoveryToggle "+(preorderOnly?'active':'')}><input type="checkbox" checked={preorderOnly} onChange={e=>setPreorderOnly(e.target.checked)}/><span>PRE-ORDER ONLY</span></label>
     <label className={"storeDiscoveryToggle "+(limitedOnly?'active':'')}><input type="checkbox" checked={limitedOnly} onChange={e=>setLimitedOnly(e.target.checked)}/><span>LIMITED ONLY</span></label>
    </div>
@@ -153,7 +164,7 @@ export default function StoreClient({releases}){
   </section>
   {filter==='lethargia'&&<section className="storeImprintContext shell"><div><small>A SIDE:II IMPRINT</small><img src="/brand/lethargia/lethargia-logo.png" alt="Lethargia Records"/></div><p>Independent editions developed under their own visual and physical logic.</p><Link href="/imprints/lethargia">OPEN IMPRINT ↗</Link></section>}
   <section className={"storeCatalogue shell "+(viewMode==='classic'?'classicMode':'editorialMode')}>
-   {viewMode==='classic'?<div className="storeClassicGrid">{filtered.map((r,i)=>{const cfg=r.storefrontConfig||{},card=cfg.card||{},badgeCfg=cfg.badge||{};const variants=r.variants||[];const primary=variants.find(v=>v.format==='digital'||v.stock>0||v.preorderEnabled)||variants[0]||{};const soldOut=primary.format!=='digital'&&Number(primary.stock||0)<=0;const canPreorder=soldOut&&primary.preorderEnabled;const multi=variants.length>1;const unavailable=r.status!=='AVAILABLE'||(soldOut&&!canPreorder);const autoBadge=r.status!=='AVAILABLE'?'COMING SOON':canPreorder?'PRE-ORDER':soldOut?'SOLD OUT':primary.editionNumberingEnabled&&primary.editionTotal?'LIMITED':i<2?'NEW':null;const badge=badgeCfg.mode==='none'?null:badgeCfg.mode==='manual'?(badgeCfg.text||null):autoBadge;return <article className={"storeClassicCard "+(card.density==='compact'?"compact ":"")+(r.isMerch?"merch ":"")+(r.imprint==="lethargia"?"lethargia ":"")} key={r.slug}>
+   {viewMode==='classic'?<div className="storeClassicGrid">{sortedFiltered.map((r,i)=>{const cfg=r.storefrontConfig||{},card=cfg.card||{},badgeCfg=cfg.badge||{};const variants=r.variants||[];const primary=variants.find(v=>v.format==='digital'||v.stock>0||v.preorderEnabled)||variants[0]||{};const soldOut=primary.format!=='digital'&&Number(primary.stock||0)<=0;const canPreorder=soldOut&&primary.preorderEnabled;const multi=variants.length>1;const unavailable=r.status!=='AVAILABLE'||(soldOut&&!canPreorder);const autoBadge=r.status!=='AVAILABLE'?'COMING SOON':canPreorder?'PRE-ORDER':soldOut?'SOLD OUT':primary.editionNumberingEnabled&&primary.editionTotal?'LIMITED':i<2?'NEW':null;const badge=badgeCfg.mode==='none'?null:badgeCfg.mode==='manual'?(badgeCfg.text||null):autoBadge;return <article className={"storeClassicCard "+(card.density==='compact'?"compact ":"")+(r.isMerch?"merch ":"")+(r.imprint==="lethargia"?"lethargia ":"")} key={r.slug}>
   <div className="storeClassicMedia">
    {badge&&<span className={"storeClassicBadge "+(badgeCfg.tone||'neutral')+" "+String(badge).toLowerCase().replaceAll(' ','-')}>{badge}</span>}
    {card.wishlist!==false&&<button type="button" className={"storeClassicWish "+(wishlist.some(x=>x.product_slug===r.slug)?"active":"")} aria-label="Toggle wishlist" onClick={()=>toggleWishlist(r)}>{wishlist.some(x=>x.product_slug===r.slug)?'♥':'♡'}</button>}
@@ -165,7 +176,7 @@ export default function StoreClient({releases}){
    <div className="storeClassicPrice"><strong>{primary.price!=null?fmt(primary.price):'—'}</strong>{primary.editionNumberingEnabled&&primary.editionTotal&&<span>{primary.editionTotal} EDITION</span>}</div>
    <div className="storeClassicAction">{card.cta==='view'||card.quick_add===false?<Link href={productHref(r)}>VIEW PRODUCT</Link>:card.cta==='options'||multi?<Link href={productHref(r)}>SELECT OPTIONS</Link>:r.status==='AVAILABLE'&&soldOut&&!canPreorder?<Link href={productHref(r)}>{r.commerceConfig?.waitlist===false?'VIEW PRODUCT':'WAITLIST / VIEW'}</Link>:<button type="button" disabled={unavailable} onClick={()=>add(r,primary)}>{r.status!=='AVAILABLE'?'COMING SOON':canPreorder?'PRE-ORDER':'ADD TO BAG'}</button>}</div>
   </div>
- </article>})}</div>:<div className="storeEditorialList">{filtered.map(r=>{const card=r.storefrontConfig?.card||{};return <article className={"storeProduct "+(r.isMerch?"merchProduct ":"")+(r.productOrigin==="distributed"?"selectedProduct ":"")+(r.imprint==="lethargia"?"lethargiaProduct":"")} key={r.slug}>
+ </article>})}</div>:<div className="storeEditorialList">{sortedFiltered.map(r=>{const card=r.storefrontConfig?.card||{};return <article className={"storeProduct "+(r.isMerch?"merchProduct ":"")+(r.productOrigin==="distributed"?"selectedProduct ":"")+(r.imprint==="lethargia"?"lethargiaProduct":"")} key={r.slug}>
     {card.wishlist!==false&&<button type="button" className={"storeWishlistButton "+(wishlist.some(x=>x.product_slug===r.slug)?"active":"")} aria-label="Toggle wishlist" onClick={()=>toggleWishlist(r)}>{wishlist.some(x=>x.product_slug===r.slug)?'♥':'♡'}</button>}
     <Link href={r.isMerch?('/store/'+r.slug):('/releases/'+r.slug)} className="storeCover">{r.isMerch&&(r.mockups?.front||r.mockups?.back)?<MerchMockupPreview product={r} raster/>:r.cover?<img src={r.cover} alt={r.title}/>:<span>{r.catalogue}</span>}</Link>
     <div className="storeProductMeta">
