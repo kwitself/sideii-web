@@ -7,21 +7,18 @@ export async function POST(request){
   if(!applicationId)return Response.json({ok:false,error:'Application id is required'},{status:400});
   const url=process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anon=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY||process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  let recipient='';
   let application=null;
   let client=null;
 
   if(url&&anon){
    client=createClient(url,anon,{auth:{persistSession:false}});
-   const {data:settings}=await client.from('application_settings').select('notification_email,sender_name').eq('id',1).maybeSingle();
-   recipient=settings?.notification_email||'';
   }
 
   const apiKey=process.env.RESEND_API_KEY;
   const from=process.env.SIDEII_APPLICATION_FROM||'SIDE:II Applications <onboarding@resend.dev>';
 
-  if(!recipient||!apiKey){
-   return Response.json({ok:true,email_sent:false,reason:!recipient?'notification_email_not_configured':'email_provider_not_configured'});
+  if(!client||!apiKey){
+   return Response.json({ok:true,email_sent:false,reason:!client?'supabase_not_configured':'email_provider_not_configured'});
   }
 
   const {data:claimed,error:claimError}=await client.rpc('claim_production_application_notification',{p_id:applicationId});
@@ -29,6 +26,11 @@ export async function POST(request){
   application=claimed||null;
   if(!application){
    return Response.json({ok:true,email_sent:false,reason:'already_claimed_or_not_found'});
+  }
+
+  const recipient=application.notification_email||'';
+  if(!recipient){
+   return Response.json({ok:true,email_sent:false,reason:'notification_email_not_configured'});
   }
 
   const lines=[
