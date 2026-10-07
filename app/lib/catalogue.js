@@ -86,3 +86,15 @@ export async function getPublicPressKit(slug){
  if(error)return null;
  return Array.isArray(data)?(data[0]||null):(data||null);
 }
+
+
+export async function getRelatedProducts(productId,limit=6){
+ const sb=client(); if(!sb||!productId)return [];
+ const {data,error}=await sb.rpc('get_related_product_ids',{p_product_id:productId,p_limit:limit});
+ if(error)return [];
+ const ordered=Array.isArray(data)?data:[];
+ if(!ordered.length)return [];
+ const all=await getStoreReleases();
+ const byId=new Map((all||[]).map(x=>[x.id,x]));
+ return ordered.map(x=>byId.get(x.product_id)).filter(Boolean);
+}
