@@ -3724,3 +3724,71 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   -webkit-appearance:none!important;
   margin:0;
 }
+
+
+/* CHECKBOX / TOGGLE STATE SYSTEM — make ON/OFF visually explicit */
+.adminApp input[type="checkbox"]{
+  -webkit-appearance:none!important;
+  appearance:none!important;
+  width:18px!important;
+  height:18px!important;
+  min-width:18px!important;
+  min-height:18px!important;
+  margin:0;
+  border:1px solid rgba(255,255,255,.28)!important;
+  background:#0b0b0d!important;
+  display:inline-grid!important;
+  place-items:center!important;
+  cursor:pointer;
+  vertical-align:middle;
+}
+.adminApp input[type="checkbox"]::after{
+  content:'';
+  width:8px;
+  height:8px;
+  background:#0b0b0d;
+  transform:scale(0);
+  transition:transform .14s ease;
+}
+.adminApp input[type="checkbox"]:checked{
+  background:#ddd8cf!important;
+  border-color:#ddd8cf!important;
+}
+.adminApp input[type="checkbox"]:checked::after{
+  transform:scale(1);
+}
+.adminApp input[type="checkbox"]:focus-visible{
+  outline:1px solid #bdb8af!important;
+  outline-offset:3px;
+}
+.adminApp input[type="checkbox"]:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+}
+
+/* Toggle labels get a state surface too */
+.adminApp .storefrontToggle,
+.adminApp .catalogueCheck,
+.adminApp .shippingToggle,
+.adminApp .commerceCheck{
+  min-height:46px;
+  padding:0 12px;
+  gap:10px;
+  border:1px solid rgba(255,255,255,.12);
+  background:#0b0b0d;
+  transition:background .14s ease,border-color .14s ease,color .14s ease;
+}
+.adminApp .storefrontToggle:has(input:checked),
+.adminApp .catalogueCheck:has(input:checked),
+.adminApp .shippingToggle:has(input:checked),
+.adminApp .commerceCheck:has(input:checked){
+  background:#141416;
+  border-color:rgba(221,216,207,.55);
+  color:#eee9e1;
+}
+.adminApp .storefrontToggle:has(input:checked) span,
+.adminApp .catalogueCheck:has(input:checked) span,
+.adminApp .shippingToggle:has(input:checked) span,
+.adminApp .commerceCheck:has(input:checked) span{
+  color:#eee9e1!important;
+}
