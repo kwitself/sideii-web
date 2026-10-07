@@ -254,3 +254,12 @@
   .wearCardMeta p{font-size:14px}
   .wearFeaturedAction{align-items:flex-start;flex-direction:column}
 }
+
+/* FINAL UI AUDIT */
+.wearHero>span,.wearManifest>span,.wearProducts>span,.wearFeaturedCopy>small,.wearSupportStatement span,.wearFeaturedAction span,.wearSupportModelInner>span,.wearSupportStats b{font-size:9px}
+.wearCardMeta small,.wearCardMeta em{font-size:9px}
+.wearCardMeta p{font-size:14px}
+.wearFeaturedCard,.wearCard{transition:border-color .18s ease,background .18s ease,transform .18s ease}
+.wearFeaturedCard:hover,.wearCard:hover{border-color:#555158}
+.wearFeaturedAction span{display:inline-flex;align-items:center;min-height:40px}
+@media(max-width:620px){.wearHero p{font-size:16px}.wearCardMeta h3{font-size:30px}.wearSupportModelInner{padding:58px 0}}
