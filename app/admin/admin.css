@@ -3611,3 +3611,106 @@ textarea{line-height:1.5!important}
   .topActions a,.topActions button{flex:1}
   .productControlBar{grid-template-columns:1fr}
 }
+
+
+/* ULTRAWIDE / EMPTY-STATE DASHBOARD FIX */
+.adminMain{
+  max-width:1920px;
+  margin:0 auto;
+}
+#overview{
+  min-height:auto;
+}
+#overview .overviewMetricGrid{
+  gap:12px;
+}
+.analyticsShell{
+  align-items:start;
+}
+.analyticsMain{
+  align-self:start;
+}
+.analyticsHero{
+  min-height:0;
+  height:430px;
+  max-height:430px;
+}
+.analyticsChartWrap{
+  min-height:0;
+  height:250px;
+  flex:0 0 250px;
+}
+.analyticsChartWrap .analyticsSpark{
+  min-height:0;
+  height:250px;
+}
+.analyticsSide{
+  align-self:start;
+  grid-template-rows:auto auto auto;
+}
+.analyticsPanel.compact,.profitSplit.compact{
+  min-height:128px;
+}
+.analyticsPanel.compact .analyticsEmpty.small,
+.profitSplit.compact .analyticsEmpty.small{
+  min-height:58px;
+  padding:14px 12px;
+}
+.analyticsEmpty{
+  position:absolute;
+  inset:0;
+  place-content:center;
+}
+.analyticsEmpty:before{
+  content:'';
+  width:24px;
+  height:1px;
+  background:rgba(255,255,255,.18);
+  margin:0 auto 4px;
+}
+.analyticsHero:has(.analyticsEmpty) .analyticsSpark{
+  opacity:.18;
+}
+.analyticsRoyaltyGrid{
+  align-items:start;
+}
+.royaltyForm,.royaltyReport{
+  min-height:0;
+}
+#overview .dashboardPanels{
+  align-items:start;
+}
+#overview .dashboardPanels>article{
+  min-height:190px;
+}
+@media(min-width:2000px){
+  .adminApp{
+    grid-template-columns:250px minmax(0,1fr);
+  }
+  .adminRail{
+    padding-left:28px;
+    padding-right:28px;
+  }
+  .adminMain{
+    max-width:1880px;
+    padding-left:52px;
+    padding-right:52px;
+  }
+  .analyticsHero{
+    height:420px;
+    max-height:420px;
+  }
+}
+@media(max-width:1180px){
+  .adminMain{max-width:none}
+  .analyticsHero{
+    height:auto;
+    max-height:none;
+    min-height:380px;
+  }
+  .analyticsChartWrap{
+    height:220px;
+    flex-basis:220px;
+  }
+  .analyticsChartWrap .analyticsSpark{height:220px}
+}
