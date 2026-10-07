@@ -5,7 +5,9 @@ export async function POST(request){
   const body=await request.json();
   const order_id=body.order_id;
   const email=body.email;
-  const type=body.type||'received';
+  const type=String(body.type||'received').toLowerCase();
+  const allowedTypes=new Set(['received','paid','preparing','shipped','completed']);
+  if(!allowedTypes.has(type))return Response.json({ok:false,error:'Invalid notification type'},{status:400});
 
   const apiKey=process.env.RESEND_API_KEY;
   if(!apiKey){
