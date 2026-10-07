@@ -11,10 +11,13 @@ import MerchMockupPreview from '../components/MerchMockupPreview';
 export default function StoreClient({releases}){
  const {money:fmt,t}=useLocaleCurrency();
  const [filter,setFilter]=useState('all'),[formatFilter,setFormatFilter]=useState('all');
+ const [viewMode,setViewMode]=useState('editorial');
  const [wishlist,setWishlist]=useState([]),[wishlistUser,setWishlistUser]=useState(null);
  const [waitlistVariant,setWaitlistVariant]=useState(null),[waitlistEmail,setWaitlistEmail]=useState(''),[waitlistMessage,setWaitlistMessage]=useState(''),[waitlistBusy,setWaitlistBusy]=useState(false);
 
  useEffect(()=>{
+  const savedView=window.localStorage.getItem('sideii-store-view');
+  if(savedView==='classic'||savedView==='editorial')setViewMode(savedView);
   const q=new URLSearchParams(window.location.search);
   const imprint=q.get('imprint');
   if(['sideii','lethargia','selected'].includes(imprint))setFilter(imprint);
@@ -25,6 +28,10 @@ export default function StoreClient({releases}){
    window.history.replaceState({},'',window.location.pathname);
   }
  },[]);
+
+ useEffect(()=>{
+  if(typeof window!=='undefined')window.localStorage.setItem('sideii-store-view',viewMode);
+ },[viewMode]);
 
  useEffect(()=>{
   let live=true;
@@ -74,14 +81,27 @@ export default function StoreClient({releases}){
  const uniqueReleases=useMemo(()=>Array.from(new Map((releases||[]).map(r=>[r.slug||r.id||r.catalogue,r])).values()),[releases]);
  const filtered=uniqueReleases.filter(r=>(filter==='all'||(filter==='selected'?r.productOrigin==='distributed':r.imprint===filter))&&(formatFilter==='all'||(formatFilter==='merch'?r.isMerch:r.variants.some(v=>v.format===formatFilter))));
  const add=(r,v)=>{addCartItem(r,v);window.dispatchEvent(new Event('sideii-open-bag'))};
+ const productHref=r=>r.isMerch?('/store/'+r.slug):('/releases/'+r.slug);
 
  return <main className={"storePage "+(filter==="lethargia"?"storePageLethargia":"")}>
   <GlobalHeader/>
   <section className="storeHero shell"><span>STORE / CATALOGUE</span><h1>Available<br/><i>editions.</i></h1><p>Physical objects and digital masters from SIDE:II and its imprints.</p><div className="storeEditorialLinks"><Link className="storeWearEntry" href="/wear">{t('WEAR WHAT YOU SUPPORT')} →</Link><Link className="storeWearEntry" href="/collections">{t('COLLECTIONS')} →</Link><Link className="storeWearEntry" href="/bundles">{t('BUNDLES')} →</Link><Link className="storeWearEntry" href="/archive">{t('ARCHIVE')} →</Link></div></section>
-  <section className="storeFilters shell"><div>{[['all','ALL'],['sideii','SIDE:II'],['lethargia','LETHARGIA'],['selected','SELECTED']].map(([v,l])=><button key={v} className={filter===v?'active':''} onClick={()=>setFilter(v)}>{l}</button>)}</div><div>{[['all','ALL MEDIA'],['merch','MERCH'],['vinyl','VINYL'],['cd','CD'],['cassette','CASSETTE'],['digital','DIGITAL']].map(([v,l])=><button key={v} className={formatFilter===v?'active':''} onClick={()=>setFormatFilter(v)}>{l}</button>)}</div></section>
+  <section className="storeFilters shell"><div>{[['all','ALL'],['sideii','SIDE:II'],['lethargia','LETHARGIA'],['selected','SELECTED']].map(([v,l])=><button key={v} className={filter===v?'active':''} onClick={()=>setFilter(v)}>{l}</button>)}</div><div>{[['all','ALL MEDIA'],['merch','MERCH'],['vinyl','VINYL'],['cd','CD'],['cassette','CASSETTE'],['digital','DIGITAL']].map(([v,l])=><button key={v} className={formatFilter===v?'active':''} onClick={()=>setFormatFilter(v)}>{l}</button>)}</div><div className="storeViewToggle" role="group" aria-label="Store view"><span>VIEW</span><button type="button" className={viewMode==='editorial'?'active':''} aria-pressed={viewMode==='editorial'} onClick={()=>setViewMode('editorial')}>EDITORIAL</button><button type="button" className={viewMode==='classic'?'active':''} aria-pressed={viewMode==='classic'} onClick={()=>setViewMode('classic')}>CLASSIC</button></div></section>
   {filter==='lethargia'&&<section className="storeImprintContext shell"><div><small>A SIDE:II IMPRINT</small><img src="/brand/lethargia/lethargia-logo.png" alt="Lethargia Records"/></div><p>Independent editions developed under their own visual and physical logic.</p><Link href="/imprints/lethargia">OPEN IMPRINT ↗</Link></section>}
-  <section className="storeCatalogue shell">
-   {filtered.map(r=><article className={"storeProduct "+(r.isMerch?"merchProduct ":"")+(r.productOrigin==="distributed"?"selectedProduct ":"")+(r.imprint==="lethargia"?"lethargiaProduct":"")} key={r.slug}>
+  <section className={"storeCatalogue shell "+(viewMode==='classic'?'classicMode':'editorialMode')}>
+   {viewMode==='classic'?<div className="storeClassicGrid">{filtered.map((r,i)=>{const variants=r.variants||[];const primary=variants.find(v=>v.format==='digital'||v.stock>0||v.preorderEnabled)||variants[0]||{};const soldOut=primary.format!=='digital'&&Number(primary.stock||0)<=0;const canPreorder=soldOut&&primary.preorderEnabled;const multi=variants.length>1;const unavailable=r.status!=='AVAILABLE'||(soldOut&&!canPreorder);const badge=r.status!=='AVAILABLE'?'COMING SOON':canPreorder?'PRE-ORDER':soldOut?'SOLD OUT':primary.editionNumberingEnabled&&primary.editionTotal?'LIMITED':i<2?'NEW':null;return <article className={"storeClassicCard "+(r.isMerch?"merch ":"")+(r.imprint==="lethargia"?"lethargia ":"")} key={r.slug}>
+  <div className="storeClassicMedia">
+   {badge&&<span className={"storeClassicBadge "+String(badge).toLowerCase().replaceAll(' ','-')}>{badge}</span>}
+   <button type="button" className={"storeClassicWish "+(wishlist.some(x=>x.product_slug===r.slug)?"active":"")} aria-label="Toggle wishlist" onClick={()=>toggleWishlist(r)}>{wishlist.some(x=>x.product_slug===r.slug)?'♥':'♡'}</button>
+   <Link href={productHref(r)}>{r.isMerch&&(r.mockups?.front||r.mockups?.back)?<MerchMockupPreview product={r} raster displayMode="thumb"/>:r.cover?<img src={r.cover} alt={r.title}/>:<div className="storeClassicPlaceholder">{r.catalogue}</div>}</Link>
+  </div>
+  <div className="storeClassicMeta">
+   <small>{r.isMerch?String(r.merchCategory||'MERCH').toUpperCase():(r.imprint==='lethargia'?'LETHARGIA':'SIDE:II')} · {r.originalCatalogue||r.catalogue}</small>
+   <Link href={productHref(r)}><h3>{r.title}</h3></Link>
+   <div className="storeClassicPrice"><strong>{primary.price!=null?fmt(primary.price):'—'}</strong>{primary.editionNumberingEnabled&&primary.editionTotal&&<span>{primary.editionTotal} EDITION</span>}</div>
+   <div className="storeClassicAction">{multi?<Link href={productHref(r)}>SELECT OPTIONS</Link>:r.status==='AVAILABLE'&&soldOut&&!canPreorder?<Link href={productHref(r)}>WAITLIST / VIEW</Link>:<button type="button" disabled={unavailable} onClick={()=>add(r,primary)}>{r.status!=='AVAILABLE'?'COMING SOON':canPreorder?'PRE-ORDER':'ADD TO BAG'}</button>}</div>
+  </div>
+ </article>})}</div>:<div className="storeEditorialList">{filtered.map(r=><article className={"storeProduct "+(r.isMerch?"merchProduct ":"")+(r.productOrigin==="distributed"?"selectedProduct ":"")+(r.imprint==="lethargia"?"lethargiaProduct":"")} key={r.slug}>
     <button type="button" className={"storeWishlistButton "+(wishlist.some(x=>x.product_slug===r.slug)?"active":"")} aria-label="Toggle wishlist" onClick={()=>toggleWishlist(r)}>{wishlist.some(x=>x.product_slug===r.slug)?'♥':'♡'}</button>
     <Link href={r.isMerch?('/store/'+r.slug):('/releases/'+r.slug)} className="storeCover">{r.isMerch&&(r.mockups?.front||r.mockups?.back)?<MerchMockupPreview product={r} raster/>:r.cover?<img src={r.cover} alt={r.title}/>:<span>{r.catalogue}</span>}</Link>
     <div className="storeProductMeta">
@@ -99,6 +119,7 @@ export default function StoreClient({releases}){
      </div>})}</div>
     </div>
    </article>)}
+   </div>}
    {filtered.length===0&&(filter==='lethargia'?<div className="storeNoResults storeNoResultsLethargia"><small>LETHARGIA / CATALOGUE IN PREPARATION</small><h3>No public editions yet.</h3><p>The first Lethargia releases will appear here automatically when they are made public in Control Room.</p><Link href="/imprints/lethargia">OPEN LETHARGIA RECORDS ↗</Link></div>:<div className="storeNoResults">NO PRODUCTS IN THIS SELECTION.</div>)}
   </section>
  </main>;
