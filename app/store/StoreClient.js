@@ -83,7 +83,7 @@ export default function StoreClient({releases}){
   <section className="storeCatalogue shell">
    {filtered.map(r=><article className={"storeProduct "+(r.isMerch?"merchProduct ":"")+(r.productOrigin==="distributed"?"selectedProduct ":"")+(r.imprint==="lethargia"?"lethargiaProduct":"")} key={r.slug}>
     <button type="button" className={"storeWishlistButton "+(wishlist.some(x=>x.product_slug===r.slug)?"active":"")} aria-label="Toggle wishlist" onClick={()=>toggleWishlist(r)}>{wishlist.some(x=>x.product_slug===r.slug)?'♥':'♡'}</button>
-    <Link href={r.isMerch?('/store/'+r.slug):('/releases/'+r.slug)} className="storeCover">{r.isMerch&&(r.mockups?.front||r.mockups?.back)?<MerchMockupPreview product={r}/>:r.cover?<img src={r.cover} alt={r.title}/>:<span>{r.catalogue}</span>}</Link>
+    <Link href={r.isMerch?('/store/'+r.slug):('/releases/'+r.slug)} className="storeCover">{r.isMerch&&(r.mockups?.front||r.mockups?.back)?<MerchMockupPreview product={r} raster/>:r.cover?<img src={r.cover} alt={r.title}/>:<span>{r.catalogue}</span>}</Link>
     <div className="storeProductMeta">
      {r.productOrigin==='distributed'&&<span className="selectedBadge">SELECTED / DISTRIBUTION</span>}
      {r.isMerch&&<span className="merchBadge">SIDE:II / MERCH</span>}
