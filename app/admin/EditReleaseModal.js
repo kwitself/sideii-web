@@ -35,7 +35,7 @@ const cleanVariant=(v={})=>({id:v.id||null,sku:v.sku||'',format:v.format||'cd',p
 
 export default function EditReleaseModal({product,onClose,onSaved}){
  const initialVariants=(product?.product_variants||[]).map(cleanVariant);
- const [tab,setTab]=useState('release');
+ const [tab,setTab]=useState(product.__initialTab||'release');
  const [form,setForm]=useState({catalogue_no:product.catalogue_no||'',title:product.title||'',artist_project:product.artist_project||'',description:product.description||'',imprint:product.imprint||'sideii',status:product.status||'draft',has_shrinkwrap:!!product.has_shrinkwrap,release_date:product.release_date||'',credits:product.credits||'',tracklist:Array.isArray(product.tracklist)?product.tracklist.join('\n'):'',product_origin:product.product_origin||'own',original_label:product.original_label||'',original_catalogue_no:product.original_catalogue_no||'',barcode:product.barcode||''});
  const [storefront,setStorefront]=useState(()=>storefrontConfig(product.storefront_config,product.hover_media_format));
  const [seo,setSeo]=useState(()=>seoConfig(product.seo_config));
