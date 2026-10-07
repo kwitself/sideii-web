@@ -48,14 +48,27 @@ export default function ApplicationForm(){
    budget_note:form.budget_note.trim()||null
   };
 
-  const {error}=await supabase.from('production_applications').insert(payload);
+  const {data:applicationId,error}=await supabase.rpc('submit_production_application',{
+   p_applicant_name:payload.applicant_name,
+   p_applicant_email:payload.applicant_email,
+   p_applicant_phone:payload.applicant_phone,
+   p_artist_name:payload.artist_name,
+   p_project_title:payload.project_title,
+   p_services:payload.services,
+   p_quantity:payload.quantity,
+   p_merch_items:payload.merch_items,
+   p_print_details:payload.print_details,
+   p_description:payload.description,
+   p_reference_links:payload.reference_links,
+   p_budget_note:payload.budget_note
+  });
   if(error){setBusy(false);setMessage(error.message);return}
 
   try{
    await fetch('/api/applications/notify',{
     method:'POST',
     headers:{'content-type':'application/json'},
-    body:JSON.stringify(payload)
+    body:JSON.stringify({application_id:applicationId})
    });
   }catch{}
 
