@@ -54,23 +54,34 @@ export default function AdminAnalyticsPanel({products=[]}){
  }
 
  return <section className="dashboardAnalytics">
-  <div className="analyticsHead"><div><span>ANALYTICS / VALUE SPLIT</span><h2>What moves,<br/><em>who it supports.</em></h2></div><div className="analyticsRange">{WINDOWS.map(([v,l])=><button key={v} className={range===v?'active':''} onClick={()=>setRange(v)}>{l}</button>)}</div></div>
+  <div className="analyticsHead"><div><span>ANALYTICS / VALUE SPLIT</span><h2>What moves, <em>who it supports.</em></h2></div><div className="analyticsRange">{WINDOWS.map(([v,l])=><button key={v} className={range===v?'active':''} onClick={()=>setRange(v)}>{l}</button>)}</div></div>
   {message&&<p className="dbNotice">{message}</p>}
-  <div className="analyticsKpis">
-   <article><span>REVENUE</span><strong>{money(revenue)}</strong><small>{paid.length} paid orders</small></article>
-   <article><span>AOV</span><strong>{money(aov)}</strong><small>{units} units</small></article>
-   <article><span>EST. GROSS PROFIT</span><strong>{money(grossProfit)}</strong><small>after recorded product costs</small></article>
-   <article><span>ARTIST SHARE</span><strong>{money(artistTotal)}</strong><small>profit-share estimate</small></article>
+
+  <div className="analyticsShell">
+   <div className="analyticsMain">
+    <article className="adminPanel analyticsHero">
+     <header><div><span>REVENUE TREND</span><small>{range==='all'?'LAST 30 DAYS VISUAL':range+' DAY WINDOW'}</small></div><strong>{money(revenue)}</strong></header>
+     <div className="analyticsHeroKpis">
+      <div><span>ORDERS</span><b>{paid.length}</b></div>
+      <div><span>AOV</span><b>{money(aov)}</b></div>
+      <div><span>GROSS PROFIT</span><b>{money(grossProfit)}</b></div>
+      <div><span>ARTIST SHARE</span><b>{money(artistTotal)}</b></div>
+     </div>
+     <div className="analyticsChartWrap"><Sparkline points={trend}/>{!paid.length&&<div className="analyticsEmpty"><b>NO PAID SALES YET</b><span>Revenue activity will appear here when the first paid order lands.</span></div>}</div>
+    </article>
+   </div>
+
+   <aside className="analyticsSide">
+    <article className="adminPanel analyticsPanel compact"><header><span>TOP PRODUCTS</span><small>PAID REVENUE</small></header>{topProducts.length?<Bars rows={topProducts}/>:<div className="analyticsEmpty small"><b>NO SALES DATA</b><span>Top products will rank here.</span></div>}</article>
+    <article className="adminPanel analyticsPanel compact"><header><span>FORMAT MIX</span><small>{units} UNITS</small></header>{formats.length?<Bars rows={formats}/>:<div className="analyticsEmpty small"><b>NO FORMAT DATA</b><span>Vinyl, CD, cassette, digital and merch mix will appear here.</span></div>}</article>
+    <article className="adminPanel profitSplit compact"><header><span>PROFIT SPLIT</span><small>ESTIMATE</small></header><div className="profitSplitTotal"><div><span>ARTISTS</span><b>{money(artistTotal)}</b></div><div><span>LABEL / OPS</span><b>{money(labelProfit)}</b></div></div>{artistRows.slice(0,3).map(x=><div className="artistShareRow" key={x.id}><div><b>{x.payee_name}</b><small>{Number(x.share_percent)}% · {x.label}</small></div><strong>{money(x.artistShare)}</strong></div>)}{!artistRows.length&&<div className="analyticsEmpty small"><b>NO SHARE RULES</b><span>Add an artist rule below.</span></div>}</article>
+   </aside>
   </div>
-  <div className="analyticsGrid">
-   <article className="adminPanel analyticsTrend"><header><span>REVENUE TREND</span><small>{range==='all'?'LAST 30 DAYS VISUAL':range+' DAY WINDOW'}</small></header><Sparkline points={trend}/><div className="analyticsTrendFoot"><b>{money(revenue)}</b><span>{paid.length} ORDERS</span></div></article>
-   <article className="adminPanel analyticsPanel"><header><span>TOP PRODUCTS</span><small>paid line revenue</small></header>{topProducts.length?<Bars rows={topProducts}/>:<p className="emptyNote">Sales data will appear here.</p>}</article>
-   <article className="adminPanel analyticsPanel"><header><span>FORMAT MIX</span><small>revenue by format</small></header>{formats.length?<Bars rows={formats}/>:<p className="emptyNote">No paid format data yet.</p>}</article>
-   <article className="adminPanel profitSplit"><header><span>PROFIT SPLIT</span><small>estimated after recorded unit costs</small></header><div className="profitSplitTotal"><div><span>ARTISTS</span><b>{money(artistTotal)}</b></div><div><span>LABEL / OPERATIONS</span><b>{money(labelProfit)}</b></div></div>{artistRows.slice(0,6).map(x=><div className="artistShareRow" key={x.id}><div><b>{x.payee_name}</b><small>{x.label} · {Number(x.share_percent)}% OF EST. PRODUCT PROFIT</small></div><strong>{money(x.artistShare)}</strong></div>)}{!artistRows.length&&<p className="emptyNote">Add an artist share rule below.</p>}</article>
-  </div>
+
   <div className="analyticsRoyaltyGrid">
-   <form className="adminPanel royaltyForm" onSubmit={saveRule}><header><span>ARTIST PROFIT SHARE RULE</span><small>Percentage is applied to estimated product profit in this dashboard.</small></header><label><span>PRODUCT</span><select required value={ruleDraft.product_id} onChange={e=>{const p=products.find(x=>x.id===e.target.value);setRuleDraft({...ruleDraft,product_id:e.target.value,payee_name:ruleDraft.payee_name||p?.artist_project||''})}}><option value="">SELECT…</option>{products.filter(p=>p.product_type!=='merch').map(p=><option key={p.id} value={p.id}>{p.catalogue_no} · {p.title}</option>)}</select></label><label><span>ARTIST / PAYEE</span><input required value={ruleDraft.payee_name} onChange={e=>setRuleDraft({...ruleDraft,payee_name:e.target.value})}/></label><label><span>PROFIT SHARE %</span><input type="number" min="0" max="100" step=".1" value={ruleDraft.share_percent} onChange={e=>setRuleDraft({...ruleDraft,share_percent:e.target.value})}/></label><button className="saveButton" disabled={busy}>SAVE SHARE RULE</button></form>
-   <article className="adminPanel royaltyReport"><header><span>ROYALTY LEDGER</span><small>{report.length} active report row(s)</small></header>{report.slice(0,10).map((x,i)=><div key={(x.product_id||'x')+x.payee_name+i}><span><b>{x.payee_name}</b><small>{x.catalogue_no} · {x.product_title}</small></span><em>{Number(x.share_percent)}%</em><strong>{money(x.estimated_royalty)}</strong></div>)}{!report.length&&<p className="emptyNote">Royalty report is ready; paid sales will populate it.</p>}</article>
+   <form className="adminPanel royaltyForm" onSubmit={saveRule}><header><div><span>ARTIST PROFIT SHARE</span><small>Profit-based allocation rule</small></div><b>NEW RULE</b></header><div className="royaltyFormGrid"><label><span>PRODUCT</span><select required value={ruleDraft.product_id} onChange={e=>{const p=products.find(x=>x.id===e.target.value);setRuleDraft({...ruleDraft,product_id:e.target.value,payee_name:ruleDraft.payee_name||p?.artist_project||''})}}><option value="">SELECT…</option>{products.filter(p=>p.product_type!=='merch').map(p=><option key={p.id} value={p.id}>{p.catalogue_no} · {p.title}</option>)}</select></label><label><span>ARTIST / PAYEE</span><input required value={ruleDraft.payee_name} onChange={e=>setRuleDraft({...ruleDraft,payee_name:e.target.value})}/></label><label><span>SHARE %</span><input type="number" min="0" max="100" step=".1" value={ruleDraft.share_percent} onChange={e=>setRuleDraft({...ruleDraft,share_percent:e.target.value})}/></label></div><p>Share is shown against estimated product profit after recorded unit, packaging and handling costs.</p><button className="saveButton" disabled={busy}>SAVE SHARE RULE</button></form>
+
+   <article className="adminPanel royaltyReport"><header><div><span>ROYALTY LEDGER</span><small>Current active rules and gross-sales royalty view</small></div><b>{report.length} RULES</b></header><div className="royaltyTableHead"><span>ARTIST / PRODUCT</span><span>SHARE</span><span>EST. ROYALTY</span></div>{report.slice(0,8).map((x,i)=><div className="royaltyTableRow" key={(x.product_id||'x')+x.payee_name+i}><span><b>{x.payee_name}</b><small>{x.catalogue_no} · {x.product_title}</small></span><em>{Number(x.share_percent)}%</em><strong>{money(x.estimated_royalty)}</strong></div>)}{!report.length&&<div className="analyticsEmpty"><b>LEDGER READY</b><span>Paid sales will populate royalty values automatically.</span></div>}</article>
   </div>
  </section>;
 }
