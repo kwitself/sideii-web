@@ -3206,3 +3206,9 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .previewStage.viewport-mobile:not(.hoverSim) .previewSecondaryImage{opacity:0}
 @media(max-width:1180px){.previewToolbar{grid-template-columns:1fr 1fr}.previewToolbarEmbedded{display:flex}}
 @media(max-width:760px){.previewToolbar{grid-template-columns:1fr}.previewToolbarEmbedded{display:flex}.previewToolbarEmbedded .previewModeTabs,.previewToolbarEmbedded .previewViewportTabs,.previewToolbarEmbedded .previewZoom{width:100%}.previewToolbarEmbedded button{flex:1}}
+
+.previewSeoReadout.warning{border-left:2px solid currentColor;padding-left:10px!important}
+.previewSeoReadout.warning small:first-of-type{font-weight:700;opacity:.9}
+.previewFixes{display:grid;gap:6px;margin-top:9px}
+.previewFixes button{border:1px solid rgba(255,255,255,.14);background:transparent;color:inherit;text-align:left;padding:8px 9px;font-size:9px;letter-spacing:.07em;cursor:pointer}
+.previewFixes button:hover{background:#f0efe9;color:#111;border-color:#f0efe9}
