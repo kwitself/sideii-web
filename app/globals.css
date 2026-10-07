@@ -3236,3 +3236,29 @@ button,a{transition:color .18s ease,border-color .18s ease,background .18s ease,
   .globalBagItems img{width:58px;height:58px}
   .globalCheckout h3{font-size:32px}
 }
+
+
+/* WIDE SCREEN LAYOUT FIX — fluid shell, no centered narrow column */
+@media(min-width:761px){
+  .shell{
+    width:calc(100% - clamp(56px,5vw,112px))!important;
+    max-width:1680px!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+  .merchDetail{
+    max-width:none!important;
+  }
+}
+@media(min-width:1600px){
+  .shell{
+    width:calc(100% - clamp(96px,6vw,160px))!important;
+    max-width:1920px!important;
+  }
+}
+@media(min-width:2200px){
+  .shell{
+    width:calc(100% - 180px)!important;
+    max-width:2160px!important;
+  }
+}
