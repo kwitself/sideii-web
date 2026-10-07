@@ -2002,22 +2002,53 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .merchHeroImage{overflow:hidden}
 
 
-/* Compact mockup scale inside admin gallery cards */
-.merchGallery article > div:first-child:not(:last-child){
-  display:grid!important;
-  place-items:center!important;
-  padding:10px!important;
-  box-sizing:border-box!important;
+
+
+/* Admin merch previews mirror editor scene */
+.merchHeroImage,
+.merchGallery article,
+.adminMerchThumb{
+  background:transparent!important;
 }
-.merchGallery article > div:first-child:not(:last-child) > div{
+.merchHeroImage > div,
+.merchGallery article > div:first-child:not(:last-child),
+.adminMerchThumb > div{
+  background:transparent!important;
+}
+
+/* Scale the whole shared scene, never the product/artwork independently */
+.merchHeroImage > div{
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  transform:scale(.86);
+  transform-origin:center center;
+}
+.merchGallery article > div:first-child:not(:last-child){
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  transform:scale(.62);
+  transform-origin:center center;
+}
+.adminMerchThumb > div{
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
   transform:scale(.72);
   transform-origin:center center;
 }
+
 .merchGallery article{
-  min-height:180px;
+  min-height:190px!important;
+  display:grid;
+  place-items:center;
 }
+.merchGallery article > div:last-child{
+  align-self:end;
+}
+
 @media(max-width:760px){
-  .merchGallery article > div:first-child:not(:last-child) > div{
-    transform:scale(.78);
-  }
+  .merchHeroImage > div{transform:scale(.9)}
+  .merchGallery article > div:first-child:not(:last-child){transform:scale(.68)}
 }
