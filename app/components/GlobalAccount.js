@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import {useEffect,useMemo,useState} from 'react';
+import {useEffect,useMemo,useRef,useState} from 'react';
 import {usePathname} from 'next/navigation';
 import {supabase} from '../lib/supabase';
 import GlobalAddressFields from './GlobalAddressFields';
@@ -9,6 +9,7 @@ import {readCart} from '../lib/cart';
 import {useLocaleCurrency} from './LocaleCurrencyProvider';
 
 export default function GlobalAccount(){
+ const drawerRef=useRef(null);
  const {money,t}=useLocaleCurrency();
  const pathname=usePathname();
  const [open,setOpen]=useState(false),[session,setSession]=useState(null),[mode,setMode]=useState('signin');
@@ -169,11 +170,27 @@ export default function GlobalAccount(){
   if(session?.user)await loadAccount(session.user);
  }
 
- useEffect(()=>{if(!open)return;const onKey=e=>{if(e.key==='Escape')setOpen(false)};window.addEventListener('keydown',onKey);return()=>window.removeEventListener('keydown',onKey)},[open]);
+ useEffect(()=>{if(!open)return;
+  const previousOverflow=document.body.style.overflow;
+  document.body.style.overflow='hidden';
+  const node=drawerRef.current;
+  const focusables=()=>node?[...node.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')]:[];
+  requestAnimationFrame(()=>focusables()[0]?.focus());
+  const onKey=e=>{
+   if(e.key==='Escape'){setOpen(false);return}
+   if(e.key!=='Tab')return;
+   const items=focusables();if(!items.length)return;
+   const first=items[0],last=items[items.length-1];
+   if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+   else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+  };
+  window.addEventListener('keydown',onKey);
+  return()=>{document.body.style.overflow=previousOverflow;window.removeEventListener('keydown',onKey)}
+ },[open]);
  if(pathname?.startsWith('/admin'))return null;
  return <>
   {!open&&<button className="globalAccountTrigger" aria-haspopup="dialog" aria-expanded={open} aria-label={t('ACCOUNT')} onClick={()=>{setMessage('');setOpen(true)}}>{signedIn?initials:'ACCOUNT'}</button>}
-  <aside className={'globalAccountDrawer '+(open?'open':'')} role="dialog" aria-modal="true" aria-label={t('ACCOUNT')} aria-hidden={!open}>
+  <aside ref={drawerRef} className={'globalAccountDrawer '+(open?'open':'')} role="dialog" aria-modal="true" aria-label={t('ACCOUNT')} aria-hidden={!open}>
    <button className="globalAccountClose" onClick={()=>setOpen(false)}>{t('CLOSE')} ×</button><span>{t('ACCOUNT')}</span>
    {!signedIn?<div className="accountAuth">
     <div className="accountTabs"><button className={mode==='signin'?'active':''} onClick={()=>setMode('signin')}>{t('SIGN IN')}</button><button className={mode==='signup'?'active':''} onClick={()=>setMode('signup')}>{t('CREATE ACCOUNT')}</button></div>
