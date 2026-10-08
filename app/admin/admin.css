@@ -4445,3 +4445,27 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .iyziManualConfirm>div:first-child{grid-column:auto}
   .iyziManualActions,.iyziManualActions button{width:100%}
 }
+
+
+/* IYZICO LINK — variant amount pairing */
+.commerceVariantRow .iyziLinkField{
+  display:grid;
+  grid-template-columns:minmax(0,1.5fr) minmax(150px,.5fr);
+  gap:12px;
+  padding:14px;
+  border:1px solid #343338;
+  background:#0b0b0d;
+}
+.commerceVariantRow .iyziLinkField>label{
+  min-width:0;
+  display:grid;
+  gap:7px;
+}
+.commerceVariantRow .iyziLinkField>small{
+  grid-column:1/-1;
+  margin-top:1px;
+}
+@media(max-width:760px){
+  .commerceVariantRow .iyziLinkField{grid-template-columns:1fr}
+  .commerceVariantRow .iyziLinkField>small{grid-column:auto}
+}
