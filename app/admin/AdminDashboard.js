@@ -78,7 +78,7 @@ export default function AdminDashboard(){
  },[]);
 
  useEffect(()=>{load()},[load]);
- useEffect(()=>{if(!selectedOrder)return;const onKey=e=>{if(e.key==='Escape')setSelectedOrder(null)};window.addEventListener('keydown',onKey);return()=>window.removeEventListener('keydown',onKey)},[selectedOrder]);
+ useEffect(()=>{if(!selectedOrder){document.body.classList.remove('sideii-admin-modal-open');return}const onKey=e=>{if(e.key==='Escape')setSelectedOrder(null)};document.body.classList.add('sideii-admin-modal-open');window.addEventListener('keydown',onKey);return()=>{document.body.classList.remove('sideii-admin-modal-open');window.removeEventListener('keydown',onKey)}},[selectedOrder]);
  useEffect(()=>{
   const allowed=new Set(['overview','products','preview','merchandising','orders','inventory','customers','commerce','catalogue','growth','impact','fulfillment','localization','settings','launch']);
   const initial=String(window.location.hash||'').replace('#','');
