@@ -4462,3 +4462,209 @@ footer a:focus-visible,
     min-width:76px!important;
   }
 }
+
+
+/* MOBILE HEADER — FINAL STRUCTURAL LAYOUT */
+@media(max-width:760px){
+  .globalSiteHeader.nav.shell{
+    position:sticky!important;
+    top:0!important;
+    z-index:160!important;
+    width:100%!important;
+    max-width:none!important;
+    height:62px!important;
+    min-height:62px!important;
+    margin:0!important;
+    padding:
+      env(safe-area-inset-top,0px)
+      132px
+      0
+      14px!important;
+    box-sizing:border-box!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:12px!important;
+    overflow:visible!important;
+    border-bottom:1px solid #2f2e31!important;
+    background:rgba(9,9,10,.985)!important;
+    backdrop-filter:blur(14px)!important;
+    -webkit-backdrop-filter:blur(14px)!important;
+  }
+
+  .globalSiteHeader .brand{
+    flex:0 0 auto!important;
+    width:74px!important;
+    height:auto!important;
+    min-width:74px!important;
+    margin:0!important;
+    padding:0!important;
+    display:flex!important;
+    align-items:center!important;
+  }
+  .globalSiteHeader .brand img{
+    display:block!important;
+    width:74px!important;
+    height:auto!important;
+    max-width:74px!important;
+  }
+
+  .globalSiteHeader .primaryNav{
+    position:static!important;
+    inset:auto!important;
+    transform:none!important;
+    flex:1 1 auto!important;
+    min-width:0!important;
+    height:100%!important;
+    margin:0!important;
+    padding:0!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    gap:5px!important;
+    overflow:visible!important;
+  }
+
+  /* Mobile navigation intentionally keeps only the useful compact pair. */
+  .globalSiteHeader .navReleases,
+  .globalSiteHeader .navImprints,
+  .globalSiteHeader .navWear,
+  .globalSiteHeader .navApply{
+    display:none!important;
+  }
+  .globalSiteHeader .navStore{
+    display:inline-flex!important;
+  }
+
+  .globalSiteHeader .primaryNav>a,
+  .globalSiteHeader .navExplore>button{
+    flex:0 0 auto!important;
+    min-width:0!important;
+    min-height:36px!important;
+    height:36px!important;
+    margin:0!important;
+    padding:0 7px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    border:0!important;
+    background:transparent!important;
+    color:#aaa69f!important;
+    font:7px/1 Arial,sans-serif!important;
+    letter-spacing:.12em!important;
+    white-space:nowrap!important;
+  }
+
+  .globalSiteHeader .navExplore{
+    position:relative!important;
+    flex:0 0 auto!important;
+  }
+  .globalSiteHeader .navExplore>button span{
+    margin-left:3px!important;
+    font-size:8px!important;
+  }
+
+  .globalSiteHeader .navExploreMenu{
+    position:absolute!important;
+    top:calc(100% + 7px)!important;
+    right:0!important;
+    left:auto!important;
+    width:min(220px,calc(100vw - 28px))!important;
+    max-height:min(68vh,520px)!important;
+    overflow:auto!important;
+    padding:6px!important;
+    box-sizing:border-box!important;
+    z-index:220!important;
+  }
+  .globalSiteHeader .navExploreMenu a{
+    min-height:42px!important;
+    padding:0 10px!important;
+    font-size:8px!important;
+  }
+
+  /* Account and bag occupy a dedicated fixed lane on the right. */
+  .globalAccountTrigger{
+    position:fixed!important;
+    top:calc(11px + env(safe-area-inset-top,0px))!important;
+    right:76px!important;
+    z-index:190!important;
+    width:44px!important;
+    min-width:44px!important;
+    height:40px!important;
+    min-height:40px!important;
+    padding:0!important;
+    display:grid!important;
+    place-items:center!important;
+    box-sizing:border-box!important;
+    font-size:7px!important;
+    letter-spacing:.08em!important;
+  }
+
+  .globalBagTrigger{
+    position:fixed!important;
+    top:calc(11px + env(safe-area-inset-top,0px))!important;
+    right:12px!important;
+    z-index:190!important;
+    width:60px!important;
+    min-width:60px!important;
+    height:40px!important;
+    min-height:40px!important;
+    padding:0 6px!important;
+    box-sizing:border-box!important;
+    display:grid!important;
+    place-items:center!important;
+    font-size:7px!important;
+    letter-spacing:.08em!important;
+    white-space:nowrap!important;
+  }
+
+  /* Store-specific legacy cart trigger must not fight the global mobile lane. */
+  .storePage .cartNav{
+    top:calc(11px + env(safe-area-inset-top,0px))!important;
+    right:12px!important;
+    width:60px!important;
+    min-width:60px!important;
+    height:40px!important;
+    padding:0 6px!important;
+    display:grid!important;
+    place-items:center!important;
+    box-sizing:border-box!important;
+  }
+}
+
+@media(max-width:390px){
+  .globalSiteHeader.nav.shell{
+    padding-left:10px!important;
+    padding-right:124px!important;
+    gap:8px!important;
+  }
+  .globalSiteHeader .brand,
+  .globalSiteHeader .brand img{
+    width:66px!important;
+    min-width:66px!important;
+    max-width:66px!important;
+  }
+  .globalSiteHeader .primaryNav{
+    gap:2px!important;
+  }
+  .globalSiteHeader .primaryNav>a,
+  .globalSiteHeader .navExplore>button{
+    padding:0 5px!important;
+    font-size:6.5px!important;
+    letter-spacing:.09em!important;
+  }
+  .globalAccountTrigger{
+    right:70px!important;
+    width:40px!important;
+    min-width:40px!important;
+  }
+  .globalBagTrigger,
+  .storePage .cartNav{
+    right:8px!important;
+    width:58px!important;
+    min-width:58px!important;
+  }
+}
+
+@media(max-width:340px){
+  .globalSiteHeader .navStore{display:none!important}
+}
