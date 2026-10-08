@@ -4130,3 +4130,50 @@ footer a:focus-visible,
   font:12px/1.55 Georgia,serif!important;
   max-width:560px;
 }
+
+
+/* SCREENSHOT QA — BAG + ORDER CONFIRMATION */
+.globalBagItems article:not(:has(>img)){
+  grid-template-columns:minmax(0,1fr) auto!important;
+}
+.globalBagItems article:not(:has(>img))>div{
+  grid-column:1;
+}
+.globalBagItems article:not(:has(>img))>strong{
+  grid-column:2;
+}
+.globalBagItems article>div>b{
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+  hyphens:none;
+}
+.orderDoneManage{
+  min-height:54px;
+  padding:13px 15px;
+  border:1px solid #454248;
+  background:#111113;
+  color:#d8d3cb!important;
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  font:9px/1 Arial,sans-serif;
+  letter-spacing:.12em;
+}
+.orderDoneManage small{
+  color:#77736d!important;
+  font-size:8px!important;
+  letter-spacing:.06em;
+}
+@media(max-width:420px){
+  .globalBagItems article:not(:has(>img)){
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .globalBagItems article:not(:has(>img))>strong{
+    grid-column:1!important;
+    justify-self:start!important;
+    margin-top:0!important;
+  }
+  .orderDoneManage{align-items:flex-start;flex-direction:column}
+}
