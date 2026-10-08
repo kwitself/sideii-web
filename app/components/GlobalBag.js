@@ -30,7 +30,7 @@ export default function GlobalBag(){
  const[gift,setGift]=useState({enabled:false,message:'',hide_prices:true});
  const[storeValue,setStoreValue]=useState({gift_code:'',gift_valid:false,gift_available:0,use_credit:false,credit_available:0,checking:false,message:''});
  const[accountProfile,setAccountProfile]=useState(null);
- const[paymentMode,setPaymentMode]=useState({mode:'',provider:'',enabled:false,extra_support_enabled:true});
+ const[paymentMode,setPaymentMode]=useState({mode:'',provider:'',enabled:false,extra_support_enabled:false});
  const[savedAddresses,setSavedAddresses]=useState([]),[selectedAddressId,setSelectedAddressId]=useState('');
  const[cartUser,setCartUser]=useState(null),[cartSyncReady,setCartSyncReady]=useState(false);
  async function loadStoreValue(){
