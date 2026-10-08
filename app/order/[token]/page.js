@@ -22,11 +22,8 @@ export default function GuestOrderPage(){
  async function load(){
   if(!supabase||!token)return;
   setLoading(true);
-  const [o,p]=await Promise.all([
-   supabase.rpc('get_guest_order_portal',{p_guest_access_token:token}),
-   supabase.rpc('get_guest_order_payment_link',{p_order_id:null,p_guest_access_token:token})
-  ]);
-  let portal=o.data||null;
+  const o=await supabase.rpc('get_guest_order_portal',{p_guest_access_token:token});
+  const portal=o.data||null;
   if(portal?.id){
    const pay=await supabase.rpc('get_guest_order_payment_link',{p_order_id:portal.id,p_guest_access_token:token});
    setPaymentLink(pay.data||null);
