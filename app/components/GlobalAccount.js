@@ -165,6 +165,9 @@ export default function GlobalAccount(){
   setClosingOrder(false);
   setSelectedOrder(o);
   setRequestReason('');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   drawerRef.current?.querySelector('.accountOrderDetail')?.scrollIntoView({behavior:'smooth',block:'start'});
+  }));
  }
  async function requestOrderAction(type){
   if(!selectedOrder||requestBusy)return;
@@ -293,7 +296,7 @@ export default function GlobalAccount(){
       {ownerContent.length===0?<p className="accountEmpty">Exclusive release content will appear here when available.</p>:ownerContent.map(x=><article key={x.id}><div><b>{x.title}</b><small>{x.catalogue_no} · {String(x.content_type).toUpperCase()}</small>{x.note&&<p>{x.note}</p>}</div>{x.content_url&&<a href={x.content_url} target="_blank" rel="noreferrer">OPEN ↗</a>}</article>)}
     </section>
     <section className="accountOrders"><div className="accountSectionHead"><span>{t('ORDER HISTORY')}</span><small>{orders.length}</small></div>
-     {orders.length===0?<p className="accountEmpty">No orders yet.</p>:orders.map(o=><button type="button" className="accountOrderRow" key={o.id} onClick={()=>toggleOrder(o)}><div><b>#SII-{String(o.order_no).padStart(4,'0')}</b><small>{new Date(o.created_at).toLocaleDateString('tr-TR')} · {String(o.status).toUpperCase()}</small></div><strong>{money(o.total)}</strong>{o.tracking_number&&<em>{o.shipping_carrier||'CARRIER'} · {o.tracking_number}</em>}<span>VIEW →</span></button>)}
+     {orders.length===0?<p className="accountEmpty">No orders yet.</p>:orders.map(o=><button type="button" className={'accountOrderRow '+(selectedOrder?.id===o.id?'selected':'')} key={o.id} onClick={()=>toggleOrder(o)}><div><b>#SII-{String(o.order_no).padStart(4,'0')}</b><small>{new Date(o.created_at).toLocaleDateString('tr-TR')} · {String(o.status).toUpperCase()}</small></div><strong>{money(o.total)}</strong>{o.tracking_number&&<em>{o.shipping_carrier||'CARRIER'} · {o.tracking_number}</em>}<span>VIEW →</span></button>)}
     </section>
     {selectedOrder&&<section className={'accountOrderDetail '+(closingOrder?'closing':'')}>
       <div className="accountOrderDetailHead"><div><small>ORDER</small><h3>#SII-{String(selectedOrder.order_no).padStart(4,'0')}</h3></div><button type="button" onClick={closeOrderDetail}>{t('CLOSE')} ×</button></div>
