@@ -4469,3 +4469,25 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .commerceVariantRow .iyziLinkField{grid-template-columns:1fr}
   .commerceVariantRow .iyziLinkField>small{grid-column:auto}
 }
+
+
+/* FINAL QA — route + database + interaction */
+.finalQaSummary{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.finalQaColumns{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.finalQaGroup{min-width:0}
+.finalQaCheck>div,.finalQaManual>span{min-width:0}
+.finalQaCheck>div>span,.finalQaManual>span{min-width:0}
+.finalQaCheck b,.finalQaManual b,
+.finalQaCheck small,.finalQaManual small{overflow-wrap:anywhere}
+@media(max-width:1180px){
+  .finalQaColumns{grid-template-columns:1fr 1fr!important}
+  .finalQaColumns>.finalQaGroup:last-child{grid-column:1/-1}
+}
+@media(max-width:900px){
+  .finalQaSummary{grid-template-columns:1fr 1fr!important}
+  .finalQaColumns{grid-template-columns:1fr!important}
+  .finalQaColumns>.finalQaGroup:last-child{grid-column:auto}
+}
+@media(max-width:620px){
+  .finalQaSummary{grid-template-columns:1fr!important}
+}
