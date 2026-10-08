@@ -1487,3 +1487,158 @@
     grid-template-columns:1fr!important;
   }
 }
+
+
+/* MOBILE QA — STORE FILTER COMPACTION / PRODUCT DETAIL VISIBILITY */
+@media(max-width:560px){
+  .storeDiscoveryTools{
+    padding:12px!important;
+    gap:12px!important;
+  }
+  .storeSearchField{
+    gap:6px!important;
+  }
+  .storeSearchField input{
+    min-height:46px!important;
+    height:46px!important;
+    max-height:46px!important;
+    padding:0 12px!important;
+    font-size:12px!important;
+  }
+  .storeDiscoveryControls{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  .storeDiscoveryControls>label:not(.storeDiscoveryToggle){
+    gap:6px!important;
+    min-width:0!important;
+  }
+  .storeDiscoveryControls select,
+  .storeDiscoveryControls input[type="number"]{
+    min-height:46px!important;
+    height:46px!important;
+    max-height:46px!important;
+    padding:0 10px!important;
+    font-size:10px!important;
+    line-height:46px!important;
+  }
+  .storeDiscoveryToggle{
+    min-height:46px!important;
+    height:46px!important;
+    padding:0 10px!important;
+    justify-content:flex-start!important;
+  }
+  .storeDiscoveryToggle span{
+    font-size:8px!important;
+    white-space:normal!important;
+  }
+  .storeActiveFilters{
+    gap:6px!important;
+  }
+  .storeActiveFilters button{
+    min-height:34px!important;
+    padding:0 9px!important;
+    font-size:7.5px!important;
+  }
+  .storeDiscoveryMeta{
+    gap:8px!important;
+    min-height:auto!important;
+  }
+  .storeDiscoveryMeta span,
+  .storeDiscoveryMeta button{
+    font-size:7.5px!important;
+  }
+
+  .merchDetail{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    padding:58px 14px 72px!important;
+    gap:24px!important;
+    overflow:visible!important;
+  }
+  .merchDetailVisual{
+    display:block!important;
+    position:relative!important;
+    order:0!important;
+    width:100%!important;
+    min-width:0!important;
+    overflow:visible!important;
+  }
+  .merchDetailInfo{
+    order:1!important;
+    position:static!important;
+    width:100%!important;
+    min-width:0!important;
+    padding-top:0!important;
+  }
+  .merchViewSelector{
+    display:block!important;
+    width:100%!important;
+    margin-bottom:10px!important;
+  }
+  .merchDetailRasterStage{
+    display:grid!important;
+    position:relative!important;
+    inset:auto!important;
+    transform:none!important;
+    width:100%!important;
+    min-height:0!important;
+    height:auto!important;
+    aspect-ratio:1/1.04!important;
+    margin:0!important;
+    visibility:visible!important;
+    opacity:1!important;
+  }
+  .merchDetailRasterStage img{
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    object-fit:contain!important;
+  }
+  .merchViewMeta{
+    display:flex!important;
+    margin-top:8px!important;
+  }
+
+  .completeSetActions{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+  }
+  .completeSetActions button,
+  .completeSetActions a{
+    width:100%!important;
+    min-width:0!important;
+    justify-content:center!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .productDiscovery{
+    overflow:hidden!important;
+  }
+  .discoveryGrid,
+  .recentGrid{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    overflow:visible!important;
+    gap:10px!important;
+  }
+  .discoveryCard,
+  .recentGrid .discoveryCard{
+    width:100%!important;
+    min-width:0!important;
+    grid-template-columns:88px minmax(0,1fr)!important;
+  }
+  .discoveryVisual,
+  .recentGrid .discoveryVisual{
+    width:88px!important;
+  }
+}
+
+@media(max-width:360px){
+  .storeDiscoveryControls{
+    grid-template-columns:1fr!important;
+  }
+}
