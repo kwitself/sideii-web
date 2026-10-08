@@ -60,6 +60,12 @@ export default function GlobalAccount(){
  },[]);
 
  useEffect(()=>{
+  const openAccount=()=>{setMessage('');setOpen(true)};
+  window.addEventListener('sideii-open-account',openAccount);
+  return()=>window.removeEventListener('sideii-open-account',openAccount);
+ },[]);
+
+ useEffect(()=>{
   if(!supabase)return;
   let live=true;
   const bootstrap=async()=>{
