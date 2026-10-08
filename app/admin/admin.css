@@ -4491,3 +4491,205 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 @media(max-width:620px){
   .finalQaSummary{grid-template-columns:1fr!important}
 }
+
+
+/* SCREENSHOT QA — ADMIN WIDE / ORDERS / PRODUCTS / OPS */
+@media(min-width:1500px){
+  .adminMain{
+    max-width:2160px!important;
+    padding-left:clamp(44px,3.4vw,72px)!important;
+    padding-right:clamp(44px,3.4vw,72px)!important;
+  }
+}
+@media(min-width:2200px){
+  .adminMain{
+    max-width:2480px!important;
+  }
+}
+
+/* Dashboard: reduce dead space without making analytics noisy */
+#overview .overviewMetricGrid article{
+  min-height:142px!important;
+}
+.analyticsShell{
+  grid-template-columns:minmax(0,2.15fr) minmax(340px,.85fr)!important;
+}
+.analyticsHero{
+  height:400px!important;
+  max-height:400px!important;
+}
+
+/* Orders */
+.orderRow{
+  min-height:66px;
+  display:grid!important;
+  grid-template-columns:minmax(0,1.35fr) minmax(150px,.45fr) minmax(120px,.35fr)!important;
+  gap:18px!important;
+  align-items:center!important;
+  padding:18px 20px!important;
+}
+.orderRow>div{min-width:0}
+.orderRow strong{font-size:15px!important}
+.orderRow small{font-size:10px!important;line-height:1.4!important}
+.orderRow span{justify-self:end;white-space:nowrap}
+.orderRow em{justify-self:end}
+.orderModal{
+  width:min(860px,94vw)!important;
+  max-height:88vh;
+  overflow:auto;
+  padding:34px 36px!important;
+}
+.orderModal>header{
+  position:sticky;
+  top:-34px;
+  z-index:4;
+  margin:-34px -36px 24px;
+  padding:24px 36px 18px;
+  background:linear-gradient(180deg,#101012 84%,rgba(16,16,18,0));
+}
+.orderDetailGrid{
+  grid-template-columns:1fr 1fr!important;
+  gap:22px!important;
+  padding-bottom:20px!important;
+}
+.orderItems article{padding:15px 0!important}
+.orderTotal{padding:16px 0!important}
+.iyziManualConfirm{
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:12px!important;
+}
+.iyziManualConfirm>div:first-child{grid-column:auto!important}
+.iyziManualActions{justify-content:flex-end}
+.shippingTracking{
+  grid-template-columns:minmax(180px,.75fr) minmax(240px,1fr) auto auto!important;
+  gap:10px!important;
+}
+
+/* Products table */
+.productRow{
+  grid-template-columns:minmax(300px,2.2fr) minmax(120px,.72fr) minmax(150px,1fr) minmax(100px,.55fr) minmax(80px,.42fr) minmax(360px,1.65fr)!important;
+  min-height:102px!important;
+  padding:0 20px!important;
+}
+.tableHead{
+  grid-template-columns:minmax(300px,2.2fr) minmax(120px,.72fr) minmax(150px,1fr) minmax(100px,.55fr) minmax(80px,.42fr) minmax(360px,1.65fr)!important;
+}
+.rowActions{
+  gap:6px!important;
+}
+.rowActions a,
+.rowActions .rowNavButton,
+.rowActions .editReleaseButton,
+.rowActions .finishMiniButton,
+.rowActions .selectedMiniButton,
+.rowActions .deleteReleaseButton{
+  min-height:34px!important;
+  padding:0 8px!important;
+  border:1px solid rgba(255,255,255,.11)!important;
+  background:#0d0d0f!important;
+  font-size:9px!important;
+}
+.rowActions a:hover,
+.rowActions button:hover{
+  border-color:#6f6b65!important;
+  background:#151517!important;
+}
+
+/* Commerce */
+.commerceVariants{
+  overflow:hidden;
+}
+.commerceVariants>header,
+.commerceReturns>header,
+.catalogueProductOps>header{
+  min-height:58px;
+  padding:0 18px;
+}
+.commerceVariantRow{
+  padding:18px!important;
+  gap:12px!important;
+  border-top:1px solid #302f33;
+  background:#0c0c0e;
+}
+.commerceVariantRow:nth-child(odd){
+  background:#0e0e10;
+}
+.commerceVariantTitle{
+  padding-right:8px;
+}
+.commerceVariantTitle b{font-size:12px!important}
+.commerceVariantTitle small{font-size:9px!important}
+.commerceVariantRow>.saveButton{
+  min-width:110px;
+}
+
+/* Catalogue: each product reads as a card instead of one endless form */
+.catalogueProductRow{
+  margin:12px!important;
+  padding:18px!important;
+  border:1px solid #343238!important;
+  background:#0b0b0d!important;
+  display:grid!important;
+  gap:14px!important;
+}
+.catalogueProductTitle{
+  padding-bottom:12px;
+  border-bottom:1px solid #302f33;
+}
+.catalogueProductTitle b{font-size:15px!important}
+.catalogueProductTitle small{font-size:9px!important}
+.catalogueProductTitle em{font-size:9px!important}
+.catalogueDepthFields,
+.catalogueCostFields{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) auto!important;
+  gap:10px!important;
+  align-items:end!important;
+}
+.catalogueDepthFields .catalogueCheck{
+  align-self:end;
+  min-height:44px;
+}
+.catalogueDepthFields .saveButton,
+.catalogueCostFields .saveButton{
+  min-height:44px;
+  white-space:nowrap;
+}
+
+/* Impact */
+.impactSection .metricGrid article{
+  min-height:138px!important;
+}
+.impactSection .adminPanel{
+  border-color:#3a383d!important;
+}
+.impactSection .sectionLabel{
+  margin-bottom:20px!important;
+}
+
+@media(max-width:1350px){
+  .productRow,.tableHead{
+    grid-template-columns:minmax(260px,2fr) minmax(100px,.7fr) minmax(130px,.9fr) minmax(90px,.5fr) minmax(70px,.4fr) minmax(280px,1.4fr)!important;
+  }
+  .catalogueDepthFields,.catalogueCostFields{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  .catalogueDepthFields .saveButton,.catalogueCostFields .saveButton{width:100%}
+}
+@media(max-width:980px){
+  .analyticsShell{grid-template-columns:1fr!important}
+  .analyticsHero{height:auto!important;max-height:none!important}
+  .orderRow{grid-template-columns:minmax(0,1fr) auto!important}
+  .orderRow span{grid-column:2}
+  .orderModal{width:min(760px,96vw)!important}
+  .shippingTracking{grid-template-columns:1fr 1fr!important}
+  .productRow,.tableHead{grid-template-columns:minmax(240px,2fr) 120px 150px 90px 70px minmax(240px,1.3fr)!important}
+  .catalogueDepthFields,.catalogueCostFields{grid-template-columns:1fr 1fr!important}
+}
+@media(max-width:700px){
+  .orderRow{grid-template-columns:1fr!important}
+  .orderRow span,.orderRow em{grid-column:auto;justify-self:start}
+  .orderDetailGrid{grid-template-columns:1fr!important}
+  .shippingTracking{grid-template-columns:1fr!important}
+  .catalogueDepthFields,.catalogueCostFields{grid-template-columns:1fr!important}
+}
