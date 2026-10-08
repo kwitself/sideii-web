@@ -6,10 +6,10 @@ export default function GlobalHeader({homeHref='/',className=''}) {
       <img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/>
     </Link>
     <nav className="primaryNav" aria-label="Primary navigation">
-      <Link href="/#releases">Releases</Link>
-      <Link href="/#imprints">Imprints</Link>
-      <Link href="/store">Store</Link>
-      <Link href="/wear">Wear</Link>
+      <Link href="/#releases" className="navReleases">Releases</Link>
+      <Link href="/#imprints" className="navImprints">Imprints</Link>
+      <Link href="/store" className="navStore">Store</Link>
+      <Link href="/wear" className="navWear">Wear</Link>
       <div className="navExplore">
         <button type="button" aria-haspopup="true">Explore <span>＋</span></button>
         <div className="navExploreMenu">
