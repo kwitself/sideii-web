@@ -1396,3 +1396,94 @@
   .recentGrid .discoveryVisual{width:96px!important}
   .discoveryCard h3{font-size:21px!important}
 }
+
+
+/* SCREENSHOT QA — STORE DISCOVERY DENSITY */
+.storeDiscoveryTools{
+  gap:16px!important;
+  padding-top:20px!important;
+  padding-bottom:20px!important;
+}
+.storeDiscoveryControls{
+  display:grid!important;
+  grid-template-columns:
+    minmax(130px,1fr)
+    minmax(150px,1.15fr)
+    minmax(130px,1fr)
+    minmax(110px,.8fr)
+    minmax(120px,.9fr)
+    minmax(95px,.7fr)
+    minmax(95px,.7fr)
+    minmax(145px,1fr)!important;
+  gap:10px!important;
+  align-items:end!important;
+}
+.storeDiscoveryControls>label{min-width:0}
+.storeDiscoveryControls .storeDiscoveryToggle{
+  min-height:42px;
+  justify-content:flex-start;
+}
+.storeActiveFilters{
+  gap:8px!important;
+  padding-top:2px;
+}
+.storeActiveFilters button{
+  min-height:36px!important;
+  padding:0 12px!important;
+  font-size:8px!important;
+  border-color:#4a474d!important;
+}
+.storeDiscoveryMeta{
+  padding-top:2px;
+}
+.storeDiscoveryMeta span,
+.storeDiscoveryMeta button{
+  font-size:8px!important;
+}
+.discoveryEmpty{
+  padding:88px 0 100px!important;
+  min-height:220px;
+}
+.discoveryEmpty h3{
+  font-size:34px!important;
+}
+.discoveryEmpty p{
+  font-size:14px!important;
+  max-width:520px;
+}
+@media(min-width:1500px){
+  .storeDiscoveryControls{
+    grid-template-columns:
+      minmax(140px,1fr)
+      minmax(170px,1.2fr)
+      minmax(150px,1fr)
+      minmax(120px,.8fr)
+      minmax(140px,.9fr)
+      minmax(105px,.7fr)
+      minmax(105px,.7fr)
+      minmax(155px,1fr)!important;
+  }
+  .storeDiscoveryToggle{
+    grid-column:span 1;
+  }
+}
+@media(max-width:1280px){
+  .storeDiscoveryControls{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:900px){
+  .storeDiscoveryControls{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:700px){
+  .storeDiscoveryControls{
+    grid-template-columns:1fr 1fr!important;
+  }
+}
+@media(max-width:520px){
+  .storeDiscoveryControls{
+    grid-template-columns:1fr!important;
+  }
+}
