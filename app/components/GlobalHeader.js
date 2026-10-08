@@ -24,13 +24,18 @@ export default function GlobalHeader({homeHref='/',className=''}) {
   const [mobileOpen,setMobileOpen]=useState(false);
 
   useEffect(()=>{
-    if(!mobileOpen)return;
+    if(!mobileOpen){
+      document.body.classList.remove('sideii-mobile-nav-open');
+      return;
+    }
     const onKey=e=>{if(e.key==='Escape')setMobileOpen(false)};
     const prev=document.body.style.overflow;
     document.body.style.overflow='hidden';
+    document.body.classList.add('sideii-mobile-nav-open');
     window.addEventListener('keydown',onKey);
     return()=>{
       document.body.style.overflow=prev;
+      document.body.classList.remove('sideii-mobile-nav-open');
       window.removeEventListener('keydown',onKey);
     };
   },[mobileOpen]);
