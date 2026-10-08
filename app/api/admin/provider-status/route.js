@@ -20,7 +20,7 @@ export async function GET(request){
     const domainReady=!!siteUrl&&!/\.vercel\.app\/?$/i.test(siteUrl);
     const applicationTo=String(process.env.SIDEII_APPLICATION_TO||'').trim();
     const {data:paymentSettings}=await sb.from('store_payment_settings').select('mode,provider,enabled').eq('id',1).maybeSingle();
-    const {count:iyziLinkCount}=await sb.from('product_variants').select('id',{count:'exact',head:true}).not('iyzilink_url','is',null);
+    const {count:iyziLinkCount}=await sb.from('product_variants').select('id',{count:'exact',head:true}).not('iyzilink_url','is',null).not('iyzilink_amount','is',null);
     const emailReady=!!process.env.RESEND_API_KEY&&!!process.env.SIDEII_ORDER_FROM&&!!process.env.SIDEII_APPLICATION_FROM;
     const paymentProvider=String(process.env.PAYMENT_PROVIDER||'').trim();
     const manualLinkMode=paymentSettings?.enabled&&paymentSettings?.mode==='iyzilink_manual';
