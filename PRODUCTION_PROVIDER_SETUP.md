@@ -108,3 +108,21 @@ Run after the real domain and all chosen providers are connected:
 10. live FX display;
 11. sitemap/canonical/robots;
 12. final QA fixture cleanup.
+
+
+### Temporary iyzico Link mode
+
+Until a company account / full iyzico Virtual POS integration is available, SIDE:II can run in `iyzilink_manual` mode.
+
+Rules:
+
+- configure both an iyzico Link URL and its exact Link amount on the product variant;
+- a direct checkout payment button is shown only for a single-line / single-quantity order when the Link amount exactly matches the order's external payment due;
+- external payment due is `order total - reserved gift card/store credit`;
+- shipping, promo discounts, bundle discounts, WWYS support and store value can therefore change whether a variant Link is safe to show;
+- when the amounts do not match, SIDE:II hides the payment button instead of sending the customer to a wrong-value Link;
+- mixed or multi-quantity carts stay payment-pending and require a manually created iyzico Link for the exact order amount;
+- if gift card/store credit covers 100% of the order, SIDE:II records a zero-value internal payment event and marks the order paid without sending the customer to iyzico;
+- manual iyzico confirmations in Control Room require the transaction/reference and still pass through the payment-event ledger; admins never write `payment_status` directly.
+
+When full iyzico API access is available, keep the same external-payment-due and payment-event contracts and replace only the Link/manual adapter.
