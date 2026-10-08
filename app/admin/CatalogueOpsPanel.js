@@ -9,6 +9,7 @@ export default function CatalogueOpsPanel({products=[]}){
  const [alerts,setAlerts]=useState([]),[owner,setOwner]=useState([]),[costs,setCosts]=useState([]),[depth,setDepth]=useState([]);
  const [ownerForm,setOwnerForm]=useState(emptyOwner),[busy,setBusy]=useState(''),[message,setMessage]=useState('');
  const [costDraft,setCostDraft]=useState({}),[depthDraft,setDepthDraft]=useState({});
+ const [expandedProducts,setExpandedProducts]=useState({});
  const productMap=useMemo(()=>Object.fromEntries(products.map(p=>[p.id,p])),[products]);
 
  async function load(){
@@ -92,9 +93,10 @@ export default function CatalogueOpsPanel({products=[]}){
     const cost={...(costs.find(x=>x.product_id===p.id)||{}),...(costDraft[p.id]||{})};
     const price=Number(p.product_variants?.[0]?.price||0),baseCost=Number(cost.unit_cost||0)+Number(cost.packaging_cost||0)+Number(cost.handling_cost||0);
     const margin=price-baseCost;
-    return <div className="catalogueProductRow" key={p.id}>
-      <div className="catalogueProductTitle"><b>{p.title}</b><small>{p.catalogue_no} · {p.status?.toUpperCase()}</small><em>{price?('PRICE '+money(price)+' · EST. MARGIN '+money(margin)):'NO PRICE'}</em></div>
-      <div className="catalogueDepthFields">
+    const open=!!expandedProducts[p.id];
+    return <div className={'catalogueProductRow '+(open?'open':'')} key={p.id}>
+      <button type="button" className="catalogueProductTitle catalogueProductToggle" onClick={()=>setExpandedProducts(x=>({...x,[p.id]:!x[p.id]}))} aria-expanded={open}><span><b>{p.title}</b><small>{p.catalogue_no} · {p.status?.toUpperCase()}</small></span><em>{price?('PRICE '+money(price)+' · EST. MARGIN '+money(margin)):'NO PRICE'}</em><i>{open?'−':'+'}</i></button>
+      {open&&<><div className="catalogueDepthFields">
        <label><span>PRESSING #</span><input type="number" min="1" value={dep.pressing_generation??1} onChange={e=>setDepthDraft(x=>({...x,[p.id]:{...(x[p.id]||{}),pressing_generation:e.target.value}}))}/></label>
        <label><span>PRESSING LABEL</span><input value={dep.pressing_label||'FIRST PRESSING'} onChange={e=>setDepthDraft(x=>({...x,[p.id]:{...(x[p.id]||{}),pressing_label:e.target.value}}))}/></label>
        <label><span>LISTENING PREVIEW</span><input value={dep.listening_preview_url||''} onChange={e=>setDepthDraft(x=>({...x,[p.id]:{...(x[p.id]||{}),listening_preview_url:e.target.value}}))}/></label>
@@ -108,7 +110,7 @@ export default function CatalogueOpsPanel({products=[]}){
        <label><span>HANDLING</span><input type="number" min="0" step=".01" value={cost.handling_cost??0} onChange={e=>setCostDraft(x=>({...x,[p.id]:{...(x[p.id]||{}),handling_cost:e.target.value}}))}/></label>
        <label><span>NOTES</span><input value={cost.notes||''} onChange={e=>setCostDraft(x=>({...x,[p.id]:{...(x[p.id]||{}),notes:e.target.value}}))}/></label>
        <button className="saveButton" disabled={busy==='cost:'+p.id} onClick={()=>saveCost(p.id)}>SAVE COST</button>
-      </div>
+      </div></>}
     </div>
    })}
   </article>
