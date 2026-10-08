@@ -12,6 +12,7 @@ const ROUTES=[
  {id:'lethargia',label:'LETHARGIA',path:'/lethargia'},
  {id:'wear',label:'WEAR',path:'/wear'},
  {id:'policies',label:'STORE POLICIES',path:'/policies'},
+ {id:'guest-order-route',label:'GUEST ORDER PORTAL',path:'/order'},
  {id:'apply',label:'PRODUCTION APPLICATION',path:'/apply'},
  {id:'wholesale',label:'WHOLESALE',path:'/wholesale'},
  {id:'google-feed',label:'GOOGLE FEED',path:'/feeds/google.xml'}
