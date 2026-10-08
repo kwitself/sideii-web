@@ -4177,3 +4177,97 @@ footer a:focus-visible,
   }
   .orderDoneManage{align-items:flex-start;flex-direction:column}
 }
+
+
+/* SCREENSHOT QA — RELEASE SCALE / BUNDLE ACTIONS / AUTOFILL */
+@media(min-width:1200px){
+  .productPage .productHero{
+    width:calc(100% - clamp(48px,4vw,92px))!important;
+    max-width:2240px!important;
+  }
+  .productPage .releaseHeroPair h1{
+    font-size:clamp(72px,6.6vw,118px)!important;
+  }
+  .productPage .releaseImprintWordmark{
+    min-width:250px!important;
+  }
+  .productPage .releaseImprintWordmark img{
+    width:210px!important;
+    max-width:none!important;
+    max-height:104px!important;
+  }
+  .productPage .editionExperience{
+    grid-template-columns:minmax(460px,1.14fr) minmax(420px,.86fr)!important;
+    gap:clamp(58px,5vw,92px)!important;
+    margin-top:54px!important;
+  }
+  .productPage .editionExperience>.productVisual{
+    max-width:760px!important;
+    justify-self:start!important;
+  }
+  .productPage .editionPanel{
+    max-width:640px!important;
+    justify-self:end!important;
+  }
+  .productPage .trackSection,
+  .productPage .productNote,
+  .productPage .releaseBooklet,
+  .productPage .releaseListen{
+    width:calc(100% - clamp(68px,5vw,120px))!important;
+    max-width:2100px!important;
+  }
+}
+@media(min-width:1800px){
+  .productPage .editionExperience>.productVisual{max-width:860px!important}
+  .productPage .editionPanel{max-width:700px!important}
+}
+
+.completeSetActions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.completeSetActions button,
+.completeSetActions a{
+  min-height:40px;
+  padding:0 12px;
+  border:1px solid #454248;
+  background:#111113;
+  color:#bdb8b0;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.11em;
+  white-space:nowrap;
+}
+.completeSetActions button{
+  background:#d8d3cb;
+  color:#0a0a0b;
+  border-color:#d8d3cb;
+  cursor:pointer;
+}
+@media(max-width:620px){
+  .completeSetActions{display:grid;grid-template-columns:1fr 1fr}
+  .completeSetActions button,.completeSetActions a{width:100%}
+}
+
+.globalBagDrawer input:-webkit-autofill,
+.globalBagDrawer textarea:-webkit-autofill,
+.globalBagDrawer select:-webkit-autofill,
+.globalAccountDrawer input:-webkit-autofill,
+.globalAccountDrawer textarea:-webkit-autofill{
+  -webkit-text-fill-color:#d8d3cb!important;
+  -webkit-box-shadow:0 0 0 1000px #09090a inset!important;
+  box-shadow:0 0 0 1000px #09090a inset!important;
+  caret-color:#d8d3cb!important;
+  transition:background-color 9999s ease-out 0s;
+}
+.orderDoneAccount{
+  width:100%;
+  cursor:pointer;
+  text-align:left;
+}
