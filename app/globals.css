@@ -4271,3 +4271,41 @@ footer a:focus-visible,
   cursor:pointer;
   text-align:left;
 }
+
+
+/* SCREENSHOT QA — ACCOUNT DRAWER HIERARCHY */
+.accountOrderRow.selected{
+  border-color:#6c6861!important;
+  background:#171719!important;
+}
+.accountOrderRow.selected>span{
+  color:#d8d3cb!important;
+}
+.accountOrderDetail{
+  scroll-margin-top:18px;
+  box-shadow:0 0 0 1px rgba(216,211,203,.035) inset;
+}
+.accountOrders{
+  margin-top:30px!important;
+}
+.accountOrders .accountSectionHead{
+  padding-bottom:12px;
+}
+.accountOrderRow{
+  padding:16px 12px!important;
+  margin-top:1px;
+}
+.accountOrderRow>strong{
+  white-space:nowrap;
+}
+.accountOrderDetailHead h3{
+  font-size:30px!important;
+}
+.accountOrderRequest{
+  margin-bottom:4px;
+}
+@media(min-width:1000px){
+  .globalAccountDrawer{
+    width:min(500px,92vw)!important;
+  }
+}
