@@ -4892,3 +4892,44 @@ footer a:focus-visible,
     width:min(330px,90vw)!important;
   }
 }
+
+
+/* MOBILE NAV OPEN — drawer owns the entire chrome */
+@media(max-width:760px){
+  body.sideii-mobile-nav-open .globalAccountTrigger,
+  body.sideii-mobile-nav-open .globalBagTrigger,
+  body.sideii-mobile-nav-open .storePage .cartNav,
+  body.sideii-mobile-nav-open .localeCurrencyTrigger,
+  body.sideii-mobile-nav-open .localeSwitcher,
+  body.sideii-mobile-nav-open .currencySwitcher{
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+
+  body.sideii-mobile-nav-open .globalSiteHeader{
+    pointer-events:none!important;
+  }
+
+  body.sideii-mobile-nav-open .mobileNavDrawer,
+  body.sideii-mobile-nav-open .mobileNavDrawer *{
+    pointer-events:auto!important;
+  }
+
+  .mobileNavHead{
+    min-height:50px!important;
+  }
+  .mobileNavHead button{
+    position:relative!important;
+    z-index:2!important;
+    flex:0 0 auto!important;
+    background:#0d0d0f!important;
+  }
+  .mobileNavDrawer{
+    padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))!important;
+  }
+  .mobileNavFoot{
+    min-height:42px;
+    padding-bottom:2px!important;
+  }
+}
