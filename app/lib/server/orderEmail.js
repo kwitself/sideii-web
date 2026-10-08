@@ -2,8 +2,13 @@ export async function sendOrderEmailPayload(payload){
  const apiKey=process.env.RESEND_API_KEY;
  if(!apiKey)return {ok:true,email_sent:false,reason:'email_provider_not_configured'};
 
+ const guestPortal=payload.guest_portal_token
+  ? String(process.env.NEXT_PUBLIC_SITE_URL||'').replace(/\/$/,'')+'/order/'+encodeURIComponent(String(payload.guest_portal_token))
+  : '';
  const items=(payload.items||[]).map(function(x){
-  const download=x.download_available?' · DIGITAL DOWNLOAD AVAILABLE IN YOUR ACCOUNT':'';
+  const download=x.download_available
+   ? (guestPortal?' · DIGITAL DOWNLOAD AVAILABLE IN YOUR PRIVATE ORDER LINK':' · DIGITAL DOWNLOAD AVAILABLE IN YOUR ACCOUNT')
+   : '';
   return String(x.title||'')+' · '+String(x.format||'')+' · QTY '+String(x.quantity||0)+download;
  }).join('\n');
 
@@ -30,8 +35,10 @@ export async function sendOrderEmailPayload(payload){
   '',
   items,
   '',
-  'Total: ₺'+Number(payload.total||0).toLocaleString('tr-TR')
- ].join('\n');
+  'Total: ₺'+Number(payload.total||0).toLocaleString('tr-TR'),
+  guestPortal?'':'',
+  guestPortal?'Manage this order: '+guestPortal:''
+ ].filter(Boolean).join('\n');
 
  const from=process.env.SIDEII_ORDER_FROM||'SIDE:II Store <onboarding@resend.dev>';
  const res=await fetch('https://api.resend.com/emails',{
