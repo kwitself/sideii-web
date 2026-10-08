@@ -94,6 +94,7 @@ export default function CommerceOpsPanel({products,onChanged}){
 }
 
 function VariantRow({initial,onSave,saving}){
+ const [open,setOpen]=useState(false);
  const [v,setV]=useState(()=>({
   ...initial,
   shipping_class:initial.shipping_class||(['vinyl'].includes(initial.format)?'vinyl':initial.format==='merch'?'merch':'standard'),
@@ -105,16 +106,27 @@ function VariantRow({initial,onSave,saving}){
   iyzilink_amount:initial.iyzilink_amount??''
  }));
  useEffect(()=>setV(x=>({...x,...initial,digital_download_url:initial.digital_download_url||'',iyzilink_url:initial.iyzilink_url||'',iyzilink_amount:initial.iyzilink_amount??'',preorder_limit:initial.preorder_limit??'',edition_total:initial.edition_total??''})),[initial]);
- return <div className="commerceVariantRow">
-   <div className="commerceVariantTitle"><b>{v.productTitle}</b><small>{v.sku} · {String(v.format).toUpperCase()}</small></div>
-   <label>SHIP CLASS<select value={v.shipping_class||'standard'} onChange={e=>setV({...v,shipping_class:e.target.value})}><option value="standard">STANDARD</option><option value="vinyl">VINYL</option><option value="merch">MERCH</option></select></label>
-   <label>LOW AT<input type="number" min="0" value={v.low_stock_threshold} onChange={e=>setV({...v,low_stock_threshold:e.target.value})}/></label>
-   <label className="commerceCheck"><input type="checkbox" checked={!!v.preorder_enabled} onChange={e=>setV({...v,preorder_enabled:e.target.checked})}/><span>PRE-ORDER</span></label>
-   <label>PRE-ORDER LIMIT<input type="number" min="0" disabled={!v.preorder_enabled} value={v.preorder_limit} onChange={e=>setV({...v,preorder_limit:e.target.value})}/></label>
-   <label className="commerceCheck"><input type="checkbox" checked={!!v.edition_numbering_enabled} onChange={e=>setV({...v,edition_numbering_enabled:e.target.checked})}/><span>NUMBERED</span></label>
-   <label>EDITION TOTAL<input type="number" min="1" disabled={!v.edition_numbering_enabled} value={v.edition_total} onChange={e=>setV({...v,edition_total:e.target.value})}/></label>
-   {v.format==='digital'&&<label className="commerceWide">DOWNLOAD URL<input placeholder="https://..." value={v.digital_download_url} onChange={e=>setV({...v,digital_download_url:e.target.value})}/></label>}
-   <div className="commerceWide iyziLinkField"><label>IYZICO LINK<input type="url" placeholder="https://..." value={v.iyzilink_url} onChange={e=>setV({...v,iyzilink_url:e.target.value})}/></label><label>LINK AMOUNT<input type="number" min="0" step=".01" placeholder="0.00" value={v.iyzilink_amount} onChange={e=>setV({...v,iyzilink_amount:e.target.value})}/></label><small>Direct payment appears only when the order's external payment due exactly matches this Link amount.</small></div>
-   <button className="saveButton" disabled={saving} onClick={()=>onSave(v)}>{saving?'SAVING…':'SAVE'}</button>
-  </div>
-}
+ return <div className={'commerceVariantRow commerceVariantCollapsible '+(open?'open':'')}>
+   <button type="button" className="commerceVariantSummary" onClick={()=>setOpen(x=>!x)} aria-expanded={open}>
+    <span><b>{v.productTitle}</b><small>{v.sku} · {String(v.format).toUpperCase()}</small></span>
+    <span className="commerceVariantMeta">
+      <em>{String(v.shipping_class||'standard').toUpperCase()}</em>
+      <em>LOW {Number(v.low_stock_threshold||0)}</em>
+      {v.preorder_enabled&&<em>PRE-ORDER</em>}
+      {v.edition_numbering_enabled&&<em>NUMBERED</em>}
+      <em className={v.iyzilink_url&&v.iyzilink_amount?'ready':'pending'}>{v.iyzilink_url&&v.iyzilink_amount?'IYZI READY':'IYZI PENDING'}</em>
+    </span>
+    <i>{open?'−':'+'}</i>
+   </button>
+   {open&&<div className="commerceVariantBody">
+    <label>SHIP CLASS<select value={v.shipping_class||'standard'} onChange={e=>setV({...v,shipping_class:e.target.value})}><option value="standard">STANDARD</option><option value="vinyl">VINYL</option><option value="merch">MERCH</option></select></label>
+    <label>LOW AT<input type="number" min="0" value={v.low_stock_threshold} onChange={e=>setV({...v,low_stock_threshold:e.target.value})}/></label>
+    <label className="commerceCheck"><input type="checkbox" checked={!!v.preorder_enabled} onChange={e=>setV({...v,preorder_enabled:e.target.checked})}/><span>PRE-ORDER</span></label>
+    <label>PRE-ORDER LIMIT<input type="number" min="0" disabled={!v.preorder_enabled} value={v.preorder_limit} onChange={e=>setV({...v,preorder_limit:e.target.value})}/></label>
+    <label className="commerceCheck"><input type="checkbox" checked={!!v.edition_numbering_enabled} onChange={e=>setV({...v,edition_numbering_enabled:e.target.checked})}/><span>NUMBERED</span></label>
+    <label>EDITION TOTAL<input type="number" min="1" disabled={!v.edition_numbering_enabled} value={v.edition_total} onChange={e=>setV({...v,edition_total:e.target.value})}/></label>
+    {v.format==='digital'&&<label className="commerceWide">DOWNLOAD URL<input placeholder="https://..." value={v.digital_download_url} onChange={e=>setV({...v,digital_download_url:e.target.value})}/></label>}
+    <div className="commerceWide iyziLinkField"><label>IYZICO LINK<input type="url" placeholder="https://..." value={v.iyzilink_url} onChange={e=>setV({...v,iyzilink_url:e.target.value})}/></label><label>LINK AMOUNT<input type="number" min="0" step=".01" placeholder="0.00" value={v.iyzilink_amount} onChange={e=>setV({...v,iyzilink_amount:e.target.value})}/></label><small>Direct payment appears only when the order's external payment due exactly matches this Link amount.</small></div>
+    <button className="saveButton" disabled={saving} onClick={()=>onSave(v)}>{saving?'SAVING…':'SAVE'}</button>
+   </div>}
+  </div>}
