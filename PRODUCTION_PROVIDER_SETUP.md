@@ -126,3 +126,17 @@ Rules:
 - manual iyzico confirmations in Control Room require the transaction/reference and still pass through the payment-event ledger; admins never write `payment_status` directly.
 
 When full iyzico API access is available, keep the same external-payment-due and payment-event contracts and replace only the Link/manual adapter.
+
+
+### WWYS extra-support pause
+
+While `store_payment_settings.mode = iyzilink_manual`, free-form WWYS extra support is intentionally disabled.
+
+- storefront and checkout support inputs are hidden / shown as paused;
+- existing cart support amounts are cleared client-side;
+- the quote/order backend rejects any forged positive `support_amount`;
+- the WWYS / impact data model remains intact;
+- declared impact allocations from ordinary product sales continue to work;
+- when the store moves to integrated provider checkout, switch the payment mode away from `iyzilink_manual` and the extra-support UI can be re-enabled without redesigning the order schema.
+
+This avoids sending customers to an iyzico Link whose fixed amount does not match a variable-support order total.
