@@ -4693,3 +4693,124 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .shippingTracking{grid-template-columns:1fr!important}
   .catalogueDepthFields,.catalogueCostFields{grid-template-columns:1fr!important}
 }
+
+
+/* SCREENSHOT QA — COLLAPSIBLE COMMERCE / CATALOGUE */
+.commerceVariantCollapsible{
+  display:block!important;
+  padding:0!important;
+  border-top:1px solid #302f33!important;
+}
+.commerceVariantSummary{
+  width:100%;
+  min-height:62px;
+  padding:12px 16px;
+  border:0;
+  background:#0c0c0e;
+  color:#d8d3cb;
+  display:grid;
+  grid-template-columns:minmax(220px,1fr) minmax(0,1.35fr) 28px;
+  gap:16px;
+  align-items:center;
+  text-align:left;
+  cursor:pointer;
+}
+.commerceVariantSummary:hover{background:#121214}
+.commerceVariantSummary>span:first-child{display:grid;gap:5px;min-width:0}
+.commerceVariantSummary b{font:13px/1.2 Georgia,serif;font-weight:400;color:#ddd8d0}
+.commerceVariantSummary small{font:8px/1 Arial,sans-serif;letter-spacing:.11em;color:#77736d}
+.commerceVariantMeta{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.commerceVariantMeta em{
+  min-height:26px;
+  padding:0 8px;
+  border:1px solid #3a383d;
+  display:inline-flex;
+  align-items:center;
+  font:7.5px/1 Arial,sans-serif;
+  font-style:normal;
+  letter-spacing:.09em;
+  color:#8d8982;
+}
+.commerceVariantMeta em.ready{border-color:#435b4a;color:#9db0a2}
+.commerceVariantMeta em.pending{border-color:#6a5740;color:#baa27f}
+.commerceVariantSummary>i{
+  justify-self:end;
+  font:22px/1 Georgia,serif;
+  font-style:normal;
+  color:#8f8a83;
+}
+.commerceVariantBody{
+  display:grid;
+  grid-template-columns:minmax(180px,1.3fr) repeat(5,minmax(110px,.8fr));
+  gap:12px;
+  padding:16px 18px 18px;
+  border-top:1px solid #302f33;
+  background:#0a0a0c;
+}
+.commerceVariantBody label{display:grid;gap:7px}
+.commerceVariantBody .commerceWide{grid-column:1/-2!important}
+.commerceVariantBody>.saveButton{align-self:end;min-height:46px}
+
+.catalogueProductRow{
+  padding:0!important;
+  gap:0!important;
+  overflow:hidden;
+}
+.catalogueProductToggle{
+  width:100%;
+  min-height:66px;
+  padding:12px 16px!important;
+  border:0!important;
+  border-bottom:0!important;
+  background:#0b0b0d!important;
+  display:grid!important;
+  grid-template-columns:minmax(220px,1fr) auto 28px;
+  gap:16px;
+  align-items:center;
+  text-align:left;
+  cursor:pointer;
+}
+.catalogueProductToggle:hover{background:#121214!important}
+.catalogueProductToggle>span{display:grid;gap:5px}
+.catalogueProductToggle b{font:15px/1.2 Georgia,serif;font-weight:400;color:#ddd8d0}
+.catalogueProductToggle small{font:8px/1 Arial,sans-serif;letter-spacing:.1em;color:#77736d}
+.catalogueProductToggle em{
+  font:8px/1 Arial,sans-serif;
+  font-style:normal;
+  letter-spacing:.08em;
+  color:#9a968f;
+  white-space:nowrap;
+}
+.catalogueProductToggle i{
+  justify-self:end;
+  font:22px/1 Georgia,serif;
+  font-style:normal;
+  color:#8f8a83;
+}
+.catalogueProductRow.open .catalogueProductToggle{border-bottom:1px solid #302f33!important}
+.catalogueProductRow.open .catalogueDepthFields,
+.catalogueProductRow.open .catalogueCostFields{
+  padding:14px 16px!important;
+}
+.catalogueProductRow.open .catalogueCostFields{
+  border-top:1px solid #302f33;
+}
+
+@media(max-width:1180px){
+  .commerceVariantBody{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .commerceVariantBody .commerceWide{grid-column:1/-1!important}
+}
+@media(max-width:820px){
+  .commerceVariantSummary{grid-template-columns:minmax(0,1fr) auto}
+  .commerceVariantMeta{grid-column:1/-1;justify-content:flex-start}
+  .commerceVariantSummary>i{grid-column:2;grid-row:1}
+  .commerceVariantBody{grid-template-columns:1fr 1fr}
+  .catalogueProductToggle{grid-template-columns:minmax(0,1fr) 28px}
+  .catalogueProductToggle em{grid-column:1/-1;white-space:normal}
+  .catalogueProductToggle i{grid-column:2;grid-row:1}
+}
+@media(max-width:560px){
+  .commerceVariantBody{grid-template-columns:1fr}
+  .commerceVariantBody .commerceWide{grid-column:auto!important}
+  .catalogueProductToggle{padding:12px!important}
+}
