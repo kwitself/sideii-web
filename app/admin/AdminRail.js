@@ -24,6 +24,7 @@ const valid=new Set(items.map(x=>x[0]));
 
 export default function AdminRail(){
  const [active,setActive]=useState('overview');
+ const [mobileOpen,setMobileOpen]=useState(false);
 
  useEffect(()=>{
   const fromHash=String(window.location.hash||'').replace('#','');
@@ -34,7 +35,8 @@ export default function AdminRail(){
   const onHash=()=>{const next=String(window.location.hash||'').replace('#','');if(valid.has(next)){setActive(next);window.dispatchEvent(new CustomEvent('sideii-admin-view',{detail:next}))}};
   window.addEventListener('sideii-admin-view',onView);
   window.addEventListener('hashchange',onHash);
-  return()=>{window.removeEventListener('sideii-admin-view',onView);window.removeEventListener('hashchange',onHash)};
+  document.body.classList.add('sideii-admin-page');
+  return()=>{document.body.classList.remove('sideii-admin-page');window.removeEventListener('sideii-admin-view',onView);window.removeEventListener('hashchange',onHash)};
  },[]);
 
  const go=(e,id)=>{
@@ -42,12 +44,22 @@ export default function AdminRail(){
   setActive(id);
   history.replaceState(null,'','#'+id);
   window.dispatchEvent(new CustomEvent('sideii-admin-view',{detail:id}));
+  setMobileOpen(false);
   window.scrollTo({top:0,behavior:'smooth'});
  };
 
- return <aside className="adminRail">
-  <Link href="/" className="adminBrand"><img src="/brand/sideii-logo-flat.png" alt="Side II"/><small>CONTROL ROOM</small></Link>
-  <nav className="adminNav">{items.map(([id,n,label])=><a key={id} className={active===id?'active':''} href={'#'+id} onClick={e=>go(e,id)}><i>{n}</i>{label}</a>)}</nav>
-  <div className="railFoot"><span>STORE STATUS</span><b><i/>DATABASE LIVE</b><small>MMXXVI / SIDE:II</small></div>
- </aside>;
+ return <>
+  <header className="adminMobileTop">
+   <Link href="/" className="adminMobileBrand"><img src="/brand/sideii-logo-flat.png" alt="Side II"/></Link>
+   <span>{items.find(x=>x[0]===active)?.[2]||'Control Room'}</span>
+   <button type="button" onClick={()=>setMobileOpen(true)} aria-expanded={mobileOpen}>MENU <i>≡</i></button>
+  </header>
+  <button className={'adminMobileShade '+(mobileOpen?'open':'')} type="button" aria-label="Close admin navigation" onClick={()=>setMobileOpen(false)}/>
+  <aside className={'adminRail '+(mobileOpen?'mobileOpen':'')}>
+   <div className="adminRailMobileHead"><span>NAVIGATION</span><button type="button" onClick={()=>setMobileOpen(false)}>CLOSE ×</button></div>
+   <Link href="/" className="adminBrand"><img src="/brand/sideii-logo-flat.png" alt="Side II"/><small>CONTROL ROOM</small></Link>
+   <nav className="adminNav">{items.map(([id,n,label])=><a key={id} className={active===id?'active':''} href={'#'+id} onClick={e=>go(e,id)}><i>{n}</i>{label}</a>)}</nav>
+   <div className="railFoot"><span>STORE STATUS</span><b><i/>DATABASE LIVE</b><small>MMXXVI / SIDE:II</small></div>
+  </aside>
+ </>;
 }
