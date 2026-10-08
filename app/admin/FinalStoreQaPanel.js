@@ -11,6 +11,9 @@ const ROUTES=[
  {id:'impact',label:'IMPACT',path:'/impact'},
  {id:'lethargia',label:'LETHARGIA',path:'/lethargia'},
  {id:'wear',label:'WEAR',path:'/wear'},
+ {id:'policies',label:'STORE POLICIES',path:'/policies'},
+ {id:'apply',label:'PRODUCTION APPLICATION',path:'/apply'},
+ {id:'wholesale',label:'WHOLESALE',path:'/wholesale'},
  {id:'google-feed',label:'GOOGLE FEED',path:'/feeds/google.xml'}
 ];
 
@@ -21,6 +24,10 @@ const MANUAL=[
  ['wishlist','WISHLIST','Add/remove a product and verify persistence.'],
  ['cart','BAG / CART','Quick-add and product-detail add; update quantity; remove item.'],
  ['checkout','CHECKOUT','Complete delivery/invoice/promo/store-credit validation without submitting a live payment.'],
+ ['iyzilink','IYZICO LINK · EXACT AMOUNT','Verify a single-item order only shows the payment button when Link amount exactly matches external payment due.'],
+ ['guest-order','GUEST ORDER PORTAL','Open a real guest-order email link; verify payment continuation, request history and private access.'],
+ ['guest-digital','GUEST DIGITAL DOWNLOAD','Confirm a paid guest digital order generates a one-time download and the same token cannot be reused.'],
+ ['reconcile','ADMIN PAYMENT RECONCILIATION','Match an iyzico transaction reference in Orders and verify PAID / REFUND passes through the payment ledger.'],
  ['bundles','BUNDLES','Verify set contents, quantity rules and discount calculation.'],
  ['responsive','RESPONSIVE','Review key storefront surfaces at desktop, tablet and mobile widths.'],
  ['accessibility','KEYBOARD / ACCESSIBILITY','Tab through nav, store cards, bag and modal controls; verify visible focus and labels.'],
