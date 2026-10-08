@@ -26,6 +26,7 @@ const MANUAL=[
  ['cart','BAG / CART','Quick-add and product-detail add; update quantity; remove item.'],
  ['checkout','CHECKOUT','Complete delivery/invoice/promo/store-credit validation without submitting a live payment.'],
  ['iyzilink','IYZICO LINK · EXACT AMOUNT','Verify a single-item order only shows the payment button when Link amount exactly matches external payment due.'],
+ ['wwys-pause','WWYS EXTRA SUPPORT · LINK MODE','Verify extra support inputs are hidden/paused in iyzico Link mode and a forged support_amount is rejected by the backend.'],
  ['guest-order','GUEST ORDER PORTAL','Open a real guest-order email link; verify payment continuation, request history and private access.'],
  ['guest-digital','GUEST DIGITAL DOWNLOAD','Confirm a paid guest digital order generates a one-time download and the same token cannot be reused.'],
  ['reconcile','ADMIN PAYMENT RECONCILIATION','Match an iyzico transaction reference in Orders and verify PAID / REFUND passes through the payment ledger.'],
