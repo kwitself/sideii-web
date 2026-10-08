@@ -1345,3 +1345,54 @@
 @media(max-width:430px){
   .storeClassicGrid{grid-template-columns:1fr!important}
 }
+
+
+/* SCREENSHOT QA — PRODUCT DETAIL SCALE / DISCOVERY */
+.merchSupportCallout.paused{
+  border-color:#39363c;
+  background:#0a0a0c;
+}
+.merchSupportCallout.paused b{color:#aaa59e}
+.merchSupportCallout.paused>small{color:#6f6b70}
+@media(min-width:1200px){
+  .merchDetail{
+    width:calc(100% - clamp(44px,4vw,88px))!important;
+    max-width:2240px!important;
+    grid-template-columns:minmax(0,1.42fr) minmax(410px,.72fr)!important;
+    gap:clamp(64px,5vw,104px)!important;
+    padding-top:clamp(92px,6vw,130px)!important;
+  }
+  .merchDetailRasterStage{
+    min-height:clamp(720px,48vw,980px)!important;
+  }
+  .merchDetailInfo{
+    padding-top:clamp(30px,3vw,58px)!important;
+  }
+  .merchDetailInfo h1{
+    font-size:clamp(58px,5.5vw,92px)!important;
+  }
+  .merchDetailInfo>p{
+    max-width:620px!important;
+    font-size:17px!important;
+  }
+}
+@media(min-width:1800px){
+  .merchDetail{
+    max-width:2380px!important;
+  }
+  .productDiscovery{
+    width:calc(100% - clamp(90px,6vw,160px))!important;
+    max-width:2260px!important;
+  }
+  .completeSetCard{min-height:240px}
+  .discoveryCard{
+    grid-template-columns:132px minmax(0,1fr)!important;
+    padding:13px!important;
+  }
+  .discoveryVisual{width:132px!important}
+  .recentGrid .discoveryCard{
+    grid-template-columns:96px minmax(0,1fr)!important;
+  }
+  .recentGrid .discoveryVisual{width:96px!important}
+  .discoveryCard h3{font-size:21px!important}
+}
