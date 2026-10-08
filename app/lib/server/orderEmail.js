@@ -3,7 +3,7 @@ export async function sendOrderEmailPayload(payload){
  if(!apiKey)return {ok:true,email_sent:false,reason:'email_provider_not_configured'};
 
  const guestPortal=payload.guest_portal_token
-  ? String(process.env.NEXT_PUBLIC_SITE_URL||'').replace(/\/$/,'')+'/order/'+encodeURIComponent(String(payload.guest_portal_token))
+  ? String(process.env.NEXT_PUBLIC_SITE_URL||'').replace(/\/$/,'')+'/order#'+encodeURIComponent(String(payload.guest_portal_token))
   : '';
  const items=(payload.items||[]).map(function(x){
   const download=x.download_available
