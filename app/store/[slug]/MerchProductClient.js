@@ -23,7 +23,7 @@ export default function MerchProductClient({product}){
  const preferredSide=detail.default_side==='back'&&product.mockups?.back?'back':product.mockups?.front?'front':'back';
  const [side,setSide]=useState(preferredSide);
  const [added,setAdded]=useState(false);
- const [bagCount,setBagCount]=useState(0);const[waitEmail,setWaitEmail]=useState(''),[waitMessage,setWaitMessage]=useState(''),[waitBusy,setWaitBusy]=useState(false);const[paymentMode,setPaymentMode]=useState({mode:'',extra_support_enabled:true});
+ const [bagCount,setBagCount]=useState(0);const[waitEmail,setWaitEmail]=useState(''),[waitMessage,setWaitMessage]=useState(''),[waitBusy,setWaitBusy]=useState(false);const[paymentMode,setPaymentMode]=useState({mode:'',extra_support_enabled:false});
  useEffect(()=>{const token=new URLSearchParams(window.location.search).get('variant');if(token){const i=variants.findIndex(x=>String(x.sku||x.id)===token||String(x.id||'')===token);if(i>=0)setIndex(i)}const sync=()=>setBagCount(readCart().reduce((s,x)=>s+x.qty,0));sync();window.addEventListener('sideii-cart',sync);(async()=>{if(!supabase)return;const {data}=await supabase.rpc('get_store_payment_mode');if(data)setPaymentMode(data)})();return()=>window.removeEventListener('sideii-cart',sync)},[]);
  const selectVariant=i=>{setIndex(i);const token=variants[i]?.sku||variants[i]?.id;if(!token)return;const url=new URL(window.location.href);url.searchParams.set('variant',token);history.replaceState(null,'',url.pathname+url.search+url.hash)};
  const v=variants[index]||{};
