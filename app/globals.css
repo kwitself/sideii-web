@@ -4113,3 +4113,20 @@ footer a:focus-visible,
   .globalBagItems article>strong{grid-column:2;justify-self:start;margin-top:-8px}
   .globalBagActions{flex-wrap:wrap}
 }
+
+
+/* IYZICO LINK MODE — WWYS SUPPORT PAUSE */
+.wwysCartSupport.paused{
+  border-color:#333136!important;
+  background:#0a0a0c!important;
+}
+.wwysCartSupport.paused>div{width:100%}
+.wwysCartSupport.paused span{color:#8b8780}
+.wwysCartSupport.paused small{color:#666269!important}
+.wwysSupportPaused{
+  margin:0!important;
+  padding:14px 0 2px!important;
+  color:#7f7b75!important;
+  font:12px/1.55 Georgia,serif!important;
+  max-width:560px;
+}
