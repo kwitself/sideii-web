@@ -73,6 +73,7 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
  const [scenario,setScenario]=useState('live');
  const [exportMedia,setExportMedia]=useState('vinyl');
  const [exportBusy,setExportBusy]=useState(false);
+ const [exportStatus,setExportStatus]=useState('');
  const exportRef=useRef(null);
  const exportRefs=useRef({});
 
@@ -90,40 +91,51 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
  const variants=product.product_variants||[];
  const exportVariant=normalizeEditionVariant(variants.find(v=>String(v?.format||'').toLowerCase()===exportMedia)||variants[0]||{});
  const exportRelease={cover:productImage(product),catalogue:product.catalogue_no||'SIDE:II',number:product.catalogue_no||'',title:product.title||'Edition',artist:product.artist_project||'SIDE:II',imprint:product.imprint||'sideii',hasShrinkwrap:!!product.has_shrinkwrap};
- async function saveRenderNode(node,mediaName){
+ async function saveRenderNode(node,mediaName,{transparent=false,suffix=null}={}){
   if(!node)return false;
-  const rect=node.getBoundingClientRect();
-  const dataUrl=await toPng(node,{
-   cacheBust:true,
-   pixelRatio:2,
-   backgroundColor:'#09090a',
-   width:Math.round(rect.width),
-   height:Math.round(rect.height),
-   style:{transform:'none',transformOrigin:'top left'}
-  });
-  const a=document.createElement('a');
-  a.href=dataUrl;
-  a.download=`${product.slug||product.catalogue_no||'sideii'}-${mediaName}-hover.png`;
-  document.body.appendChild(a);a.click();a.remove();
-  return true;
+  const fileSuffix=suffix||(transparent?'hover-transparent':'hover-dark');
+  if(transparent)node.classList.add('exportTransparent');
+  else node.classList.remove('exportTransparent');
+  try{
+   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+   const rect=node.getBoundingClientRect();
+   const dataUrl=await toPng(node,{
+    cacheBust:true,
+    pixelRatio:2,
+    width:Math.ceil(rect.width),
+    height:Math.ceil(rect.height),
+    backgroundColor:transparent?undefined:'#09090a'
+   });
+   const a=document.createElement('a');
+   a.href=dataUrl;
+   a.download=`${product.slug||product.catalogue_no||'sideii'}-${mediaName}-${fileSuffix}.png`;
+   document.body.appendChild(a);a.click();a.remove();
+   return true;
+  }finally{
+   node.classList.remove('exportTransparent');
+  }
  }
- async function downloadHoverRender(){
+ async function downloadHoverRender(transparent=false){
   if(!exportRef.current||product.product_type==='merch')return;
   setExportBusy(true);
-  try{await saveRenderNode(exportRef.current,exportMedia)}
-  finally{setExportBusy(false)}
+  setExportStatus(transparent?'TRANSPARENT PNG':'DARK PNG');
+  try{await saveRenderNode(exportRef.current,exportMedia,{transparent})}
+  finally{setExportBusy(false);setExportStatus('')}
  }
- async function downloadAllHoverRenders(){
+ async function downloadAllHoverRenders(transparent=false){
   if(product.product_type==='merch'||!exportFormats.length)return;
   setExportBusy(true);
   try{
+   let n=0;
    for(const mediaName of exportFormats){
+    n++;
+    setExportStatus(`${transparent?'TRANSPARENT':'DARK'} ${n}/${exportFormats.length}`);
     const node=exportRefs.current[mediaName];
     if(!node)continue;
-    await saveRenderNode(node,mediaName);
-    await new Promise(resolve=>setTimeout(resolve,180));
+    await saveRenderNode(node,mediaName,{transparent});
+    await new Promise(resolve=>setTimeout(resolve,220));
    }
-  }finally{setExportBusy(false)}
+  }finally{setExportBusy(false);setExportStatus('')}
  }
  const primary=variants.find(v=>v.format==='digital'||Number(v.stock_qty||0)>0||v.preorder_enabled)||variants[0]||{};
  const cta=(mode==='classic'?(card.classic_cta&&card.classic_cta!=='inherit'?card.classic_cta:card.cta):(card.editorial_cta&&card.editorial_cta!=='inherit'?card.editorial_cta:card.cta))||'VIEW';
@@ -162,8 +174,10 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
    <div className="previewRenderToolHead"><span>HOVER RENDER</span><small>Uses the exact Product Detail visual component.</small></div>
    <div className="previewRenderToolActions">
     <select value={exportMedia} onChange={e=>setExportMedia(e.target.value)} disabled={exportBusy}>{exportFormats.map(m=><option key={m} value={m}>{m.toUpperCase()}</option>)}</select>
-    <button type="button" onClick={downloadHoverRender} disabled={exportBusy}>{exportBusy?'RENDERING…':'DOWNLOAD HOVER PNG'}</button>
-    <button type="button" className="secondary" onClick={downloadAllHoverRenders} disabled={exportBusy||exportFormats.length<2}>{exportBusy?'RENDERING…':`DOWNLOAD ALL FORMATS (${exportFormats.length})`}</button>
+    <button type="button" onClick={()=>downloadHoverRender(false)} disabled={exportBusy}>{exportBusy?(exportStatus||'RENDERING…'):'DOWNLOAD DARK PNG'}</button>
+    <button type="button" onClick={()=>downloadHoverRender(true)} disabled={exportBusy}>{exportBusy?(exportStatus||'RENDERING…'):'DOWNLOAD TRANSPARENT PNG'}</button>
+    <button type="button" className="secondary" onClick={()=>downloadAllHoverRenders(false)} disabled={exportBusy||exportFormats.length<2}>{exportBusy?(exportStatus||'RENDERING…'):`ALL DARK (${exportFormats.length})`}</button>
+    <button type="button" className="secondary" onClick={()=>downloadAllHoverRenders(true)} disabled={exportBusy||exportFormats.length<2}>{exportBusy?(exportStatus||'RENDERING…'):`ALL TRANSPARENT (${exportFormats.length})`}</button>
    </div>
    <div className="previewRenderLive"><div ref={exportRef} className="editionExportCapture"><EditionVisual release={exportRelease} variant={exportVariant} forceHover/></div></div>
    <div className="editionExportBatch" aria-hidden="true">{exportFormats.map(mediaName=>{
