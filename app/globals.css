@@ -6531,3 +6531,15 @@ footer a:focus-visible,
  .productShareSheet :is(input,select,textarea){transition:none!important}
  .productShareSheet .productShareDownload:hover{transform:none!important}
 }
+
+
+/* SCREENSHOT QA 2026-10: restrained readability pass — release / share / drawers */
+.productPage .trackSection li span{color:#d8d1c9;line-height:1.35;overflow-wrap:anywhere}
+.productPage .trackSection li b{color:#99928d}
+.productPage .trackSection>span,.productPage .productNote>span{color:#a9a09a;letter-spacing:.15em}
+.productPage .editionPanel :is(small,span),.productPage .editionFacts :is(small,span){line-height:1.5}
+.productPage .editionPanel button:focus-visible,.productPage .releasePressEntry a:focus-visible{outline:2px solid #dfc7d1;outline-offset:3px}
+.globalBagDrawer .checkoutForm label,.globalAccountDrawer .accountBody label{line-height:1.5}
+.globalBagDrawer .checkoutForm :is(input,select,textarea){font-size:max(12px,1em)}
+.productShareSheet .productSharePresets button{min-height:62px}
+@media(max-width:760px){.productPage .trackSection li{grid-template-columns:42px minmax(0,1fr)}.productPage .trackSection li span{font-size:clamp(16px,4vw,20px)}}
