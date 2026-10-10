@@ -5484,3 +5484,55 @@ footer a:focus-visible,
     grid-template-columns:1fr;
   }
 }
+
+
+/* SHARE STUDIO TYPOGRAPHY — MATCH PRODUCT DETAIL */
+.productShareSheet{
+  font-family:Arial,sans-serif;
+}
+.productShareSheet>header span,
+.productSharePreview>span,
+.productSharePreview>small,
+.productSharePresets small,
+.productSharePresets button i,
+.productShareNetworks button,
+.productShareCopy,
+.productSharePrimary,
+.productShareMediaToggle span,
+.productShareMediaToggle b,
+.productShareMediaPanel button span,
+.productShareMediaPanel button small{
+  font-family:Arial,sans-serif!important;
+}
+.productShareSheet>header b,
+.productSharePresets span{
+  font-family:Georgia,serif!important;
+  font-weight:400!important;
+  letter-spacing:-.02em!important;
+}
+.productShareSheet>header b{
+  font-size:32px!important;
+  line-height:.95!important;
+}
+.productSharePresets span{
+  font-size:19px!important;
+  line-height:1!important;
+}
+.productSharePreview>span{
+  font-size:7px!important;
+  letter-spacing:.18em!important;
+}
+.productSharePreview>small{
+  font-size:7px!important;
+  letter-spacing:.14em!important;
+}
+.productShareControls>p{
+  font-family:Georgia,serif!important;
+  font-size:11px!important;
+  line-height:1.45!important;
+  color:#77736d!important;
+}
+@media(max-width:760px){
+  .productShareSheet>header b{font-size:24px!important}
+  .productSharePresets span{font-size:17px!important}
+}
