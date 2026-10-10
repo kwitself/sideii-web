@@ -5467,3 +5467,34 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .commerceProductPicker{display:grid;gap:8px;border:1px solid #29282c;padding:10px}.commerceProductPicker>span{font:6px/1 Arial,sans-serif;letter-spacing:.13em;color:#77736d}.commerceProductPicker>div{display:flex;flex-wrap:wrap;gap:5px;max-height:150px;overflow:auto}.commerceProductPicker button{min-height:30px!important;background:#0d0d0f!important;color:#77736d!important;border:1px solid #302f33!important;padding:0 8px!important;text-align:left}.commerceProductPicker button.active{color:#eee9e1!important;border-color:#77736d!important;background:#171719!important}.commerceConfigured{margin-top:10px;padding:14px}.commerceConfigured>header{display:grid;gap:5px;border-bottom:1px solid #29282c;padding-bottom:10px}.commerceConfigured>header span,.commerceConfiguredGrid>section>span{font:7px/1 Arial,sans-serif;letter-spacing:.15em;color:#77736d}.commerceConfigured>header small{font:10px/1.35 Georgia,serif;color:#66636a}.commerceConfiguredGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.commerceConfiguredGrid section{border:1px solid #29282c;padding:10px;min-height:100px}.commerceConfiguredGrid p{display:grid;gap:4px;padding:8px 0;margin:0;border-bottom:1px solid #232226}.commerceConfiguredGrid p:last-child{border-bottom:0}.commerceConfiguredGrid b{font:12px/1 Georgia,serif;font-weight:400}.commerceConfiguredGrid small{font:6px/1.3 Arial,sans-serif;letter-spacing:.08em;color:#66636a}.commerceConfiguredGrid em{display:block;margin-top:12px;font:7px/1 Arial,sans-serif;font-style:normal;letter-spacing:.1em;color:#545158}
 @media(max-width:980px){.commerceConfiguredGrid{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){.commerceConfiguredGrid{grid-template-columns:1fr}.commerceProductPicker>div{max-height:220px}}
+
+
+/* ADMIN UI AUDIT / safe global component polish */
+@layer sideiiAdmin {
+ .adminApp,.adminApp main,.adminApp section,.adminPanel,.adminApp form{min-width:0}
+ .adminApp :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea){
+  min-width:0;max-width:100%;box-sizing:border-box;
+ }
+ .adminApp :is(button,a,input,select,textarea):focus-visible,.adminAuth :is(button,input):focus-visible{
+  outline:2px solid #e0cbbf;outline-offset:2px;
+ }
+ .adminApp :is(.adminPanel,.productRow,.editionCell) :is(b,strong,span,small,p){
+  overflow-wrap:break-word;
+ }
+ .adminPanel{max-width:100%}
+ .adminNav a{border-radius:2px;transition:background .16s ease,color .16s ease}
+ .adminNav a:hover,.adminNav a:focus-visible{background:#201c21}
+ .adminMobileTop>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .adminRail .adminNav{overscroll-behavior:contain}
+ .adminApp :is(.productRow,.tableHead){min-width:0}
+ @media(max-width:760px){
+  .adminApp{min-width:0;max-width:100vw}
+  .adminApp .adminPanel{min-width:0}
+  .adminApp textarea{width:100%}
+  .adminMobileTop{box-sizing:border-box;max-width:100vw}
+  .adminRail.mobileOpen{overscroll-behavior:contain}
+ }
+ @media(prefers-reduced-motion:reduce){
+  .adminNav a{transition:none}
+ }
+}
