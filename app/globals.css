@@ -6584,3 +6584,9 @@ footer a:focus-visible,
  .editionFlipHit span{font-size:9px;bottom:1%}
 }
 @media(prefers-reduced-motion:reduce){.editionFlipObject{transition:none}.editionFlipHit span{transition:none}}
+
+
+/* Keep the rear tracklist scrollable, with an explicit front-side return control */
+.editionFlipObject.isFlipped~.editionFlipHit{inset:auto;left:7%;bottom:0;width:auto;height:auto;display:block;padding:0}
+.editionFlipObject.isFlipped~.editionFlipHit span{position:static;display:inline-flex}
+.editionFlipBack .editionReversePrint ol{overscroll-behavior:contain}
