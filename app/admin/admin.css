@@ -5460,3 +5460,6 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .commerceMetricAction{margin-top:4px;justify-self:start;border:1px solid #343238;background:#0d0d0f;color:#aaa69f;min-height:28px;padding:0 8px;font:6px/1 Arial,sans-serif;letter-spacing:.1em}.commerceMetricAction:hover:not(:disabled){border-color:#77736d;color:#eee9e1}.commerceMetricAction:disabled{opacity:.4}
 
 .commerceExpansionMetrics{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important}
+
+.orderGiftOps{margin:12px 0;border:1px solid #343238;padding:14px;display:grid;gap:7px}.orderGiftOps>span{font:7px/1 Arial,sans-serif;letter-spacing:.15em;color:#77736d}.orderGiftOps>b{font:15px/1 Georgia,serif;font-weight:400}.orderGiftOps>p,.orderGiftOps>small{margin:0;color:#8d8982;font:8px/1.4 Arial,sans-serif;letter-spacing:.06em}.orderGiftQr{margin-top:8px;display:grid;grid-template-columns:92px 1fr;gap:10px;align-items:stretch}.orderGiftQr img{width:92px;height:92px;background:#fff;padding:5px}.orderGiftQr button{border:1px solid #343238;background:#0d0d0f;color:#aaa69f;font:7px/1 Arial,sans-serif;letter-spacing:.11em}
+@media(max-width:760px){.orderGiftQr{grid-template-columns:78px 1fr}.orderGiftQr img{width:78px;height:78px}}
