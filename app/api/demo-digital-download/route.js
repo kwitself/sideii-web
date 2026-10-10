@@ -1,14 +1,18 @@
 export const runtime='nodejs';
 
-export async function GET(){
+export async function GET(request){
+  const internal=request.headers.get('x-sideii-secure-download');
+  if(internal!==process.env.SIDEII_SECURE_DOWNLOAD_INTERNAL_TOKEN){
+    return new Response('Not found',{status:404});
+  }
+
   const body=[
     'SIDE:II — DIGITAL DOWNLOAD DEMO',
     '',
     'Secure digital delivery test.',
-    'If this file was downloaded after pressing DOWNLOAD DIGITAL EDITION',
-    'inside Account > Order, the protected grant flow is working correctly.',
+    'This file can only be reached through the protected download grant flow.',
     '',
-    'Formats: WAV · FLAC',
+    'Formats: WAV · FLAC · MP3',
     'Master: 24-bit / 96 kHz',
     '',
     'SIDE:II / MMXXVI'
