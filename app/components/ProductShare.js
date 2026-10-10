@@ -82,20 +82,29 @@ export default function ProductShare({product,kind='release'}){
    <button type="button" className="productShareShade" aria-label="Close share menu" onClick={()=>setOpen(false)}/>
    <section className="productShareSheet">
     <header><div><span>SHARE THIS EDITION</span><b>{title}</b></div><button type="button" onClick={()=>setOpen(false)}>CLOSE ×</button></header>
-    <div className="productSharePresets">
-     <button type="button" onClick={()=>shareCard('story')}><span>STORY</span><small>1080 × 1920</small></button>
-     <button type="button" onClick={()=>shareCard('square')}><span>SQUARE</span><small>1080 × 1080</small></button>
-     <button type="button" onClick={()=>shareCard('link')}><span>LINK CARD</span><small>1200 × 630</small></button>
+    <div className="productShareStudio">
+     <div className="productSharePreview">
+      <span>LINK CARD PREVIEW</span>
+      <div className="productSharePreviewFrame"><img src={cardUrl('link')} alt={title+' share preview'}/></div>
+      <small>1200 × 630 · SOCIAL PREVIEW</small>
+     </div>
+     <div className="productShareControls">
+      <div className="productSharePresets">
+       <button type="button" onClick={()=>shareCard('story')}><span>STORY</span><small>1080 × 1920</small></button>
+       <button type="button" onClick={()=>shareCard('square')}><span>SQUARE</span><small>1080 × 1080</small></button>
+       <button type="button" onClick={()=>shareCard('link')}><span>LINK CARD</span><small>1200 × 630</small></button>
+      </div>
+      <div className="productShareNetworks">
+       <button type="button" onClick={()=>shareCard('story')}>INSTAGRAM / STORY</button>
+       <button type="button" onClick={()=>openNetwork('whatsapp')}>WHATSAPP</button>
+       <button type="button" onClick={()=>openNetwork('facebook')}>FACEBOOK</button>
+       <button type="button" onClick={()=>openNetwork('x')}>X</button>
+       <button type="button" onClick={()=>openNetwork('telegram')}>TELEGRAM</button>
+      </div>
+      <button type="button" className="productShareCopy" onClick={copyLink}>{status||'COPY PRODUCT LINK'}</button>
+      <p>Story and Square cards use the native share sheet on supported phones. Link Card is used for social previews.</p>
+     </div>
     </div>
-    <div className="productShareNetworks">
-     <button type="button" onClick={()=>shareCard('story')}>INSTAGRAM / STORY</button>
-     <button type="button" onClick={()=>openNetwork('whatsapp')}>WHATSAPP</button>
-     <button type="button" onClick={()=>openNetwork('facebook')}>FACEBOOK</button>
-     <button type="button" onClick={()=>openNetwork('x')}>X</button>
-     <button type="button" onClick={()=>openNetwork('telegram')}>TELEGRAM</button>
-    </div>
-    <button type="button" className="productShareCopy" onClick={copyLink}>{status||'COPY PRODUCT LINK'}</button>
-    <p>On supported phones, Story and Square cards open the native share sheet so the image can be sent directly to installed apps including Instagram.</p>
    </section>
   </div>}
  </div>;
