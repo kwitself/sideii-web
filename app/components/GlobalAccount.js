@@ -217,7 +217,14 @@ export default function GlobalAccount(){
   try{
    const {data,error}=await supabase.rpc('create_my_digital_download_grant',{p_order_item_id:item.id});
    if(error||!data){setMessage(error?.message||'Digital download unavailable.');return}
-   const href='/api/download/'+encodeURIComponent(String(data));
+
+   const query=new URLSearchParams({
+    title:item.title||'Digital Edition',
+    formats:Array.isArray(item.digital_formats)?item.digital_formats.join(' · '):'DIGITAL FILES',
+    specs:item.audio_specs||'',
+    remaining:String(Math.max(0,Number(item.digital_download_remaining??0)))
+   });
+   const href='/download/'+encodeURIComponent(String(data))+'?'+query.toString();
    const link=document.createElement('a');
    link.href=href;
    link.target='_blank';
@@ -225,38 +232,27 @@ export default function GlobalAccount(){
    document.body.appendChild(link);
    link.click();
    link.remove();
-
-   // Update the visible order immediately; server polling reconciles the real count.
-   setSelectedOrder(current=>{
-    if(!current)return current;
-    return {
-     ...current,
-     items:(current.items||[]).map(x=>{
-      if(x.id!==item.id)return x;
-      const limit=Number(x.digital_download_limit||5);
-      const count=Math.min(limit,Number(x.digital_download_count||0)+1);
-      const remaining=Math.max(0,limit-count);
-      return {...x,digital_download_count:count,digital_download_remaining:remaining,download_available:remaining>0};
-     })
-    };
-   });
-
-   const refreshOrders=async()=>{
-    if(!session?.user)return;
-    const {data:nextOrders,error:ordersError}=await supabase.rpc('get_my_store_orders');
-    if(ordersError)return;
-    const list=Array.isArray(nextOrders)?nextOrders:[];
-    setOrders(list);
-    setSelectedOrder(current=>{
-      if(!current)return current;
-      return list.find(o=>o.id===current.id)||current;
-    });
-   };
-
-   [700,1500,3000].forEach(ms=>setTimeout(refreshOrders,ms));
   }finally{setDownloadBusyId(null)}
  }
 
+ useEffect(()=>{
+  if(!supabase||!session?.user)return;
+  const channel=typeof BroadcastChannel!=='undefined'?new BroadcastChannel('sideii-secure-download'):null;
+  const refresh=async()=>{
+   const {data:nextOrders,error}=await supabase.rpc('get_my_store_orders');
+   if(error)return;
+   const list=Array.isArray(nextOrders)?nextOrders:[];
+   setOrders(list);
+   setSelectedOrder(current=>current?(list.find(o=>o.id===current.id)||current):current);
+  };
+  if(channel)channel.onmessage=e=>{
+   if(e?.data?.type!=='download-consumed')return;
+   [500,1200,2400].forEach(ms=>setTimeout(refresh,ms));
+  };
+  const onFocus=()=>refresh();
+  window.addEventListener('focus',onFocus);
+  return()=>{window.removeEventListener('focus',onFocus);channel?.close?.()}
+ },[session?.user?.id]);
  useEffect(()=>{if(!open)return;
   const previousOverflow=document.body.style.overflow;
   const previousFocus=document.activeElement;
