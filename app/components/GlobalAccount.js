@@ -15,7 +15,7 @@ export default function GlobalAccount(){
  const pathname=usePathname();
  const [open,setOpen]=useState(false),[session,setSession]=useState(null),[mode,setMode]=useState('signin');
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false),[wishlist,setWishlist]=useState([]),[savedCart,setSavedCart]=useState([]),[addresses,setAddresses]=useState([]),[addressEditing,setAddressEditing]=useState(false),[addressBusy,setAddressBusy]=useState(false),[requestBusy,setRequestBusy]=useState(false),[requestReason,setRequestReason]=useState('');
- const [collection,setCollection]=useState([]),[passports,setPassports]=useState([]),[ownerContent,setOwnerContent]=useState([]),[collectorSummary,setCollectorSummary]=useState(null),[collectorLevel,setCollectorLevel]=useState(null),[storeCredit,setStoreCredit]=useState(null),[storeCreditHistory,setStoreCreditHistory]=useState([]);
+ const [collection,setCollection]=useState([]),[passports,setPassports]=useState([]),[ownerContent,setOwnerContent]=useState([]),[collectorSummary,setCollectorSummary]=useState(null),[collectorLevel,setCollectorLevel]=useState(null),[collectorReward,setCollectorReward]=useState(null),[storeCredit,setStoreCredit]=useState(null),[storeCreditHistory,setStoreCreditHistory]=useState([]);
  const emptyAddress={id:null,label:'',full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:'',is_default:false};
  const [addressForm,setAddressForm]=useState(emptyAddress);
  const [auth,setAuth]=useState({email:'',password:'',full_name:''});
@@ -66,6 +66,16 @@ export default function GlobalAccount(){
   supabase.rpc('get_my_collector_status').then(({data})=>{if(live)setCollectorLevel(Array.isArray(data)?data[0]||null:data||null)});
   return()=>{live=false};
  },[session?.user?.id]);
+
+ async function claimCollectorReward(){
+  if(!supabase||!session?.user)return;
+  setBusy(true);setMessage('');
+  const {data,error}=await supabase.rpc('claim_my_collector_reward');
+  setBusy(false);
+  if(error){setMessage(error.message);return}
+  setCollectorReward(data||null);
+  if(data?.code){try{await navigator.clipboard.writeText(data.code);setMessage('Collector reward code copied.')}catch{setMessage('Collector reward · '+data.code)}}
+ }
 
  async function shareAccountList(kind,payload){
   if(!supabase||!session?.user)return;
@@ -292,7 +302,7 @@ export default function GlobalAccount(){
         <div><span>{t('PASSPORTS')}</span><b>{collectorSummary?.active_passports||0}</b></div>
         <div><span>{t('OWNER CONTENT')}</span><b>{collectorSummary?.owner_content_items||0}</b></div>
         <div><span>{t('VERIFIED IMPACT')}</span><b>{money(collectorSummary?.verified_impact_total||0)}</b></div>
-        <div><span>{t('STORE CREDIT')}</span><b>{money(storeCredit?.balance||0)}</b></div>{collectorLevel&&<div className="collectorTierCard"><span>COLLECTOR LEVEL</span><b>{collectorLevel.label||collectorLevel.tier}</b><small>{collectorLevel.early_access_hours||0}H EARLY · {collectorLevel.reward_pct||0}% REWARD</small></div>}
+        <div><span>{t('STORE CREDIT')}</span><b>{money(storeCredit?.balance||0)}</b></div>{collectorLevel&&<div className="collectorTierCard"><span>COLLECTOR LEVEL</span><b>{collectorLevel.label||collectorLevel.tier}</b><small>{collectorLevel.early_access_hours||0}H EARLY · {collectorLevel.reward_pct||0}% REWARD</small>{Number(collectorLevel.reward_pct||0)>0&&<button type="button" className="collectorRewardButton" disabled={busy} onClick={claimCollectorReward}>{collectorReward?.code?collectorReward.code:'CLAIM MONTHLY REWARD →'}</button>}</div>}
       </div>
       <div className="collectorCompletion"><i><b style={{width:Math.max(0,Math.min(100,Number(collectorSummary?.completion_percent||0)))+'%'}}/></i><small>{t('CATALOGUE COMPLETION')}</small></div>
     </section>
