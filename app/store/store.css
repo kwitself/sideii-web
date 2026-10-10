@@ -1678,3 +1678,36 @@
  .storeClassicCard{transition:none!important}
  .storeClassicCard:hover{transform:none!important}
 }
+
+
+/* SIDE:II PREMIUM FINISH — editorial store and merch */
+.storePage{--store-rule:#373239;--store-soft:#aaa19c}
+.storeHero{position:relative}
+.storeHero h1{letter-spacing:-.055em;text-wrap:balance}
+.storeHero p{max-width:60ch;line-height:1.6}
+.storeClassicCard{border-color:var(--store-rule);box-shadow:0 10px 35px rgba(0,0,0,.1);transition:border-color .2s ease,background .2s ease,transform .2s ease,box-shadow .2s ease}
+.storeClassicCard:hover{border-color:#74636f;box-shadow:0 18px 42px rgba(0,0,0,.28)}
+.storeClassicMeta{min-width:0}
+.storeClassicMeta :is(b,strong){line-height:1.18}
+.storeClassicAction :is(button,a){min-height:42px;display:inline-flex;align-items:center;justify-content:center;text-align:center}
+.storeEditorialList article{min-width:0}
+.storeDiscoveryTools{border-color:var(--store-rule);background:linear-gradient(135deg,#121113,#0d0d0f 78%)}
+.storeDiscoveryTools :is(input,select){border-radius:2px;transition:border-color .18s ease,background .18s ease}
+.storeDiscoveryTools :is(input,select):focus{border-color:#aa8d9f;background:#151216}
+.storeDiscoveryTools :is(label,span){overflow-wrap:break-word}
+.storeFilters button,.storeViewToggle button{transition:background .18s ease,color .18s ease,border-color .18s ease}
+.storeActiveFilters button{border-radius:2px}
+.merchDetailInfo h1{letter-spacing:-.045em;text-wrap:balance;overflow-wrap:anywhere}
+.merchDetailInfo>p{line-height:1.65}
+.merchDetailInfo :is(button,select,input):focus-visible{outline:2px solid #e0c7d2;outline-offset:3px}
+@media(max-width:700px){
+ .storeHero h1{max-width:100%;overflow-wrap:normal}
+ .storeClassicGrid{gap:14px}
+ .storeDiscoveryTools{background:#111012}
+ .merchDetailInfo h1{text-wrap:wrap}
+}
+@media(prefers-reduced-motion:reduce){
+ .storeClassicCard,.storeDiscoveryTools :is(input,select),
+ .storeFilters button,.storeViewToggle button{transition:none!important}
+ .storeClassicCard:hover{transform:none!important}
+}
