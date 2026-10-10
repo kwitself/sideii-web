@@ -17,7 +17,7 @@ export async function generateMetadata({params}){
  const title=seo.title||`${product.title} — SIDE:II Store`;
  const description=seo.description||product.lead;
  const ogImage=seo.og_image||('/api/share-card/store/'+encodeURIComponent(slug)+'?preset=link');
- return {title,description,alternates:{canonical:seo.canonical||('/store/'+slug)},openGraph:{title,description,url:seo.canonical||('/store/'+slug),images:ogImage?[ogImage]:[]}};
+ return {title,description,alternates:{canonical:seo.canonical||('/store/'+slug)},openGraph:{title,description,url:seo.canonical||('/store/'+slug),images:ogImage?[ogImage]:[]},twitter:{card:'summary_large_image',title,description,images:ogImage?[ogImage]:[]}};
 }
 
 export default async function StoreProductPage({params}){
