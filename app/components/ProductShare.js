@@ -118,8 +118,8 @@ export default function ProductShare({product,kind='release'}){
    if(err?.name==='AbortError')return;
    try{await navigator.clipboard.writeText(url);setStatus('LINK COPIED ✓')}catch{setStatus('SHARE UNAVAILABLE')}
   }
-  setActionBusy(false);
   setTimeout(()=>setStatus(''),1600);
+  }finally{setActionBusy(false)}
  }
 
  function openNetwork(network){
