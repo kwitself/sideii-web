@@ -1,7 +1,9 @@
 'use client';
-import {useEffect,useMemo,useState} from 'react';
+import {useEffect,useMemo,useRef,useState} from 'react';
 import {supabase} from '../lib/supabase';
 import MerchMockupPreview from '../components/MerchMockupPreview';
+import EditionVisual,{normalizeEditionVariant} from '../components/EditionVisual';
+import {toPng} from 'html-to-image';
 
 const MODES=[
  ['editorial','EDITORIAL'],
@@ -69,6 +71,9 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
  const [viewport,setViewport]=useState('desktop');
  const [hoverSim,setHoverSim]=useState(false);
  const [scenario,setScenario]=useState('live');
+ const [exportMedia,setExportMedia]=useState('vinyl');
+ const [exportBusy,setExportBusy]=useState(false);
+ const exportRef=useRef(null);
 
  useEffect(()=>{
   if(preferredProductId&&products.some(p=>p.id===preferredProductId))setSelectedId(preferredProductId);
@@ -76,10 +81,25 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
  },[preferredProductId,products,selectedId]);
 
  const product=useMemo(()=>products.find(p=>p.id===selectedId)||products[0]||null,[products,selectedId]);
+ const exportFormats=useMemo(()=>Array.from(new Set((product?.product_variants||[]).map(v=>String(v?.format||'').toLowerCase()).filter(v=>['vinyl','cd','cassette','digital'].includes(v)))),[product]);
+ useEffect(()=>{if(exportFormats.length&&!exportFormats.includes(exportMedia))setExportMedia(exportFormats[0])},[product?.id,exportFormats,exportMedia]);
  if(!product)return <section className="adminSection adminViewSection"><div className="sectionLabel"><span>03 / PRODUCT PREVIEW</span><p>Create a product first to use preview.</p></div><div className="adminPanel emptyNote">No products available.</div></section>;
 
  const cfg=product.storefront_config||{},card=cfg.card||{},visibility=cfg.visibility||{},seo=seoFor(product);
  const variants=product.product_variants||[];
+ const exportVariant=normalizeEditionVariant(variants.find(v=>String(v?.format||'').toLowerCase()===exportMedia)||variants[0]||{});
+ const exportRelease={cover:productImage(product),catalogue:product.catalogue_no||'SIDE:II',number:product.catalogue_no||'',title:product.title||'Edition',artist:product.artist_project||'SIDE:II',imprint:product.imprint||'sideii',hasShrinkwrap:!!product.has_shrinkwrap};
+ async function downloadHoverRender(){
+  if(!exportRef.current||product.product_type==='merch')return;
+  setExportBusy(true);
+  try{
+   const dataUrl=await toPng(exportRef.current,{cacheBust:true,pixelRatio:2,backgroundColor:'#09090a'});
+   const a=document.createElement('a');
+   a.href=dataUrl;
+   a.download=`${product.slug||product.catalogue_no||'sideii'}-${exportMedia}-hover.png`;
+   document.body.appendChild(a);a.click();a.remove();
+  }finally{setExportBusy(false)}
+ }
  const primary=variants.find(v=>v.format==='digital'||Number(v.stock_qty||0)>0||v.preorder_enabled)||variants[0]||{};
  const cta=(mode==='classic'?(card.classic_cta&&card.classic_cta!=='inherit'?card.classic_cta:card.cta):(card.editorial_cta&&card.editorial_cta!=='inherit'?card.editorial_cta:card.cta))||'VIEW';
  const imageFit=card.image_fit||'contain';
@@ -112,6 +132,15 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
    <div className="previewModeTabs">{MODES.map(([id,label])=><button key={id} type="button" className={mode===id?'active':''} onClick={()=>setMode(id)}>{label}</button>)}</div>
    <div className="previewViewportTabs"><button className={viewport==='desktop'?'active':''} onClick={()=>setViewport('desktop')}>DESKTOP</button><button className={viewport==='tablet'?'active':''} onClick={()=>setViewport('tablet')}>TABLET</button><button className={viewport==='mobile'?'active':''} onClick={()=>setViewport('mobile')}>MOBILE</button></div><label className="previewScenario"><span>SCENARIO</span><select value={scenario} onChange={e=>setScenario(e.target.value)}><option value="live">LIVE DATA</option><option value="instock">IN STOCK</option><option value="preorder">PRE-ORDER</option><option value="soldout">SOLD OUT</option></select></label><div className="previewZoom"><button className={zoom==='fit'?'active':''} onClick={()=>setZoom('fit')}>FIT</button><button className={zoom==='100'?'active':''} onClick={()=>setZoom('100')}>100%</button>{secondaryEnabled&&<button className={hoverSim?'active':''} onClick={()=>setHoverSim(v=>!v)}>HOVER {hoverSim?'ON':'OFF'}</button>}</div>
   </div>
+
+  {product.product_type!=='merch'&&exportFormats.length>0&&<div className="previewRenderTools adminPanel">
+   <div className="previewRenderToolHead"><span>HOVER RENDER</span><small>Uses the exact Product Detail visual component.</small></div>
+   <div className="previewRenderToolActions">
+    <select value={exportMedia} onChange={e=>setExportMedia(e.target.value)}>{exportFormats.map(m=><option key={m} value={m}>{m.toUpperCase()}</option>)}</select>
+    <button type="button" onClick={downloadHoverRender} disabled={exportBusy}>{exportBusy?'RENDERING…':'DOWNLOAD HOVER PNG'}</button>
+   </div>
+   <div className="previewRenderLive"><div ref={exportRef} className="editionExportCapture"><EditionVisual release={exportRelease} variant={exportVariant} forceHover/></div></div>
+  </div>}
 
   <div className="previewLayout">
    {!embedded&&<aside className="previewInspector adminPanel">
