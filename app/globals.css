@@ -6590,3 +6590,13 @@ footer a:focus-visible,
 .editionFlipObject.isFlipped~.editionFlipHit{inset:auto;left:7%;bottom:0;width:auto;height:auto;display:block;padding:0}
 .editionFlipObject.isFlipped~.editionFlipHit span{position:static;display:inline-flex}
 .editionFlipBack .editionReversePrint ol{overscroll-behavior:contain}
+
+
+/* PHYSICAL BACK COVER IMAGE + DIRECT TWO-SIDED CLICK */
+.editionExperience>.editionFlipStage.isInteractive{cursor:pointer;touch-action:pan-y}
+.editionExperience>.editionFlipStage.isInteractive:focus-visible{outline:2px solid #e9d9e3;outline-offset:4px}
+.editionFlipBack .editionReversePrint:has(>.editionReverseImage){padding:0;display:block}
+.editionFlipBack .editionReverseImage{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.editionFlipBack .editionReversePrint ol{pointer-events:none}
+.editionExperience .editionFlipHit{display:none!important}
+@media(prefers-reduced-motion:reduce){.editionFlipObject{transition:none!important}}
