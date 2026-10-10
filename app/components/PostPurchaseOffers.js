@@ -29,7 +29,7 @@ export default function PostPurchaseOffers({orderId,paymentStatus,guestAccessTok
   <header><span>AFTER / ORDER</span><b>Complete the object.</b><small>Limited post-purchase offers tied to this paid order.</small></header>
   {offers.map(offer=>{const c=claimed[offer.id],p=offer.product||{};return <article key={offer.id}>
    <div><small>{offer.discount_pct}% OFFER</small><b>{p.title||'SIDE:II object'}</b><span>{offer.window_minutes} MINUTE WINDOW</span></div>
-   {c?<div className="postPurchaseClaimed"><strong>{c.code}</strong><small>CODE COPIED</small>{p.slug&&<Link href={'/store/'+p.slug}>OPEN OBJECT →</Link>}</div>:<button type="button" disabled={busy===offer.id} onClick={()=>claim(offer)}>{busy===offer.id?'CREATING…':'CLAIM OFFER →'}</button>}
+   {c?<div className="postPurchaseClaimed"><strong>{c.code}</strong><small>CODE COPIED</small>{p.slug&&<Link href={(p.product_type==='merch'?'/store/':'/releases/')+p.slug}>OPEN OBJECT →</Link>}</div>:<button type="button" disabled={busy===offer.id} onClick={()=>claim(offer)}>{busy===offer.id?'CREATING…':'CLAIM OFFER →'}</button>}
   </article>})}
  </section>;
 }
