@@ -9,7 +9,7 @@ export default function CommerceExpansionPanel({products=[]}){
  const [snap,setSnap]=useState(null),[data,setData]=useState(null),[busy,setBusy]=useState(false),[msg,setMsg]=useState('');
  const [launch,setLaunch]=useState({product_id:'',starts_at:'',early_access_at:'',ends_at:'',max_per_customer:'',notify_enabled:true});
  const [referral,setReferral]=useState({code:'',owner_label:'',commission_pct:10});
- const [bundle,setBundle]=useState({name:'Build Your Own Set',min_items:2,max_items:4,discount_type:'percent',discount_value:10});
+ const [bundle,setBundle]=useState({name:'Build Your Own Set',min_items:2,max_items:4,discount_type:'percent',discount_value:10,eligible_product_ids:[]});
  const [upsell,setUpsell]=useState({source_product_id:'',target_product_id:'',discount_pct:10,window_minutes:30});
 
  const load=useCallback(async()=>{
@@ -26,7 +26,7 @@ export default function CommerceExpansionPanel({products=[]}){
  },'Drop / launch saved.')}
  async function saveReferral(e){e.preventDefault();await run('admin_save_referral_code',{p_code:referral.code,p_owner_label:referral.owner_label,p_commission_pct:num(referral.commission_pct),p_active:true},'Referral code saved.')}
  async function saveBundle(e){e.preventDefault();await run('admin_save_flexible_bundle',{
-  p_id:null,p_name:bundle.name,p_min_items:num(bundle.min_items),p_max_items:bundle.max_items?num(bundle.max_items):null,p_discount_type:bundle.discount_type,p_discount_value:num(bundle.discount_value),p_eligible_product_ids:[],p_active:true
+  p_id:null,p_name:bundle.name,p_min_items:num(bundle.min_items),p_max_items:bundle.max_items?num(bundle.max_items):null,p_discount_type:bundle.discount_type,p_discount_value:num(bundle.discount_value),p_eligible_product_ids:bundle.eligible_product_ids||[],p_active:true
  },'Build-your-own bundle rule saved.')}
  async function saveUpsell(e){e.preventDefault();await run('admin_save_post_purchase_offer',{
   p_id:null,p_source_product_id:upsell.source_product_id||null,p_target_product_id:upsell.target_product_id||null,p_discount_pct:num(upsell.discount_pct),p_window_minutes:num(upsell.window_minutes),p_active:true
@@ -99,6 +99,7 @@ export default function CommerceExpansionPanel({products=[]}){
     <div className="commerceInline"><label>MIN<input type="number" min="2" value={bundle.min_items} onChange={e=>setBundle({...bundle,min_items:e.target.value})}/></label><label>MAX<input type="number" min="2" value={bundle.max_items} onChange={e=>setBundle({...bundle,max_items:e.target.value})}/></label></div>
     <select value={bundle.discount_type} onChange={e=>setBundle({...bundle,discount_type:e.target.value})}><option value="percent">PERCENT</option><option value="fixed">FIXED TRY</option></select>
     <label>DISCOUNT<input type="number" min=".01" step=".01" value={bundle.discount_value} onChange={e=>setBundle({...bundle,discount_value:e.target.value})}/></label>
+    <div className="commerceProductPicker"><span>ELIGIBLE PRODUCTS · {(bundle.eligible_product_ids||[]).length?'SELECTED':'ALL PRODUCTS'}</span><div>{products.map(p=>{const on=(bundle.eligible_product_ids||[]).includes(p.id);return <button type="button" key={p.id} className={on?'active':''} onClick={()=>setBundle(v=>({...v,eligible_product_ids:on?v.eligible_product_ids.filter(id=>id!==p.id):[...v.eligible_product_ids,p.id]}))}>{on?'✓ ':'＋ '}{p.catalogue_no||''} {p.title}</button>})}</div></div>
     <button disabled={busy}>SAVE FLEX BUNDLE</button>
    </form>
 
@@ -125,6 +126,14 @@ export default function CommerceExpansionPanel({products=[]}){
     ['POST-PURCHASE','Timed offer engine'],
     ['SCHEDULED GIFTS','Recipient delivery notifications']
    ].map(x=><div key={x[0]}><div><b>{x[0]}</b><small>{x[1]}</small></div><strong>READY</strong></div>)}</div>
+  </div>
+  <div className="adminPanel commerceConfigured"><header><span>CONFIGURED COMMERCE RULES</span><small>Current launch, referral, flexible bundle and after-order rules.</small></header>
+   <div className="commerceConfiguredGrid">
+    <section><span>LAUNCHES</span>{(data?.launches||[]).length?(data.launches.map(x=><p key={x.product_id}><b>{x.title}</b><small>{x.starts_at?new Date(x.starts_at).toLocaleString('tr-TR'):'LIVE'} · LIMIT {x.max_per_customer||'—'}</small></p>)):<em>NONE</em>}</section>
+    <section><span>REFERRALS</span>{(data?.referrals||[]).length?(data.referrals.map(x=><p key={x.id}><b>{x.code}</b><small>{x.owner_label} · {x.commission_pct}%</small></p>)):<em>NONE</em>}</section>
+    <section><span>FLEX BUNDLES</span>{(data?.bundles||[]).length?(data.bundles.map(x=><p key={x.id}><b>{x.name}</b><small>{x.min_items}–{x.max_items||'∞'} ITEMS · {x.discount_value}{x.discount_type==='percent'?'%':' TRY'}</small></p>)):<em>NONE</em>}</section>
+    <section><span>POST-PURCHASE</span>{(data?.upsells||[]).length?(data.upsells.map(x=><p key={x.id}><b>{x.target_title}</b><small>{x.discount_pct}% · {x.window_minutes} MIN</small></p>)):<em>NONE</em>}</section>
+   </div>
   </div>
  </section>;
 }
