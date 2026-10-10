@@ -46,13 +46,26 @@ export default function CommerceExpansionPanel({products=[]}){
    if(res.ok)load();
   }catch(e){setMsg(String(e?.message||e))}finally{setBusy(false)}
  }
+ async function runLifecycle(mode='all'){
+  if(!supabase||busy)return;
+  setBusy(true);setMsg('');
+  try{
+   const {data:s}=await supabase.auth.getSession();
+   const token=s.session?.access_token;
+   if(!token){setMsg('Admin session unavailable.');return}
+   const res=await fetch('/api/commerce/notifications/run',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({mode})});
+   const body=await res.json();
+   setMsg(res.ok?('Lifecycle run complete · '+Number(body.total||0)+' notification(s) sent.'):(body.error||'Lifecycle run failed.'));
+   if(res.ok)load();
+  }catch(e){setMsg(String(e?.message||e))}finally{setBusy(false)}
+ }
 
  const f=snap?.funnel||{};
  return <section className="adminSection adminViewSection commerceExpansion">
   <div className="sectionLabel"><span>07X / COMMERCE EXPANSION</span><p>Launches, recovery, retention, attribution and lifecycle commerce.</p></div>
   {msg&&<p className="dbNotice">{msg}</p>}
   <div className="commerceExpansionMetrics">
-   <article><span>DROP / LAUNCH</span><strong>{snap?.launches||0}</strong><small>{snap?.launch_subscribers||0} subscribers</small></article>
+   <article><span>DROP / LAUNCH</span><strong>{snap?.launches||0}</strong><small>{snap?.launch_subscribers||0} subscribers</small><button type="button" className="commerceMetricAction" onClick={()=>runLifecycle('launch')} disabled={busy}>RUN ALERTS →</button></article>
    <article><span>RECOVERY</span><strong>{snap?.active_recovery||0}</strong><small>{snap?.recovered_carts||0} recovered</small><button type="button" className="commerceMetricAction" onClick={runRecovery} disabled={busy}>RUN RECOVERY →</button></article>
    <article><span>REFERRALS</span><strong>{snap?.referrals||0}</strong><small>active partner codes</small></article>
    <article><span>RISK</span><strong>{snap?.risk_open||0}</strong><small>open reviews</small></article>
@@ -109,7 +122,8 @@ export default function CommerceExpansionPanel({products=[]}){
     ['GIFT EXPERIENCE','Gift message + scheduled fields'],
     ['RESERVATION UX','15 minute stock reservation'],
     ['ATTRIBUTION','UTM/referral event pipeline'],
-    ['POST-PURCHASE','Timed offer engine']
+    ['POST-PURCHASE','Timed offer engine'],
+    ['SCHEDULED GIFTS','Recipient delivery notifications']
    ].map(x=><div key={x[0]}><div><b>{x[0]}</b><small>{x[1]}</small></div><strong>READY</strong></div>)}</div>
   </div>
  </section>;
