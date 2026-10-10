@@ -6,7 +6,7 @@ export async function GET(request,{params}){
  try{
   const {token}=await params;
   const url=process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serverKey=process.env.SUPABASE_SECRET_KEY;
+  const serverKey=process.env.SUPABASE_SECRET_KEY||process.env.SUPABASE_SERVICE_ROLE_KEY;
   if(!url||!serverKey)return new Response('Download service unavailable',{status:503});
 
   const sb=createClient(url,serverKey,{auth:{persistSession:false,autoRefreshToken:false}});
