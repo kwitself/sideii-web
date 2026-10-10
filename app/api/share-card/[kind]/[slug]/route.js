@@ -24,6 +24,10 @@ export async function GET(request,{params}){
 
  const {searchParams}=new URL(request.url);
  const preset=['story','square','link'].includes(searchParams.get('preset'))?searchParams.get('preset'):'link';
+ const requestedMedia=String(searchParams.get('media')||'').toLowerCase();
+ const availableFormats=(product.variants||[]).map(v=>String(v.format||'').toLowerCase());
+ const media=['vinyl','cd','cassette','digital'].includes(requestedMedia)&&availableFormats.includes(requestedMedia)?requestedMedia:String(product.media||product.format||'').toLowerCase();
+ const selectedVariant=(product.variants||[]).find(v=>String(v.format||'').toLowerCase()===media)||(product.variants||[])[0]||{};
  const {width,height}=dims(preset);
  const art=imageUrl(product.cover,request);
  const imprint=String(product.imprint||'sideii').toLowerCase();
@@ -31,8 +35,9 @@ export async function GET(request,{params}){
  const brand=imageUrl(lethargia?'/brand/lethargia/lethargia-logo.png':'/brand/sideii-logo-flat.png',request);
  const title=product.rawTitle||product.title||'UNTITLED';
  const artist=isMerch?'SIDE:II':(product.artist||'SIDE:II');
- const format=isMerch?String(product.merchCategory||product.format||'MERCH').toUpperCase():String(product.format||'EDITION').toUpperCase();
- const price=product.price==null?'':('TRY '+new Intl.NumberFormat('tr-TR',{maximumFractionDigits:2}).format(Number(product.price||0)));
+ const format=isMerch?String(product.merchCategory||product.format||'MERCH').toUpperCase():String(media||product.format||'EDITION').toUpperCase();
+ const variantPrice=selectedVariant.price??product.price;
+ const price=variantPrice==null?'':('TRY '+new Intl.NumberFormat('tr-TR',{maximumFractionDigits:2}).format(Number(variantPrice||0)));
  const catalogue=product.catalogue||'SIDE:II';
  const vertical=preset==='story';
  const square=preset==='square';
@@ -46,20 +51,30 @@ export async function GET(request,{params}){
    color:'#f0ece4',fontFamily:'Arial,sans-serif',position:'relative',overflow:'hidden'
   }}>
    <div style={{position:'absolute',inset:0,display:'flex',opacity:.14,background:'radial-gradient(circle at 72% 22%,#7b6f6d 0%,transparent 34%)'}}/>
-   <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',position:'relative'}}>
+   <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',position:'relative',minHeight:vertical?110:86,zIndex:4}}>
     {brand?<img src={brand} style={{width:vertical?220:170,height:vertical?92:70,objectFit:'contain',objectPosition:'left center'}}/>:<div style={{fontSize:38}}>SIDE:II</div>}
     <div style={{display:'flex',fontSize:vertical?22:16,letterSpacing:5,color:'#8c8780'}}>{catalogue}</div>
    </div>
 
    <div style={{
     display:'flex',flexDirection:stacked?'column':'row',gap:vertical?54:(square?34:56),alignItems:'center',
-    justifyContent:'center',flex:1,position:'relative',padding:vertical?'40px 0':'20px 0'
+    justifyContent:'center',flex:1,position:'relative',padding:vertical?'58px 0 40px':'46px 0 24px',zIndex:2
    }}>
     <div style={{
-     width:artSize,height:artSize,display:'flex',alignItems:'center',justifyContent:'center',
+     width:artSize,height:artSize,display:'flex',alignItems:'center',justifyContent:'center',position:'relative',
      border:'1px solid #37343a',background:'#0d0d0f',boxShadow:'0 28px 80px rgba(0,0,0,.42)',overflow:'hidden'
     }}>
-     {art?<img src={art} style={{width:'100%',height:'100%',objectFit:'cover'}}/>:<div style={{fontSize:vertical?58:44,color:'#59555a'}}>{catalogue}</div>}
+     {media==='vinyl'&&<div style={{position:'absolute',right:'4%',top:'14%',width:'68%',height:'68%',borderRadius:'50%',background:'radial-gradient(circle at center,#d5d1cb 0 3%,#101012 4% 11%,#222226 12% 46%,#09090a 47% 100%)',boxShadow:'0 18px 44px rgba(0,0,0,.45)'}}/>}
+     {media==='cd'&&<div style={{position:'absolute',right:'6%',top:'15%',width:'62%',height:'62%',borderRadius:'50%',background:'conic-gradient(#d5d0c8,#7f858b,#e6e0d7,#858a8f,#d5d0c8)',boxShadow:'0 18px 44px rgba(0,0,0,.35)'}}><div style={{position:'absolute',left:'45%',top:'45%',width:'10%',height:'10%',borderRadius:'50%',background:'#0c0c0e'}}/></div>}
+     {media==='cassette'&&<div style={{position:'absolute',right:'5%',top:'25%',width:'72%',height:'46%',border:'2px solid #666268',borderRadius:12,background:'linear-gradient(180deg,#222226,#111114)',display:'flex',alignItems:'center',justifyContent:'space-around',padding:'0 12%'}}>
+       <div style={{width:'24%',aspectRatio:'1/1',borderRadius:'50%',border:'8px solid #77727a',background:'#0b0b0d'}}/><div style={{width:'24%',aspectRatio:'1/1',borderRadius:'50%',border:'8px solid #77727a',background:'#0b0b0d'}}/>
+     </div>}
+     {media==='digital'&&<div style={{position:'absolute',right:'8%',top:'16%',width:'62%',height:'62%',border:'1px solid #555159',background:'linear-gradient(145deg,#111116,#09090b)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+       <div style={{display:'flex',fontSize:vertical?54:38,letterSpacing:8,color:'#5f5a63'}}>DIGITAL</div>
+     </div>}
+     <div style={{position:'absolute',left:'5%',bottom:'5%',width:media==='vinyl'||media==='cd'||media==='cassette'? '58%':'88%',height:media==='vinyl'||media==='cd'||media==='cassette'?'58%':'88%',border:'1px solid #2f2d31',background:'#101012',overflow:'hidden',zIndex:2}}>
+      {art?<img src={art} style={{width:'100%',height:'100%',objectFit:'cover'}}/>:<div style={{width:'100%',height:'100%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:vertical?58:44,color:'#59555a'}}>{catalogue}</div>}
+     </div>
     </div>
     <div style={{display:'flex',flexDirection:'column',width:stacked?'82%':'44%',gap:vertical?24:(square?14:16)}}>
      <div style={{display:'flex',fontSize:vertical?20:15,letterSpacing:5,color:lethargia?'#8f3947':'#77736d'}}>{format}</div>
