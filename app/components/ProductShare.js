@@ -117,9 +117,7 @@ export default function ProductShare({product,kind='release'}){
   }catch(err){
    if(err?.name==='AbortError')return;
    try{await navigator.clipboard.writeText(url);setStatus('LINK COPIED ✓')}catch{setStatus('SHARE UNAVAILABLE')}
-  }
-  setTimeout(()=>setStatus(''),1600);
-  }finally{setActionBusy(false)}
+  }finally{setActionBusy(false);setTimeout(()=>setStatus(''),1600)}
  }
 
  function openNetwork(network){
