@@ -5488,8 +5488,7 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
  .adminRail .adminNav{overscroll-behavior:contain}
  .adminApp :is(.productRow,.tableHead){min-width:0}
  @media(max-width:760px){
-  .adminApp{min-width:0;max-width:100vw}
-  .adminApp .adminPanel{min-width:0}
+  .adminApp{max-width:100vw}
   .adminApp textarea{width:100%}
   .adminMobileTop{box-sizing:border-box;max-width:100vw}
   .adminRail.mobileOpen{overscroll-behavior:contain}
