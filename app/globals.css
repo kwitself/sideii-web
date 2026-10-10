@@ -6023,3 +6023,73 @@ footer a:focus-visible,
 @media(max-width:760px){.postPurchaseOffers article{align-items:stretch;flex-direction:column}.postPurchaseOffers button,.postPurchaseClaimed a{width:100%;justify-content:center}.postPurchaseClaimed{width:100%!important;display:grid!important}.accountSectionHead>div{gap:5px}}
 
 .collectorRewardButton{margin-top:9px;min-height:34px;border:1px solid #d8d3cb;background:#d8d3cb;color:#09090a;padding:0 10px;font:6px/1 Arial,sans-serif;letter-spacing:.11em;text-align:center}.collectorRewardButton:disabled{opacity:.45}
+
+
+/* ACCOUNT — shared list lifecycle */
+.accountSharedLinks{
+  border-top:1px solid var(--line,#29282b);
+  padding-top:18px;
+}
+.accountSharedLinkList{
+  display:grid;
+  gap:8px;
+}
+.accountSharedLinkList article{
+  border:1px solid #2d2b30;
+  padding:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+}
+.accountSharedLinkList article>div:first-child{
+  min-width:0;
+  display:grid;
+  gap:5px;
+}
+.accountSharedLinkList b{
+  font:400 14px/1.1 Georgia,serif;
+  color:#d8d3cb;
+}
+.accountSharedLinkList small{
+  font:7px/1.35 Arial,sans-serif;
+  letter-spacing:.11em;
+  color:#77736d;
+}
+.accountSharedLinkList article>div:last-child{
+  display:flex;
+  gap:6px;
+}
+.accountSharedLinkList button{
+  min-height:34px;
+  border:1px solid #343238;
+  background:#0d0d0f;
+  color:#aaa69f;
+  padding:0 10px;
+  font:7px/1 Arial,sans-serif;
+  letter-spacing:.1em;
+}
+.accountSharedLinkList button:hover{
+  color:#eee9e1;
+  border-color:#69645e;
+}
+.checkoutRecoveryConsent{
+  margin-top:-3px;
+  margin-bottom:10px;
+  opacity:.9;
+}
+.checkoutRecoveryConsent span{
+  line-height:1.35;
+}
+@media(max-width:760px){
+  .accountSharedLinkList article{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .accountSharedLinkList article>div:last-child{
+    width:100%;
+  }
+  .accountSharedLinkList button{
+    flex:1;
+  }
+}
