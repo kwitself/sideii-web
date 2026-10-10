@@ -1711,3 +1711,15 @@
  .storeFilters button,.storeViewToggle button{transition:none!important}
  .storeClassicCard:hover{transform:none!important}
 }
+
+
+/* SCREENSHOT QA 2026-10: catalogue legibility */
+.storePage .storeDiscoveryTools :is(label,span){line-height:1.4}
+.storePage .storeSearchField>label{color:#bcb3ad}
+.storePage .storeDiscoveryControls>label:not(.storeDiscoveryToggle)>span{color:#aaa29e}
+.storePage .storeDiscoveryControls select,.storePage .storeDiscoveryControls input{color:#d3cbc6}
+.storePage .storeDiscoveryMeta{color:#a79f99}
+.storePage .storeClassicMeta :is(b,strong){color:#e7e0d9}
+.storePage .storeClassicAction :is(a,button){font-size:max(9px,0.7em);letter-spacing:.07em}
+.storePage .storeEditorialList :is(a,button):focus-visible{outline-offset:3px}
+@media(max-width:760px){.storePage .storeDiscoveryMeta{line-height:1.5}.storePage .storeClassicAction :is(a,button){min-height:44px}}
