@@ -34,10 +34,19 @@ function seoConfig(value={}){return {...SEO_DEFAULTS,...(value||{})}}
 
 const cleanVariant=(v={})=>({id:v.id||null,sku:v.sku||'',format:v.format||'cd',price:String(v.price??0),stock:String(v.stock_qty??0),reserved_qty:Number(v.reserved_qty||0),manufactured_qty:Number(v.manufactured_qty||0),edition_name:v.edition_name||'',edition_details:v.edition_details||'',digital_formats:Array.isArray(v.digital_formats)?v.digital_formats.join(', '):'WAV, FLAC, MP3',audio_specs:v.audio_specs||'24 BIT / 44.1 kHz',vinyl_size:v.vinyl_size||'12 INCH',vinyl_speed:v.vinyl_speed||'33 RPM',vinyl_weight_g:String(v.vinyl_weight_g||180),vinyl_color:v.vinyl_color||'BLACK',shipping_class:v.shipping_class||'',weight_g:String(v.weight_g??''),low_stock_threshold:String(v.low_stock_threshold??0),preorder_enabled:!!v.preorder_enabled,preorder_limit:String(v.preorder_limit??''),preorder_target:String(v.preorder_target??''),preorder_deadline:v.preorder_deadline||'',edition_numbering_enabled:!!v.edition_numbering_enabled,edition_total:String(v.edition_total??''),active:v.active!==false});
 
+function tracklistForEditor(value){
+ if(!Array.isArray(value))return '';
+ return value.map(item=>{
+  if(typeof item==='string')return item==='[object Object]'?'':item;
+  if(item&&typeof item==='object')return String(item.title??item.name??item.label??item.track_title??'');
+  return '';
+ }).filter(Boolean).join('\n');
+}
+
 export default function EditReleaseModal({product,onClose,onSaved}){
  const initialVariants=(product?.product_variants||[]).map(cleanVariant);
  const [tab,setTab]=useState(product.__initialTab||'release');
- const [form,setForm]=useState({catalogue_no:product.catalogue_no||'',title:product.title||'',artist_project:product.artist_project||'',description:product.description||'',imprint:product.imprint||'sideii',status:product.status||'draft',has_shrinkwrap:!!product.has_shrinkwrap,release_date:product.release_date||'',credits:product.credits||'',tracklist:Array.isArray(product.tracklist)?product.tracklist.join('\n'):'',product_origin:product.product_origin||'own',original_label:product.original_label||'',original_catalogue_no:product.original_catalogue_no||'',barcode:product.barcode||''});
+ const [form,setForm]=useState({catalogue_no:product.catalogue_no||'',title:product.title||'',artist_project:product.artist_project||'',description:product.description||'',imprint:product.imprint||'sideii',status:product.status||'draft',has_shrinkwrap:!!product.has_shrinkwrap,release_date:product.release_date||'',credits:product.credits||'',tracklist:tracklistForEditor(product.tracklist),product_origin:product.product_origin||'own',original_label:product.original_label||'',original_catalogue_no:product.original_catalogue_no||'',barcode:product.barcode||''});
  const [storefront,setStorefront]=useState(()=>storefrontConfig(product.storefront_config));
  const [seo,setSeo]=useState(()=>seoConfig(product.seo_config));
  const [commerce,setCommerce]=useState(()=>commerceConfig(product.commerce_config));
@@ -104,6 +113,7 @@ export default function EditReleaseModal({product,onClose,onSaved}){
  function removeVariant(i){setDirty(true);const v=variants[i];if(v.id)setRemovedVariants(p=>[...p,v.id]);setVariants(p=>p.filter((_,n)=>n!==i))}
 
  async function save(){
+  if(form.tracklist.split('\n').some(x=>x.trim()==='[object Object]')){setMessage('Tracklist contains invalid [object Object] entries. Replace them with track titles.');setTab('release');return}
   if(!variants.length){setMessage('Keep at least one edition.');setTab('media');return}
   setSaving(true);setMessage('');
   try{
