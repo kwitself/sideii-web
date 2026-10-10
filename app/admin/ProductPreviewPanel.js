@@ -74,6 +74,7 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
  const [exportMedia,setExportMedia]=useState('vinyl');
  const [exportBusy,setExportBusy]=useState(false);
  const exportRef=useRef(null);
+ const exportRefs=useRef({});
 
  useEffect(()=>{
   if(preferredProductId&&products.some(p=>p.id===preferredProductId))setSelectedId(preferredProductId);
@@ -89,15 +90,39 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
  const variants=product.product_variants||[];
  const exportVariant=normalizeEditionVariant(variants.find(v=>String(v?.format||'').toLowerCase()===exportMedia)||variants[0]||{});
  const exportRelease={cover:productImage(product),catalogue:product.catalogue_no||'SIDE:II',number:product.catalogue_no||'',title:product.title||'Edition',artist:product.artist_project||'SIDE:II',imprint:product.imprint||'sideii',hasShrinkwrap:!!product.has_shrinkwrap};
+ async function saveRenderNode(node,mediaName){
+  if(!node)return false;
+  const rect=node.getBoundingClientRect();
+  const dataUrl=await toPng(node,{
+   cacheBust:true,
+   pixelRatio:2,
+   backgroundColor:'#09090a',
+   width:Math.round(rect.width),
+   height:Math.round(rect.height),
+   style:{transform:'none',transformOrigin:'top left'}
+  });
+  const a=document.createElement('a');
+  a.href=dataUrl;
+  a.download=`${product.slug||product.catalogue_no||'sideii'}-${mediaName}-hover.png`;
+  document.body.appendChild(a);a.click();a.remove();
+  return true;
+ }
  async function downloadHoverRender(){
   if(!exportRef.current||product.product_type==='merch')return;
   setExportBusy(true);
+  try{await saveRenderNode(exportRef.current,exportMedia)}
+  finally{setExportBusy(false)}
+ }
+ async function downloadAllHoverRenders(){
+  if(product.product_type==='merch'||!exportFormats.length)return;
+  setExportBusy(true);
   try{
-   const dataUrl=await toPng(exportRef.current,{cacheBust:true,pixelRatio:2,backgroundColor:'#09090a'});
-   const a=document.createElement('a');
-   a.href=dataUrl;
-   a.download=`${product.slug||product.catalogue_no||'sideii'}-${exportMedia}-hover.png`;
-   document.body.appendChild(a);a.click();a.remove();
+   for(const mediaName of exportFormats){
+    const node=exportRefs.current[mediaName];
+    if(!node)continue;
+    await saveRenderNode(node,mediaName);
+    await new Promise(resolve=>setTimeout(resolve,180));
+   }
   }finally{setExportBusy(false)}
  }
  const primary=variants.find(v=>v.format==='digital'||Number(v.stock_qty||0)>0||v.preorder_enabled)||variants[0]||{};
@@ -136,10 +161,15 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
   {product.product_type!=='merch'&&exportFormats.length>0&&<div className="previewRenderTools adminPanel">
    <div className="previewRenderToolHead"><span>HOVER RENDER</span><small>Uses the exact Product Detail visual component.</small></div>
    <div className="previewRenderToolActions">
-    <select value={exportMedia} onChange={e=>setExportMedia(e.target.value)}>{exportFormats.map(m=><option key={m} value={m}>{m.toUpperCase()}</option>)}</select>
+    <select value={exportMedia} onChange={e=>setExportMedia(e.target.value)} disabled={exportBusy}>{exportFormats.map(m=><option key={m} value={m}>{m.toUpperCase()}</option>)}</select>
     <button type="button" onClick={downloadHoverRender} disabled={exportBusy}>{exportBusy?'RENDERING…':'DOWNLOAD HOVER PNG'}</button>
+    <button type="button" className="secondary" onClick={downloadAllHoverRenders} disabled={exportBusy||exportFormats.length<2}>{exportBusy?'RENDERING…':`DOWNLOAD ALL FORMATS (${exportFormats.length})`}</button>
    </div>
    <div className="previewRenderLive"><div ref={exportRef} className="editionExportCapture"><EditionVisual release={exportRelease} variant={exportVariant} forceHover/></div></div>
+   <div className="editionExportBatch" aria-hidden="true">{exportFormats.map(mediaName=>{
+    const v=normalizeEditionVariant(variants.find(v=>String(v?.format||'').toLowerCase()===mediaName)||{});
+    return <div key={mediaName} ref={node=>{if(node)exportRefs.current[mediaName]=node;else delete exportRefs.current[mediaName]}} className="editionExportCapture"><EditionVisual release={exportRelease} variant={v} forceHover/></div>
+   })}</div>
   </div>}
 
   <div className="previewLayout">
