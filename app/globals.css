@@ -5796,3 +5796,38 @@ footer a:focus-visible,
     padding:8px;
   }
 }
+
+
+/* ADMIN HOVER BATCH EXPORT */
+.previewRenderToolActions button.secondary{
+  background:#0d0d0f;
+  color:#aaa69f;
+  border-color:#343238;
+}
+.previewRenderToolActions button.secondary:hover:not(:disabled){
+  color:#eee9e1;
+  border-color:#68645e;
+  background:#151517;
+}
+.editionExportBatch{
+  position:fixed;
+  left:-100000px;
+  top:0;
+  width:540px;
+  height:540px;
+  overflow:visible;
+  pointer-events:none;
+  opacity:0;
+}
+.editionExportBatch .editionExportCapture{
+  position:absolute;
+  left:0;
+  top:0;
+  width:540px!important;
+  height:540px!important;
+}
+@media(max-width:760px){
+  .previewRenderToolActions button.secondary{
+    width:100%;
+  }
+}
