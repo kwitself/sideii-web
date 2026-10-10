@@ -5876,3 +5876,76 @@ footer a:focus-visible,
     left:43%!important;
   }
 }
+
+
+/* HOVER EXPORT V2 — fixed safe stage + real alpha */
+.previewRenderLive{
+  overflow:visible!important;
+}
+.editionExportCapture{
+  width:920px!important;
+  height:680px!important;
+  max-width:100%!important;
+  aspect-ratio:auto!important;
+  position:relative!important;
+  overflow:hidden!important;
+  background:#09090a!important;
+  box-sizing:border-box!important;
+}
+.editionExportCapture>.productVisual{
+  position:absolute!important;
+  width:540px!important;
+  height:540px!important;
+  max-width:none!important;
+  min-height:0!important;
+  left:360px!important;
+  top:70px!important;
+  margin:0!important;
+  overflow:visible!important;
+  transform:none!important;
+}
+.editionExportCapture.exportTransparent{
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.editionExportCapture.exportTransparent::before,
+.editionExportCapture.exportTransparent::after{
+  display:none!important;
+}
+.editionExportBatch{
+  position:fixed!important;
+  left:-100000px!important;
+  top:0!important;
+  width:920px!important;
+  height:680px!important;
+  overflow:visible!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+.editionExportBatch .editionExportCapture{
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  width:920px!important;
+  height:680px!important;
+}
+.previewRenderToolActions{
+  flex-wrap:wrap;
+}
+.previewRenderToolActions select{
+  min-width:120px;
+}
+@media(max-width:760px){
+  .editionExportCapture{
+    width:100%!important;
+    height:auto!important;
+    aspect-ratio:920/680!important;
+  }
+  .editionExportCapture>.productVisual{
+    width:58.7%!important;
+    height:auto!important;
+    aspect-ratio:1!important;
+    left:39.1%!important;
+    top:10.3%!important;
+  }
+}
