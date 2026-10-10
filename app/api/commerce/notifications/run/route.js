@@ -38,7 +38,8 @@ export async function POST(request){
    if(error)return Response.json({ok:false,error:error.message},{status:400});
    const ids=[];
    for(const row of Array.isArray(data)?data:[]){
-    const text=['A SIDE:II GIFT FOR YOU','','Order #SII-'+String(row.order_no).padStart(4,'0'),row.gift_message?String(row.gift_message):'A gift has been prepared for you.','','Sent through SIDE:II.'].filter(Boolean).join('\n');
+    const giftUrl=base+'/gift/'+row.gift_public_token;
+    const text=['A SIDE:II GIFT FOR YOU','','Order #SII-'+String(row.order_no).padStart(4,'0'),row.gift_message?String(row.gift_message):'A gift has been prepared for you.','','Open your gift:',giftUrl,'','Sent through SIDE:II.'].filter(Boolean).join('\n');
     const res=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+resend,'Content-Type':'application/json'},body:JSON.stringify({from,to:[row.recipient_email],subject:'A SIDE:II gift for you',text})});
     if(res.ok){ids.push(row.order_id);giftSent++}
    }
