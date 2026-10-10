@@ -219,14 +219,18 @@ export default function GlobalAccount(){
    if(error||!data){setMessage(error?.message||'Digital download unavailable.');return}
    const opened=window.open('/api/download/'+encodeURIComponent(String(data)),'_blank','noopener,noreferrer');
    if(!opened){setMessage('Your browser blocked the download window. Allow pop-ups and try again.');return}
-   setTimeout(async()=>{
+   const refreshOrders=async()=>{
     if(!session?.user)return;
     const {data:nextOrders}=await supabase.rpc('get_my_store_orders');
     const list=Array.isArray(nextOrders)?nextOrders:[];
     setOrders(list);
-    const refreshed=list.find(o=>o.id===selectedOrder?.id);
-    if(refreshed)setSelectedOrder(refreshed);
-   },900);
+    setSelectedOrder(current=>{
+      if(!current)return current;
+      return list.find(o=>o.id===current.id)||current;
+    });
+   };
+   setTimeout(refreshOrders,600);
+   setTimeout(refreshOrders,1600);
   }finally{setDownloadBusyId(null)}
  }
 
