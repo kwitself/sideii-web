@@ -1671,12 +1671,8 @@
  .storeHero h1{font-size:clamp(48px,12vw,76px);line-height:.92}
  .storeHero{padding-top:clamp(64px,12vw,110px);padding-bottom:clamp(36px,8vw,70px)}
  .storeCatalogue{padding-top:clamp(28px,7vw,72px)}
- .storeDiscoveryControls{grid-template-columns:repeat(2,minmax(0,1fr))!important}
  .storeFilters{min-width:0}
  .storeFilters>div{max-width:100%;min-width:0}
-}
-@media(max-width:360px){
- .storeDiscoveryControls{grid-template-columns:1fr!important}
 }
 @media(prefers-reduced-motion:reduce){
  .storeClassicCard{transition:none!important}
