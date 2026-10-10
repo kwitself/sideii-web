@@ -262,7 +262,6 @@ export default function GlobalBag(){
    p_order_id:data.order_id,p_guest_access_token:data.guest_access_token,p_recovery_token:recoveryToken||null,
    p_utm_source:a.source||null,p_utm_medium:a.medium||null,p_utm_campaign:a.campaign||null,p_utm_content:a.content||null,p_referral_code:a.referral_code||null
   })}catch{}
-  trackCommerce('order_created',{order_id:data.order_id,properties:{total:Number(finalData?.total||0),currency:finalData?.currency||'TRY'}});
   setRecoveryToken(null);try{localStorage.removeItem('sideii-recovery-token')}catch{}
  }
  setDone(finalData);setStoreValue(v=>({...v,gift_code:'',gift_valid:false,gift_available:0,use_credit:false,message:''}));update([]);setCheckout(false);try{fetch('/api/orders/notify-v2',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({order_id:data?.order_id,notification_token:data?.notification_token,type:'received'})})}catch{}}finally{setBusy(false)}}
