@@ -6403,7 +6403,7 @@ footer a:focus-visible,
 }
 .productShareExactCard.exact-link .productShareExactMeta b{font-size:clamp(18px,2.2vw,34px)}
 .productShareExactCard.exact-square .productShareExactVisual{
- left:18%!important;top:17%!important;width:52%!important;right:auto!important;
+ left:16%!important;top:16%!important;width:55%!important;right:auto!important;
 }
 .productShareExactCard.exact-square .productShareExactMeta{
  left:9%!important;right:9%!important;top:72%!important;bottom:13%!important;gap:4px;
@@ -6412,7 +6412,7 @@ footer a:focus-visible,
 .productShareExactCard.exact-square .productShareExactMeta span{font-size:11px}
 .productShareExactCard.exact-square .productShareExactMeta em{font-size:14px}
 .productShareExactCard.exact-story .productShareExactVisual{
- left:17%!important;top:23%!important;width:56%!important;right:auto!important;
+ left:14%!important;top:20%!important;width:60%!important;right:auto!important;
 }
 .productShareExactCard.exact-story .productShareExactMeta{
  left:9%!important;right:9%!important;top:63%!important;bottom:12%!important;gap:7px;
