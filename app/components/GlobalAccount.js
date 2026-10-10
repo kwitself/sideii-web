@@ -14,7 +14,7 @@ export default function GlobalAccount(){
  const {money,t}=useLocaleCurrency();
  const pathname=usePathname();
  const [open,setOpen]=useState(false),[session,setSession]=useState(null),[mode,setMode]=useState('signin');
- const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false),[wishlist,setWishlist]=useState([]),[savedCart,setSavedCart]=useState([]),[addresses,setAddresses]=useState([]),[addressEditing,setAddressEditing]=useState(false),[addressBusy,setAddressBusy]=useState(false),[requestBusy,setRequestBusy]=useState(false),[requestReason,setRequestReason]=useState('');
+ const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false),[downloadBusyId,setDownloadBusyId]=useState(null),[wishlist,setWishlist]=useState([]),[savedCart,setSavedCart]=useState([]),[addresses,setAddresses]=useState([]),[addressEditing,setAddressEditing]=useState(false),[addressBusy,setAddressBusy]=useState(false),[requestBusy,setRequestBusy]=useState(false),[requestReason,setRequestReason]=useState('');
  const [collection,setCollection]=useState([]),[passports,setPassports]=useState([]),[ownerContent,setOwnerContent]=useState([]),[collectorSummary,setCollectorSummary]=useState(null),[collectorLevel,setCollectorLevel]=useState(null),[collectorReward,setCollectorReward]=useState(null),[storeCredit,setStoreCredit]=useState(null),[storeCreditHistory,setStoreCreditHistory]=useState([]),[sharedLinks,setSharedLinks]=useState([]);
  const emptyAddress={id:null,label:'',full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:'',is_default:false};
  const [addressForm,setAddressForm]=useState(emptyAddress);
@@ -212,11 +212,14 @@ export default function GlobalAccount(){
  }
 
  async function downloadDigitalItem(item){
-  if(!item?.id||!item.download_available||!session?.user)return;
-  setMessage('');
-  const {data,error}=await supabase.rpc('create_my_digital_download_grant',{p_order_item_id:item.id});
-  if(error||!data){setMessage(error?.message||'Digital download unavailable.');return}
-  window.open('/api/download/'+encodeURIComponent(String(data)),'_blank','noopener,noreferrer');
+  if(!item?.id||!item.download_available||!session?.user||downloadBusyId)return;
+  setMessage('');setDownloadBusyId(item.id);
+  try{
+   const {data,error}=await supabase.rpc('create_my_digital_download_grant',{p_order_item_id:item.id});
+   if(error||!data){setMessage(error?.message||'Digital download unavailable.');return}
+   const opened=window.open('/api/download/'+encodeURIComponent(String(data)),'_blank','noopener,noreferrer');
+   if(!opened)setMessage('Your browser blocked the download window. Allow pop-ups and try again.');
+  }finally{setDownloadBusyId(null)}
  }
 
  useEffect(()=>{if(!open)return;
@@ -344,7 +347,7 @@ export default function GlobalAccount(){
        <div><span>ORDERED</span><b>{new Date(selectedOrder.created_at).toLocaleString('tr-TR')}</b></div>
        <div><span>FULFILMENT</span><b>{String(selectedOrder.fulfillment_type||'—').toUpperCase()}</b></div>
       </div>
-      <div className="accountOrderItems">{(selectedOrder.items||[]).map((it,i)=><article key={it.id||i}><div><b>{it.title}</b><small>{it.format||''}{it.sku?' · '+it.sku:''} · QTY {it.quantity}{it.preorder?' · PRE-ORDER':''}</small>{Array.isArray(it.edition_numbers)&&it.edition_numbers.length>0&&<small>EDITION · {it.edition_numbers.map(n=>'#'+String(n).padStart(3,'0')).join(' / ')}</small>}{it.download_available&&<button type="button" className="accountDownloadLink" onClick={()=>downloadDigitalItem(it)}>DOWNLOAD DIGITAL EDITION ↗</button>}</div><strong>{money(it.line_total)}</strong></article>)}</div>
+      <div className="accountOrderItems">{(selectedOrder.items||[]).map((it,i)=><article key={it.id||i}><div><b>{it.title}</b><small>{it.format||''}{it.sku?' · '+it.sku:''} · QTY {it.quantity}{it.preorder?' · PRE-ORDER':''}</small>{String(it.format||'').toLowerCase()==='digital'&&<small className="accountDigitalMeta">{Array.isArray(it.digital_formats)&&it.digital_formats.length?it.digital_formats.join(' · '):'DIGITAL FILES'}{it.audio_specs?' · '+it.audio_specs:''}</small>}{Array.isArray(it.edition_numbers)&&it.edition_numbers.length>0&&<small>EDITION · {it.edition_numbers.map(n=>'#'+String(n).padStart(3,'0')).join(' / ')}</small>}{it.download_available&&<button type="button" className="accountDownloadLink" disabled={downloadBusyId===it.id} onClick={()=>downloadDigitalItem(it)}>{downloadBusyId===it.id?'PREPARING DOWNLOAD…':'DOWNLOAD DIGITAL EDITION ↗'}</button>}</div><strong>{money(it.line_total)}</strong></article>)}</div>
       <div className="accountOrderTotals">
        <div><span>SUBTOTAL</span><b>{money(selectedOrder.subtotal)}</b></div>
        {Number(selectedOrder.discount_total||0)>0&&<div><span>DISCOUNT{selectedOrder.promo_code?' · '+selectedOrder.promo_code:''}</span><b>−{money(selectedOrder.discount_total)}</b></div>}
