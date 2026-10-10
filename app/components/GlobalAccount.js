@@ -7,6 +7,7 @@ import GlobalAddressFields from './GlobalAddressFields';
 import {readWishlist,writeWishlist} from '../lib/wishlist';
 import {readCart} from '../lib/cart';
 import {useLocaleCurrency} from './LocaleCurrencyProvider';
+import PostPurchaseOffers from './PostPurchaseOffers';
 
 export default function GlobalAccount(){
  const drawerRef=useRef(null);
@@ -336,7 +337,8 @@ export default function GlobalAccount(){
       {selectedOrder.shipping_address&&<div className="accountOrderAddress"><span>DELIVERY</span><b>{selectedOrder.shipping_name||displayName}</b><p>{selectedOrder.shipping_phone||''}</p><p>{selectedOrder.shipping_address.line1||''}</p><p>{[selectedOrder.shipping_address.district,selectedOrder.shipping_address.city,selectedOrder.shipping_address.postal_code].filter(Boolean).join(' · ')}</p></div>}
       {selectedOrder.invoice_type&&<div className="accountOrderInvoice"><span>INVOICE</span><b>{selectedOrder.invoice_type==='company'?(selectedOrder.invoice_company||'COMPANY'):'INDIVIDUAL'}</b>{selectedOrder.invoice_type==='company'&&<><p>{selectedOrder.invoice_tax_office||''}</p><p>{selectedOrder.invoice_tax_number||''}</p></>}</div>}
       {(selectedOrder.shipping_carrier||selectedOrder.tracking_number)&&<div className="accountOrderTracking"><span>TRACKING</span><b>{selectedOrder.shipping_carrier||'CARRIER'}</b><p>{selectedOrder.tracking_number||'Not assigned yet'}</p>{selectedOrder.shipped_at&&<small>SHIPPED · {new Date(selectedOrder.shipped_at).toLocaleString('tr-TR')}</small>}</div>}
-      {selectedOrder.is_gift&&<div className="accountOrderGift"><span>GIFT ORDER</span><b>{selectedOrder.hide_prices?'PRICES HIDDEN IN PACKING':'STANDARD PACKING'}</b>{selectedOrder.gift_message&&<p>{selectedOrder.gift_message}</p>}</div>}{selectedOrder.notes&&<div className="accountOrderNote"><span>ORDER NOTE</span><p>{selectedOrder.notes}</p></div>}
+      {selectedOrder.is_gift&&<div className="accountOrderGift"><span>GIFT ORDER</span><b>{selectedOrder.hide_prices?'PRICES HIDDEN IN PACKING':'STANDARD PACKING'}</b>{selectedOrder.gift_message&&<p>{selectedOrder.gift_message}</p>}{selectedOrder.gift_recipient_email&&<small>RECIPIENT · {selectedOrder.gift_recipient_email}</small>}{selectedOrder.gift_delivery_at&&<small>DELIVER AFTER · {new Date(selectedOrder.gift_delivery_at).toLocaleString('tr-TR')}</small>}{selectedOrder.gift_wrap&&<small>GIFT WRAP · YES</small>}</div>}{selectedOrder.notes&&<div className="accountOrderNote"><span>ORDER NOTE</span><p>{selectedOrder.notes}</p></div>}
+      <PostPurchaseOffers orderId={selectedOrder.id} paymentStatus={selectedOrder.payment_status}/>
       <div className="accountOrderRequest">
        <span>ORDER REQUESTS</span>
        {(selectedOrder.return_requests||[]).length>0&&<div className="accountOrderRequestHistory">{selectedOrder.return_requests.map(r=><p key={r.id}>{String(r.request_type).toUpperCase()} · {String(r.status).toUpperCase()} · {new Date(r.created_at).toLocaleDateString('tr-TR')}</p>)}</div>}
