@@ -6665,3 +6665,12 @@ footer a:focus-visible,
 @media(prefers-reduced-motion:reduce){
  .editionFlipStage .editionFlipFace :is(.productVinylObject,.productCdObject,.productCassette){transition:none!important}
 }
+
+
+/* RELEASE FLIP V4 — slower, smoother physical media emergence only */
+.editionFlipStage.phase-idle .editionFlipFace :is(.productVinylObject,.productCdObject,.productCassette){
+ transition:transform .85s cubic-bezier(.18,.68,.22,1),opacity .38s ease!important;
+}
+@media(prefers-reduced-motion:reduce){
+ .editionFlipStage.phase-idle .editionFlipFace :is(.productVinylObject,.productCdObject,.productCassette){transition:none!important}
+}
