@@ -6600,3 +6600,42 @@ footer a:focus-visible,
 .editionFlipBack .editionReversePrint ol{pointer-events:none}
 .editionExperience .editionFlipHit{display:none!important}
 @media(prefers-reduced-motion:reduce){.editionFlipObject{transition:none!important}}
+
+
+/* RELEASE OBJECT MOTION V2 — retract > turn > emerge; release detail only */
+.editionExperience>.editionDigitalStage{grid-column:1;position:relative;width:100%;max-width:650px;aspect-ratio:1;min-width:0;align-self:center;animation:editionDigitalArrive .72s cubic-bezier(.16,.75,.2,1) both}
+.editionDigitalStage>.productVisual{position:absolute!important;inset:0;width:100%!important;height:100%!important;max-width:none!important;min-height:0!important;margin:0!important;aspect-ratio:1!important}
+@keyframes editionDigitalArrive{from{opacity:.35;transform:scale(.86)}to{opacity:1;transform:scale(1)}}
+.editionFlipStage .editionFlipFace .productCover{transition:transform .35s cubic-bezier(.22,.76,.21,1)!important}
+.editionFlipStage .editionFlipFace :is(.productVinylObject,.productCdObject,.productCassette){transition:transform .35s cubic-bezier(.22,.76,.21,1)!important;will-change:transform}
+.editionFlipStage .editionFlipObject{transition:transform .88s cubic-bezier(.25,.72,.2,1)!important}
+.editionFlipStage .editionFlipFront .productVisual .productCover{transform:none!important}
+.editionFlipStage.phase-idle:not(:has(.isFlipped)) .editionFlipFront .productVisual.vinyl .productVinylObject{transform:translateX(24%) rotate(13deg)!important}
+.editionFlipStage.phase-idle:not(:has(.isFlipped)) .editionFlipFront .productVisual.cd .productCdObject{transform:translateX(22%) rotate(12deg)!important}
+.editionFlipStage.phase-idle:not(:has(.isFlipped)) .editionFlipFront .productVisual.cassette .productCassette{transform:translateX(19%) rotate(3deg)!important}
+@media(hover:hover){
+ .editionFlipStage.phase-idle:not(:has(.isFlipped)):hover .editionFlipFront .productVisual.vinyl .productVinylObject{transform:translateX(62%) rotate(70deg)!important}
+ .editionFlipStage.phase-idle:not(:has(.isFlipped)):hover .editionFlipFront .productVisual.cd .productCdObject{transform:translateX(57%) rotate(-30deg)!important}
+ .editionFlipStage.phase-idle:not(:has(.isFlipped)):hover .editionFlipFront .productVisual.cassette .productCassette{transform:translateX(51%) rotate(9deg)!important}
+ .editionFlipStage.phase-idle:has(.isFlipped):hover .editionFlipBack .productVisual.vinyl .productVinylObject{transform:translateX(-67%) rotate(-83deg)!important}
+ .editionFlipStage.phase-idle:has(.isFlipped):hover .editionFlipBack .productVisual.cd .productCdObject{transform:translateX(-62%) rotate(25deg)!important}
+ .editionFlipStage.phase-idle:has(.isFlipped):hover .editionFlipBack .productVisual.cassette .productCassette{transform:translateX(-56%) rotate(-9deg)!important}
+}
+.editionFlipStage.phase-retract .editionFlipFront .productVisual .productCover,
+.editionFlipStage.phase-turning .editionFlipFront .productVisual .productCover,
+.editionFlipStage.phase-retract .editionFlipBack .productVisual .productCover,
+.editionFlipStage.phase-turning .editionFlipBack .productVisual .productCover{transform:none!important}
+.editionFlipStage:is(.phase-retract,.phase-turning) .editionFlipFront .productVisual.vinyl .productVinylObject{transform:translateX(-30%) rotate(0)!important}
+.editionFlipStage:is(.phase-retract,.phase-turning) .editionFlipFront .productVisual.cd .productCdObject{transform:translateX(-26%) rotate(0)!important}
+.editionFlipStage:is(.phase-retract,.phase-turning) .editionFlipFront .productVisual.cassette .productCassette{transform:translateX(-25%) rotate(0)!important}
+.editionFlipStage:is(.phase-retract,.phase-turning) .editionFlipBack .productVisual.vinyl .productVinylObject{transform:translateX(28%) rotate(0)!important}
+.editionFlipStage:is(.phase-retract,.phase-turning) .editionFlipBack .productVisual.cd .productCdObject{transform:translateX(25%) rotate(0)!important}
+.editionFlipStage:is(.phase-retract,.phase-turning) .editionFlipBack .productVisual.cassette .productCassette{transform:translateX(25%) rotate(0)!important}
+.editionFlipStage.phase-idle:has(.isFlipped) .editionFlipBack .productVisual.vinyl .productVinylObject{transform:translateX(-36%) rotate(-58deg)!important}
+.editionFlipStage.phase-idle:has(.isFlipped) .editionFlipBack .productVisual.cd .productCdObject{transform:translateX(-32%) rotate(-5deg)!important}
+.editionFlipStage.phase-idle:has(.isFlipped) .editionFlipBack .productVisual.cassette .productCassette{transform:translateX(-32%) rotate(-5deg)!important}
+@media(max-width:760px){.editionExperience>.editionDigitalStage{grid-column:1;max-width:500px}}
+@media(prefers-reduced-motion:reduce){
+ .editionExperience>.editionDigitalStage{animation:none!important}
+ .editionFlipStage .editionFlipObject,.editionFlipStage .editionFlipFace :is(.productVinylObject,.productCdObject,.productCassette){transition:none!important}
+}
