@@ -5,7 +5,6 @@ import MerchProductClient from './MerchProductClient';
 import '../store.css';
 import GlobalHeader from '../../components/GlobalHeader';
 import ProductDiscovery from '../../components/ProductDiscovery';
-import ProductShare from '../../components/ProductShare';
 import {jsonLd,productSchema} from '../../lib/productCommerceMeta';
 
 export const revalidate=0;
@@ -35,7 +34,6 @@ export default async function StoreProductPage({params}){
   {schema&&<script type="application/ld+json" dangerouslySetInnerHTML={{__html:jsonLd(schema)}}/>}
   <GlobalHeader/>
   <MerchProductClient product={product}/>
-  <ProductShare product={product} kind="store"/>
   {detail.related!==false&&<ProductDiscovery current={product} related={related} bundles={bundles}/>} 
  </main>
 }
