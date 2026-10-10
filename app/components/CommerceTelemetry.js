@@ -1,6 +1,5 @@
 'use client';
 import {useEffect,useRef} from 'react';
-import {usePathname} from 'next/navigation';
 import {supabase} from '../lib/supabase';
 
 const KEY='sideii-commerce-session-v1';
@@ -46,12 +45,9 @@ export async function trackCommerce(event_type,extra={}){
  }catch{}
 }
 export default function CommerceTelemetry(){
- const pathname=usePathname();
  const lastCount=useRef(0);
+ const lastWishlist=useRef(0);
  useEffect(()=>{attribution()},[]);
- useEffect(()=>{
-  if(pathname?.startsWith('/releases/')||pathname?.startsWith('/store/'))trackCommerce('product_view');
- },[pathname]);
  useEffect(()=>{
   const onCart=e=>{
    const cart=Array.isArray(e?.detail)?e.detail:[];
@@ -59,8 +55,9 @@ export default function CommerceTelemetry(){
    if(count>lastCount.current)trackCommerce('add_to_bag',{properties:{cart_count:count}});
    lastCount.current=count;
   };
-  window.addEventListener('sideii-cart',onCart);
-  return()=>window.removeEventListener('sideii-cart',onCart);
+  const onWishlist=e=>{const items=Array.isArray(e?.detail)?e.detail:[];if(items.length>lastWishlist.current)trackCommerce('wishlist_add',{properties:{wishlist_count:items.length}});lastWishlist.current=items.length};
+  window.addEventListener('sideii-cart',onCart);window.addEventListener('sideii-wishlist',onWishlist);
+  return()=>{window.removeEventListener('sideii-cart',onCart);window.removeEventListener('sideii-wishlist',onWishlist)};
  },[]);
  return null;
 }
