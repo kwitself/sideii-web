@@ -51,28 +51,32 @@ export async function GET(request,{params}){
    color:'#f0ece4',fontFamily:'Arial,sans-serif',position:'relative',overflow:'hidden'
   }}>
    <div style={{position:'absolute',inset:0,display:'flex',opacity:.14,background:'radial-gradient(circle at 72% 22%,#7b6f6d 0%,transparent 34%)'}}/>
-   <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',position:'relative',minHeight:vertical?110:86,zIndex:4}}>
+   <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',position:'relative',minHeight:vertical?110:86}}>
     {brand?<img src={brand} style={{width:vertical?220:170,height:vertical?92:70,objectFit:'contain',objectPosition:'left center'}}/>:<div style={{fontSize:38}}>SIDE:II</div>}
     <div style={{display:'flex',fontSize:vertical?22:16,letterSpacing:5,color:'#8c8780'}}>{catalogue}</div>
    </div>
 
    <div style={{
     display:'flex',flexDirection:stacked?'column':'row',gap:vertical?54:(square?34:56),alignItems:'center',
-    justifyContent:'center',flex:1,position:'relative',padding:vertical?'58px 0 40px':'46px 0 24px',zIndex:2
+    justifyContent:'center',flex:1,position:'relative',padding:vertical?'58px 0 40px':'46px 0 24px'
    }}>
     <div style={{
      width:artSize,height:artSize,display:'flex',alignItems:'center',justifyContent:'center',position:'relative',
      border:'1px solid #37343a',background:'#0d0d0f',boxShadow:'0 28px 80px rgba(0,0,0,.42)',overflow:'hidden'
     }}>
-     {media==='vinyl'&&<div style={{position:'absolute',right:'4%',top:'14%',width:'68%',height:'68%',borderRadius:'50%',background:'radial-gradient(circle at center,#d5d1cb 0 3%,#101012 4% 11%,#222226 12% 46%,#09090a 47% 100%)',boxShadow:'0 18px 44px rgba(0,0,0,.45)'}}/>}
-     {media==='cd'&&<div style={{position:'absolute',right:'6%',top:'15%',width:'62%',height:'62%',borderRadius:'50%',background:'conic-gradient(#d5d0c8,#7f858b,#e6e0d7,#858a8f,#d5d0c8)',boxShadow:'0 18px 44px rgba(0,0,0,.35)'}}><div style={{position:'absolute',left:'45%',top:'45%',width:'10%',height:'10%',borderRadius:'50%',background:'#0c0c0e'}}/></div>}
+     {media==='vinyl'&&<div style={{position:'absolute',right:'4%',top:'14%',width:'68%',height:'68%',borderRadius:9999,background:'#151518',border:'10px solid #242428',boxShadow:'0 18px 44px rgba(0,0,0,.45)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+       <div style={{width:'18%',height:'18%',borderRadius:9999,background:'#b7b1aa',border:'8px solid #0d0d0f',display:'flex'}}/>
+     </div>}
+     {media==='cd'&&<div style={{position:'absolute',right:'6%',top:'15%',width:'62%',height:'62%',borderRadius:9999,background:'#c8c5bf',border:'12px solid #8f9498',boxShadow:'0 18px 44px rgba(0,0,0,.35)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+       <div style={{width:'16%',height:'16%',borderRadius:9999,background:'#0c0c0e',border:'6px solid #e2ded7',display:'flex'}}/>
+     </div>}
      {media==='cassette'&&<div style={{position:'absolute',right:'5%',top:'25%',width:'72%',height:'46%',border:'2px solid #666268',borderRadius:12,background:'linear-gradient(180deg,#222226,#111114)',display:'flex',alignItems:'center',justifyContent:'space-around',padding:'0 12%'}}>
-       <div style={{width:'24%',aspectRatio:'1/1',borderRadius:'50%',border:'8px solid #77727a',background:'#0b0b0d'}}/><div style={{width:'24%',aspectRatio:'1/1',borderRadius:'50%',border:'8px solid #77727a',background:'#0b0b0d'}}/>
+       <div style={{width:'24%',height:'42%',borderRadius:9999,border:'8px solid #77727a',background:'#0b0b0d',display:'flex'}}/><div style={{width:'24%',height:'42%',borderRadius:9999,border:'8px solid #77727a',background:'#0b0b0d',display:'flex'}}/>
      </div>}
      {media==='digital'&&<div style={{position:'absolute',right:'8%',top:'16%',width:'62%',height:'62%',border:'1px solid #555159',background:'linear-gradient(145deg,#111116,#09090b)',display:'flex',alignItems:'center',justifyContent:'center'}}>
        <div style={{display:'flex',fontSize:vertical?54:38,letterSpacing:8,color:'#5f5a63'}}>DIGITAL</div>
      </div>}
-     <div style={{position:'absolute',left:'5%',bottom:'5%',width:media==='vinyl'||media==='cd'||media==='cassette'? '58%':'88%',height:media==='vinyl'||media==='cd'||media==='cassette'?'58%':'88%',border:'1px solid #2f2d31',background:'#101012',overflow:'hidden',zIndex:2}}>
+     <div style={{position:'absolute',left:'5%',bottom:'5%',width:media==='vinyl'||media==='cd'||media==='cassette'? '58%':'88%',height:media==='vinyl'||media==='cd'||media==='cassette'?'58%':'88%',border:'1px solid #2f2d31',background:'#101012',overflow:'hidden'}}>
       {art?<img src={art} style={{width:'100%',height:'100%',objectFit:'cover'}}/>:<div style={{width:'100%',height:'100%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:vertical?58:44,color:'#59555a'}}>{catalogue}</div>}
      </div>
     </div>
@@ -92,6 +96,6 @@ export async function GET(request,{params}){
     <div style={{display:'flex',fontSize:vertical?18:13,letterSpacing:3,color:'#5f5b60'}}>SIDE:II</div>
    </div>
   </div>,
-  {width,height}
+  {width,height,headers:{'Cache-Control':'public, max-age=0, must-revalidate'}}
  );
 }
