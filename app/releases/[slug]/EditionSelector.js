@@ -1,5 +1,5 @@
 'use client';
-import {useEffect,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {addCartItem,readCart} from '../../lib/cart';
 import {supabase} from '../../lib/supabase';
 import {useLocaleCurrency} from '../../components/LocaleCurrencyProvider';
@@ -7,13 +7,21 @@ import EditionVisual from '../../components/EditionVisual';
 
 export default function EditionSelector({release}){
  const {money}=useLocaleCurrency();
- const variants=release.variants||[];const detail=release.storefrontConfig?.detail||{};const defaultVariant=detail.default_variant;const defaultIndex=Math.max(0,variants.findIndex(x=>String(x.id||x.sku)===String(defaultVariant)));const[index,setIndex]=useState(defaultVariant&&defaultVariant!=='auto'?defaultIndex:0);const[added,setAdded]=useState(false);const[bagCount,setBagCount]=useState(0);const[waitEmail,setWaitEmail]=useState(''),[waitMessage,setWaitMessage]=useState(''),[waitBusy,setWaitBusy]=useState(false);const[preorderProgress,setPreorderProgress]=useState(null);const[showBack,setShowBack]=useState(false); useEffect(()=>{const sync=()=>setBagCount(readCart().reduce((s,x)=>s+x.qty,0));sync();window.addEventListener('sideii-cart',sync);return()=>window.removeEventListener('sideii-cart',sync)},[]);const v=variants[index]||{};const media=v.media||release.media,isCassette=media==='cassette',isDigital=media==='digital',isVinyl=media==='vinyl';const soldOut=!isDigital&&Number(v.stock||0)<=0,canPreorder=soldOut&&v.preorderEnabled;const label=isDigital?'Digital edition':isCassette?'Cassette edition':isVinyl?'Vinyl edition':'CD edition';
+ const variants=release.variants||[];const detail=release.storefrontConfig?.detail||{};const defaultVariant=detail.default_variant;const defaultIndex=Math.max(0,variants.findIndex(x=>String(x.id||x.sku)===String(defaultVariant)));const[index,setIndex]=useState(defaultVariant&&defaultVariant!=='auto'?defaultIndex:0);const[added,setAdded]=useState(false);const[bagCount,setBagCount]=useState(0);const[waitEmail,setWaitEmail]=useState(''),[waitMessage,setWaitMessage]=useState(''),[waitBusy,setWaitBusy]=useState(false);const[preorderProgress,setPreorderProgress]=useState(null);const[showBack,setShowBack]=useState(false);const[flipPhase,setFlipPhase]=useState('idle');const flipTimers=useRef([]); useEffect(()=>{const sync=()=>setBagCount(readCart().reduce((s,x)=>s+x.qty,0));sync();window.addEventListener('sideii-cart',sync);return()=>window.removeEventListener('sideii-cart',sync)},[]);const v=variants[index]||{};const media=v.media||release.media,isCassette=media==='cassette',isDigital=media==='digital',isVinyl=media==='vinyl';const soldOut=!isDigital&&Number(v.stock||0)<=0,canPreorder=soldOut&&v.preorderEnabled;const label=isDigital?'Digital edition':isCassette?'Cassette edition':isVinyl?'Vinyl edition':'CD edition';
  useEffect(()=>{const token=new URLSearchParams(window.location.search).get('variant');if(!token)return;const i=variants.findIndex(x=>String(x.sku||x.id)===token||String(x.id||'')===token);if(i>=0)setIndex(i)},[]);
- const selectVariant=i=>{setIndex(i);setShowBack(false);const token=variants[i]?.sku||variants[i]?.id;if(!token)return;const url=new URL(window.location.href);url.searchParams.set('variant',token);history.replaceState(null,'',url.pathname+url.search+url.hash)};
+ const clearFlipTimers=()=>{flipTimers.current.forEach(clearTimeout);flipTimers.current=[]};
+ useEffect(()=>()=>{flipTimers.current.forEach(clearTimeout)},[]);
+ const flipEdition=()=>{
+  if(isDigital||flipPhase!=='idle')return;
+  clearFlipTimers();setFlipPhase('retract');
+  flipTimers.current.push(setTimeout(()=>{setShowBack(p=>!p);setFlipPhase('turning')},320));
+  flipTimers.current.push(setTimeout(()=>setFlipPhase('idle'),1310));
+ };
+ const selectVariant=i=>{clearFlipTimers();setFlipPhase('idle');setIndex(i);setShowBack(false);const token=variants[i]?.sku||variants[i]?.id;if(!token)return;const url=new URL(window.location.href);url.searchParams.set('variant',token);history.replaceState(null,'',url.pathname+url.search+url.hash)};
  useEffect(()=>{let live=true;setPreorderProgress(null);if(!v?.id||!v?.preorderTarget)return()=>{live=false};supabase?.rpc('get_preorder_progress',{p_variant_id:v.id}).then(({data})=>{if(!live)return;const row=Array.isArray(data)?data[0]:data;setPreorderProgress(row||null)});return()=>{live=false}},[v?.id,v?.preorderTarget]);
  const add=()=>{const next=addCartItem(release,v);setBagCount(next.reduce((s,x)=>s+x.qty,0));setAdded(true);setTimeout(()=>setAdded(false),1400)};
  async function joinWaitlist(){const email=waitEmail.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setWaitMessage('Enter a valid email.');return}setWaitBusy(true);setWaitMessage('');const {error}=await supabase.rpc('join_stock_waitlist',{p_variant_id:v.id,p_email:email});setWaitBusy(false);setWaitMessage(error?error.message:'You are on the restock list.');}
- return <div className="editionExperience">{isDigital?<EditionVisual release={release} variant={v}/>:<div className="editionFlipStage isInteractive" role="button" tabIndex={0} aria-pressed={showBack} aria-label={showBack?"Turn physical edition to front":"Turn physical edition to back and view tracklist"} onClick={()=>setShowBack(p=>!p)} onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();setShowBack(p=>!p)}}}>
+ return <div className="editionExperience">{isDigital?<div key={"digital-"+(v.id||v.sku||index)} className="editionDigitalStage"><EditionVisual release={release} variant={v}/></div>:<div className={"editionFlipStage isInteractive phase-"+flipPhase} role="button" tabIndex={0} aria-pressed={showBack} aria-label={showBack?"Turn physical edition to front":"Turn physical edition to back and view tracklist"} onClick={flipEdition} onKeyDown={e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();flipEdition()}}}>
   <div className={'editionFlipObject'+(showBack?' isFlipped':'')}>
    <div className="editionFlipFace editionFlipFront"><EditionVisual release={release} variant={v}/></div>
    <div className="editionFlipFace editionFlipBack"><EditionVisual release={release} variant={v} backFace className="physicalBackVisual"/></div>
