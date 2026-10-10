@@ -55,13 +55,13 @@ export default function EditionVisual({release,variant,forceHover=false,classNam
    :isVinyl?<VinylObject variant={v} release={release}/>
    :<div className="productCdObject" aria-hidden="true"><div className="productCdDisc"><i/><b>{release.imprint==='lethargia'?'LETH':'SIDE:II'}</b><span>{release.number}</span></div></div>}
   <div className={'productCover'+(backFace?' editionReverseCover':'')+(release.hasShrinkwrap&&!isDigital&&!backFace?' shrinkwrap':'')}>
-   {backFace&&!isDigital?<div className="editionReversePrint">
+   {backFace&&!isDigital?<div className="editionReversePrint">{release.backCoverImage?<img className="editionReverseImage" src={release.backCoverImage} alt={(release.title||"Edition")+" back cover tracklist"}/>:<>
      <div className="editionReverseBrand"><span>{release.imprint==='lethargia'?'LETHARGIA RECORDS':'SIDE:II'}</span><small>{release.catalogue||release.number}</small></div>
      <div className="editionReverseTitle"><b>{release.title||'Physical edition'}</b><span>{release.artist||''}</span></div>
      <span className="editionReverseTrackHead">TRACKLIST / {String(media).toUpperCase()}</span>
      <ol>{(Array.isArray(release.tracks)?release.tracks:[]).map((track,i)=><li key={i}><small>{String(i+1).padStart(2,'0')}</small><span>{typeof track==='string'?track:(track?.title||track?.name||track?.label||'Track '+(i+1))}</span></li>)}</ol>
      {(!Array.isArray(release.tracks)||!release.tracks.length)&&<p className="editionReverseEmpty">TRACKLIST TO BE ANNOUNCED</p>}
-     <div className="editionReverseFoot"><span>PHYSICAL EDITION</span><span>{release.number||'SIDE:II'}</span></div>
+     <div className="editionReverseFoot"><span>PHYSICAL EDITION</span><span>{release.number||'SIDE:II'}</span></div></>}
     </div>:release.cover?<img className="productArtwork" src={release.cover} alt={(release.artist||'SIDE:II')+' — '+(release.title||'Edition')}/>:<><span>{release.catalogue}</span><b>{release.number}</b><em>{release.title}</em></>}
   </div>
  </div>;
