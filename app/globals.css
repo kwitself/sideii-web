@@ -5536,3 +5536,31 @@ footer a:focus-visible,
   .productShareSheet>header b{font-size:24px!important}
   .productSharePresets span{font-size:17px!important}
 }
+
+
+/* CANONICAL EDITION VISUAL — programmatic hover state */
+.productVisual.forceHover .productCover{
+  transform:translateX(-8%)!important;
+}
+.productVisual.vinyl.forceHover .productVinylObject{
+  transform:translateX(42%) rotate(68deg)!important;
+}
+.productVisual.digital.forceHover .digitalMaster{
+  transform:translateX(40%) translateY(-2%) rotate(1.2deg)!important;
+  border-color:#77737c!important;
+}
+.productVisual.digital.forceHover .productCover{
+  transform:translateX(-9%) translateY(-3px)!important;
+}
+.productVisual.cd.forceHover .productCdObject,
+.productVisual.cassette.forceHover .productCassette{
+  transform:translateX(34%) translateY(-2%) rotate(1.2deg)!important;
+}
+@media(max-width:760px){
+  .productVisual.vinyl.forceHover .productVinylObject{
+    transform:translateX(28%) rotate(45deg)!important;
+  }
+  .productVisual.digital.forceHover .digitalMaster{
+    transform:translateX(24%)!important;
+  }
+}
