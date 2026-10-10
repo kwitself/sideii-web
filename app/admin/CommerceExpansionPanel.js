@@ -68,7 +68,7 @@ export default function CommerceExpansionPanel({products=[]}){
    <article><span>DROP / LAUNCH</span><strong>{snap?.launches||0}</strong><small>{snap?.launch_subscribers||0} subscribers</small><button type="button" className="commerceMetricAction" onClick={()=>runLifecycle('launch')} disabled={busy}>RUN ALERTS →</button></article>
    <article><span>RECOVERY</span><strong>{snap?.active_recovery||0}</strong><small>{snap?.recovered_carts||0} recovered</small><button type="button" className="commerceMetricAction" onClick={runRecovery} disabled={busy}>RUN RECOVERY →</button></article>
    <article><span>REFERRALS</span><strong>{snap?.referrals||0}</strong><small>active partner codes</small></article>
-   <article><span>RISK</span><strong>{snap?.risk_open||0}</strong><small>open reviews</small></article>
+   <article><span>RISK</span><strong>{snap?.risk_open||0}</strong><small>open reviews</small></article><article><span>GIFTS DUE</span><strong>{snap?.gift_due||0}</strong><small>scheduled recipient notices</small><button type="button" className="commerceMetricAction" onClick={()=>runLifecycle('gift')} disabled={busy}>RUN GIFTS →</button></article>
   </div>
 
   <div className="commerceFunnel adminPanel">
