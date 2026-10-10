@@ -5,6 +5,7 @@ import {supabase} from '../lib/supabase';
 import {MAX_CART_LINE_QTY,readCart,writeCart} from '../lib/cart';
 import GlobalAddressFields from './GlobalAddressFields';
 import {useLocaleCurrency} from './LocaleCurrencyProvider';
+import {getCommerceAttribution,trackCommerce} from './CommerceTelemetry';
 const promoErrorMessage=m=>{
  const s=String(m||'');
  if(/usage limit/i.test(s))return 'This code has reached its usage limit.';
@@ -33,6 +34,7 @@ export default function GlobalBag(){
  const[paymentMode,setPaymentMode]=useState({mode:'',provider:'',enabled:false,extra_support_enabled:false});
  const[savedAddresses,setSavedAddresses]=useState([]),[selectedAddressId,setSelectedAddressId]=useState('');
  const[cartUser,setCartUser]=useState(null),[cartSyncReady,setCartSyncReady]=useState(false);
+ const[recoveryToken,setRecoveryToken]=useState(null);
  async function loadStoreValue(){
   if(!supabase)return;
   const {data:s}=await supabase.auth.getSession();
@@ -153,6 +155,19 @@ export default function GlobalBag(){
   },350);
   return()=>clearTimeout(timer);
  },[cart,cartUser,cartSyncReady]);
+ useEffect(()=>{
+  if(!supabase||cart.length===0)return;
+  const timer=setTimeout(async()=>{
+   let token=recoveryToken;
+   if(!token){try{token=localStorage.getItem('sideii-recovery-token')||null}catch{}}
+   const {data,error}=await supabase.rpc('save_cart_recovery',{p_token:token||null,p_email:form.email.trim()||null,p_cart:cart});
+   if(!error&&data?.token){
+    setRecoveryToken(data.token);
+    try{localStorage.setItem('sideii-recovery-token',data.token)}catch{}
+   }
+  },1200);
+  return()=>clearTimeout(timer);
+ },[cart,form.email,recoveryToken]);
  const localSubtotal=useMemo(()=>cart.reduce((s,x)=>s+x.price*x.qty,0),[cart]),localSupport=useMemo(()=>paymentMode.extra_support_enabled===false?0:cart.reduce((s,x)=>s+(x.wwysSupportEligible?Number(x.supportAmount||0):0),0),[cart,paymentMode.extra_support_enabled]),physical=cart.some(x=>!x.digital),digital=cart.some(x=>x.digital),subtotal=quote?Number(quote.subtotal):localSubtotal,discount=quote?Number(quote.discount_total||0):0,shipping=quote?Number(quote.shipping_total):0,supportTotal=quote?Number(quote.support_total||0):localSupport,total=quote?Number(quote.total):subtotal-discount+shipping+supportTotal,orderType=physical&&digital?'MIXED ORDER':physical?'PHYSICAL ORDER':'DIGITAL ORDER',update=n=>{setCart(n);writeCart(n)};
  function cartItemId(x){return String(x?.key||x?.variantId||x?.sku||'')}
  function supportEligible(item){
@@ -204,6 +219,7 @@ export default function GlobalBag(){
  async function removePromo(){setPromoCode('');setPromoInput('');setQuoteError('');setQuote(null)}
  function openCheckout(){
   setError('');
+  trackCommerce('checkout_start',{properties:{cart_count:cart.reduce((n,x)=>n+Number(x.qty||0),0),subtotal:localSubtotal}});
   const chosen=savedAddresses.find(x=>x.id===selectedAddressId)||savedAddresses.find(x=>x.is_default)||savedAddresses[0]||null;
   setForm(v=>{
    const base=accountProfile?{
@@ -232,7 +248,17 @@ export default function GlobalBag(){
   if(chosen)setSelectedAddressId(chosen.id);
   setCheckout(true);
  }
- async function placeOrder(e){e.preventDefault();if(busy)return;setError('');const email=form.email.trim(),phone=form.phone.replace(/\s|\(|\)|-/g,'');if(form.name.trim().length<2)return setError('Enter your full name.');if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return setError('Enter a valid email address.');if(physical&&form.country==='TR'&&!/^(?:\+90|0)?5\d{9}$/.test(phone))return setError('Enter a valid Turkish mobile number.');if(physical&&form.country!=='TR'&&!/^\+?[0-9]{7,15}$/.test(phone))return setError('Enter a valid international phone number including country code.');if(physical&&form.address.trim().length<10)return setError('Enter a complete delivery address.');if(physical&&!form.city)return setError('Enter a city.');if(physical&&form.country==='TR'&&!form.district)return setError('Select a district.');if(invoice.type==='company'&&invoice.company.trim().length<2)return setError('Enter the company name for the invoice.');if(invoice.type==='company'&&!invoice.tax_office.trim())return setError('Enter the tax office for the invoice.');if(invoice.type==='company'&&invoice.tax_number.trim().length<5)return setError('Enter a valid tax number for the invoice.');if(!invoice.same_as_shipping&&invoice.address.trim().length<10)return setError('Enter a complete invoice address.');if(!supabase)return setError('Store connection unavailable.');setBusy(true);const address=physical?{line1:form.address,city:form.city,district:form.district||null,state_region:form.state_region||null,postal_code:form.postal,country:form.country||'TR'}:null;const items=rpcItems();const invoicePayload={type:invoice.type,company:invoice.type==='company'?invoice.company.trim():null,tax_office:invoice.type==='company'?invoice.tax_office.trim():null,tax_number:invoice.type==='company'?invoice.tax_number.trim():null,address:invoice.same_as_shipping?address:(invoice.address.trim()?{line1:invoice.address.trim()}:null)};let data=null;try{const created=await supabase.rpc('create_store_order_v5',{p_email:email,p_full_name:form.name.trim(),p_phone:physical?phone:null,p_address:address,p_notes:form.notes||null,p_items:items,p_promo_code:promoCode||null,p_invoice:invoicePayload});if(created.error){setError(created.error.message);return}data=created.data;let finalData=data;if(data?.order_id&&(storeValue.gift_valid||storeValue.use_credit)){const {data:valueData,error:valueError}=await supabase.rpc('reserve_order_value',{p_order_id:data.order_id,p_email:email,p_gift_code:storeValue.gift_valid?storeValue.gift_code.trim():null,p_use_store_credit:!!storeValue.use_credit,p_guest_access_token:data.guest_access_token||null});if(valueError){finalData={...finalData,store_value_error:'Order created, but gift card / store credit could not be applied. Do not place the order again.'}}else if(valueData)finalData={...finalData,...valueData}}if(gift.enabled&&data?.order_id){const {error:giftError}=await supabase.rpc('set_order_gift_details',{p_order_id:data.order_id,p_email:email,p_is_gift:true,p_gift_message:gift.message||null,p_hide_prices:!!gift.hide_prices,p_guest_access_token:data.guest_access_token||null});if(giftError)finalData={...finalData,gift_update_error:'Order created, but gift options could not be saved. Do not place the order again.'}}if(data?.order_id&&data?.guest_access_token){const {data:paymentLink}=await supabase.rpc('get_guest_order_payment_link',{p_order_id:data.order_id,p_guest_access_token:data.guest_access_token});if(paymentLink)finalData={...finalData,payment_link:paymentLink}}setDone(finalData);setStoreValue(v=>({...v,gift_code:'',gift_valid:false,gift_available:0,use_credit:false,message:''}));update([]);setCheckout(false);try{fetch('/api/orders/notify-v2',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({order_id:data?.order_id,notification_token:data?.notification_token,type:'received'})})}catch{}}finally{setBusy(false)}}
+ async function placeOrder(e){e.preventDefault();if(busy)return;setError('');const email=form.email.trim(),phone=form.phone.replace(/\s|\(|\)|-/g,'');if(form.name.trim().length<2)return setError('Enter your full name.');if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return setError('Enter a valid email address.');if(physical&&form.country==='TR'&&!/^(?:\+90|0)?5\d{9}$/.test(phone))return setError('Enter a valid Turkish mobile number.');if(physical&&form.country!=='TR'&&!/^\+?[0-9]{7,15}$/.test(phone))return setError('Enter a valid international phone number including country code.');if(physical&&form.address.trim().length<10)return setError('Enter a complete delivery address.');if(physical&&!form.city)return setError('Enter a city.');if(physical&&form.country==='TR'&&!form.district)return setError('Select a district.');if(invoice.type==='company'&&invoice.company.trim().length<2)return setError('Enter the company name for the invoice.');if(invoice.type==='company'&&!invoice.tax_office.trim())return setError('Enter the tax office for the invoice.');if(invoice.type==='company'&&invoice.tax_number.trim().length<5)return setError('Enter a valid tax number for the invoice.');if(!invoice.same_as_shipping&&invoice.address.trim().length<10)return setError('Enter a complete invoice address.');if(!supabase)return setError('Store connection unavailable.');setBusy(true);const address=physical?{line1:form.address,city:form.city,district:form.district||null,state_region:form.state_region||null,postal_code:form.postal,country:form.country||'TR'}:null;const items=rpcItems();const invoicePayload={type:invoice.type,company:invoice.type==='company'?invoice.company.trim():null,tax_office:invoice.type==='company'?invoice.tax_office.trim():null,tax_number:invoice.type==='company'?invoice.tax_number.trim():null,address:invoice.same_as_shipping?address:(invoice.address.trim()?{line1:invoice.address.trim()}:null)};let data=null;try{const created=await supabase.rpc('create_store_order_v5',{p_email:email,p_full_name:form.name.trim(),p_phone:physical?phone:null,p_address:address,p_notes:form.notes||null,p_items:items,p_promo_code:promoCode||null,p_invoice:invoicePayload});if(created.error){setError(created.error.message);return}data=created.data;let finalData=data;if(data?.order_id&&(storeValue.gift_valid||storeValue.use_credit)){const {data:valueData,error:valueError}=await supabase.rpc('reserve_order_value',{p_order_id:data.order_id,p_email:email,p_gift_code:storeValue.gift_valid?storeValue.gift_code.trim():null,p_use_store_credit:!!storeValue.use_credit,p_guest_access_token:data.guest_access_token||null});if(valueError){finalData={...finalData,store_value_error:'Order created, but gift card / store credit could not be applied. Do not place the order again.'}}else if(valueData)finalData={...finalData,...valueData}}if(gift.enabled&&data?.order_id){const {error:giftError}=await supabase.rpc('set_order_gift_details',{p_order_id:data.order_id,p_email:email,p_is_gift:true,p_gift_message:gift.message||null,p_hide_prices:!!gift.hide_prices,p_guest_access_token:data.guest_access_token||null});if(giftError)finalData={...finalData,gift_update_error:'Order created, but gift options could not be saved. Do not place the order again.'}}if(data?.order_id&&data?.guest_access_token){const {data:paymentLink}=await supabase.rpc('get_guest_order_payment_link',{p_order_id:data.order_id,p_guest_access_token:data.guest_access_token});if(paymentLink)finalData={...finalData,payment_link:paymentLink}}
+ if(data?.order_id&&data?.guest_access_token){
+  const a=getCommerceAttribution();
+  try{await supabase.rpc('attach_order_commerce_context',{
+   p_order_id:data.order_id,p_guest_access_token:data.guest_access_token,p_recovery_token:recoveryToken||null,
+   p_utm_source:a.source||null,p_utm_medium:a.medium||null,p_utm_campaign:a.campaign||null,p_utm_content:a.content||null,p_referral_code:a.referral_code||null
+  })}catch{}
+  trackCommerce('order_created',{order_id:data.order_id,properties:{total:Number(finalData?.total||0),currency:finalData?.currency||'TRY'}});
+  setRecoveryToken(null);try{localStorage.removeItem('sideii-recovery-token')}catch{}
+ }
+ setDone(finalData);setStoreValue(v=>({...v,gift_code:'',gift_valid:false,gift_available:0,use_credit:false,message:''}));update([]);setCheckout(false);try{fetch('/api/orders/notify-v2',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({order_id:data?.order_id,notification_token:data?.notification_token,type:'received'})})}catch{}}finally{setBusy(false)}}
  const close=()=>{setOpen(false);setCheckout(false);setError('')};
  useEffect(()=>{if(!open)return;
   const previousOverflow=document.body.style.overflow;
