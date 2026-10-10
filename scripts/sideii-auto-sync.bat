@@ -7,7 +7,7 @@ rem Start Next dev server only if port 3000 is not already listening.
 powershell.exe -NoProfile -Command "$p=Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue; if($p){exit 0}else{exit 1}"
 if errorlevel 1 (
   echo Starting SIDE:II DEV server...
-  start "SIDEII DEV" cmd /k "cd /d "%CD%" && title SIDEII DEV && npm run dev"
+  start "SIDEII DEV" cmd /k "cd /d ""%CD%"" && title SIDEII DEV && npm run dev"
 ) else (
   echo SIDE:II DEV already running on port 3000.
 )
