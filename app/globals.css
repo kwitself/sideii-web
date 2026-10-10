@@ -6478,3 +6478,60 @@ footer a:focus-visible,
 @media(prefers-reduced-motion:reduce){
  .globalBagDrawer :is(button,a),.globalCheckout :is(button,a){scroll-behavior:auto}
 }
+
+
+/* SIDE:II ACCOUNT UI POLISH — presentation-only, no order/download behavior changes */
+.globalAccountDrawer[aria-hidden="true"]{pointer-events:none}
+.accountBody,.accountOrders,.accountOrderDetail,.accountOrderItems,.accountAddressBook,
+.accountAddressList,.accountSharedLinks,.accountCollection{min-width:0}
+.accountIdentity{min-width:0}
+.accountIdentity :is(b,small){overflow-wrap:anywhere}
+.accountBody .accountSectionHead{align-items:center;gap:12px;min-height:24px;line-height:1.4;letter-spacing:.14em}
+.accountBody .accountSectionHead>span{color:#bdb5ae;font-weight:700}
+.accountBody .accountSectionHead small{color:#928a84}
+.accountOrderRow{min-width:0;min-height:76px;padding:15px 12px;border:1px solid transparent;border-bottom-color:#302e33;transition:background .2s,border-color .2s}
+.accountOrderRow:hover,.accountOrderRow.selected{background:#161317;border-color:#494047}
+.accountOrderRow>div{min-width:0}
+.accountOrderRow b,.accountOrderRow small{overflow-wrap:anywhere}
+.accountOrderRow:focus-visible,.accountAddressButtons button:focus-visible,
+.accountDownloadLink:focus-visible,.accountOrderDetail button:focus-visible{
+ outline:2px solid #e2bad4;outline-offset:2px
+}
+.accountOrderDetail{min-width:0;padding:22px 0 0;scroll-margin-top:24px}
+.accountOrderDetailHead{align-items:center;gap:12px}
+.accountOrderDetailHead h3{overflow-wrap:anywhere}
+.accountOrderItems article{min-width:0;gap:12px}
+.accountOrderItems article>div{min-width:0}
+.accountOrderItems article :is(b,small,strong){overflow-wrap:anywhere}
+.accountDigitalMeta,.accountDigitalLimit{line-height:1.55!important}
+.accountDownloadLink{min-height:38px;padding:9px 0!important;line-height:1.5!important}
+.accountDownloadLimitReached{display:inline-block;line-height:1.55;overflow-wrap:anywhere}
+.accountAddressList article{min-width:0}
+.accountAddressList article>div{min-width:0}
+.accountAddressList article :is(p,b,small){overflow-wrap:anywhere}
+.accountAddressButtons{display:flex;flex-wrap:wrap;gap:7px}
+.accountAddressButtons button{min-height:34px}
+.accountSharedLinkList article{min-width:0;gap:12px}
+.accountSharedLinkList article>div{min-width:0}
+.accountDigitalPanelContent{min-width:0}
+.accountDigitalPanelTags span{overflow-wrap:anywhere}
+.accountDigitalPanelRemaining{gap:12px;min-width:0}
+.accountDigitalPanelRemaining>span{line-height:1.5}
+.accountDigitalPanelRemaining strong{white-space:nowrap;font-variant-numeric:tabular-nums}
+@media(max-width:600px){
+ .accountOrderRow{grid-template-columns:minmax(0,1fr) auto!important;gap:9px!important}
+ .accountOrderRow>span{grid-column:1/-1;justify-self:start}
+ .accountOrderDetailHead h3{font-size:clamp(22px,6vw,29px)}
+ .accountOrderMeta{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px}
+ .accountOrderItems article{grid-template-columns:minmax(0,1fr) auto!important}
+ .accountDigitalPanelTop{flex-wrap:wrap}
+ .accountDigitalPanelContent h2{font-size:clamp(26px,8vw,36px)}
+ .accountDigitalPanelRemaining strong{font-size:30px}
+ .accountAddressButtons button{flex:1 1 auto}
+}
+@media(max-width:380px){
+ .accountOrderItems article{grid-template-columns:minmax(0,1fr)!important}
+ .accountOrderItems article>strong{justify-self:start}
+ .accountDigitalPanelRemaining{align-items:flex-start;flex-direction:column}
+}
+@media(prefers-reduced-motion:reduce){.accountOrderRow{transition:none}}
