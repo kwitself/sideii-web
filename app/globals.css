@@ -5281,3 +5281,124 @@ footer a:focus-visible,
     grid-template-columns:1fr;
   }
 }
+
+
+/* PRODUCT SHARE — INTERACTIVE PRESET PREVIEW */
+.productSharePreviewStage{
+  min-height:360px;
+  display:grid;
+  place-items:center;
+  padding:16px;
+  border:1px solid #2f2e31;
+  background:
+    linear-gradient(45deg,rgba(255,255,255,.015) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.015) 75%),
+    #09090a;
+  background-size:18px 18px;
+  overflow:hidden;
+}
+.productSharePreviewFrame{
+  transition:width .24s ease,height .24s ease,aspect-ratio .24s ease,opacity .18s ease!important;
+}
+.productSharePreview.preset-link .productSharePreviewFrame{
+  width:100%;
+  max-width:620px;
+  aspect-ratio:1200/630!important;
+}
+.productSharePreview.preset-square .productSharePreviewFrame{
+  width:min(440px,82%);
+  aspect-ratio:1/1!important;
+}
+.productSharePreview.preset-story .productSharePreviewFrame{
+  height:min(520px,58vh);
+  width:auto;
+  aspect-ratio:9/16!important;
+}
+.productSharePreview.preset-story .productSharePreviewFrame img,
+.productSharePreview.preset-square .productSharePreviewFrame img,
+.productSharePreview.preset-link .productSharePreviewFrame img{
+  object-fit:cover!important;
+}
+.productSharePreviewStage.loading .productSharePreviewFrame{
+  opacity:.34;
+}
+.productSharePreviewStage.ready .productSharePreviewFrame{
+  opacity:1;
+}
+.productSharePresets button{
+  position:relative;
+}
+.productSharePresets button i{
+  margin-top:auto;
+  color:#57535a;
+  font:6px/1 Arial,sans-serif;
+  font-style:normal;
+  letter-spacing:.12em;
+}
+.productSharePresets button.active{
+  border-color:#8a857d!important;
+  background:#171719!important;
+  color:#eee9e0!important;
+  box-shadow:inset 3px 0 0 #d8d3cb;
+}
+.productSharePresets button.active i{
+  color:#bdb8af;
+}
+.productSharePrimary{
+  width:100%;
+  min-height:48px;
+  margin-top:10px;
+  border:1px solid #d8d3cb;
+  background:#d8d3cb;
+  color:#0a0a0b;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.14em;
+  cursor:pointer;
+}
+.productSharePrimary:hover{
+  background:#f0ece5;
+  border-color:#f0ece5;
+}
+.productShareLethargia .productShareSheet{
+  border-color:#493035!important;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(109,28,43,.13),transparent 34%),
+    #0d0a0b!important;
+}
+.productShareLethargia .productSharePresets button.active{
+  border-color:#783947!important;
+  box-shadow:inset 3px 0 0 #8f3947;
+}
+.productShareLethargia .productSharePrimary{
+  background:#7a2d3d;
+  border-color:#7a2d3d;
+  color:#f2e8e9;
+}
+.productShareLethargia .productSharePrimary:hover{
+  background:#91384a;
+  border-color:#91384a;
+}
+.productShareLethargia .productSharePreviewStage{
+  border-color:#3d282d;
+  background:
+    radial-gradient(circle at 50% 20%,rgba(113,31,47,.08),transparent 50%),
+    #090809;
+}
+
+@media(max-width:760px){
+  .productSharePreviewStage{
+    min-height:260px;
+    padding:12px;
+  }
+  .productSharePreview.preset-story .productSharePreviewFrame{
+    height:min(420px,50vh);
+  }
+  .productSharePreview.preset-square .productSharePreviewFrame{
+    width:min(340px,92%);
+  }
+  .productShareControls .productSharePresets button{
+    min-height:78px!important;
+  }
+  .productSharePrimary{
+    min-height:46px;
+  }
+}
