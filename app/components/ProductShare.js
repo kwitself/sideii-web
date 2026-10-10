@@ -23,15 +23,19 @@ export default function ProductShare({product,kind='release'}){
  const [media,setMedia]=useState(initialMedia);
  const [mounted,setMounted]=useState(false);
  const captureRef=useRef(null);
+ const sheetRef=useRef(null),triggerRef=useRef(null);
+ const [actionBusy,setActionBusy]=useState(false);
  useEffect(()=>setMounted(true),[]);
  useEffect(()=>{if(product?.id)trackCommerce('product_view',{product_id:product.id,properties:{kind,slug:product.slug||null}})},[product?.id]);
  useEffect(()=>{
   if(!open)return;
   const prev=document.body.style.overflow;
-  const onKey=e=>{if(e.key==='Escape')setOpen(false)};
+  const previousFocus=document.activeElement;
+  requestAnimationFrame(()=>sheetRef.current?.querySelector('.productShareClose')?.focus());
+  const onKey=e=>{if(e.key==='Escape'){e.preventDefault();setOpen(false);return}if(e.key!=='Tab')return;const nodes=[...(sheetRef.current?.querySelectorAll('button:not([disabled]),a[href]')||[])];if(!nodes.length)return;const first=nodes[0],last=nodes[nodes.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}};
   document.body.style.overflow='hidden';
   window.addEventListener('keydown',onKey);
-  return()=>{document.body.style.overflow=prev;window.removeEventListener('keydown',onKey)};
+  return()=>{document.body.style.overflow=prev;window.removeEventListener('keydown',onKey);requestAnimationFrame(()=>{if(previousFocus?.isConnected)previousFocus.focus()})};
  },[open]);
  const slug=product?.slug||'';
  const title=product?.rawTitle||product?.title||'SIDE:II';
@@ -66,26 +70,34 @@ export default function ProductShare({product,kind='release'}){
   setTimeout(()=>setStatus(''),1500);
  }
 
+ async function getCardBlob(cardPreset){
+  if(kind==='release'&&captureRef.current){
+   const meta=presetMeta[cardPreset];
+   const blob=await toBlob(captureRef.current,{cacheBust:true,canvasWidth:meta.w,canvasHeight:meta.h,pixelRatio:1,backgroundColor:isLethargia?'#12090b':'#0b0b0d'});
+   if(blob)return blob;
+  }
+  const res=await fetch(cardUrl(cardPreset));
+  if(!res.ok)throw new Error('Card generation failed');
+  return res.blob();
+ }
+ async function downloadCard(){
+  if(actionBusy)return;
+  setActionBusy(true);setStatus('');
+  try{
+   const blob=await getCardBlob(preset);
+   const href=URL.createObjectURL(blob);
+   const a=document.createElement('a');a.href=href;a.download=`sideii-${slug}-${media||'edition'}-${preset}.png`;
+   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(href),1500);
+   setStatus('CARD SAVED ✓');trackCommerce('share',{product_id:product?.id||null,properties:{channel:'download_card',preset,media}});
+  }catch{setStatus('COULD NOT SAVE CARD')}finally{setActionBusy(false)}
+ }
  async function shareCard(preset='square'){
+  if(actionBusy)return;
+  setActionBusy(true);
   trackCommerce('share',{product_id:product?.id||null,properties:{channel:'native',preset,media}});
   const url=absolutePage();
   try{
-   let blob=null;
-   if(kind==='release'&&captureRef.current){
-    const meta=presetMeta[preset];
-    blob=await toBlob(captureRef.current,{
-     cacheBust:true,
-     canvasWidth:meta.w,
-     canvasHeight:meta.h,
-     pixelRatio:1,
-     backgroundColor:isLethargia?'#12090b':'#0b0b0d'
-    });
-   }
-   if(!blob){
-    const res=await fetch(cardUrl(preset));
-    if(!res.ok)throw new Error('card');
-    blob=await res.blob();
-   }
+   const blob=await getCardBlob(preset);
    const file=new File([blob],`sideii-${slug}-${media||'edition'}-${preset}.png`,{type:'image/png'});
    if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){
     await navigator.share({title,text,url,files:[file]});
@@ -106,6 +118,7 @@ export default function ProductShare({product,kind='release'}){
    if(err?.name==='AbortError')return;
    try{await navigator.clipboard.writeText(url);setStatus('LINK COPIED ✓')}catch{setStatus('SHARE UNAVAILABLE')}
   }
+  setActionBusy(false);
   setTimeout(()=>setStatus(''),1600);
  }
 
@@ -124,11 +137,11 @@ export default function ProductShare({product,kind='release'}){
 
  const layer=open&&mounted?createPortal(<div className={'productShareLayer '+(isLethargia?'productShareLethargia':'productShareSideii')} role="dialog" aria-modal="true" aria-label="Share product">
    <button type="button" className="productShareShade" aria-label="Close share menu" onClick={()=>setOpen(false)}/>
-   <section className="productShareSheet">
-    <header><div><span>SHARE THIS EDITION</span><b>{title}</b></div><button type="button" onClick={()=>setOpen(false)}>CLOSE ×</button></header>
+   <section ref={sheetRef} className="productShareSheet" aria-labelledby="sideiiShareTitle">
+    <header><div><span>SIDE:II / SHARE STUDIO</span><b id="sideiiShareTitle">{title}</b><small>{artist} · {kind==='store'?'MERCH':'RELEASE'}</small></div><button className="productShareClose" type="button" onClick={()=>setOpen(false)} aria-label="Close share studio">CLOSE ×</button></header>
     <div className="productShareStudio">
      <div className={'productSharePreview preset-'+preset}>
-      <span>{presetMeta[preset].label+' PREVIEW'}</span>
+      <span>01 / LIVE PREVIEW · {presetMeta[preset].label}</span>
       <div className={'productSharePreviewStage '+(kind==='release'||previewReady?'ready':'loading')}>
        <div className="productSharePreviewFrame">
         {kind==='release'?<div ref={captureRef} className={'productShareExactCard exact-'+preset}>
@@ -142,6 +155,7 @@ export default function ProductShare({product,kind='release'}){
       <small>{presetMeta[preset].size+' · '+presetMeta[preset].use}</small>
      </div>
      <div className="productShareControls">
+      <div className="productShareControlHeading"><span>02 / CUSTOMIZE YOUR CARD</span><small>CHOOSE A FORMAT</small></div>
       <div className="productSharePresets">
        {['story','square','link'].map(p=><button key={p} type="button" className={preset===p?'active':''} aria-pressed={preset===p} onClick={()=>{setPreviewReady(false);setPreset(p)}}><span>{presetMeta[p].label}</span><small>{presetMeta[p].size}</small><i>{preset===p?'SELECTED':'PREVIEW'}</i></button>)}
       </div>
@@ -153,7 +167,8 @@ export default function ProductShare({product,kind='release'}){
         {mediaOptions.map(m=><button key={m} type="button" className={media===m?'active':''} onClick={()=>{setPreviewReady(false);setMedia(m);setMediaOpen(false)}}><span>{m.toUpperCase()}</span><small>{m==='vinyl'?'RECORD + SLEEVE':m==='cd'?'DISC + CASE':m==='cassette'?'CASSETTE OBJECT':'DIGITAL MASTER'}</small></button>)}
        </div>}
       </div>}
-      <button type="button" className="productSharePrimary" onClick={()=>shareCard(preset)}>SHARE SELECTED {presetMeta[preset].label} ↗</button>
+      <div className="productShareActions"><button type="button" className="productSharePrimary" disabled={actionBusy} onClick={()=>shareCard(preset)}>{actionBusy?'PREPARING CARD…':'SHARE CARD ↗'}</button><button type="button" className="productShareDownload" disabled={actionBusy} onClick={downloadCard}>↓ DOWNLOAD PNG</button></div>
+      <div className="productShareControlHeading"><span>03 / SHARE A LINK</span><small>SEND TO ANYONE</small></div>
       <div className="productShareNetworks">
        <button type="button" onClick={()=>shareCard(preset)}>INSTAGRAM / NATIVE SHARE</button>
        <button type="button" onClick={()=>openNetwork('whatsapp')}>WHATSAPP</button>
@@ -161,15 +176,15 @@ export default function ProductShare({product,kind='release'}){
        <button type="button" onClick={()=>openNetwork('x')}>X</button>
        <button type="button" onClick={()=>openNetwork('telegram')}>TELEGRAM</button>
       </div>
-      <button type="button" className="productShareCopy" onClick={copyLink}>{status||'COPY PRODUCT LINK'}</button>
-      <p>Story and Square cards use the native share sheet on supported phones. Link Card is used for social previews.</p>
+      <button type="button" className="productShareCopy" onClick={copyLink}>COPY PRODUCT LINK ↗</button>{status&&<p className="productShareStatus" role="status">{status}</p>}
+      <p>Export a PNG for Story, Square or Link Card. On supported devices, Share Card opens the native share sheet.</p>
      </div>
     </div>
    </section>
   </div>,document.body):null;
 
  return <div className="productShare">
-  <button type="button" className="productShareTrigger" onClick={()=>setOpen(true)}>SHARE ↗</button>
+  <button ref={triggerRef} type="button" className="productShareTrigger" aria-haspopup="dialog" aria-expanded={open} onClick={()=>{setStatus('');setOpen(true)}}>SHARE ↗</button>
   {layer}
  </div>;
 }
