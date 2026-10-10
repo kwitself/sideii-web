@@ -70,15 +70,39 @@ export default function ProductShare({product,kind='release'}){
   setTimeout(()=>setStatus(''),1500);
  }
 
+ async function waitForCardAssets(node){
+  if(document.fonts?.ready)await document.fonts.ready;
+  const images=[...node.querySelectorAll('img')];
+  await Promise.all(images.map(img=>{
+   if(img.complete)return Promise.resolve();
+   return new Promise(resolve=>{
+    const finish=()=>{img.removeEventListener('load',finish);img.removeEventListener('error',finish);resolve()};
+    img.addEventListener('load',finish,{once:true});
+    img.addEventListener('error',finish,{once:true});
+    // Avoid an indefinite wait if a remote cover image fails to complete.
+    setTimeout(finish,4000);
+   });
+  }));
+ }
  async function getCardBlob(cardPreset){
   if(kind==='release'&&captureRef.current){
    const meta=presetMeta[cardPreset];
-   const blob=await toBlob(captureRef.current,{cacheBust:true,canvasWidth:meta.w,canvasHeight:meta.h,pixelRatio:1,backgroundColor:isLethargia?'#12090b':'#0b0b0d'});
-   if(blob)return blob;
+   const node=captureRef.current;
+   await waitForCardAssets(node);
+   // Use the same DOM node as the visible preview; scale it without
+   // changing its layout, so exported PNG preserves the on-screen composition.
+   const blob=await toBlob(node,{
+    cacheBust:true,canvasWidth:meta.w,canvasHeight:meta.h,
+    pixelRatio:1,backgroundColor:isLethargia?'#12090b':'#0b0b0d'
+   });
+   if(blob&&blob.type==='image/png')return blob;
+   throw new Error('Preview could not be exported as PNG');
   }
   const res=await fetch(cardUrl(cardPreset));
   if(!res.ok)throw new Error('Card generation failed');
-  return res.blob();
+  const blob=await res.blob();
+  if(blob.type!=='image/png')throw new Error('Share card response is not PNG');
+  return blob;
  }
  async function downloadCard(){
   if(actionBusy)return;
