@@ -6384,54 +6384,58 @@ footer a:focus-visible,
 @media(prefers-reduced-motion:reduce){.productShareDownload{transition:none}}
 
 
-/* SHARE CARD COMPOSITION FIX — keep disc/sleeve separate from product text */
+/* SHARE CARD / COMPOSITION V3 — one canonical layout, no compounded scaling */
+.productShareExactCard .productShareExactVisual{overflow:visible;z-index:2}
+.productShareExactCard .productShareExactMeta{z-index:6;min-width:0;display:flex;flex-direction:column}
+.productShareExactCard .productShareExactMeta b{overflow-wrap:anywhere}
+.productShareExactCard .productShareExactFoot{z-index:8}
+
+/* Landscape social preview: artwork left, typography right */
 .productShareExactCard.exact-link .productShareExactVisual{
- left:5%!important;top:22%!important;width:35%!important;height:auto!important;aspect-ratio:1;z-index:2;
+ left:6%;top:22%;width:39%;height:62%;aspect-ratio:auto;
+ display:grid;place-items:center;
+}
+.productShareExactCard.exact-link .productShareExactVisual>.productVisual{
+ width:92%!important;height:92%!important;transform:scale(.90)!important;transform-origin:center center!important;
 }
 .productShareExactCard.exact-link .productShareExactMeta{
- left:65%!important;right:5%!important;top:28%!important;bottom:16%!important;
- display:flex;justify-content:center;gap:9px;z-index:6;min-width:0;
+ left:65%;right:6%;top:24%;bottom:15%;justify-content:center;gap:10px;
 }
 .productShareExactCard.exact-link .productShareExactMeta b{
- font-size:clamp(17px,2vw,30px);line-height:1.03;overflow-wrap:anywhere;
+ font-size:clamp(18px,2vw,31px);line-height:1.04;
 }
-.productShareExactCard.exact-link .productShareExactMeta small,
-.productShareExactCard.exact-link .productShareExactMeta span,
-.productShareExactCard.exact-link .productShareExactMeta em{position:relative;z-index:6}
-.productShareExactCard.exact-link .productShareExactFoot{z-index:8}
-.productShareExactCard.exact-square .productShareExactVisual{top:13%!important;width:65%!important;left:17.5%!important}
-.productShareExactCard.exact-square .productShareExactMeta{bottom:11%!important;z-index:6}
-.productShareExactCard.exact-story .productShareExactVisual{width:75%!important;left:12.5%!important;top:19%!important}
-.productShareExactCard.exact-story .productShareExactMeta{top:63%!important;z-index:6}
 
-
-/* Share composition v2: allocate fixed safe regions for the full hover object.
-   The artwork is scaled as a unit, so the protruding record stays visible. */
+/* Square: large artwork and a separate lower typography block */
 .productShareExactCard.exact-square .productShareExactVisual{
- left:15%!important;top:15%!important;width:70%!important;height:56%!important;aspect-ratio:auto!important;
- display:grid;place-items:center;overflow:visible;
+ left:12%;top:16%;width:76%;height:51%;aspect-ratio:auto;
+ display:grid;place-items:center;
 }
 .productShareExactCard.exact-square .productShareExactVisual>.productVisual{
- width:78%!important;height:78%!important;min-width:0!important;
- transform:scale(.78)!important;transform-origin:center center!important;
+ width:94%!important;height:94%!important;transform:scale(.90)!important;transform-origin:center center!important;
 }
 .productShareExactCard.exact-square .productShareExactMeta{
- left:10%!important;right:10%!important;top:75%!important;bottom:9%!important;
- gap:4px;justify-content:center;
+ left:9%;right:9%;top:71%;bottom:12%;gap:4px;justify-content:center;
 }
-.productShareExactCard.exact-square .productShareExactMeta b{font-size:clamp(18px,3vw,33px);line-height:1.04}
+.productShareExactCard.exact-square .productShareExactMeta b{
+ font-size:clamp(17px,2.7vw,29px);line-height:1.05;
+}
+.productShareExactCard.exact-square .productShareExactMeta small{font-size:7px}
+.productShareExactCard.exact-square .productShareExactMeta span{font-size:11px}
+.productShareExactCard.exact-square .productShareExactMeta em{font-size:14px}
+
+/* Vertical story: use the middle canvas, reserve bottom for copy and footer */
 .productShareExactCard.exact-story .productShareExactVisual{
- left:12%!important;top:18%!important;width:76%!important;height:40%!important;
- aspect-ratio:auto!important;display:grid;place-items:center;overflow:visible;
+ left:9%;top:17%;width:82%;height:41%;aspect-ratio:auto;
+ display:grid;place-items:center;
 }
 .productShareExactCard.exact-story .productShareExactVisual>.productVisual{
- width:84%!important;height:84%!important;min-width:0!important;
- transform:scale(.78)!important;transform-origin:center center!important;
+ width:96%!important;height:96%!important;transform:scale(.91)!important;transform-origin:center center!important;
 }
 .productShareExactCard.exact-story .productShareExactMeta{
- left:9%!important;right:9%!important;top:62%!important;bottom:10%!important;justify-content:center;
+ left:9%;right:9%;top:62%;bottom:11%;gap:7px;justify-content:center;
 }
-.productShareExactCard.exact-story .productShareExactMeta b{font-size:clamp(22px,4vw,45px);line-height:1.01}
-.productShareExactCard.exact-link .productShareExactVisual>.productVisual{
- transform:scale(.84)!important;transform-origin:center center!important;
+.productShareExactCard.exact-story .productShareExactMeta b{
+ font-size:clamp(24px,4.5vw,46px);line-height:1.02;
 }
+.productShareExactCard.exact-story .productShareExactMeta span{font-size:15px}
+.productShareExactCard.exact-story .productShareExactMeta em{font-size:19px}
