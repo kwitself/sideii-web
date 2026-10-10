@@ -219,6 +219,22 @@ export default function GlobalAccount(){
    if(error||!data){setMessage(error?.message||'Digital download unavailable.');return}
    const opened=window.open('/api/download/'+encodeURIComponent(String(data)),'_blank','noopener,noreferrer');
    if(!opened){setMessage('Your browser blocked the download window. Allow pop-ups and try again.');return}
+
+   // Optimistic live decrement; server polling below reconciles the real count.
+   setSelectedOrder(current=>{
+    if(!current)return current;
+    return {
+     ...current,
+     items:(current.items||[]).map(x=>{
+      if(x.id!==item.id)return x;
+      const limit=Number(x.digital_download_limit||5);
+      const count=Math.min(limit,Number(x.digital_download_count||0)+1);
+      const remaining=Math.max(0,limit-count);
+      return {...x,digital_download_count:count,digital_download_remaining:remaining,download_available:remaining>0};
+     })
+    };
+   });
+
    const refreshOrders=async()=>{
     if(!session?.user)return;
     const {data:nextOrders}=await supabase.rpc('get_my_store_orders');
@@ -229,8 +245,8 @@ export default function GlobalAccount(){
       return list.find(o=>o.id===current.id)||current;
     });
    };
-   setTimeout(refreshOrders,600);
-   setTimeout(refreshOrders,1600);
+
+   [500,1200,2400,4000].forEach(ms=>setTimeout(refreshOrders,ms));
   }finally{setDownloadBusyId(null)}
  }
 
