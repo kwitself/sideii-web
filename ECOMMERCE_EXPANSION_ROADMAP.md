@@ -1,21 +1,41 @@
-# SIDE:II — Commerce Expansion
+# SIDE:II — Commerce Expansion Audit
 
-Status: approved roadmap, NOT implemented.
+Updated after repository + Supabase verification.
 
-1. Drop launch: scheduling, early access, customer limits, waitlist.
-2. Abandoned checkout: consent-based 1h/24h recovery, unsubscribe, signed links.
-3. Order tracking: owner authentication or expiring scoped guest token.
-4. Build-your-own bundle: backend pricing, stock and discount enforcement.
-5. Collector loyalty: levels, owned editions, early access and admin rules.
-6. Product passport: paid numbered editions, QR, privacy-safe verification.
-7. Reservation UX: backend expiry and accurate countdown.
-8. Shareable cart/wishlist: revocable links without personal data.
-9. Gift experience: scheduling, cards, QR, gift-card protections.
-10. Meta/Instagram/Pinterest/Google feed admin and validation.
-11. Conversion funnel: consent-aware events and paid revenue only.
-12. UTM attribution: privacy-aware first/last touch to paid order.
-13. Artist referral: codes, anti-abuse, refund-aware commission ledger.
-14. Post-purchase upsell: separate authorized payment and stock checks.
-15. Fraud controls: rate limits, velocity review and safe admin flags.
+## Status
 
-Delivery: database + RLS, RPC/API, customer UI, admin controls, automated tests for each feature. Preserve existing hover renderer, Share Studio, mobile and order state machine. No live payment, refund, payout or paid-revenue claim without verified iyzico onboarding. Mark features complete only with verified test evidence.
+| # | Module | Status | Verified implementation |
+|---|---|---|---|
+| 1 | Drop / release launch | DONE | Product launch rules, countdown, early access, collector early-access override, customer quantity limits, launch subscriptions and notification runner. |
+| 2 | Abandoned cart recovery | DONE | Saved recovery token, restore page, admin runner, explicit email opt-in, token ownership hardening, unsubscribe flow and max two reminders. |
+| 3 | Order tracking portal | PARTIAL | Public order-number + checkout-email lookup and tracking UI are live. Still a candidate for provider/server rate limiting before high-volume launch. |
+| 4 | Build-your-own bundle | DONE | Flexible bundle rules, storefront builder and server-authoritative quote discount calculation. |
+| 5 | Collector loyalty | DONE | Collector tiers, spend/order qualification, early access and monthly reward claim. |
+| 6 | Product passport | DONE | Edition numbering, automatic passport issuance only after paid state, public verification token and refund revocation. |
+| 7 | Reservation UX | DONE | 15-minute server reservation, stale release and customer countdown. |
+| 8 | Shareable cart / wishlist | DONE | Authenticated share creation, canonical public payload, expiring tokens, account list management and revoke controls. |
+| 9 | Gift experience | DONE | Gift checkout, recipient email, scheduled reveal, hide prices, gift wrap, private portal, QR and lifecycle notifications. |
+| 10 | Commerce feeds | DONE | Google XML, Meta/Instagram CSV, Pinterest CSV and admin feed-channel controls. |
+| 11 | Conversion analytics | DONE | Product view, wishlist, share, add-to-bag, checkout, order-created and verified paid-order events with admin funnel. |
+| 12 | UTM attribution | DONE | Source / medium / campaign / content and referral context carried onto the order after token-authorized checkout. |
+| 13 | Referral / artist codes | PARTIAL | Referral codes, order attribution and paid-order commission calculation are live. Cash payout settlement remains intentionally out of scope until company/payment operations are active. |
+| 14 | Post-purchase upsell | DONE | Paid-order-only eligible offers, guest/account authorization and scoped single-use discount claim. |
+| 15 | Fraud / abuse controls | PARTIAL | High-value and order-velocity review flags plus existing checkout/reservation abuse controls. Provider-side fraud signals/rate limiting come with integrated payments. |
+
+## Launch blockers
+
+1. Production payment path: iyzico Link mappings or later integrated iyzico credentials.
+2. Company/domain/legal production details.
+3. Production transactional email sender/domain configuration.
+4. Carrier integration if automatic carrier status is required; manual carrier/tracking already works.
+5. Final end-to-end production QA after the above are configured.
+
+## Security notes
+
+- Customer totals, stock, discounts, bundle savings and payment state remain server authoritative.
+- Paid revenue events, passports and referral commission are generated from verified payment-state transitions.
+- Gift and guest order access use scoped unguessable tokens.
+- Recovery email is opt-in and includes unsubscribe; token updates are ownership-bound when associated with an account.
+- Shared lists expose only normalized product fields and can be revoked by their owner.
+- RPC-only tables intentionally keep RLS enabled without blanket policies; public SECURITY DEFINER RPCs are treated as explicit APIs and must validate tokens/inputs.
+- Do not mark provider-dependent payment/refund/payout behavior complete until it is tested against the real provider.
