@@ -5458,3 +5458,5 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 @media(max-width:760px){.commerceExpansionMetrics,.commerceExpansionGrid{grid-template-columns:1fr}.commerceInline{grid-template-columns:1fr}.commerceFunnel header{display:grid;gap:5px}.commerceExpansionMetrics article{padding:14px}}
 
 .commerceMetricAction{margin-top:4px;justify-self:start;border:1px solid #343238;background:#0d0d0f;color:#aaa69f;min-height:28px;padding:0 8px;font:6px/1 Arial,sans-serif;letter-spacing:.1em}.commerceMetricAction:hover:not(:disabled){border-color:#77736d;color:#eee9e1}.commerceMetricAction:disabled{opacity:.4}
+
+.commerceExpansionMetrics{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important}
