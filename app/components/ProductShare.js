@@ -14,6 +14,10 @@ export default function ProductShare({product,kind='release'}){
  const [status,setStatus]=useState('');
  const [preset,setPreset]=useState('link');
  const [previewReady,setPreviewReady]=useState(false);
+ const [mediaOpen,setMediaOpen]=useState(false);
+ const mediaOptions=useMemo(()=>Array.from(new Set((product?.variants||[]).map(v=>String(v?.format||'').toLowerCase()).filter(v=>['vinyl','cd','cassette','digital'].includes(v)))),[product?.variants]);
+ const initialMedia=mediaOptions.includes(String(product?.media||'').toLowerCase())?String(product.media).toLowerCase():(mediaOptions[0]||'');
+ const [media,setMedia]=useState(initialMedia);
  const [mounted,setMounted]=useState(false);
  useEffect(()=>setMounted(true),[]);
  useEffect(()=>{
@@ -35,7 +39,7 @@ export default function ProductShare({product,kind='release'}){
   return parts.join(' · ');
  },[artist,title,product?.format,product?.merchCategory,product?.price]);
 
- const cardUrl=preset=>'/api/share-card/'+encodeURIComponent(kind)+'/'+encodeURIComponent(slug)+'?preset='+encodeURIComponent(preset);
+ const cardUrl=(preset,mediaValue=media)=>'/api/share-card/'+encodeURIComponent(kind)+'/'+encodeURIComponent(slug)+'?preset='+encodeURIComponent(preset)+(mediaValue?'&media='+encodeURIComponent(mediaValue):'');
  const absolutePage=()=>new URL(pagePath,window.location.origin).toString();
 
  async function copyLink(){
@@ -101,6 +105,14 @@ export default function ProductShare({product,kind='release'}){
       <div className="productSharePresets">
        {['story','square','link'].map(p=><button key={p} type="button" className={preset===p?'active':''} aria-pressed={preset===p} onClick={()=>{setPreviewReady(false);setPreset(p)}}><span>{presetMeta[p].label}</span><small>{presetMeta[p].size}</small><i>{preset===p?'SELECTED':'PREVIEW'}</i></button>)}
       </div>
+      {mediaOptions.length>1&&<div className="productShareMedia">
+       <button type="button" className="productShareMediaToggle" aria-expanded={mediaOpen} onClick={()=>setMediaOpen(v=>!v)}>
+        <span>FORMAT / VISUAL</span><b>{media?media.toUpperCase():'DEFAULT'}</b><i>{mediaOpen?'−':'+'}</i>
+       </button>
+       {mediaOpen&&<div className="productShareMediaPanel">
+        {mediaOptions.map(m=><button key={m} type="button" className={media===m?'active':''} onClick={()=>{setPreviewReady(false);setMedia(m);setMediaOpen(false)}}><span>{m.toUpperCase()}</span><small>{m==='vinyl'?'RECORD + SLEEVE':m==='cd'?'DISC + CASE':m==='cassette'?'CASSETTE OBJECT':'DIGITAL MASTER'}</small></button>)}
+       </div>}
+      </div>}
       <button type="button" className="productSharePrimary" onClick={()=>shareCard(preset)}>SHARE SELECTED {presetMeta[preset].label} ↗</button>
       <div className="productShareNetworks">
        <button type="button" onClick={()=>shareCard(preset)}>INSTAGRAM / NATIVE SHARE</button>
