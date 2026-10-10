@@ -15,7 +15,7 @@ export default function GlobalAccount(){
  const pathname=usePathname();
  const [open,setOpen]=useState(false),[session,setSession]=useState(null),[mode,setMode]=useState('signin');
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false),[wishlist,setWishlist]=useState([]),[savedCart,setSavedCart]=useState([]),[addresses,setAddresses]=useState([]),[addressEditing,setAddressEditing]=useState(false),[addressBusy,setAddressBusy]=useState(false),[requestBusy,setRequestBusy]=useState(false),[requestReason,setRequestReason]=useState('');
- const [collection,setCollection]=useState([]),[passports,setPassports]=useState([]),[ownerContent,setOwnerContent]=useState([]),[collectorSummary,setCollectorSummary]=useState(null),[collectorLevel,setCollectorLevel]=useState(null),[collectorReward,setCollectorReward]=useState(null),[storeCredit,setStoreCredit]=useState(null),[storeCreditHistory,setStoreCreditHistory]=useState([]);
+ const [collection,setCollection]=useState([]),[passports,setPassports]=useState([]),[ownerContent,setOwnerContent]=useState([]),[collectorSummary,setCollectorSummary]=useState(null),[collectorLevel,setCollectorLevel]=useState(null),[collectorReward,setCollectorReward]=useState(null),[storeCredit,setStoreCredit]=useState(null),[storeCreditHistory,setStoreCreditHistory]=useState([]),[sharedLinks,setSharedLinks]=useState([]);
  const emptyAddress={id:null,label:'',full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:'',is_default:false};
  const [addressForm,setAddressForm]=useState(emptyAddress);
  const [auth,setAuth]=useState({email:'',password:'',full_name:''});
@@ -26,7 +26,7 @@ export default function GlobalAccount(){
 
  async function loadAccount(user){
   if(!supabase||!user)return;
-  const [{data:p,error:profileError},{data:o},{data:w},{data:a},{data:col},{data:pass},{data:own},{data:summary},{data:credit},{data:creditHistory}]=await Promise.all([
+  const [{data:p,error:profileError},{data:o},{data:w},{data:a},{data:col},{data:pass},{data:own},{data:summary},{data:credit},{data:creditHistory},{data:shares}]=await Promise.all([
    supabase.rpc('get_my_customer_account'),
    supabase.rpc('get_my_store_orders'),
    supabase.from('customer_wishlist').select('product_slug,title,catalogue,cover,is_merch').eq('user_id',user.id).order('created_at',{ascending:false}),
@@ -36,7 +36,8 @@ export default function GlobalAccount(){
    supabase.rpc('get_my_owner_content'),
    supabase.rpc('get_my_collector_summary'),
    supabase.rpc('get_my_store_credit'),
-   supabase.rpc('get_my_store_credit_history')
+   supabase.rpc('get_my_store_credit_history'),
+   supabase.rpc('get_my_shared_lists')
   ]);
   const row=Array.isArray(p)?p[0]:p;
   const next={full_name:row?.full_name||user.user_metadata?.full_name||'',phone:row?.phone||'',address_line:row?.address_line||'',country_code:row?.country_code||'TR',state_region:row?.state_region||'',city:row?.city||'',district:row?.district||'',postal_code:row?.postal_code||''};
@@ -46,7 +47,7 @@ export default function GlobalAccount(){
   for(const item of local)if(!merged.some(x=>x.product_slug===item.product_slug))merged.push(item);
   setWishlist(merged);writeWishlist(merged);
   if(local.length) await supabase.from('customer_wishlist').upsert(local.map(x=>({...x,user_id:user.id})),{onConflict:'user_id,product_slug'});
-  setProfile(next);setOrders(Array.isArray(o)?o:[]);setAddresses(Array.isArray(a)?a:[]);setCollection(Array.isArray(col)?col:[]);setPassports(Array.isArray(pass)?pass:[]);setOwnerContent(Array.isArray(own)?own:[]);setCollectorSummary(Array.isArray(summary)?summary[0]||null:summary||null);setStoreCredit(Array.isArray(credit)?credit[0]||null:credit||null);setStoreCreditHistory(Array.isArray(creditHistory)?creditHistory:[]);
+  setProfile(next);setOrders(Array.isArray(o)?o:[]);setAddresses(Array.isArray(a)?a:[]);setCollection(Array.isArray(col)?col:[]);setPassports(Array.isArray(pass)?pass:[]);setOwnerContent(Array.isArray(own)?own:[]);setCollectorSummary(Array.isArray(summary)?summary[0]||null:summary||null);setStoreCredit(Array.isArray(credit)?credit[0]||null:credit||null);setStoreCreditHistory(Array.isArray(creditHistory)?creditHistory:[]);setSharedLinks(Array.isArray(shares)?shares:[]);
   window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:{email:user.email||'',...next}}));
  }
 
@@ -84,7 +85,10 @@ export default function GlobalAccount(){
   if(error){setMessage(error.message);return}
   const url=window.location.origin+'/lists/'+data.token;
   try{await navigator.clipboard.writeText(url);setMessage('Share link copied.')}catch{setMessage(url)}
+  const {data:shares}=await supabase.rpc('get_my_shared_lists');setSharedLinks(Array.isArray(shares)?shares:[]);
  }
+ async function copySharedLink(token){const url=window.location.origin+'/lists/'+token;try{await navigator.clipboard.writeText(url);setMessage('Share link copied.')}catch{setMessage(url)}}
+ async function revokeSharedLink(token){if(!supabase||!session?.user)return;const {error}=await supabase.rpc('revoke_my_shared_list',{p_token:token});if(error){setMessage(error.message);return}setSharedLinks(x=>x.filter(v=>v.token!==token));setMessage('Share link revoked.');}
 
  useEffect(()=>{
   const openAccount=()=>{setMessage('');setOpen(true)};
@@ -107,7 +111,7 @@ export default function GlobalAccount(){
     if(!live)return;
     setSession(next||null);setMessage('');
     if(event==='SIGNED_IN'&&next?.user) setTimeout(()=>loadAccount(next.user),0);
-    if(event==='SIGNED_OUT'){setOrders([]);setCollection([]);setPassports([]);setOwnerContent([]);setCollectorSummary(null);setStoreCredit(null);setStoreCreditHistory([]);setProfile({full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:''});window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:null}))}
+    if(event==='SIGNED_OUT'){setOrders([]);setCollection([]);setPassports([]);setOwnerContent([]);setCollectorSummary(null);setStoreCredit(null);setStoreCreditHistory([]);setSharedLinks([]);setProfile({full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:''});window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:null}))}
   });
   return()=>{live=false;sub.subscription.unsubscribe()};
  },[]);
@@ -293,6 +297,13 @@ export default function GlobalAccount(){
         </Link>
         <button type="button" onClick={()=>removeWishlistItem(item.product_slug)}>REMOVE</button>
       </article>)}
+    </section>
+    <section className="accountSharedLinks">
+      <div className="accountSectionHead"><span>SHARED LINKS</span><small>{sharedLinks.length}</small></div>
+      {sharedLinks.length===0?<p className="accountEmpty">No active shared links.</p>:<div className="accountSharedLinkList">{sharedLinks.map(x=><article key={x.token}>
+        <div><b>{x.title||'SIDE:II Shared List'}</b><small>{String(x.kind||'list').toUpperCase()} · {x.item_count||0} ITEM{Number(x.item_count||0)===1?'':'S'} · EXPIRES {x.expires_at?new Date(x.expires_at).toLocaleDateString('tr-TR'):'—'}</small></div>
+        <div><button type="button" onClick={()=>copySharedLink(x.token)}>COPY</button><button type="button" onClick={()=>revokeSharedLink(x.token)}>REVOKE</button></div>
+      </article>)}</div>}
     </section>
     <section className="accountCollectorSummary">
       <div className="accountSectionHead"><span>{t('COLLECTOR PROFILE')}</span><small>{collectorSummary?collectorSummary.completion_percent+'%':'—'}</small></div>
