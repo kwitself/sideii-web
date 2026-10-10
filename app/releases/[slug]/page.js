@@ -4,6 +4,7 @@ import { getDatabaseRelease, getProductCredits, getPublicPressKit, getRelatedPro
 import EditionSelector from './EditionSelector';
 import GlobalHeader from '../../components/GlobalHeader';
 import ProductDiscovery from '../../components/ProductDiscovery';
+import ProductShare from '../../components/ProductShare';
 import {jsonLd,productSchema} from '../../lib/productCommerceMeta';
 
 export const revalidate = 0;
@@ -15,7 +16,7 @@ export async function generateMetadata({ params }) {
   const seo=release.seoConfig||{};
   const title=seo.title||`${release.catalogue} · ${release.title}`;
   const description=seo.description||`${release.artist} — ${release.title}. ${release.formatDetail}.`;
-  const ogImage=seo.og_image||release.cover||null;
+  const ogImage=seo.og_image||('/api/share-card/release/'+encodeURIComponent(slug)+'?preset=link');
   return {
     title,
     description,
@@ -50,6 +51,7 @@ export default async function ReleasePage({ params }) {
           <h1>{titleA}<br/><i>{titleB}</i></h1>
         </div>
         <span className="productIndex">{release.number} / RELEASE</span>
+        <ProductShare product={release} kind="release"/>
       </div><EditionSelector release={release}/></div>
     </section>
     {release.imprint==='lethargia'&&<section className="releaseImprintStrip shell"><div><small>A SIDE:II IMPRINT</small><img src="/brand/lethargia/lethargia-logo.png" alt="Lethargia Records"/></div><p>Release identity follows the work: sound, artwork and format developed as one object.</p><Link href="/imprints/lethargia">OPEN IMPRINT ↗</Link></section>}
