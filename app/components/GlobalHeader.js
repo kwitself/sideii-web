@@ -17,6 +17,7 @@ const MOBILE_LINKS=[
   ['Impact','/impact'],
   ['Wholesale','/wholesale'],
   ['Policies','/policies'],
+  ['Track Order','/track-order'],
   ['Apply','/apply']
 ];
 
@@ -63,6 +64,7 @@ export default function GlobalHeader({homeHref='/',className=''}) {
             <Link href="/impact">Impact</Link>
             <Link href="/wholesale">Wholesale</Link>
             <Link href="/policies">Policies</Link>
+            <Link href="/track-order">Track Order</Link>
           </div>
         </div>
         <Link href="/apply" className="navApply">Apply</Link>
