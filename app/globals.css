@@ -6321,3 +6321,36 @@ footer a:focus-visible,
  .secureDownloadFooter{gap:12px;align-items:flex-start}
  .secureDownloadFooter span:last-child{text-align:right}
 }
+
+
+/* SIDE:II secure digital edition confirmation */
+.accountDigitalPanelOverlay{position:absolute;inset:0;z-index:30;background:rgba(4,4,7,.94);display:flex;align-items:stretch;justify-content:center;overflow-y:auto;overscroll-behavior:contain}
+.accountDigitalPanel{box-sizing:border-box;min-height:100%;width:100%;max-width:620px;background:linear-gradient(155deg,#19121c 0%,#101014 49%,#0b0b0e 100%);color:#eee9e2;border-left:1px solid #403044;display:flex;flex-direction:column;animation:sideiiDigitalIn .28s ease-out}
+@keyframes sideiiDigitalIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.accountDigitalPanelTop{display:flex;justify-content:space-between;align-items:center;padding:25px 29px;border-bottom:1px solid #38303a;gap:15px}
+.accountDigitalPanelTop span,.accountDigitalPanelTop button{font:10px/1.4 Arial,sans-serif;letter-spacing:.17em;color:#b6a7b9}
+.accountDigitalPanelTop button{background:none;border:0;cursor:pointer;color:#f1e9f0;padding:8px}
+.accountDigitalPanelArt{height:166px;flex-shrink:0;position:relative;background:radial-gradient(ellipse at 50% 90%,rgba(175,62,107,.43),transparent 62%),linear-gradient(120deg,#271224,#130d18 70%);display:flex;align-items:center;justify-content:center;border-bottom:1px solid #392638;overflow:hidden}
+.accountDigitalPanelArt>span{font:900 130px/.9 Arial,sans-serif;letter-spacing:-.15em;color:rgba(252,221,240,.15);transform:skew(-10deg)}
+.accountDigitalPanelArt>small{position:absolute;bottom:17px;right:26px;color:#d8a8c8;font:9px Arial,sans-serif;letter-spacing:.22em}
+.accountDigitalPanelContent{padding:34px 30px 44px;display:flex;flex-direction:column;gap:20px}
+.accountDigitalPanelContent>small{font:9px Arial,sans-serif;letter-spacing:.24em;color:#c691b1}
+.accountDigitalPanelContent h2{font:600 clamp(25px,5vw,37px)/1.12 Arial,sans-serif;letter-spacing:-.045em;margin:0;color:#f7eff5;overflow-wrap:anywhere}
+.accountDigitalPanelTags{display:flex;gap:8px;flex-wrap:wrap}
+.accountDigitalPanelTags span{font:10px Arial,sans-serif;letter-spacing:.1em;border:1px solid #594054;color:#e9d0e1;padding:9px 12px}
+.accountDigitalPanelRemaining{padding:21px 22px;border:1px solid #563448;background:linear-gradient(110deg,rgba(112,39,79,.24),rgba(25,20,26,.5));display:flex;align-items:center;justify-content:space-between}
+.accountDigitalPanelRemaining>span{font:10px Arial,sans-serif;letter-spacing:.16em;color:#cbb2c3}
+.accountDigitalPanelRemaining strong{font:700 34px Arial,sans-serif;color:#fff}
+.accountDigitalPanelRemaining strong small{font-size:17px;font-weight:400;color:#a999a5}
+.accountDigitalPanelContent>p{font:13px/1.7 Arial,sans-serif;color:#b5abb4;margin:0}
+.accountDigitalPanelSecurity{font:9px/1.6 Arial,sans-serif;letter-spacing:.12em;color:#c798b6}
+.accountDigitalPanelStart{width:100%;min-height:62px;border:1px solid #e3a8c9;background:#e3a8c9;color:#190b17;cursor:pointer;font:700 12px Arial,sans-serif;letter-spacing:.16em;transition:background .2s,transform .2s}
+.accountDigitalPanelStart:hover:not(:disabled){background:#f3c0dc;transform:translateY(-2px)}
+.accountDigitalPanelStart:disabled{opacity:.6;cursor:wait}
+.accountDigitalPanelBack{align-self:center;background:none;border:0;color:#b8a8b4;font:10px Arial,sans-serif;letter-spacing:.14em;padding:12px;cursor:pointer}
+.accountDigitalPanelExhausted{padding:22px;border:1px solid #704359;display:flex;flex-direction:column;gap:9px;text-align:center;font:11px Arial,sans-serif;letter-spacing:.14em}
+.accountDigitalPanelExhausted span{color:#dba6c2}
+.accountDigitalPanelError{color:#ffb7c0!important;border:1px solid #773e50;padding:12px}
+.accountDigitalPanel button:focus-visible{outline:2px solid #f2bfdc;outline-offset:3px}
+@media(max-width:600px){.accountDigitalPanelTop{padding:18px 20px}.accountDigitalPanelContent{padding:28px 20px 35px}.accountDigitalPanelArt{height:135px}.accountDigitalPanelRemaining{padding:17px}.accountDigitalPanelContent{gap:17px}}
+@media(prefers-reduced-motion:reduce){.accountDigitalPanel{animation:none}.accountDigitalPanelStart{transition:none}}
