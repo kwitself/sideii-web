@@ -14,6 +14,31 @@ export async function GET(request,{params}){
   if(error||!target)return new Response('Download link expired or unavailable',{status:410});
 
   const value=String(target);
+
+  if(value==='sideii-internal://demo-digital'){
+    const body=[
+      'SIDE:II — DIGITAL DOWNLOAD DEMO',
+      '',
+      'Secure digital delivery test.',
+      'This file was generated only after a valid single-use download grant was consumed.',
+      '',
+      'Formats: WAV · FLAC · MP3',
+      'Master: 24-bit / 96 kHz',
+      '',
+      'SIDE:II / MMXXVI'
+    ].join('\n');
+
+    return new Response(body,{
+      status:200,
+      headers:{
+        'Content-Type':'text/plain; charset=utf-8',
+        'Content-Disposition':'attachment; filename="SIDEII-Digital-Demo.txt"',
+        'Cache-Control':'no-store, private',
+        'X-Content-Type-Options':'nosniff'
+      }
+    });
+  }
+
   if(value.startsWith('/')){
    const destination=new URL(value,request.url);
    if(destination.origin!==new URL(request.url).origin)return new Response('Invalid download target',{status:400});
