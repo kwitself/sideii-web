@@ -41,7 +41,7 @@ export function normalizeEditionVariant(variant={}){
  return norm(variant);
 }
 
-export default function EditionVisual({release,variant,forceHover=false,className='',renderId=null}){
+export default function EditionVisual({release,variant,forceHover=false,className='',renderId=null,backFace=false}){
  const v=norm(variant);
  const media=v.media||release?.media||'vinyl';
  const isCassette=media==='cassette',isDigital=media==='digital',isVinyl=media==='vinyl';
@@ -54,8 +54,15 @@ export default function EditionVisual({release,variant,forceHover=false,classNam
    </div>
    :isVinyl?<VinylObject variant={v} release={release}/>
    :<div className="productCdObject" aria-hidden="true"><div className="productCdDisc"><i/><b>{release.imprint==='lethargia'?'LETH':'SIDE:II'}</b><span>{release.number}</span></div></div>}
-  <div className={'productCover'+(release.hasShrinkwrap&&!isDigital?' shrinkwrap':'')}>
-   {release.cover?<img className="productArtwork" src={release.cover} alt={(release.artist||'SIDE:II')+' — '+(release.title||'Edition')}/>:<><span>{release.catalogue}</span><b>{release.number}</b><em>{release.title}</em></>}
+  <div className={'productCover'+(backFace?' editionReverseCover':'')+(release.hasShrinkwrap&&!isDigital&&!backFace?' shrinkwrap':'')}>
+   {backFace&&!isDigital?<div className="editionReversePrint">
+     <div className="editionReverseBrand"><span>{release.imprint==='lethargia'?'LETHARGIA RECORDS':'SIDE:II'}</span><small>{release.catalogue||release.number}</small></div>
+     <div className="editionReverseTitle"><b>{release.title||'Physical edition'}</b><span>{release.artist||''}</span></div>
+     <span className="editionReverseTrackHead">TRACKLIST / {String(media).toUpperCase()}</span>
+     <ol>{(Array.isArray(release.tracks)?release.tracks:[]).map((track,i)=><li key={i}><small>{String(i+1).padStart(2,'0')}</small><span>{typeof track==='string'?track:(track?.title||track?.name||track?.label||'Track '+(i+1))}</span></li>)}</ol>
+     {(!Array.isArray(release.tracks)||!release.tracks.length)&&<p className="editionReverseEmpty">TRACKLIST TO BE ANNOUNCED</p>}
+     <div className="editionReverseFoot"><span>PHYSICAL EDITION</span><span>{release.number||'SIDE:II'}</span></div>
+    </div>:release.cover?<img className="productArtwork" src={release.cover} alt={(release.artist||'SIDE:II')+' — '+(release.title||'Edition')}/>:<><span>{release.catalogue}</span><b>{release.number}</b><em>{release.title}</em></>}
   </div>
  </div>;
 }
