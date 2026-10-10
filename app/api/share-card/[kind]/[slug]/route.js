@@ -36,6 +36,8 @@ export async function GET(request,{params}){
  const catalogue=product.catalogue||'SIDE:II';
  const vertical=preset==='story';
  const square=preset==='square';
+ const stacked=vertical||square;
+ const artSize=vertical?820:(square?560:430);
 
  return new ImageResponse(
   <div style={{
@@ -50,16 +52,16 @@ export async function GET(request,{params}){
    </div>
 
    <div style={{
-    display:'flex',flexDirection:vertical?'column':'row',gap:vertical?54:56,alignItems:'center',
+    display:'flex',flexDirection:stacked?'column':'row',gap:vertical?54:(square?34:56),alignItems:'center',
     justifyContent:'center',flex:1,position:'relative',padding:vertical?'40px 0':'20px 0'
    }}>
     <div style={{
-     width:vertical?'82%':square?'58%':'44%',aspectRatio:'1 / 1',display:'flex',alignItems:'center',justifyContent:'center',
+     width:artSize,height:artSize,display:'flex',alignItems:'center',justifyContent:'center',
      border:'1px solid #37343a',background:'#0d0d0f',boxShadow:'0 28px 80px rgba(0,0,0,.42)',overflow:'hidden'
     }}>
      {art?<img src={art} style={{width:'100%',height:'100%',objectFit:'cover'}}/>:<div style={{fontSize:vertical?58:44,color:'#59555a'}}>{catalogue}</div>}
     </div>
-    <div style={{display:'flex',flexDirection:'column',width:vertical?'82%':square?'72%':'44%',gap:vertical?24:16}}>
+    <div style={{display:'flex',flexDirection:'column',width:stacked?'82%':'44%',gap:vertical?24:(square?14:16)}}>
      <div style={{display:'flex',fontSize:vertical?20:15,letterSpacing:5,color:lethargia?'#8f3947':'#77736d'}}>{format}</div>
      <div style={{display:'flex',fontSize:vertical?32:22,color:'#aaa59e'}}>{artist}</div>
      <div style={{
