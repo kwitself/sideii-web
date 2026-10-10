@@ -94,18 +94,70 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
  async function saveRenderNode(node,mediaName,{transparent=false,suffix=null}={}){
   if(!node)return false;
   const fileSuffix=suffix||(transparent?'hover-transparent':'hover-dark');
+  const visual=node.querySelector('.productVisual');
+  const original={
+   width:node.style.getPropertyValue('width'),
+   widthPriority:node.style.getPropertyPriority('width'),
+   height:node.style.getPropertyValue('height'),
+   heightPriority:node.style.getPropertyPriority('height'),
+   overflow:node.style.getPropertyValue('overflow'),
+   overflowPriority:node.style.getPropertyPriority('overflow'),
+   visualLeft:visual?.style.getPropertyValue('left')||'',
+   visualLeftPriority:visual?.style.getPropertyPriority('left')||'',
+   visualTop:visual?.style.getPropertyValue('top')||'',
+   visualTopPriority:visual?.style.getPropertyPriority('top')||''
+  };
   if(transparent)node.classList.add('exportTransparent');
   else node.classList.remove('exportTransparent');
   try{
+   node.style.setProperty('overflow','visible','important');
    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
-   const rect=node.getBoundingClientRect();
+
+   let rootRect=node.getBoundingClientRect();
+   const parts=[...node.querySelectorAll('.productCover,.productVinylObject,.productCdObject,.productCassette,.digitalMaster')];
+   const rects=parts.map(el=>el.getBoundingClientRect()).filter(rect=>rect.width>0&&rect.height>0);
+   const safe=48;
+
+   let minLeft=rootRect.left;
+   let minTop=rootRect.top;
+   let maxRight=rootRect.right;
+   let maxBottom=rootRect.bottom;
+   for(const rect of rects){
+    minLeft=Math.min(minLeft,rect.left);
+    minTop=Math.min(minTop,rect.top);
+    maxRight=Math.max(maxRight,rect.right);
+    maxBottom=Math.max(maxBottom,rect.bottom);
+   }
+
+   const shiftX=Math.max(0,rootRect.left-minLeft+safe);
+   const shiftY=Math.max(0,rootRect.top-minTop+safe);
+   const extraRight=Math.max(0,maxRight-rootRect.right+safe);
+   const extraBottom=Math.max(0,maxBottom-rootRect.bottom+safe);
+
+   const computedVisual=visual?getComputedStyle(visual):null;
+   const baseLeft=visual?(parseFloat(computedVisual.left)||0):0;
+   const baseTop=visual?(parseFloat(computedVisual.top)||0):0;
+
+   if(visual){
+    visual.style.setProperty('left',(baseLeft+shiftX)+'px','important');
+    visual.style.setProperty('top',(baseTop+shiftY)+'px','important');
+   }
+
+   node.style.setProperty('width',Math.ceil(rootRect.width+shiftX+extraRight)+'px','important');
+   node.style.setProperty('height',Math.ceil(rootRect.height+shiftY+extraBottom)+'px','important');
+   node.style.setProperty('overflow','hidden','important');
+
+   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+   rootRect=node.getBoundingClientRect();
+
    const dataUrl=await toPng(node,{
     cacheBust:true,
     pixelRatio:2,
-    width:Math.ceil(rect.width),
-    height:Math.ceil(rect.height),
+    width:Math.ceil(rootRect.width),
+    height:Math.ceil(rootRect.height),
     backgroundColor:transparent?undefined:'#09090a'
    });
+
    const a=document.createElement('a');
    a.href=dataUrl;
    a.download=`${product.slug||product.catalogue_no||'sideii'}-${mediaName}-${fileSuffix}.png`;
@@ -113,6 +165,17 @@ export default function ProductPreviewPanel({products=[],preferredProductId=null
    return true;
   }finally{
    node.classList.remove('exportTransparent');
+   const restore=(el,prop,value,priority)=>{
+    if(value)el.style.setProperty(prop,value,priority||'');
+    else el.style.removeProperty(prop);
+   };
+   restore(node,'width',original.width,original.widthPriority);
+   restore(node,'height',original.height,original.heightPriority);
+   restore(node,'overflow',original.overflow,original.overflowPriority);
+   if(visual){
+    restore(visual,'left',original.visualLeft,original.visualLeftPriority);
+    restore(visual,'top',original.visualTop,original.visualTopPriority);
+   }
   }
  }
  async function downloadHoverRender(transparent=false){
