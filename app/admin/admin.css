@@ -5497,3 +5497,37 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .adminNav a{transition:none}
  }
 }
+
+
+/* SIDE:II PREMIUM FINISH — admin control room */
+@layer sideiiAdmin{
+ .adminApp{--admin-premium-edge:#383239;--admin-premium-focus:#dfc4cf}
+ .adminRail{border-right-color:var(--admin-premium-edge);background:linear-gradient(180deg,#0c0b0e,#080809 65%)}
+ .adminBrand{border-bottom-color:var(--admin-premium-edge)}
+ .adminNav a{transition:background .18s ease,color .18s ease,border-color .18s ease}
+ .adminNav a.active{box-shadow:inset 2px 0 0 #bc9da9}
+ .adminPanel{border-color:var(--admin-premium-edge);background:#101013}
+ .adminApp :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea){
+  border-radius:2px;transition:border-color .18s ease,background .18s ease;
+ }
+ .adminApp :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea):focus{
+  border-color:#a98a9a;background-color:#161216;
+ }
+ .adminApp :is(button,a):focus-visible,.adminAuth :is(button,input):focus-visible{
+  outline:2px solid var(--admin-premium-focus);outline-offset:3px;
+ }
+ .adminApp .productRow{transition:background .17s ease}
+ .adminApp .productRow:hover{background:#181419}
+ .adminApp .tableHead{letter-spacing:.13em;color:#999098}
+ .adminApp :is(.productRow,.tableHead)>*{min-width:0}
+ .authCard{border-color:#4b3e47;box-shadow:0 34px 90px rgba(0,0,0,.56)}
+ .authCard .saveButton{min-height:48px;transition:background .18s ease}
+ .authCard .saveButton:hover:not(:disabled){background:#eee6e0}
+ @media(max-width:760px){
+  .adminRail{background:#0c0b0e}
+  .adminApp .tableHead{letter-spacing:.08em}
+ }
+ @media(prefers-reduced-motion:reduce){
+  .adminNav a,.adminApp .productRow,.adminApp :is(input,select,textarea),.authCard .saveButton{transition:none!important}
+ }
+}
