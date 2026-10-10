@@ -12,6 +12,8 @@ function money(value){
 export default function ProductShare({product,kind='release'}){
  const [open,setOpen]=useState(false);
  const [status,setStatus]=useState('');
+ const [preset,setPreset]=useState('link');
+ const [previewReady,setPreviewReady]=useState(false);
  const [mounted,setMounted]=useState(false);
  useEffect(()=>setMounted(true),[]);
  useEffect(()=>{
@@ -26,6 +28,8 @@ export default function ProductShare({product,kind='release'}){
  const title=product?.rawTitle||product?.title||'SIDE:II';
  const artist=product?.artist||'SIDE:II';
  const pagePath=kind==='store'?'/store/'+slug:'/releases/'+slug;
+ const isLethargia=String(product?.imprint||'').toLowerCase()==='lethargia';
+ const presetMeta={story:{label:'STORY',size:'1080 × 1920',use:'INSTAGRAM STORY'},square:{label:'SQUARE',size:'1080 × 1080',use:'POST / SHARE'},link:{label:'LINK CARD',size:'1200 × 630',use:'SOCIAL PREVIEW'}};
  const text=useMemo(()=>{
   const parts=[artist&&artist!=='SIDE:II MERCH'?artist:null,title,product?.format||product?.merchCategory,product?.price!=null?money(product.price):null].filter(Boolean);
   return parts.join(' · ');
@@ -79,24 +83,27 @@ export default function ProductShare({product,kind='release'}){
   window.open(targets[network], '_blank', 'noopener,noreferrer,width=760,height=720');
  }
 
- const layer=open&&mounted?createPortal(<div className="productShareLayer" role="dialog" aria-modal="true" aria-label="Share product">
+ const layer=open&&mounted?createPortal(<div className={'productShareLayer '+(isLethargia?'productShareLethargia':'productShareSideii')} role="dialog" aria-modal="true" aria-label="Share product">
    <button type="button" className="productShareShade" aria-label="Close share menu" onClick={()=>setOpen(false)}/>
    <section className="productShareSheet">
     <header><div><span>SHARE THIS EDITION</span><b>{title}</b></div><button type="button" onClick={()=>setOpen(false)}>CLOSE ×</button></header>
     <div className="productShareStudio">
-     <div className="productSharePreview">
-      <span>LINK CARD PREVIEW</span>
-      <div className="productSharePreviewFrame"><img src={cardUrl('link')} alt={title+' share preview'}/></div>
-      <small>1200 × 630 · SOCIAL PREVIEW</small>
+     <div className={'productSharePreview preset-'+preset}>
+      <span>{presetMeta[preset].label+' PREVIEW'}</span>
+      <div className={'productSharePreviewStage '+(previewReady?'ready':'loading')}>
+       <div className="productSharePreviewFrame">
+        <img key={preset} src={cardUrl(preset)} alt={title+' '+preset+' share preview'} onLoad={()=>setPreviewReady(true)} onError={()=>setPreviewReady(true)}/>
+       </div>
+      </div>
+      <small>{presetMeta[preset].size+' · '+presetMeta[preset].use}</small>
      </div>
      <div className="productShareControls">
       <div className="productSharePresets">
-       <button type="button" onClick={()=>shareCard('story')}><span>STORY</span><small>1080 × 1920</small></button>
-       <button type="button" onClick={()=>shareCard('square')}><span>SQUARE</span><small>1080 × 1080</small></button>
-       <button type="button" onClick={()=>shareCard('link')}><span>LINK CARD</span><small>1200 × 630</small></button>
+       {['story','square','link'].map(p=><button key={p} type="button" className={preset===p?'active':''} aria-pressed={preset===p} onClick={()=>{setPreviewReady(false);setPreset(p)}}><span>{presetMeta[p].label}</span><small>{presetMeta[p].size}</small><i>{preset===p?'SELECTED':'PREVIEW'}</i></button>)}
       </div>
+      <button type="button" className="productSharePrimary" onClick={()=>shareCard(preset)}>SHARE SELECTED {presetMeta[preset].label} ↗</button>
       <div className="productShareNetworks">
-       <button type="button" onClick={()=>shareCard('story')}>INSTAGRAM / STORY</button>
+       <button type="button" onClick={()=>shareCard(preset)}>INSTAGRAM / NATIVE SHARE</button>
        <button type="button" onClick={()=>openNetwork('whatsapp')}>WHATSAPP</button>
        <button type="button" onClick={()=>openNetwork('facebook')}>FACEBOOK</button>
        <button type="button" onClick={()=>openNetwork('x')}>X</button>
