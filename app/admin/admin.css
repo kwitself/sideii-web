@@ -5531,3 +5531,14 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
   .adminNav a,.adminApp .productRow,.adminApp :is(input,select,textarea),.authCard .saveButton{transition:none!important}
  }
 }
+
+
+/* SCREENSHOT QA 2026-10: admin text contrast without layout rewrites */
+@layer sideiiAdmin {
+ .adminApp .tableHead{color:#aaa1a5}
+ .adminApp .productRow{color:#beb6b8}
+ .adminApp .adminNav a{line-height:1.5}
+ .adminApp .adminPanel :is(input,select,textarea){color:#e0d9d3}
+ .adminApp .adminPanel :is(label,small){line-height:1.4}
+ .adminApp .adminPanel :is(button,a):focus-visible{outline:2px solid #e0cbbf;outline-offset:2px}
+}
