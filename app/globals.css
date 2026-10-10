@@ -6543,3 +6543,44 @@ footer a:focus-visible,
 .globalBagDrawer .checkoutForm :is(input,select,textarea){font-size:max(12px,1em)}
 .productShareSheet .productSharePresets button{min-height:62px}
 @media(max-width:760px){.productPage .trackSection li{grid-template-columns:42px minmax(0,1fr)}.productPage .trackSection li span{font-size:clamp(16px,4vw,20px)}}
+
+
+/* PHYSICAL EDITION FLIP — only inside product detail; Share Studio stays untouched */
+.editionExperience>.editionFlipStage{grid-column:1;position:relative;width:100%;max-width:650px;aspect-ratio:1;min-width:0;perspective:1500px;isolation:isolate}
+.editionFlipObject{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .95s cubic-bezier(.2,.72,.22,1)}
+.editionFlipObject.isFlipped{transform:rotateY(180deg)}
+.editionFlipFace{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform-style:preserve-3d}
+.editionFlipBack{transform:rotateY(180deg)}
+.editionFlipFace>.productVisual{width:100%!important;height:100%!important;max-width:none!important;min-height:0!important;margin:0!important}
+.editionFlipHit{position:absolute;inset:0;z-index:10;border:0;background:transparent;cursor:pointer;color:#ede7de;text-align:left}
+.editionFlipHit span{position:absolute;left:7%;bottom:0;display:inline-flex;align-items:center;gap:8px;padding:10px 13px;border:1px solid #585159;background:#101013e8;backdrop-filter:blur(10px);font:700 9px/1.4 Arial,sans-serif;letter-spacing:.14em;transition:border-color .2s,background .2s}
+.editionFlipHit:hover span{background:#282026;border-color:#ada0aa}
+.editionFlipHit:focus-visible{outline:2px solid #e9d9e3;outline-offset:3px}
+.editionFlipObject.isFlipped .physicalBackVisual .productCover{transform:none!important}
+.editionFlipObject.isFlipped .physicalBackVisual.vinyl .productVinylObject,
+.editionFlipBack .physicalBackVisual.vinyl .productVinylObject{left:2%!important;right:auto!important;transform:translateX(-36%) rotate(-58deg)!important}
+.editionFlipBack .physicalBackVisual.cd .productCdObject,
+.editionFlipBack .physicalBackVisual.cassette .productCassette{left:0!important;right:auto!important;transform:translateX(-32%) rotate(-5deg)!important}
+.editionFlipBack .physicalBackVisual .productCover{transform:none!important;z-index:3}
+.editionFlipBack .physicalBackVisual .editionReverseCover{background:linear-gradient(155deg,#252126,#121215 68%,#0c0c0e);border:1px solid #544b51;display:block;padding:0!important;overflow:hidden;box-shadow:0 23px 50px #0009}
+.editionReversePrint{position:absolute;inset:0;display:flex;flex-direction:column;gap:3%;padding:8%;color:#ece6df;text-align:left;overflow:hidden;transform:none}
+.editionReverseBrand,.editionReverseFoot{display:flex;align-items:center;justify-content:space-between;gap:8px;font:700 clamp(7px,.7vw,10px)/1.3 Arial,sans-serif;letter-spacing:.12em;color:#c6bcb8}
+.editionReverseBrand small{color:#92878b;font-size:.8em}
+.editionReverseTitle{display:flex;flex-direction:column;gap:5px;margin-top:4%}
+.editionReverseTitle b{font:400 clamp(16px,2.25vw,32px)/1.02 Georgia,serif;letter-spacing:-.035em;overflow-wrap:anywhere}
+.editionReverseTitle span{font:clamp(9px,1vw,14px)/1.2 Georgia,serif;color:#c0b5af}
+.editionReverseTrackHead{font:700 clamp(7px,.7vw,10px)/1.25 Arial,sans-serif;letter-spacing:.17em;color:#a89ea0;border-bottom:1px solid #564d54;padding-bottom:3%;margin-top:5%}
+.editionReversePrint ol{list-style:none;padding:0;margin:0;overflow:auto;scrollbar-width:thin;flex:1;min-height:0}
+.editionReversePrint li{display:grid;grid-template-columns:2.2em minmax(0,1fr);gap:6px;align-items:baseline;padding:2.5% 0;border-bottom:1px solid #3e373e;font:clamp(10px,1.1vw,15px)/1.3 Georgia,serif;overflow-wrap:anywhere}
+.editionReversePrint li small{color:#8e8588;font:clamp(7px,.7vw,10px)/1 Arial,sans-serif}
+.editionReverseEmpty{font:10px/1.5 Arial,sans-serif;letter-spacing:.15em;color:#9d9395}
+.editionReverseFoot{margin-top:auto;padding-top:4%;border-top:1px solid #4a4147;font-size:clamp(7px,.65vw,9px)}
+@media(max-width:760px){
+ .editionExperience>.editionFlipStage{grid-column:1;width:100%;max-width:500px}
+ .editionReversePrint{padding:7%}
+ .editionReverseTitle b{font-size:clamp(16px,5vw,26px)}
+ .editionReverseTitle span{font-size:clamp(9px,2.8vw,13px)}
+ .editionReversePrint li{font-size:clamp(9px,2.6vw,13px)}
+ .editionFlipHit span{font-size:9px;bottom:1%}
+}
+@media(prefers-reduced-motion:reduce){.editionFlipObject{transition:none}.editionFlipHit span{transition:none}}
