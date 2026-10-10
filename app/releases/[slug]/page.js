@@ -5,6 +5,7 @@ import EditionSelector from './EditionSelector';
 import GlobalHeader from '../../components/GlobalHeader';
 import ProductDiscovery from '../../components/ProductDiscovery';
 import ProductShare from '../../components/ProductShare';
+import ProductLaunchGate from '../../components/ProductLaunchGate';
 import {jsonLd,productSchema} from '../../lib/productCommerceMeta';
 
 export const revalidate = 0;
@@ -52,7 +53,7 @@ export default async function ReleasePage({ params }) {
           <h1>{titleA}<br/><i>{titleB}</i></h1>
         </div>
         <span className="productIndex">{release.number} / RELEASE</span>
-        <ProductShare product={release} kind="release"/>
+        <ProductShare product={release} kind="release"/><ProductLaunchGate productId={release.id}/>
       </div><EditionSelector release={release}/></div>
     </section>
     {release.imprint==='lethargia'&&<section className="releaseImprintStrip shell"><div><small>A SIDE:II IMPRINT</small><img src="/brand/lethargia/lethargia-logo.png" alt="Lethargia Records"/></div><p>Release identity follows the work: sound, artwork and format developed as one object.</p><Link href="/imprints/lethargia">OPEN IMPRINT ↗</Link></section>}
