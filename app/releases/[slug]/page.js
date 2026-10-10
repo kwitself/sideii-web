@@ -22,6 +22,7 @@ export async function generateMetadata({ params }) {
     description,
     alternates:{canonical:seo.canonical||('/releases/'+slug)},
     openGraph:{title,description,url:seo.canonical||('/releases/'+slug),images:ogImage?[ogImage]:[]},
+    twitter:{card:'summary_large_image',title,description,images:ogImage?[ogImage]:[]},
   };
 }
 
