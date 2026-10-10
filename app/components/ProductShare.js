@@ -4,6 +4,7 @@ import {useEffect,useMemo,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
 import {toBlob} from 'html-to-image';
 import EditionVisual,{normalizeEditionVariant} from './EditionVisual';
+import {trackCommerce} from './CommerceTelemetry';
 
 function money(value){
  const n=Number(value);
@@ -23,6 +24,7 @@ export default function ProductShare({product,kind='release'}){
  const [mounted,setMounted]=useState(false);
  const captureRef=useRef(null);
  useEffect(()=>setMounted(true),[]);
+ useEffect(()=>{if(product?.id)trackCommerce('product_view',{product_id:product.id,properties:{kind,slug:product.slug||null}})},[product?.id]);
  useEffect(()=>{
   if(!open)return;
   const prev=document.body.style.overflow;
@@ -59,11 +61,13 @@ export default function ProductShare({product,kind='release'}){
  const absolutePage=()=>new URL(pagePath,window.location.origin).toString();
 
  async function copyLink(){
+  trackCommerce('share',{product_id:product?.id||null,properties:{channel:'copy_link'}});
   try{await navigator.clipboard.writeText(absolutePage());setStatus('LINK COPIED ✓')}catch{setStatus('COPY FAILED')}
   setTimeout(()=>setStatus(''),1500);
  }
 
  async function shareCard(preset='square'){
+  trackCommerce('share',{product_id:product?.id||null,properties:{channel:'native',preset,media}});
   const url=absolutePage();
   try{
    let blob=null;
@@ -106,6 +110,7 @@ export default function ProductShare({product,kind='release'}){
  }
 
  function openNetwork(network){
+  trackCommerce('share',{product_id:product?.id||null,properties:{channel:network}});
   const url=encodeURIComponent(absolutePage());
   const copy=encodeURIComponent(text);
   const targets={
