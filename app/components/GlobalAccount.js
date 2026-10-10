@@ -217,10 +217,16 @@ export default function GlobalAccount(){
   try{
    const {data,error}=await supabase.rpc('create_my_digital_download_grant',{p_order_item_id:item.id});
    if(error||!data){setMessage(error?.message||'Digital download unavailable.');return}
-   const opened=window.open('/api/download/'+encodeURIComponent(String(data)),'_blank','noopener,noreferrer');
-   if(!opened){setMessage('Your browser blocked the download window. Allow pop-ups and try again.');return}
+   const href='/api/download/'+encodeURIComponent(String(data));
+   const link=document.createElement('a');
+   link.href=href;
+   link.target='_blank';
+   link.rel='noopener noreferrer';
+   document.body.appendChild(link);
+   link.click();
+   link.remove();
 
-   // Optimistic live decrement; server polling below reconciles the real count.
+   // Update the visible order immediately; server polling reconciles the real count.
    setSelectedOrder(current=>{
     if(!current)return current;
     return {
@@ -237,7 +243,8 @@ export default function GlobalAccount(){
 
    const refreshOrders=async()=>{
     if(!session?.user)return;
-    const {data:nextOrders}=await supabase.rpc('get_my_store_orders');
+    const {data:nextOrders,error:ordersError}=await supabase.rpc('get_my_store_orders');
+    if(ordersError)return;
     const list=Array.isArray(nextOrders)?nextOrders:[];
     setOrders(list);
     setSelectedOrder(current=>{
@@ -246,7 +253,7 @@ export default function GlobalAccount(){
     });
    };
 
-   [500,1200,2400,4000].forEach(ms=>setTimeout(refreshOrders,ms));
+   [700,1500,3000].forEach(ms=>setTimeout(refreshOrders,ms));
   }finally{setDownloadBusyId(null)}
  }
 
