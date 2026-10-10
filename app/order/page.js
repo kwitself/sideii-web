@@ -3,6 +3,7 @@
 import {useEffect,useState} from 'react';
 import Link from 'next/link';
 import GlobalHeader from '../components/GlobalHeader';
+import PostPurchaseOffers from '../components/PostPurchaseOffers';
 import {supabase} from '../lib/supabase';
 import './guest-order.css';
 
@@ -101,6 +102,7 @@ export default function GuestOrderPage(){
     <header><span>ITEMS</span><b>{order.items?.length||0}</b></header>
     {(order.items||[]).map(item=><div className="guestOrderItem" key={item.id}><div><small>{item.sku} · {String(item.format).toUpperCase()}</small><b>{item.title}</b><span>QTY {item.quantity}{item.preorder?' · PRE-ORDER':''}</span></div><strong>{money(item.line_total)}</strong>{item.download_available&&<button type="button" disabled={busy==='download:'+item.id} onClick={()=>download(item)}>{busy==='download:'+item.id?'PREPARING…':'DOWNLOAD DIGITAL EDITION ↗'}</button>}</div>)}
    </article>
+   <PostPurchaseOffers orderId={order.id} paymentStatus={order.payment_status} guestAccessToken={token}/>
 
    {(canCancel||canRefund||canReturn)&&<article className="guestOrderCard guestOrderActions">
     <header><span>ORDER REQUEST</span><b>AFTERCARE</b></header>
