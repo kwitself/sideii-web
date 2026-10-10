@@ -12,8 +12,8 @@ export default function SharedListClient({token}){
  return <section className="sharedListShell">
   <header><span>{String(data.kind||'list').toUpperCase()}</span><h1>{data.title||'SIDE:II Shared List'}</h1><p>Shared from a SIDE:II collector account.</p></header>
   <div className="sharedListGrid">{items.map((item,i)=>{
-   const slug=item.product_slug||item.slug;const merch=!!item.is_merch;
-   return <article key={slug||i}>{item.cover&&<img src={item.cover} alt=""/>}<div><small>{item.catalogue||item.format||'SIDE:II'}</small><b>{item.title||'Untitled object'}</b>{item.qty&&<span>QTY {item.qty}</span>}{slug&&<Link href={merch?('/store/'+slug):('/releases/'+slug)}>OPEN →</Link>}</div></article>
+   const slug=item.product_slug||item.productSlug||item.slug;const merch=!!(item.is_merch??item.isMerch??item.product_type==='merch');
+   return <article key={slug||i}>{(item.cover||item.image)&&<img src={item.cover||item.image} alt=""/>}<div><small>{item.catalogue||item.format||'SIDE:II'}</small><b>{item.title||'Untitled object'}</b>{item.qty&&<span>QTY {item.qty}</span>}{slug&&<Link href={merch?('/store/'+slug):('/releases/'+slug)}>OPEN →</Link>}</div></article>
   })}</div>
  </section>;
 }
