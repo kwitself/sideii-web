@@ -12,8 +12,9 @@ function Write-Good($m){ Write-Host $m -ForegroundColor Green }
 function Write-Warn2($m){ Write-Host $m -ForegroundColor Yellow }
 function Write-Bad($m){ Write-Host $m -ForegroundColor Red }
 
-function Invoke-Git([string[]]$Args){
-  $out = & git @Args 2>&1
+function Invoke-Git([string[]]$GitArgs){
+  if(-not $GitArgs -or $GitArgs.Count -eq 0){ throw 'AUTO-SYNC internal error: empty git arguments' }
+  $out = & git @GitArgs 2>&1
   if($LASTEXITCODE -ne 0){ throw ($out -join [Environment]::NewLine) }
   return $out
 }
@@ -31,7 +32,7 @@ function Sync-Once {
       return
     }
 
-    Invoke-Git @('fetch','origin','main') | Out-Null
+    Invoke-Git -GitArgs @('fetch','origin','main') | Out-Null
 
     $head = (& git rev-parse HEAD).Trim()
     $remote = (& git rev-parse origin/main).Trim()
