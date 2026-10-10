@@ -33,6 +33,19 @@ export default function CommerceExpansionPanel({products=[]}){
  },'Post-purchase offer saved.')}
  async function toggleFeed(f){await run('admin_set_feed_channel',{p_code:f.code,p_enabled:!f.enabled,p_feed_path:f.feed_path||null},f.label+' updated.')}
  async function resolveRisk(id){await run('admin_resolve_order_risk',{p_flag_id:id},'Risk flag resolved.')}
+ async function runRecovery(){
+  if(!supabase||busy)return;
+  setBusy(true);setMsg('');
+  try{
+   const {data:s}=await supabase.auth.getSession();
+   const token=s.session?.access_token;
+   if(!token){setMsg('Admin session unavailable.');return}
+   const res=await fetch('/api/recovery/run',{method:'POST',headers:{Authorization:'Bearer '+token}});
+   const body=await res.json();
+   setMsg(res.ok?('Recovery run complete · '+Number(body.sent||0)+' email(s) sent.'):(body.error||'Recovery run failed.'));
+   if(res.ok)load();
+  }catch(e){setMsg(String(e?.message||e))}finally{setBusy(false)}
+ }
 
  const f=snap?.funnel||{};
  return <section className="adminSection adminViewSection commerceExpansion">
@@ -40,7 +53,7 @@ export default function CommerceExpansionPanel({products=[]}){
   {msg&&<p className="dbNotice">{msg}</p>}
   <div className="commerceExpansionMetrics">
    <article><span>DROP / LAUNCH</span><strong>{snap?.launches||0}</strong><small>{snap?.launch_subscribers||0} subscribers</small></article>
-   <article><span>RECOVERY</span><strong>{snap?.active_recovery||0}</strong><small>{snap?.recovered_carts||0} recovered</small></article>
+   <article><span>RECOVERY</span><strong>{snap?.active_recovery||0}</strong><small>{snap?.recovered_carts||0} recovered</small><button type="button" className="commerceMetricAction" onClick={runRecovery} disabled={busy}>RUN RECOVERY →</button></article>
    <article><span>REFERRALS</span><strong>{snap?.referrals||0}</strong><small>active partner codes</small></article>
    <article><span>RISK</span><strong>{snap?.risk_open||0}</strong><small>open reviews</small></article>
   </div>
