@@ -3,7 +3,7 @@ param(
   [switch]$Once
 )
 
-$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'Continue'
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 Set-Location $repo
 
@@ -14,8 +14,11 @@ function Write-Bad($m){ Write-Host $m -ForegroundColor Red }
 
 function Invoke-Git([string[]]$GitArgs){
   if(-not $GitArgs -or $GitArgs.Count -eq 0){ throw 'AUTO-SYNC internal error: empty git arguments' }
-  $out = & git @GitArgs 2>&1
-  if($LASTEXITCODE -ne 0){ throw ($out -join [Environment]::NewLine) }
+  $out = @(& git @GitArgs 2>&1)
+  $code = $LASTEXITCODE
+  if($code -ne 0){
+    throw ("git " + ($GitArgs -join ' ') + " failed (" + $code + "): " + ($out -join [Environment]::NewLine))
+  }
   return $out
 }
 
@@ -63,10 +66,11 @@ function Sync-Once {
     }
 
     $oldHead = $head
-    $pullOut = & git pull --rebase origin main 2>&1
-    if($LASTEXITCODE -ne 0){
+    try{
+      $pullOut = Invoke-Git -GitArgs @('pull','--rebase','origin','main')
+    }catch{
       Write-Bad "Git guncellemesi basarisiz."
-      Write-Host ($pullOut -join [Environment]::NewLine)
+      Write-Host $_.Exception.Message
       if($stashMade){ Write-Warn2 "Yerel degisiklikler stash'te guvende: $stashName" }
       return
     }
