@@ -6492,3 +6492,42 @@ footer a:focus-visible,
  .accountDigitalPanelRemaining{align-items:flex-start;flex-direction:column}
 }
 @media(prefers-reduced-motion:reduce){.accountOrderRow{transition:none}}
+
+
+/* SIDE:II PREMIUM FINISH 2026-10 — shared public storefront components */
+:root{--sii-surface:#101012;--sii-surface-hover:#171619;--sii-edge:#343138;--sii-edge-strong:#625961;--sii-ink:#eee9e3;--sii-muted:#a9a19d;--sii-focus:#dfc4cf}
+.globalSiteHeader{border-bottom-color:#302c31!important;backdrop-filter:saturate(125%) blur(16px)}
+.globalSiteHeader .primaryNav a,
+.globalSiteHeader .navExplore>button{transition:color .2s ease,opacity .2s ease}
+.globalSiteHeader .primaryNav a:hover,.globalSiteHeader .navExplore>button:hover{color:var(--sii-ink)}
+.globalBagDrawer :is(input:not([type="checkbox"]),select,textarea),
+.globalAccountDrawer :is(input:not([type="checkbox"]),select,textarea),
+.productShareSheet :is(input:not([type="checkbox"]),select,textarea){
+ border-radius:3px;transition:border-color .18s ease,background .18s ease;
+}
+.globalBagDrawer :is(input,select,textarea):focus,
+.globalAccountDrawer :is(input,select,textarea):focus,
+.productShareSheet :is(input,select,textarea):focus{border-color:#a68b9b}
+.globalBagDrawer :is(button,a),.globalAccountDrawer :is(button,a),.productShareSheet :is(button,a){
+ -webkit-tap-highlight-color:transparent;
+}
+.productShareSheet{border-color:#52424d;box-shadow:0 32px 100px rgba(0,0,0,.6)}
+.productShareSheet .productShareControlHeading{border-bottom-color:#51454d}
+.productShareSheet .productShareDownload{border-radius:2px}
+.accountOrderRow{border-radius:3px}
+.accountAddressList article{border-radius:3px}
+.accountDigitalPanel{box-shadow:-16px 0 64px #0008}
+@media(hover:hover){
+ .productShareSheet .productShareDownload:hover:not(:disabled){transform:translateY(-1px)}
+ .accountOrderRow:hover{border-color:#6b4e61}
+}
+@media(max-width:760px){
+ .globalSiteHeader{backdrop-filter:none}
+ .productShareSheet{box-shadow:none}
+}
+@media(prefers-reduced-motion:reduce){
+ .globalSiteHeader .primaryNav a,.globalSiteHeader .navExplore>button,
+ .globalBagDrawer :is(input,select,textarea),.globalAccountDrawer :is(input,select,textarea),
+ .productShareSheet :is(input,select,textarea){transition:none!important}
+ .productShareSheet .productShareDownload:hover{transform:none!important}
+}
