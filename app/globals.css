@@ -6403,3 +6403,35 @@ footer a:focus-visible,
 .productShareExactCard.exact-square .productShareExactMeta{bottom:11%!important;z-index:6}
 .productShareExactCard.exact-story .productShareExactVisual{width:75%!important;left:12.5%!important;top:19%!important}
 .productShareExactCard.exact-story .productShareExactMeta{top:63%!important;z-index:6}
+
+
+/* Share composition v2: allocate fixed safe regions for the full hover object.
+   The artwork is scaled as a unit, so the protruding record stays visible. */
+.productShareExactCard.exact-square .productShareExactVisual{
+ left:15%!important;top:15%!important;width:70%!important;height:56%!important;aspect-ratio:auto!important;
+ display:grid;place-items:center;overflow:visible;
+}
+.productShareExactCard.exact-square .productShareExactVisual>.productVisual{
+ width:78%!important;height:78%!important;min-width:0!important;
+ transform:scale(.78)!important;transform-origin:center center!important;
+}
+.productShareExactCard.exact-square .productShareExactMeta{
+ left:10%!important;right:10%!important;top:75%!important;bottom:9%!important;
+ gap:4px;justify-content:center;
+}
+.productShareExactCard.exact-square .productShareExactMeta b{font-size:clamp(18px,3vw,33px);line-height:1.04}
+.productShareExactCard.exact-story .productShareExactVisual{
+ left:12%!important;top:18%!important;width:76%!important;height:40%!important;
+ aspect-ratio:auto!important;display:grid;place-items:center;overflow:visible;
+}
+.productShareExactCard.exact-story .productShareExactVisual>.productVisual{
+ width:84%!important;height:84%!important;min-width:0!important;
+ transform:scale(.78)!important;transform-origin:center center!important;
+}
+.productShareExactCard.exact-story .productShareExactMeta{
+ left:9%!important;right:9%!important;top:62%!important;bottom:10%!important;justify-content:center;
+}
+.productShareExactCard.exact-story .productShareExactMeta b{font-size:clamp(22px,4vw,45px);line-height:1.01}
+.productShareExactCard.exact-link .productShareExactVisual>.productVisual{
+ transform:scale(.84)!important;transform-origin:center center!important;
+}
