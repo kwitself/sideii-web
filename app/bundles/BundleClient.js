@@ -4,9 +4,10 @@ import {useMemo,useState} from 'react';
 import {MAX_CART_LINE_QTY,addCartItem,readCart} from '../lib/cart';
 import {useLocaleCurrency} from '../components/LocaleCurrencyProvider';
 
-export default function BundleClient({bundles=[],products=[]}){
+export default function BundleClient({bundles=[],products=[],flexRules=[]}){
  const {money}=useLocaleCurrency();
  const [message,setMessage]=useState('');
+ const [flexSelected,setFlexSelected]=useState([]);
  const productMap=useMemo(()=>Object.fromEntries(products.map(p=>[p.id,p])),[products]);
 
  const chosenVariant=product=>(product?.variants||[])[0]||null;
@@ -30,6 +31,37 @@ export default function BundleClient({bundles=[],products=[]}){
   const subtotal=valid.reduce((s,r)=>s+Number(r.variant.price||0)*Math.max(1,Number(r.cfg.quantity||1)),0);
   const discount=bundle.discount_type==='percent'?subtotal*Math.min(Number(bundle.discount_value||0),100)/100:Math.min(subtotal,Number(bundle.discount_value||0));
   return {rows,valid,subtotal,discount,total:Math.max(0,subtotal-discount)};
+ }
+
+ const activeFlex=flexRules[0]||null;
+ const flexEligible=useMemo(()=>{
+  if(!activeFlex)return [];
+  const ids=Array.isArray(activeFlex.eligible_product_ids)?activeFlex.eligible_product_ids:[];
+  return products.filter(p=>!ids.length||ids.includes(p.id));
+ },[activeFlex,products]);
+ const flexRows=useMemo(()=>flexSelected.map(id=>{const product=productMap[id];return {product,variant:chosenVariant(product)}}).filter(x=>x.product&&x.variant),[flexSelected,productMap]);
+ const flexSubtotal=flexRows.reduce((sum,x)=>sum+Number(x.variant.price||0),0);
+ const flexDiscount=!activeFlex?0:(activeFlex.discount_type==='percent'?flexSubtotal*Math.min(Number(activeFlex.discount_value||0),100)/100:Math.min(flexSubtotal,Number(activeFlex.discount_value||0)));
+ const flexReady=!!activeFlex&&flexRows.length>=Number(activeFlex.min_items||2)&&(!activeFlex.max_items||flexRows.length<=Number(activeFlex.max_items));
+
+ function toggleFlex(productId){
+  if(flexSelected.includes(productId)){setFlexSelected(x=>x.filter(id=>id!==productId));return}
+  if(activeFlex?.max_items&&flexSelected.length>=Number(activeFlex.max_items)){setMessage('This set allows up to '+activeFlex.max_items+' objects.');return}
+  setFlexSelected(x=>[...x,productId]);
+ }
+ function addFlexBundle(){
+  if(!flexReady){setMessage('Select at least '+Number(activeFlex?.min_items||2)+' eligible objects.');return}
+  const cart=readCart();
+  for(const row of flexRows){
+   const allowed=lineMax(row.product,row.variant);
+   const key=String(row.variant.id||row.variant.sku||'');
+   const existing=cart.find(x=>String(x.key||x.variantId||x.sku||'')===key);
+   if(row.product.status!=='AVAILABLE'||allowed<=Number(existing?.qty||0)){setMessage(row.product.title+' is unavailable for this set.');return}
+  }
+  for(const row of flexRows)addCartItem(row.product,row.variant);
+  setMessage((activeFlex.name||'Custom set')+' added. Final saving is verified at checkout.');
+  setFlexSelected([]);
+  window.dispatchEvent(new Event('sideii-open-bag'));
  }
 
  function addBundle(bundle){
@@ -71,5 +103,10 @@ export default function BundleClient({bundles=[],products=[]}){
     <div className="bundleBuy"><small>SET TOTAL</small>{x.discount>0&&<del>{money(x.subtotal)}</del>}<b>{money(x.total)}</b><button disabled={x.valid.length!==x.rows.length||!x.valid.length} onClick={()=>addBundle(b)}>{x.valid.length!==x.rows.length?'UNAVAILABLE':'ADD BUNDLE →'}</button></div>
    </article>})}
   </section>
+  {activeFlex&&<section className="flexBundleBuilder shell">
+   <header><div><span>BUILD YOUR OWN / SET</span><h2>{activeFlex.name}</h2><p>Choose {activeFlex.min_items}{activeFlex.max_items?'–'+activeFlex.max_items:'+'} eligible objects. The checkout backend recalculates the best available saving.</p></div><div><small>{activeFlex.discount_type==='percent'?activeFlex.discount_value+'% SAVING':money(activeFlex.discount_value)+' SAVING'}</small><b>{flexReady?money(Math.max(0,flexSubtotal-flexDiscount)):money(flexSubtotal)}</b></div></header>
+   <div className="flexBundleGrid">{flexEligible.map(p=>{const v=chosenVariant(p),selected=flexSelected.includes(p.id);return <button type="button" key={p.id} className={selected?'selected':''} onClick={()=>toggleFlex(p.id)} disabled={!v||p.status!=='AVAILABLE'}><span>{selected?'✓':'＋'}</span><div><small>{p.catalogue}</small><b>{p.rawTitle||p.title}</b><em>{v?money(v.price):'UNAVAILABLE'}</em></div></button>})}</div>
+   <footer><span>{flexSelected.length} / {activeFlex.max_items||'∞'} SELECTED</span><button type="button" disabled={!flexReady} onClick={addFlexBundle}>ADD CUSTOM SET →</button></footer>
+  </section>}
  </main>
 }
