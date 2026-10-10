@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {useEffect,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 
 const MOBILE_LINKS=[
   ['Releases','/#releases'],
@@ -23,13 +23,24 @@ const MOBILE_LINKS=[
 
 export default function GlobalHeader({homeHref='/',className=''}) {
   const [mobileOpen,setMobileOpen]=useState(false);
+  const [exploreOpen,setExploreOpen]=useState(false);
+  const mobileDrawerRef=useRef(null),mobileTriggerRef=useRef(null),exploreRef=useRef(null);
 
   useEffect(()=>{
     if(!mobileOpen){
       document.body.classList.remove('sideii-mobile-nav-open');
       return;
     }
-    const onKey=e=>{if(e.key==='Escape')setMobileOpen(false)};
+    const previousFocus=document.activeElement;
+    requestAnimationFrame(()=>mobileDrawerRef.current?.querySelector('.mobileNavHead button')?.focus());
+    const onKey=e=>{
+      if(e.key==='Escape'){e.preventDefault();setMobileOpen(false);return}
+      if(e.key!=='Tab')return;
+      const nodes=[...(mobileDrawerRef.current?.querySelectorAll('a[href],button:not([disabled])')||[])];
+      if(!nodes.length)return;
+      if(e.shiftKey&&document.activeElement===nodes[0]){e.preventDefault();nodes[nodes.length-1].focus()}
+      else if(!e.shiftKey&&document.activeElement===nodes[nodes.length-1]){e.preventDefault();nodes[0].focus()}
+    };
     const prev=document.body.style.overflow;
     document.body.style.overflow='hidden';
     document.body.classList.add('sideii-mobile-nav-open');
@@ -38,8 +49,16 @@ export default function GlobalHeader({homeHref='/',className=''}) {
       document.body.style.overflow=prev;
       document.body.classList.remove('sideii-mobile-nav-open');
       window.removeEventListener('keydown',onKey);
+      requestAnimationFrame(()=>{if(previousFocus?.isConnected)previousFocus.focus()});
     };
   },[mobileOpen]);
+
+  useEffect(()=>{
+    if(!exploreOpen)return;
+    const close=e=>{if(e.key==='Escape'){setExploreOpen(false);exploreRef.current?.querySelector('button')?.focus()}else if(e.type==='pointerdown'&&!exploreRef.current?.contains(e.target))setExploreOpen(false)};
+    window.addEventListener('keydown',close);document.addEventListener('pointerdown',close);
+    return()=>{window.removeEventListener('keydown',close);document.removeEventListener('pointerdown',close)};
+  },[exploreOpen]);
 
   return <>
     <header className={'nav globalSiteHeader shell '+className}>
@@ -52,9 +71,9 @@ export default function GlobalHeader({homeHref='/',className=''}) {
         <Link href="/#imprints" className="navImprints">Imprints</Link>
         <Link href="/store" className="navStore">Store</Link>
         <Link href="/wear" className="navWear">Wear</Link>
-        <div className="navExplore">
-          <button type="button" aria-haspopup="true">Explore <span>＋</span></button>
-          <div className="navExploreMenu">
+        <div ref={exploreRef} className={"navExplore "+(exploreOpen?"isOpen":"")} onMouseLeave={()=>setExploreOpen(false)}>
+          <button type="button" aria-haspopup="true" aria-expanded={exploreOpen} onClick={()=>setExploreOpen(v=>!v)}>Explore <span>{exploreOpen?"−":"＋"}</span></button>
+          <div className="navExploreMenu" onClick={()=>setExploreOpen(false)}>
             <Link href="/collections">Collections</Link>
             <Link href="/bundles">Bundles</Link>
             <Link href="/artists">Artists</Link>
@@ -73,6 +92,7 @@ export default function GlobalHeader({homeHref='/',className=''}) {
       <button
         type="button"
         className="mobileMenuTrigger"
+        ref={mobileTriggerRef}
         aria-label="Open navigation"
         aria-expanded={mobileOpen}
         onClick={()=>setMobileOpen(true)}
@@ -88,7 +108,7 @@ export default function GlobalHeader({homeHref='/',className=''}) {
       onClick={()=>setMobileOpen(false)}
     />
 
-    <aside className={'mobileNavDrawer '+(mobileOpen?'open':'')} aria-hidden={!mobileOpen}>
+    <aside ref={mobileDrawerRef} className={'mobileNavDrawer '+(mobileOpen?'open':'')} aria-hidden={!mobileOpen} inert={!mobileOpen} role="dialog" aria-modal={mobileOpen} aria-label="Mobile navigation">
       <div className="mobileNavHead">
         <Link href={homeHref} onClick={()=>setMobileOpen(false)} aria-label="SIDE:II home">
           <img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/>
