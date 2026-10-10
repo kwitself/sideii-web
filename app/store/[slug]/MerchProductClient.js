@@ -6,6 +6,7 @@ import {supabase} from '../../lib/supabase';
 import {useLocaleCurrency} from '../../components/LocaleCurrencyProvider';
 import MerchMockupPreview from '../../components/MerchMockupPreview';
 import ProductShare from '../../components/ProductShare';
+import ProductLaunchGate from '../../components/ProductLaunchGate';
 
 function normalizeTemplate(v){
  const x=String(v||'apparel').toLowerCase();
@@ -41,7 +42,7 @@ export default function MerchProductClient({product}){
   </div>
   <div className="merchDetailInfo">
    <Link href="/store" className="merchBack">← STORE</Link>
-   <span>SIDE:II / {String(product.merchCategory||'MERCH').toUpperCase()}</span><Link className="merchWearMark" href="/wear">WEAR WHAT YOU SUPPORT ↗</Link><ProductShare product={product} kind="store"/>
+   <span>SIDE:II / {String(product.merchCategory||'MERCH').toUpperCase()}</span><Link className="merchWearMark" href="/wear">WEAR WHAT YOU SUPPORT ↗</Link><ProductShare product={product} kind="store"/><ProductLaunchGate productId={product.id}/>
    <h1>{product.title}</h1>
    <p>{product.lead}</p>
    <div className="merchDetailFacts"><div><span>PRODUCT</span><b>{product.catalogue}</b></div><div><span>AVAILABILITY</span><b>{product.status}</b></div></div>
