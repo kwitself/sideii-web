@@ -6425,3 +6425,26 @@ footer a:focus-visible,
  .productShareExactCard .productVisual.vinyl.forceHover .productVinylObject{transform:translateX(42%) rotate(68deg)!important}
  .productShareExactCard .productVisual.digital.forceHover .digitalMaster{transform:translateX(40%) translateY(-2%) rotate(1.2deg)!important}
 }
+
+
+/* SIDE:II shared navigation + cross-page UI baseline */
+.navExplore.isOpen .navExploreMenu{opacity:1;visibility:visible;transform:none;pointer-events:auto}
+.navExplore.isOpen>button span{transform:rotate(45deg)}
+.navExploreMenu{z-index:80}
+:where(.globalSiteHeader,.mobileNavDrawer,.globalAccountDrawer,.globalBagDrawer,.productShareSheet) :is(button,a,input,select,textarea):focus-visible{
+ outline:2px solid #e2d3c6;outline-offset:3px;
+}
+:where(.storePage,.productReleaseLayout,.accountBody,.globalAccountDrawer,.globalBagDrawer) :is(h1,h2,h3,p,b,strong){
+ overflow-wrap:break-word;
+}
+:where(.storePage,.productReleaseLayout,.accountBody,.globalAccountDrawer,.globalBagDrawer) img{
+ max-width:100%;
+}
+@media(max-width:760px){
+ .mobileNavDrawer[aria-hidden="true"]{visibility:hidden;pointer-events:none}
+ .mobileNavDrawer[aria-hidden="false"]{visibility:visible}
+ .globalSiteHeader .mobileMenuTrigger{touch-action:manipulation}
+}
+@media(prefers-reduced-motion:reduce){
+ .navExploreMenu,.navExplore>button span{transition:none!important}
+}
