@@ -6382,3 +6382,24 @@ footer a:focus-visible,
 @media(max-width:760px){.productShareSheet{width:100vw;max-height:100dvh;border-radius:0}.productShareActions{grid-template-columns:1fr}.productShareNetworks{grid-template-columns:repeat(2,minmax(0,1fr))}.productShareControlHeading{align-items:flex-start}.productShareSheet>header>div>small{font-size:9px}}
 @media(max-width:380px){.productShareNetworks{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.productShareDownload{transition:none}}
+
+
+/* SHARE CARD COMPOSITION FIX — keep disc/sleeve separate from product text */
+.productShareExactCard.exact-link .productShareExactVisual{
+ left:5%!important;top:22%!important;width:35%!important;height:auto!important;aspect-ratio:1;z-index:2;
+}
+.productShareExactCard.exact-link .productShareExactMeta{
+ left:65%!important;right:5%!important;top:28%!important;bottom:16%!important;
+ display:flex;justify-content:center;gap:9px;z-index:6;min-width:0;
+}
+.productShareExactCard.exact-link .productShareExactMeta b{
+ font-size:clamp(17px,2vw,30px);line-height:1.03;overflow-wrap:anywhere;
+}
+.productShareExactCard.exact-link .productShareExactMeta small,
+.productShareExactCard.exact-link .productShareExactMeta span,
+.productShareExactCard.exact-link .productShareExactMeta em{position:relative;z-index:6}
+.productShareExactCard.exact-link .productShareExactFoot{z-index:8}
+.productShareExactCard.exact-square .productShareExactVisual{top:13%!important;width:65%!important;left:17.5%!important}
+.productShareExactCard.exact-square .productShareExactMeta{bottom:11%!important;z-index:6}
+.productShareExactCard.exact-story .productShareExactVisual{width:75%!important;left:12.5%!important;top:19%!important}
+.productShareExactCard.exact-story .productShareExactMeta{top:63%!important;z-index:6}
