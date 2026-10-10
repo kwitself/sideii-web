@@ -1,7 +1,9 @@
 'use client';
 
-import {useEffect,useMemo,useState} from 'react';
+import {useEffect,useMemo,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
+import {toBlob} from 'html-to-image';
+import EditionVisual,{normalizeEditionVariant} from './EditionVisual';
 
 function money(value){
  const n=Number(value);
@@ -19,6 +21,7 @@ export default function ProductShare({product,kind='release'}){
  const initialMedia=mediaOptions.includes(String(product?.media||'').toLowerCase())?String(product.media).toLowerCase():(mediaOptions[0]||'');
  const [media,setMedia]=useState(initialMedia);
  const [mounted,setMounted]=useState(false);
+ const captureRef=useRef(null);
  useEffect(()=>setMounted(true),[]);
  useEffect(()=>{
   if(!open)return;
@@ -33,11 +36,24 @@ export default function ProductShare({product,kind='release'}){
  const artist=product?.artist||'SIDE:II';
  const pagePath=kind==='store'?'/store/'+slug:'/releases/'+slug;
  const isLethargia=String(product?.imprint||'').toLowerCase()==='lethargia';
- const presetMeta={story:{label:'STORY',size:'1080 × 1920',use:'INSTAGRAM STORY'},square:{label:'SQUARE',size:'1080 × 1080',use:'POST / SHARE'},link:{label:'LINK CARD',size:'1200 × 630',use:'SOCIAL PREVIEW'}};
+ const presetMeta={story:{label:'STORY',size:'1080 × 1920',use:'INSTAGRAM STORY',w:1080,h:1920},square:{label:'SQUARE',size:'1080 × 1080',use:'POST / SHARE',w:1080,h:1080},link:{label:'LINK CARD',size:'1200 × 630',use:'SOCIAL PREVIEW',w:1200,h:630}};
  const text=useMemo(()=>{
   const parts=[artist&&artist!=='SIDE:II MERCH'?artist:null,title,product?.format||product?.merchCategory,product?.price!=null?money(product.price):null].filter(Boolean);
   return parts.join(' · ');
  },[artist,title,product?.format,product?.merchCategory,product?.price]);
+ const selectedVariant=useMemo(()=>{
+  const list=product?.variants||[];
+  return normalizeEditionVariant(list.find(v=>String(v?.media||v?.format||'').toLowerCase()===media)||list[0]||{});
+ },[product?.variants,media]);
+ const visualRelease=useMemo(()=>({
+  cover:product?.cover||null,
+  catalogue:product?.catalogue||'SIDE:II',
+  number:product?.number||product?.catalogue||'',
+  title,
+  artist,
+  imprint:product?.imprint||'sideii',
+  hasShrinkwrap:!!product?.hasShrinkwrap
+ }),[product?.cover,product?.catalogue,product?.number,product?.imprint,product?.hasShrinkwrap,title,artist]);
 
  const cardUrl=(preset,mediaValue=media)=>'/api/share-card/'+encodeURIComponent(kind)+'/'+encodeURIComponent(slug)+'?preset='+encodeURIComponent(preset)+(mediaValue?'&media='+encodeURIComponent(mediaValue):'')+'&v=4';
  const absolutePage=()=>new URL(pagePath,window.location.origin).toString();
@@ -50,10 +66,23 @@ export default function ProductShare({product,kind='release'}){
  async function shareCard(preset='square'){
   const url=absolutePage();
   try{
-   const res=await fetch(cardUrl(preset));
-   if(!res.ok)throw new Error('card');
-   const blob=await res.blob();
-   const file=new File([blob],`sideii-${slug}-${preset}.png`,{type:'image/png'});
+   let blob=null;
+   if(kind==='release'&&captureRef.current){
+    const meta=presetMeta[preset];
+    blob=await toBlob(captureRef.current,{
+     cacheBust:true,
+     canvasWidth:meta.w,
+     canvasHeight:meta.h,
+     pixelRatio:1,
+     backgroundColor:isLethargia?'#12090b':'#0b0b0d'
+    });
+   }
+   if(!blob){
+    const res=await fetch(cardUrl(preset));
+    if(!res.ok)throw new Error('card');
+    blob=await res.blob();
+   }
+   const file=new File([blob],`sideii-${slug}-${media||'edition'}-${preset}.png`,{type:'image/png'});
    if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){
     await navigator.share({title,text,url,files:[file]});
     return;
@@ -62,11 +91,12 @@ export default function ProductShare({product,kind='release'}){
     await navigator.share({title,text,url});
     return;
    }
+   const href=URL.createObjectURL(blob);
    const a=document.createElement('a');
-   a.href=URL.createObjectURL(blob);
+   a.href=href;
    a.download=file.name;
    document.body.appendChild(a);a.click();a.remove();
-   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+   setTimeout(()=>URL.revokeObjectURL(href),1000);
    setStatus('CARD SAVED');
   }catch(err){
    if(err?.name==='AbortError')return;
@@ -94,9 +124,14 @@ export default function ProductShare({product,kind='release'}){
     <div className="productShareStudio">
      <div className={'productSharePreview preset-'+preset}>
       <span>{presetMeta[preset].label+' PREVIEW'}</span>
-      <div className={'productSharePreviewStage '+(previewReady?'ready':'loading')}>
+      <div className={'productSharePreviewStage '+(kind==='release'||previewReady?'ready':'loading')}>
        <div className="productSharePreviewFrame">
-        <img key={preset} src={cardUrl(preset)} alt={title+' '+preset+' share preview'} onLoad={()=>setPreviewReady(true)} onError={()=>setPreviewReady(true)}/>
+        {kind==='release'?<div ref={captureRef} className={'productShareExactCard exact-'+preset}>
+         <div className="productShareExactBrand"><img src={isLethargia?'/brand/lethargia/lethargia-logo.png':'/brand/sideii-logo-flat.png'} alt=""/></div>
+         <div className="productShareExactVisual"><EditionVisual release={visualRelease} variant={selectedVariant} forceHover/></div>
+         <div className="productShareExactMeta"><small>{String(media||selectedVariant.media||'edition').toUpperCase()} EDITION</small><b>{title}</b><span>{artist}</span>{selectedVariant?.price!=null&&<em>{money(selectedVariant.price)}</em>}</div>
+         <div className="productShareExactFoot"><span>{visualRelease.catalogue}</span><i>SIDE:II</i></div>
+        </div>:<img key={preset} src={cardUrl(preset)} alt={title+' '+preset+' share preview'} onLoad={()=>setPreviewReady(true)} onError={()=>setPreviewReady(true)}/>}
        </div>
       </div>
       <small>{presetMeta[preset].size+' · '+presetMeta[preset].use}</small>
