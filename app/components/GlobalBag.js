@@ -107,13 +107,15 @@ export default function GlobalBag(){
    const productMax=Number(item?.productMaxQty)>0?Number(item.productMaxQty):globalMax;
    const preorderMax=item?.preorderEnabled&&Number(item?.preorderLimit)>0?Number(item.preorderLimit):globalMax;
    const stockMax=item?.digital||item?.preorderEnabled||item?.stock==null?globalMax:Math.max(0,Number(item.stock||0));
-   const max=Math.max(1,Math.min(globalMax,productMax,preorderMax,stockMax||1));
+   if(stockMax===0)return null;
+   const max=Math.max(1,Math.min(globalMax,productMax,preorderMax,stockMax));
    return {...item,qty:Math.max(1,Math.min(Number(item?.qty||1),max))};
   };
   const mergeCarts=(local,remote)=>{
    const map=new Map();
    for(const raw of [...(remote||[]),...(local||[])]){
     const item=clampSavedQty(raw);
+    if(!item)continue;
     const key=String(item.key||item.variantId||item.sku||'');
     if(!key)continue;
     const prev=map.get(key);
