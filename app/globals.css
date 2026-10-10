@@ -6639,3 +6639,29 @@ footer a:focus-visible,
  .editionExperience>.editionDigitalStage{animation:none!important}
  .editionFlipStage .editionFlipObject,.editionFlipStage .editionFlipFace :is(.productVinylObject,.productCdObject,.productCassette){transition:none!important}
 }
+
+
+/* RELEASE FLIP V3 — prevent front/rear media from ghosting through the 3D turn.
+   Keep sleeve visible while both discs are fully hidden during rotation. */
+.editionFlipStage .editionFlipFace :is(.productVinylObject,.productCdObject,.productCassette){
+ transition:transform .35s cubic-bezier(.22,.76,.21,1),opacity .24s ease!important;
+ backface-visibility:hidden;
+ -webkit-backface-visibility:hidden;
+}
+.editionFlipStage.phase-retract .editionFlipFace :is(.productVinylObject,.productCdObject,.productCassette),
+.editionFlipStage.phase-turning .editionFlipFace :is(.productVinylObject,.productCdObject,.productCassette){
+ opacity:0!important;
+ pointer-events:none!important;
+}
+.editionFlipStage.phase-idle:not(:has(.isFlipped)) .editionFlipBack :is(.productVinylObject,.productCdObject,.productCassette),
+.editionFlipStage.phase-idle:has(.isFlipped) .editionFlipFront :is(.productVinylObject,.productCdObject,.productCassette){
+ opacity:0!important;
+ pointer-events:none!important;
+}
+.editionFlipStage.phase-idle:not(:has(.isFlipped)) .editionFlipFront :is(.productVinylObject,.productCdObject,.productCassette),
+.editionFlipStage.phase-idle:has(.isFlipped) .editionFlipBack :is(.productVinylObject,.productCdObject,.productCassette){
+ opacity:1!important;
+}
+@media(prefers-reduced-motion:reduce){
+ .editionFlipStage .editionFlipFace :is(.productVinylObject,.productCdObject,.productCassette){transition:none!important}
+}
