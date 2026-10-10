@@ -5564,3 +5564,235 @@ footer a:focus-visible,
     transform:translateX(24%)!important;
   }
 }
+
+
+/* EXACT PRODUCT-DETAIL VISUAL INSIDE SHARE STUDIO */
+.productShareExactCard{
+  width:100%;
+  height:100%;
+  position:relative;
+  display:flex;
+  box-sizing:border-box;
+  overflow:hidden;
+  background:#0b0b0d;
+  color:#eee9e1;
+}
+.productShareExactBrand{
+  position:absolute;
+  left:5%;
+  top:5%;
+  z-index:6;
+  width:15%;
+  max-width:120px;
+}
+.productShareExactBrand img{
+  display:block;
+  width:100%;
+  height:auto;
+}
+.productShareExactVisual{
+  position:absolute;
+  z-index:2;
+}
+.productShareExactVisual .productVisual{
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  min-height:0!important;
+  margin:0!important;
+}
+.productShareExactMeta{
+  position:absolute;
+  z-index:5;
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+.productShareExactMeta small{
+  font:7px/1 Arial,sans-serif;
+  letter-spacing:.18em;
+  color:#74716c;
+}
+.productShareExactMeta b{
+  font:clamp(18px,2.1vw,32px)/.9 Georgia,serif;
+  font-weight:400;
+  letter-spacing:-.035em;
+  color:#eee9e1;
+}
+.productShareExactMeta span{
+  font:12px/1.1 Georgia,serif;
+  color:#aaa7a0;
+}
+.productShareExactMeta em{
+  font:16px/1 Georgia,serif;
+  font-style:normal;
+  color:#d8d3cb;
+}
+.productShareExactFoot{
+  position:absolute;
+  z-index:5;
+  left:5%;
+  right:5%;
+  bottom:4%;
+  padding-top:10px;
+  border-top:1px solid #2d2c30;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:#66636a;
+}
+.productShareExactFoot span,
+.productShareExactFoot i{
+  font:6px/1 Arial,sans-serif;
+  font-style:normal;
+  letter-spacing:.16em;
+}
+
+/* Link */
+.productShareExactCard.exact-link .productShareExactVisual{
+  left:6%;
+  top:20%;
+  width:43%;
+  aspect-ratio:1;
+}
+.productShareExactCard.exact-link .productShareExactMeta{
+  left:56%;
+  right:6%;
+  top:34%;
+}
+
+/* Square */
+.productShareExactCard.exact-square .productShareExactBrand{
+  width:18%;
+}
+.productShareExactCard.exact-square .productShareExactVisual{
+  left:13%;
+  top:16%;
+  width:74%;
+  aspect-ratio:1;
+}
+.productShareExactCard.exact-square .productShareExactMeta{
+  left:10%;
+  right:10%;
+  bottom:10%;
+}
+.productShareExactCard.exact-square .productShareExactFoot{
+  bottom:3%;
+}
+
+/* Story */
+.productShareExactCard.exact-story .productShareExactBrand{
+  width:25%;
+  max-width:none;
+}
+.productShareExactCard.exact-story .productShareExactVisual{
+  left:9%;
+  top:20%;
+  width:82%;
+  aspect-ratio:1;
+}
+.productShareExactCard.exact-story .productShareExactMeta{
+  left:9%;
+  right:9%;
+  top:63%;
+}
+.productShareExactCard.exact-story .productShareExactMeta b{
+  font-size:clamp(24px,5vw,48px);
+}
+.productShareExactCard.exact-story .productShareExactMeta span{
+  font-size:15px;
+}
+.productShareExactCard.exact-story .productShareExactMeta em{
+  font-size:20px;
+}
+.productShareExactCard.exact-story .productShareExactFoot{
+  left:9%;
+  right:9%;
+  bottom:4%;
+}
+
+/* ADMIN — canonical hover renderer */
+.previewRenderTools{
+  margin:12px 0 18px;
+  padding:14px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:12px;
+  align-items:start;
+}
+.previewRenderToolHead{
+  display:grid;
+  gap:5px;
+}
+.previewRenderToolHead span{
+  color:#c7c2ba;
+  font:8px/1 Arial,sans-serif;
+  letter-spacing:.16em;
+}
+.previewRenderToolHead small{
+  color:#66636a;
+  font:10px/1.35 Georgia,serif;
+}
+.previewRenderToolActions{
+  display:flex;
+  gap:7px;
+}
+.previewRenderToolActions select,
+.previewRenderToolActions button{
+  min-height:40px;
+  border:1px solid #343238;
+  background:#0d0d0f;
+  color:#aaa69f;
+  padding:0 11px;
+  font:7px/1 Arial,sans-serif;
+  letter-spacing:.11em;
+}
+.previewRenderToolActions button{
+  background:#d8d3cb;
+  color:#0a0a0b;
+  cursor:pointer;
+}
+.previewRenderToolActions button:disabled{
+  opacity:.45;
+  cursor:wait;
+}
+.previewRenderLive{
+  grid-column:1/-1;
+  display:flex;
+  justify-content:center;
+  padding:16px;
+  border-top:1px solid #29282b;
+  background:#09090a;
+  overflow:hidden;
+}
+.editionExportCapture{
+  width:min(540px,100%);
+  aspect-ratio:1;
+  position:relative;
+  background:#09090a;
+}
+.editionExportCapture .productVisual{
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  min-height:0!important;
+  margin:0!important;
+}
+
+@media(max-width:760px){
+  .previewRenderTools{
+    grid-template-columns:1fr;
+  }
+  .previewRenderToolActions{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+  .previewRenderToolActions select,
+  .previewRenderToolActions button{
+    width:100%;
+    min-height:44px;
+  }
+  .previewRenderLive{
+    padding:8px;
+  }
+}
