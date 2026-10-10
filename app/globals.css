@@ -6354,3 +6354,31 @@ footer a:focus-visible,
 .accountDigitalPanel button:focus-visible{outline:2px solid #f2bfdc;outline-offset:3px}
 @media(max-width:600px){.accountDigitalPanelTop{padding:18px 20px}.accountDigitalPanelContent{padding:28px 20px 35px}.accountDigitalPanelArt{height:135px}.accountDigitalPanelRemaining{padding:17px}.accountDigitalPanelContent{gap:17px}}
 @media(prefers-reduced-motion:reduce){.accountDigitalPanel{animation:none}.accountDigitalPanelStart{transition:none}}
+
+
+/* SIDE:II Share Studio refresh */
+.productShareSheet{width:min(1100px,calc(100vw - 32px));max-height:min(94dvh,1000px);overflow-y:auto;overscroll-behavior:contain}
+.productShareSheet>header{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
+.productShareSheet>header>div{min-width:0;display:flex;flex-direction:column;gap:8px}
+.productShareSheet>header>div>small{font:10px/1.5 Arial,sans-serif;letter-spacing:.14em;color:#99939a}
+.productShareSheet>header b{overflow-wrap:anywhere}
+.productShareControlHeading{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #343035;padding:0 0 12px}
+.productShareControlHeading span{font:700 10px/1.5 Arial,sans-serif;letter-spacing:.17em;color:#e7d9e5}
+.productShareControlHeading small{font:9px/1.5 Arial,sans-serif;letter-spacing:.11em;color:#8f8990}
+.productShareControls{display:flex;flex-direction:column;gap:17px}
+.productShareActions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.7fr);gap:10px}
+.productShareActions .productSharePrimary{width:100%;min-width:0;margin:0}
+.productShareDownload{cursor:pointer;min-height:52px;padding:12px 14px;border:1px solid #777079;color:#f0e7ed;background:#211d23;font:700 10px/1.4 Arial,sans-serif;letter-spacing:.11em;transition:background .2s ease,border-color .2s ease}
+.productShareDownload:hover{background:#322934;border-color:#bb8dab}
+.productShareDownload:disabled,.productSharePrimary:disabled{opacity:.55;cursor:wait}
+.productShareStatus{margin:0!important;padding:11px 12px;border:1px solid #624659;color:#efbbd7!important;background:rgba(122,59,91,.13);font:10px/1.4 Arial,sans-serif!important;letter-spacing:.12em}
+.productShareSheet button:focus-visible{outline:2px solid #eebddd;outline-offset:3px}
+.productShareNetworks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.productShareNetworks button{min-height:44px;white-space:normal;overflow-wrap:anywhere;text-align:center}
+.productShareCopy{min-height:46px;width:100%}
+.productSharePreviewFrame{min-width:0}
+.productShareLethargia .productShareDownload{border-color:#784852;background:#2d151a}
+.productShareLethargia .productShareDownload:hover{background:#472028}
+@media(max-width:760px){.productShareSheet{width:100vw;max-height:100dvh;border-radius:0}.productShareActions{grid-template-columns:1fr}.productShareNetworks{grid-template-columns:repeat(2,minmax(0,1fr))}.productShareControlHeading{align-items:flex-start}.productShareSheet>header>div>small{font-size:9px}}
+@media(max-width:380px){.productShareNetworks{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.productShareDownload{transition:none}}
