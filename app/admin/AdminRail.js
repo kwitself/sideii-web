@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import {useEffect,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 
 const items=[
  ['overview','01','Dashboard'],
@@ -25,6 +25,7 @@ const valid=new Set(items.map(x=>x[0]));
 export default function AdminRail(){
  const [active,setActive]=useState('overview');
  const [mobileOpen,setMobileOpen]=useState(false);
+ const railRef=useRef(null),menuTriggerRef=useRef(null);
 
  useEffect(()=>{
   const fromHash=String(window.location.hash||'').replace('#','');
@@ -39,6 +40,24 @@ export default function AdminRail(){
   return()=>{document.body.classList.remove('sideii-admin-page');window.removeEventListener('sideii-admin-view',onView);window.removeEventListener('hashchange',onHash)};
  },[]);
 
+ useEffect(()=>{
+  if(!mobileOpen)return;
+  const oldOverflow=document.body.style.overflow;
+  const oldFocus=document.activeElement;
+  document.body.style.overflow='hidden';
+  requestAnimationFrame(()=>railRef.current?.querySelector('.adminRailMobileHead button')?.focus());
+  const onKey=e=>{
+   if(e.key==='Escape'){e.preventDefault();setMobileOpen(false);return}
+   if(e.key!=='Tab')return;
+   const items=[...(railRef.current?.querySelectorAll('a[href],button:not([disabled])')||[])];
+   if(!items.length)return;
+   if(e.shiftKey&&document.activeElement===items[0]){e.preventDefault();items[items.length-1].focus()}
+   else if(!e.shiftKey&&document.activeElement===items[items.length-1]){e.preventDefault();items[0].focus()}
+  };
+  window.addEventListener('keydown',onKey);
+  return()=>{document.body.style.overflow=oldOverflow;window.removeEventListener('keydown',onKey);requestAnimationFrame(()=>oldFocus?.isConnected?oldFocus.focus():menuTriggerRef.current?.focus())};
+ },[mobileOpen]);
+
  const go=(e,id)=>{
   e.preventDefault();
   setActive(id);
@@ -52,10 +71,10 @@ export default function AdminRail(){
   <header className="adminMobileTop">
    <Link href="/" className="adminMobileBrand"><img src="/brand/sideii-logo-flat.png" alt="Side II"/></Link>
    <span>{items.find(x=>x[0]===active)?.[2]||'Control Room'}</span>
-   <button type="button" onClick={()=>setMobileOpen(true)} aria-expanded={mobileOpen}>MENU <i>≡</i></button>
+   <button ref={menuTriggerRef} type="button" onClick={()=>setMobileOpen(true)} aria-label="Open admin navigation" aria-expanded={mobileOpen}>MENU <i>≡</i></button>
   </header>
   <button className={'adminMobileShade '+(mobileOpen?'open':'')} type="button" aria-label="Close admin navigation" onClick={()=>setMobileOpen(false)}/>
-  <aside className={'adminRail '+(mobileOpen?'mobileOpen':'')}>
+  <aside ref={railRef} className={'adminRail '+(mobileOpen?'mobileOpen':'')}>
    <div className="adminRailMobileHead"><span>NAVIGATION</span><button type="button" onClick={()=>setMobileOpen(false)}>CLOSE ×</button></div>
    <Link href="/" className="adminBrand"><img src="/brand/sideii-logo-flat.png" alt="Side II"/><small>CONTROL ROOM</small></Link>
    <nav className="adminNav">{items.map(([id,n,label])=><a key={id} className={active===id?'active':''} href={'#'+id} onClick={e=>go(e,id)}><i>{n}</i>{label}</a>)}</nav>
