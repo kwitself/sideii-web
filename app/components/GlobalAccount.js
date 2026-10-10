@@ -14,7 +14,7 @@ export default function GlobalAccount(){
  const pathname=usePathname();
  const [open,setOpen]=useState(false),[session,setSession]=useState(null),[mode,setMode]=useState('signin');
  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState(null),[closingOrder,setClosingOrder]=useState(false),[wishlist,setWishlist]=useState([]),[savedCart,setSavedCart]=useState([]),[addresses,setAddresses]=useState([]),[addressEditing,setAddressEditing]=useState(false),[addressBusy,setAddressBusy]=useState(false),[requestBusy,setRequestBusy]=useState(false),[requestReason,setRequestReason]=useState('');
- const [collection,setCollection]=useState([]),[passports,setPassports]=useState([]),[ownerContent,setOwnerContent]=useState([]),[collectorSummary,setCollectorSummary]=useState(null),[storeCredit,setStoreCredit]=useState(null),[storeCreditHistory,setStoreCreditHistory]=useState([]);
+ const [collection,setCollection]=useState([]),[passports,setPassports]=useState([]),[ownerContent,setOwnerContent]=useState([]),[collectorSummary,setCollectorSummary]=useState(null),[collectorLevel,setCollectorLevel]=useState(null),[storeCredit,setStoreCredit]=useState(null),[storeCreditHistory,setStoreCreditHistory]=useState([]);
  const emptyAddress={id:null,label:'',full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:'',is_default:false};
  const [addressForm,setAddressForm]=useState(emptyAddress);
  const [auth,setAuth]=useState({email:'',password:'',full_name:''});
@@ -58,6 +58,22 @@ export default function GlobalAccount(){
   window.addEventListener('sideii-cart',syncCart);
   return()=>{window.removeEventListener('sideii-wishlist',syncWishlist);window.removeEventListener('sideii-saved-cart',syncCart);window.removeEventListener('sideii-cart',syncCart)};
  },[]);
+
+ useEffect(()=>{
+  if(!supabase||!session?.user)return;
+  let live=true;
+  supabase.rpc('get_my_collector_status').then(({data})=>{if(live)setCollectorLevel(Array.isArray(data)?data[0]||null:data||null)});
+  return()=>{live=false};
+ },[session?.user?.id]);
+
+ async function shareAccountList(kind,payload){
+  if(!supabase||!session?.user)return;
+  setMessage('');
+  const {data,error}=await supabase.rpc('create_my_shared_list',{p_kind:kind,p_title:kind==='wishlist'?'SIDE:II Wishlist':'SIDE:II Saved Bag',p_payload:payload,p_expires_days:30});
+  if(error){setMessage(error.message);return}
+  const url=window.location.origin+'/lists/'+data.token;
+  try{await navigator.clipboard.writeText(url);setMessage('Share link copied.')}catch{setMessage(url)}
+ }
 
  useEffect(()=>{
   const openAccount=()=>{setMessage('');setOpen(true)};
@@ -252,13 +268,13 @@ export default function GlobalAccount(){
       </article>)}</div>
     </section>
     <section className="accountSavedBag">
-      <div className="accountSectionHead"><span>SAVED BAG</span><small>{savedCart.reduce((s,x)=>s+Number(x.qty||0),0)}</small></div>
+      <div className="accountSectionHead"><span>SAVED BAG</span><div><small>{savedCart.reduce((s,x)=>s+Number(x.qty||0),0)}</small>{savedCart.length>0&&<button type="button" className="accountShareMini" onClick={()=>shareAccountList('cart',savedCart)}>SHARE ↗</button>}</div></div>
       {savedCart.length===0?<p className="accountEmpty">Your bag is empty.</p>:<button type="button" className="accountSavedBagButton" onClick={()=>{setOpen(false);window.dispatchEvent(new Event('sideii-open-bag'))}}>
         <span>{savedCart.length} {savedCart.length===1?'ITEM':'ITEMS'} SAVED TO YOUR ACCOUNT</span><b>OPEN BAG →</b>
       </button>}
     </section>
     <section className="accountWishlist">
-      <div className="accountSectionHead"><span>WISHLIST</span><small>{wishlist.length}</small></div>
+      <div className="accountSectionHead"><span>WISHLIST</span><div><small>{wishlist.length}</small>{wishlist.length>0&&<button type="button" className="accountShareMini" onClick={()=>shareAccountList('wishlist',wishlist)}>SHARE ↗</button>}</div></div>
       {wishlist.length===0?<p className="accountEmpty">No saved items yet.</p>:wishlist.map(item=><article key={item.product_slug}>
         <Link href={item.is_merch?('/store/'+item.product_slug):('/releases/'+item.product_slug)} onClick={()=>setOpen(false)}>
           {item.cover?<img src={item.cover} alt=""/>:<span className="accountWishlistPlaceholder">SIDE:II</span>}
@@ -275,7 +291,7 @@ export default function GlobalAccount(){
         <div><span>{t('PASSPORTS')}</span><b>{collectorSummary?.active_passports||0}</b></div>
         <div><span>{t('OWNER CONTENT')}</span><b>{collectorSummary?.owner_content_items||0}</b></div>
         <div><span>{t('VERIFIED IMPACT')}</span><b>{money(collectorSummary?.verified_impact_total||0)}</b></div>
-        <div><span>{t('STORE CREDIT')}</span><b>{money(storeCredit?.balance||0)}</b></div>
+        <div><span>{t('STORE CREDIT')}</span><b>{money(storeCredit?.balance||0)}</b></div>{collectorLevel&&<div className="collectorTierCard"><span>COLLECTOR LEVEL</span><b>{collectorLevel.label||collectorLevel.tier}</b><small>{collectorLevel.early_access_hours||0}H EARLY · {collectorLevel.reward_pct||0}% REWARD</small></div>}
       </div>
       <div className="collectorCompletion"><i><b style={{width:Math.max(0,Math.min(100,Number(collectorSummary?.completion_percent||0)))+'%'}}/></i><small>{t('CATALOGUE COMPLETION')}</small></div>
     </section>
