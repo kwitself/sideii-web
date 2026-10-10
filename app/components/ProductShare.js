@@ -1,6 +1,7 @@
 'use client';
 
 import {useEffect,useMemo,useState} from 'react';
+import {createPortal} from 'react-dom';
 
 function money(value){
  const n=Number(value);
@@ -11,6 +12,8 @@ function money(value){
 export default function ProductShare({product,kind='release'}){
  const [open,setOpen]=useState(false);
  const [status,setStatus]=useState('');
+ const [mounted,setMounted]=useState(false);
+ useEffect(()=>setMounted(true),[]);
  useEffect(()=>{
   if(!open)return;
   const prev=document.body.style.overflow;
@@ -76,9 +79,7 @@ export default function ProductShare({product,kind='release'}){
   window.open(targets[network], '_blank', 'noopener,noreferrer,width=760,height=720');
  }
 
- return <div className="productShare">
-  <button type="button" className="productShareTrigger" onClick={()=>setOpen(true)}>SHARE ↗</button>
-  {open&&<div className="productShareLayer" role="dialog" aria-modal="true" aria-label="Share product">
+ const layer=open&&mounted?createPortal(<div className="productShareLayer" role="dialog" aria-modal="true" aria-label="Share product">
    <button type="button" className="productShareShade" aria-label="Close share menu" onClick={()=>setOpen(false)}/>
    <section className="productShareSheet">
     <header><div><span>SHARE THIS EDITION</span><b>{title}</b></div><button type="button" onClick={()=>setOpen(false)}>CLOSE ×</button></header>
@@ -106,6 +107,10 @@ export default function ProductShare({product,kind='release'}){
      </div>
     </div>
    </section>
-  </div>}
+  </div>,document.body):null;
+
+ return <div className="productShare">
+  <button type="button" className="productShareTrigger" onClick={()=>setOpen(true)}>SHARE ↗</button>
+  {layer}
  </div>;
 }
