@@ -1,4 +1,5 @@
 'use client';
+import {getVinylPreset,vinylPresetStyle} from '../lib/vinylPresets';
 
 const bars=[22,38,58,31,74,46,86,52,68,35,79,43,61,27,49,72,40,57,30,64,45,78,36,55];
 
@@ -14,9 +15,9 @@ function norm(v={}){
 
 function VinylObject({variant,release}){
  const v=norm(variant);
- const color=String(v.vinylColor||'BLACK').toLowerCase();
+ const preset=getVinylPreset(v.vinylColor);
  return <div className="productVinylObject" aria-hidden="true">
-  <div className={'productVinylDisc vinyl-'+color.replace(/[^a-z0-9]+/g,'-')}>
+  <div style={vinylPresetStyle(v.vinylColor)} data-vinyl-preset={preset.slug} data-vinyl-family={preset.family} className={'productVinylDisc vinyl-'+preset.slug+' vinylFamily-'+preset.family}>
    <div className="vinylGrooves"/>
    <div className="vinylLabel">
     {release.cover&&<img src={release.cover} alt=""/>}
