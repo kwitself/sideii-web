@@ -39,7 +39,7 @@ export default function ProductShare({product,kind='release'}){
   return parts.join(' · ');
  },[artist,title,product?.format,product?.merchCategory,product?.price]);
 
- const cardUrl=(preset,mediaValue=media)=>'/api/share-card/'+encodeURIComponent(kind)+'/'+encodeURIComponent(slug)+'?preset='+encodeURIComponent(preset)+(mediaValue?'&media='+encodeURIComponent(mediaValue):'');
+ const cardUrl=(preset,mediaValue=media)=>'/api/share-card/'+encodeURIComponent(kind)+'/'+encodeURIComponent(slug)+'?preset='+encodeURIComponent(preset)+(mediaValue?'&media='+encodeURIComponent(mediaValue):'')+'&v=4';
  const absolutePage=()=>new URL(pagePath,window.location.origin).toString();
 
  async function copyLink(){
