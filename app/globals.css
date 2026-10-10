@@ -6093,3 +6093,194 @@ footer a:focus-visible,
     flex:1;
   }
 }
+
+
+/* VINYL PRESET ENGINE */
+.productVinylDisc{
+  --vinyl-primary:#111216;
+  --vinyl-secondary:#2d2d30;
+  background:
+    radial-gradient(circle at 42% 36%, color-mix(in srgb,var(--vinyl-primary) 72%,white 8%) 0 12%, var(--vinyl-primary) 38%, var(--vinyl-secondary) 76%, #08090a 100%)!important;
+}
+.productVinylDisc::before,
+.productVinylDisc::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  pointer-events:none;
+}
+.productVinylDisc::after{
+  background:radial-gradient(circle at 34% 28%,rgba(255,255,255,.14),transparent 18% 63%,rgba(255,255,255,.04) 78%,transparent 82%);
+  mix-blend-mode:screen;
+  opacity:.5;
+}
+
+/* translucent / frosted */
+.productVinylDisc.vinylFamily-clear{
+  background:
+    radial-gradient(circle at 38% 32%,rgba(255,255,255,.42),rgba(255,255,255,.12) 24%,color-mix(in srgb,var(--vinyl-primary) 54%,transparent) 58%,color-mix(in srgb,var(--vinyl-secondary) 68%,transparent) 100%)!important;
+  backdrop-filter:blur(2px);
+}
+.productVinylDisc.vinylFamily-frost{
+  background:
+    radial-gradient(circle at 36% 31%,rgba(255,255,255,.7),rgba(255,255,255,.25) 21%,var(--vinyl-primary) 62%,var(--vinyl-secondary) 100%)!important;
+  filter:saturate(.72) brightness(1.04);
+}
+
+/* marbled */
+.productVinylDisc.vinylFamily-marbled{
+  background:
+    radial-gradient(circle at 50% 50%,transparent 0 25%,rgba(255,255,255,.035) 26% 27%,transparent 28%),
+    conic-gradient(from 18deg at 46% 51%,
+      var(--vinyl-primary) 0 9%,
+      color-mix(in srgb,var(--vinyl-secondary) 75%,black 15%) 9% 17%,
+      var(--vinyl-primary) 17% 24%,
+      color-mix(in srgb,var(--vinyl-primary) 45%,var(--vinyl-secondary)) 24% 35%,
+      var(--vinyl-secondary) 35% 42%,
+      var(--vinyl-primary) 42% 53%,
+      color-mix(in srgb,var(--vinyl-secondary) 60%,white 12%) 53% 63%,
+      var(--vinyl-primary) 63% 75%,
+      var(--vinyl-secondary) 75% 84%,
+      var(--vinyl-primary) 84% 100%)!important;
+}
+.productVinylDisc.vinylFamily-marbled::before{
+  inset:-18%;
+  background:
+    repeating-radial-gradient(ellipse at 23% 48%,transparent 0 8%,color-mix(in srgb,var(--vinyl-secondary) 55%,transparent) 9% 12%,transparent 13% 21%);
+  transform:rotate(23deg) scale(1.15);
+  opacity:.66;
+  filter:blur(5px);
+}
+
+/* splatter */
+.productVinylDisc.vinylFamily-splatter{
+  background:radial-gradient(circle at 45% 39%,color-mix(in srgb,var(--vinyl-primary) 82%,white 6%),var(--vinyl-primary) 52%,color-mix(in srgb,var(--vinyl-primary) 72%,black 28%) 100%)!important;
+}
+.productVinylDisc.vinylFamily-splatter::before{
+  background:
+   radial-gradient(circle at 18% 22%,var(--vinyl-secondary) 0 2%,transparent 2.4%),
+   radial-gradient(circle at 29% 67%,var(--vinyl-secondary) 0 1.4%,transparent 1.8%),
+   radial-gradient(circle at 37% 31%,var(--vinyl-secondary) 0 3%,transparent 3.5%),
+   radial-gradient(circle at 55% 18%,var(--vinyl-secondary) 0 1.7%,transparent 2.1%),
+   radial-gradient(circle at 61% 72%,var(--vinyl-secondary) 0 2.6%,transparent 3.1%),
+   radial-gradient(circle at 76% 29%,var(--vinyl-secondary) 0 3.5%,transparent 4%),
+   radial-gradient(circle at 83% 63%,var(--vinyl-secondary) 0 1.5%,transparent 2%),
+   radial-gradient(circle at 44% 84%,var(--vinyl-secondary) 0 1.8%,transparent 2.3%),
+   radial-gradient(circle at 12% 53%,var(--vinyl-secondary) 0 1.2%,transparent 1.7%),
+   radial-gradient(circle at 71% 51%,var(--vinyl-secondary) 0 1.1%,transparent 1.6%);
+  opacity:.95;
+}
+
+/* swirl */
+.productVinylDisc.vinylFamily-swirl{
+  background:
+    conic-gradient(from 0deg at 50% 50%,
+      var(--vinyl-primary) 0 11%,var(--vinyl-secondary) 11% 18%,
+      var(--vinyl-primary) 18% 33%,var(--vinyl-secondary) 33% 39%,
+      var(--vinyl-primary) 39% 57%,var(--vinyl-secondary) 57% 64%,
+      var(--vinyl-primary) 64% 78%,var(--vinyl-secondary) 78% 86%,
+      var(--vinyl-primary) 86% 100%)!important;
+}
+.productVinylDisc.vinylFamily-swirl::before{
+  inset:7%;
+  background:repeating-radial-gradient(ellipse at 52% 48%,transparent 0 7%,color-mix(in srgb,var(--vinyl-secondary) 52%,transparent) 8% 11%,transparent 12% 18%);
+  filter:blur(4px);
+  transform:rotate(-19deg);
+}
+
+/* split / pinwheel */
+.productVinylDisc.vinylFamily-split{
+  background:linear-gradient(90deg,var(--vinyl-primary) 0 50%,var(--vinyl-secondary) 50% 100%)!important;
+}
+.productVinylDisc.vinylFamily-pinwheel{
+  background:conic-gradient(var(--vinyl-primary) 0 12.5%,var(--vinyl-secondary) 12.5% 25%,var(--vinyl-primary) 25% 37.5%,var(--vinyl-secondary) 37.5% 50%,var(--vinyl-primary) 50% 62.5%,var(--vinyl-secondary) 62.5% 75%,var(--vinyl-primary) 75% 87.5%,var(--vinyl-secondary) 87.5% 100%)!important;
+}
+
+/* color in color */
+.productVinylDisc.vinylFamily-color-in-color{
+  background:radial-gradient(circle,var(--vinyl-secondary) 0 24%,color-mix(in srgb,var(--vinyl-secondary) 74%,transparent) 25% 36%,var(--vinyl-primary) 37% 100%)!important;
+}
+
+/* special families */
+.productVinylDisc.vinylFamily-metallic{
+  background:
+   radial-gradient(circle at 31% 25%,#fff8 0 3%,transparent 19%),
+   conic-gradient(from 10deg,color-mix(in srgb,var(--vinyl-primary) 80%,white 20%),var(--vinyl-secondary),var(--vinyl-primary),color-mix(in srgb,var(--vinyl-primary) 65%,white 35%),var(--vinyl-secondary),var(--vinyl-primary))!important;
+}
+.productVinylDisc.vinylFamily-galaxy{
+  background:
+   radial-gradient(circle at 27% 33%,#fff 0 .5%,transparent .8%),
+   radial-gradient(circle at 62% 22%,#fff9 0 .4%,transparent .8%),
+   radial-gradient(circle at 76% 69%,#fff 0 .35%,transparent .7%),
+   radial-gradient(circle at 40% 72%,#fff8 0 .45%,transparent .8%),
+   radial-gradient(circle at 50% 50%,var(--vinyl-secondary),var(--vinyl-primary) 48%,#09090c 100%)!important;
+}
+.productVinylDisc.vinylFamily-glitter::before{
+  background:
+   radial-gradient(circle,#fff9 0 .7px,transparent 1px) 0 0/11px 13px,
+   radial-gradient(circle,#fff5 0 .8px,transparent 1.1px) 4px 7px/17px 19px;
+  opacity:.7;
+}
+.productVinylDisc.vinylFamily-neon{
+  background:radial-gradient(circle at 40% 35%,color-mix(in srgb,var(--vinyl-primary) 58%,white 30%),var(--vinyl-primary) 48%,var(--vinyl-secondary) 100%)!important;
+  filter:saturate(1.45) brightness(1.12);
+}
+.productVinylDisc.vinylFamily-pearl,
+.productVinylDisc.vinylFamily-opal{
+  background:
+   conic-gradient(from 20deg,#e7d9e5,#dce9e6,#d7d8ec,#eee2cf,#dbe7e3,#e7d9e5)!important;
+}
+.productVinylDisc.vinylFamily-oil{
+  background:conic-gradient(from 45deg,#19151f,#28415e,#5f3b72,#6b5531,#1d4b48,#19151f)!important;
+}
+.productVinylDisc.vinylFamily-smoke{
+  background:
+    radial-gradient(ellipse at 35% 42%,color-mix(in srgb,var(--vinyl-secondary) 80%,transparent),transparent 35%),
+    radial-gradient(ellipse at 68% 61%,color-mix(in srgb,var(--vinyl-primary) 85%,transparent),transparent 39%),
+    #151619!important;
+}
+.productVinylDisc.vinylFamily-etched{
+  background:radial-gradient(circle at 42% 36%,#37393d,#17181b 55%,#090a0b)!important;
+}
+.productVinylDisc.vinylFamily-etched::before{
+  inset:16%;
+  border:1px solid #ffffff24;
+  background:repeating-conic-gradient(from 0deg,transparent 0 8deg,#ffffff10 8.5deg 9deg);
+}
+.productVinylDisc.vinylFamily-regrind{
+  background:conic-gradient(from 23deg,var(--vinyl-primary),#6a493d,var(--vinyl-secondary),#223c34,#6d6541,var(--vinyl-primary))!important;
+}
+.productVinylDisc.vinylFamily-picture{
+  background:
+    radial-gradient(circle at 50% 50%,transparent 0 34%,rgba(255,255,255,.08) 34% 35%,transparent 36%),
+    linear-gradient(135deg,#3f444c,#15171a 46%,#6d727b 47% 54%,#202227 55%)!important;
+}
+
+/* admin vinyl preset swatch */
+.vinylPresetPreview{
+  min-height:72px;
+  border:1px solid #2d2c30;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:9px 12px;
+  background:#0b0b0d;
+}
+.vinylPresetPreview>i{
+  width:48px;
+  aspect-ratio:1;
+  border-radius:50%;
+  box-shadow:inset 0 0 0 1px #ffffff28,0 6px 16px #0008;
+  background:linear-gradient(135deg,var(--vp-a),var(--vp-b));
+}
+.vinylPresetPreview[data-family="marbled"]>i{background:conic-gradient(var(--vp-a),var(--vp-b),var(--vp-a),var(--vp-b),var(--vp-a))}
+.vinylPresetPreview[data-family="splatter"]>i{background:radial-gradient(circle at 25% 30%,var(--vp-b) 0 7%,transparent 8%),radial-gradient(circle at 68% 63%,var(--vp-b) 0 10%,transparent 11%),var(--vp-a)}
+.vinylPresetPreview[data-family="swirl"]>i{background:conic-gradient(var(--vp-a) 0 18%,var(--vp-b) 18% 32%,var(--vp-a) 32% 53%,var(--vp-b) 53% 67%,var(--vp-a) 67%)}
+.vinylPresetPreview[data-family="split"]>i{background:linear-gradient(90deg,var(--vp-a) 0 50%,var(--vp-b) 50%)}
+.vinylPresetPreview[data-family="pinwheel"]>i{background:conic-gradient(var(--vp-a) 0 12.5%,var(--vp-b) 12.5% 25%,var(--vp-a) 25% 37.5%,var(--vp-b) 37.5% 50%,var(--vp-a) 50% 62.5%,var(--vp-b) 62.5% 75%,var(--vp-a) 75% 87.5%,var(--vp-b) 87.5%)}
+.vinylPresetPreview span{
+  font:7px/1 Arial,sans-serif;
+  letter-spacing:.14em;
+  color:#77736d;
+}
