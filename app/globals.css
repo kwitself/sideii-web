@@ -5129,3 +5129,67 @@ footer a:focus-visible,
     min-height:64px;
   }
 }
+
+
+/* PRODUCT SHARE — DESKTOP MODAL POSITION FIX */
+@media(min-width:761px){
+  .productShareSheet{
+    position:fixed!important;
+    left:50%!important;
+    top:50%!important;
+    right:auto!important;
+    bottom:auto!important;
+    transform:translate(-50%,-50%)!important;
+    width:min(760px,calc(100vw - 80px))!important;
+    max-height:min(82vh,760px)!important;
+    padding:26px!important;
+    overflow:auto!important;
+    z-index:910!important;
+    border:1px solid #454248!important;
+    background:#0d0d0f!important;
+    box-shadow:0 40px 120px rgba(0,0,0,.68)!important;
+  }
+
+  .productShareSheet>header{
+    padding-bottom:20px!important;
+  }
+
+  .productShareSheet>header b{
+    font-size:30px!important;
+  }
+
+  .productSharePresets{
+    gap:12px!important;
+    margin-top:20px!important;
+  }
+
+  .productSharePresets button{
+    min-height:150px!important;
+    padding:18px!important;
+  }
+
+  .productSharePresets span{
+    font-size:20px!important;
+  }
+
+  .productSharePresets small{
+    font-size:8px!important;
+  }
+
+  .productShareNetworks{
+    gap:8px!important;
+    margin-top:16px!important;
+  }
+
+  .productShareNetworks button,
+  .productShareCopy{
+    min-height:46px!important;
+    font-size:8px!important;
+  }
+
+  .productShareSheet>p{
+    margin-top:14px!important;
+    font-size:10px!important;
+    line-height:1.5!important;
+  }
+}
