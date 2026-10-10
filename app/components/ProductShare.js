@@ -1,6 +1,6 @@
 'use client';
 
-import {useMemo,useState} from 'react';
+import {useEffect,useMemo,useState} from 'react';
 
 function money(value){
  const n=Number(value);
@@ -11,6 +11,14 @@ function money(value){
 export default function ProductShare({product,kind='release'}){
  const [open,setOpen]=useState(false);
  const [status,setStatus]=useState('');
+ useEffect(()=>{
+  if(!open)return;
+  const prev=document.body.style.overflow;
+  const onKey=e=>{if(e.key==='Escape')setOpen(false)};
+  document.body.style.overflow='hidden';
+  window.addEventListener('keydown',onKey);
+  return()=>{document.body.style.overflow=prev;window.removeEventListener('keydown',onKey)};
+ },[open]);
  const slug=product?.slug||'';
  const title=product?.rawTitle||product?.title||'SIDE:II';
  const artist=product?.artist||'SIDE:II';
@@ -80,6 +88,7 @@ export default function ProductShare({product,kind='release'}){
      <button type="button" onClick={()=>shareCard('link')}><span>LINK CARD</span><small>1200 × 630</small></button>
     </div>
     <div className="productShareNetworks">
+     <button type="button" onClick={()=>shareCard('story')}>INSTAGRAM / STORY</button>
      <button type="button" onClick={()=>openNetwork('whatsapp')}>WHATSAPP</button>
      <button type="button" onClick={()=>openNetwork('facebook')}>FACEBOOK</button>
      <button type="button" onClick={()=>openNetwork('x')}>X</button>
