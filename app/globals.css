@@ -5949,3 +5949,63 @@ footer a:focus-visible,
     top:10.3%!important;
   }
 }
+
+
+/* HOVER PREVIEW V3 — visible preview must never crop canonical hover overflow */
+.previewRenderTools{
+  overflow:visible!important;
+}
+.previewRenderLive{
+  position:relative!important;
+  overflow:visible!important;
+  padding-left:24px!important;
+  padding-right:24px!important;
+  min-height:720px!important;
+}
+.previewRenderLive>.editionExportCapture{
+  width:min(1180px,100%)!important;
+  height:680px!important;
+  max-width:none!important;
+  overflow:visible!important;
+  background:#09090a!important;
+}
+.previewRenderLive>.editionExportCapture>.productVisual{
+  width:540px!important;
+  height:540px!important;
+  left:300px!important;
+  top:70px!important;
+  overflow:visible!important;
+  transform:none!important;
+}
+.previewRenderLive>.editionExportCapture .productVinylObject,
+.previewRenderLive>.editionExportCapture .productCdObject,
+.previewRenderLive>.editionExportCapture .productCassette,
+.previewRenderLive>.editionExportCapture .digitalMaster{
+  overflow:visible!important;
+}
+/* Hidden batch stays isolated; export JS may temporarily resize it dynamically. */
+.editionExportBatch,
+.editionExportBatch .editionExportCapture{
+  overflow:visible!important;
+}
+
+@media(max-width:980px){
+  .previewRenderLive{
+    min-height:0!important;
+    padding-left:8px!important;
+    padding-right:8px!important;
+  }
+  .previewRenderLive>.editionExportCapture{
+    width:100%!important;
+    height:auto!important;
+    aspect-ratio:1.45/1!important;
+    overflow:visible!important;
+  }
+  .previewRenderLive>.editionExportCapture>.productVisual{
+    width:58%!important;
+    height:auto!important;
+    aspect-ratio:1!important;
+    left:27%!important;
+    top:10%!important;
+  }
+}
