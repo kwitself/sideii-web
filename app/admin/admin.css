@@ -5598,3 +5598,14 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .seoIssueList p,.seoAllClear{margin:8px 0;font:12px/1.55 Arial,sans-serif;color:#bbb2b7}
 .seoIssueList b{color:#e4d9db}
 @media(max-width:760px){.seoMetrics{gap:7px}.seoMetrics article{padding:14px 10px}.seoMetrics strong{font-size:28px}.seoMetrics small{font-size:8px}.seoTools{flex-direction:column;align-items:stretch}.seoProductRow{padding:15px}.seoProductHead h3{font-size:22px}.seoProductHead>strong{font-size:29px}.seoTechnical{padding:15px}}
+
+
+/* SEO CONTROL CENTER V2 */
+.seoV2Tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 16px}
+.seoV2Tabs button{background:#111014;border:1px solid #514a51;color:#bfb5b9;min-height:43px;padding:10px 15px;font:10px Arial,sans-serif;letter-spacing:.11em;cursor:pointer}
+.seoV2Tabs button.active{background:#dfd6d0;color:#19151a;border-color:#dfd6d0}
+.seoTools select{min-height:44px;max-width:210px;background:#121014;border:1px solid #514a51;color:#ded4d7;padding:0 10px;font-size:11px}
+.seoScoreTrack{height:5px;overflow:hidden;background:#2b252b;margin:15px 0;border-radius:2px}
+.seoScoreTrack span{display:block;height:100%;background:#b39d91;transition:width .2s ease}
+.seoPageOpen{display:inline-flex;align-items:center;min-height:40px;margin-top:12px;padding:9px 12px;border:1px solid #62565f;color:#e8e0dd;text-decoration:none;font:10px Arial,sans-serif;letter-spacing:.12em}
+@media(max-width:760px){.seoV2Tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.seoV2Tabs button{min-width:0;padding:10px 7px;letter-spacing:.04em}.seoTools select{width:100%;max-width:none}}
