@@ -111,7 +111,7 @@ export default function BundleClient({bundles=[],products=[],flexRules=[]}){
   </section>
   {activeFlex&&<section className="flexBundleBuilder shell">
    <header><div><span>BUILD YOUR OWN / SET</span><h2>{activeFlex.name}</h2><p>Choose {activeFlex.min_items}{activeFlex.max_items?'–'+activeFlex.max_items:'+'} eligible objects. The checkout backend recalculates the best available saving.</p></div><div><small>{activeFlex.discount_type==='percent'?activeFlex.discount_value+'% SAVING':money(activeFlex.discount_value)+' SAVING'}</small><b>{flexReady?money(Math.max(0,flexSubtotal-flexDiscount)):money(flexSubtotal)}</b></div></header>
-   <div className="flexBundleGrid">{flexEligible.map(p=>{const v=chosenVariant(p),selected=flexSelected.includes(p.id);return <button type="button" key={p.id} className={selected?'selected':''} onClick={()=>toggleFlex(p.id)} disabled={!v||p.status!=='AVAILABLE'}><span>{selected?'✓':'＋'}</span><div><small>{p.catalogue}</small><b>{p.rawTitle||p.title}</b><em>{v?money(v.price):'UNAVAILABLE'}</em></div></button>})}</div>
+   <div className="flexBundleGrid">{flexEligible.map(p=>{const v=chosenVariant(p),selected=flexSelected.includes(p.id);return <button type="button" key={p.id} className={selected?'selected':''} onClick={()=>toggleFlex(p.id)} disabled={!v||p.status!=='AVAILABLE'||lineMax(p,v)<=0}><span>{selected?'✓':'＋'}</span><div><small>{p.catalogue}</small><b>{p.rawTitle||p.title}</b><em>{v?money(v.price):'UNAVAILABLE'}</em></div></button>})}</div>
    <footer><span>{flexSelected.length} / {activeFlex.max_items||'∞'} SELECTED</span><button type="button" disabled={!flexReady} onClick={addFlexBundle}>ADD CUSTOM SET →</button></footer>
   </section>}
  </main>
