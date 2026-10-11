@@ -72,6 +72,12 @@ export default function MerchandisingPanel({products=[]}){
   e.preventDefault();setBusy('collection');setMessage('');
   const slug=slugify(form.slug||form.name);
   if(!slug||!form.name.trim()){setMessage('Collection name and slug are required.');setBusy('');return}
+  if(form.starts_at&&form.ends_at&&new Date(form.ends_at)<new Date(form.starts_at)){
+   setMessage('Collection end date must not be before start date.');setBusy('');return;
+  }
+  if(form.collection_mode==='dynamic'&&!['newest','oldest','title'].includes(form.rule_config?.sort||'newest')){
+   setMessage('Invalid dynamic collection sort mode.');setBusy('');return;
+  }
   const {data,error}=await supabase.rpc('admin_save_merchandising_collection',{
    p_id:form.id||null,p_slug:slug,p_name:form.name.trim(),p_kind:form.kind,
    p_description:form.description||'',p_active:!!form.active,
