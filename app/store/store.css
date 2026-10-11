@@ -1770,16 +1770,3 @@
  .storePage .storeVariant>button,.storePage .storeVariant>.storeVariantView{grid-column:1/-1!important;width:100%;min-height:44px!important;font-size:11px!important;letter-spacing:.1em!important}
  .storePage .storeProduct{padding:28px 0 34px!important}
 }
-
-
-/* SIDE:II / STORE PLUM UNDERLAY — retain white typography and product artwork */
-.storePage{background:#0b090e;--store-rule:#413741;--store-soft:#b1a5af}
-.storePage .storeDiscoveryTools{background:linear-gradient(135deg,#19131b,#0d0b10 78%);border-color:#423743}
-.storePage .storeFilters button:not(.active),.storePage .storeViewToggle button:not(.active){background-color:#110e14;border-color:#403640}
-.storePage .storeFilters button:hover,.storePage .storeViewToggle button:hover{border-color:#806782}
-.storePage .storeProduct,.storePage .storeVariant{border-color:#392f3b}
-.storePage .storeVariant>button:not(:disabled):hover,.storePage .storeClassicAction :is(button,a):hover{border-color:#927992;background-color:#201723}
-.storePage :is(.storeSearchField input,.storeDiscoveryControls select,.storeDiscoveryControls input):focus-visible{outline:2px solid #a78ca6;outline-offset:1px}
-.storePage .storeClassicCard{border-color:#403640;background:#100d12}
-.storePage .storeClassicCard:hover{border-color:#867087;background:#18121b}
-@media(max-width:700px){.storePage .storeDiscoveryTools{background:#141017}.storePage .storeMobileFilterToggle{background:#201824;border-color:#554358}}
