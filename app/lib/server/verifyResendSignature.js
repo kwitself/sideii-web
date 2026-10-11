@@ -2,7 +2,7 @@ import {createHmac,timingSafeEqual} from 'node:crypto';
 
 export function verifyResendSignature({body,id,timestamp,signature,secret,now=Date.now()}){
  if(typeof body!=='string'||!id||!timestamp||!signature||!secret?.startsWith('whsec_'))return false;
- if(!/^\\d+$/.test(String(timestamp)))return false;
+ if(!/^\d+$/.test(String(timestamp)))return false;
  const time=Number(timestamp)*1000;
  if(!Number.isSafeInteger(time)||Math.abs(now-time)>300000)return false;
  let key;
