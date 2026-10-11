@@ -28,7 +28,7 @@ export async function POST(request){
     '','The edition you asked about is available again.','Visit the SIDE:II store to order while stock lasts.'].join('\n');
    let delivered=false,errorText='';
    try{
-    const res=await fetch('https://api.resend.com/emails',{method:'POST',headers:{
+    const res=await fetch('https://api.resend.com/emails',{method:'POST',signal:AbortSignal.timeout(15000),headers:{
      Authorization:'Bearer '+apiKey,'Content-Type':'application/json',
      'Idempotency-Key':'sideii-stock-'+row.id
     },body:JSON.stringify({from,to:[row.email],subject:'Back in stock · '+row.title,text:message})});
