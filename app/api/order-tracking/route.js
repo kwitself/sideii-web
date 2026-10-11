@@ -14,7 +14,8 @@ export async function POST(request){
    return Response.json({ok:false,error:'Invalid tracking details'},{status:400});
   }
   const ip=trackingClientIp(request.headers,{vercel:process.env.VERCEL==='1'});
-  const hashed=createHash('sha256').update('sideii:tracking:v1:'+ip).digest('hex');
+  const scope=process.env.NODE_ENV==='development'?'local:'+email:'ip:'+ip;
+  const hashed=createHash('sha256').update('sideii:tracking:v2:'+scope).digest('hex');
   const server=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});
   const limited=await server.rpc('consume_order_tracking_limit',{p_key_hash:hashed});
   if(limited.error)return Response.json({ok:false,error:'Tracking unavailable'},{status:503});
