@@ -1754,3 +1754,19 @@
  .storePage .storeClassicGrid{gap:18px!important}
  .storePage .storeClassicAction :is(button,a){min-height:44px!important;font-size:11px!important}
 }
+
+
+/* FINAL MOBILE QA V2 — readable editorial product rows at phone width */
+@media(max-width:700px){
+ .storePage .storeProductMeta{min-width:0!important;width:100%!important}
+ .storePage .storeProductMeta>small{display:block;font-size:10px!important;letter-spacing:.12em!important;line-height:1.5!important}
+ .storePage .storeProductMeta h2{font-size:clamp(28px,7.4vw,38px)!important;line-height:1.1!important;margin:9px 0 17px!important;overflow-wrap:break-word}
+ .storePage .storeVariants{width:100%;min-width:0}
+ .storePage .storeVariant{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:9px 12px!important;align-items:center!important;padding:14px 0 15px!important}
+ .storePage .storeVariant>div:first-child{min-width:0;grid-column:1}
+ .storePage .storeVariant>div:first-child>b{font-size:12px!important;letter-spacing:.09em!important;line-height:1.35!important}
+ .storePage .storeVariant>div:first-child>span{font-size:10px!important;letter-spacing:.04em!important;line-height:1.5!important;color:#a69fa5!important;overflow-wrap:anywhere}
+ .storePage .storeVariant>strong{grid-column:2;align-self:start;justify-self:end;white-space:nowrap;font-size:15px!important}
+ .storePage .storeVariant>button,.storePage .storeVariant>.storeVariantView{grid-column:1/-1!important;width:100%;min-height:44px!important;font-size:11px!important;letter-spacing:.1em!important}
+ .storePage .storeProduct{padding:28px 0 34px!important}
+}
