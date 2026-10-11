@@ -13,8 +13,7 @@ export async function POST(request){
   const client=createClient(url,key,{global:{headers:{Authorization:auth}},auth:{persistSession:false}});
   const {data:user,error:userError}=await client.auth.getUser();
   if(userError||!user?.user)return Response.json({ok:false,error:'Unauthorized'},{status:401});
-  const {data:admin,error:adminError}=await client.from('admin_users').select('user_id').eq('user_id',user.user.id).maybeSingle();
-  if(adminError||!admin)return Response.json({ok:false,error:'Admin access required'},{status:403});
+  if(user.user.app_metadata?.role!=='admin')return Response.json({ok:false,error:'Admin access required'},{status:403});
   const apiKey=process.env.RESEND_API_KEY;
   if(!apiKey)return Response.json({ok:true,sent:0,reason:'email_provider_not_configured'});
   const server=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}});
