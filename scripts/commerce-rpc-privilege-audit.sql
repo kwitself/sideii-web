@@ -1,0 +1,3 @@
+-- SIDEII read-only commerce RPC permissions review
+select p.proname, p.prosecdef, has_function_privilege('anon',p.oid,'EXECUTE') anon_exec, has_function_privilege('authenticated',p.oid,'EXECUTE') member_exec from pg_proc p where p.pronamespace='public'::regnamespace and p.proname in ('apply_payment_event','claim_server_order_email','claim_received_order_email','claim_due_launch_notifications','claim_due_gift_notifications','acquire_notification_runner_lease','release_notification_runner_lease') order by p.proname;
+-- Exception: claim_received_order_email intentionally permits anon but validates order_id plus notification_token.
