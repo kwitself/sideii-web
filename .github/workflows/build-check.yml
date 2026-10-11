@@ -8,6 +8,28 @@ on:
 permissions:
   contents: read
 jobs:
+  postgres-concurrency:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: testonly
+          POSTGRES_DB: sideii_qa
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d sideii_qa"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Exercise real PostgreSQL row-lock concurrency (isolated fixtures)
+        env:
+          DATABASE_URL: postgresql://postgres:testonly@127.0.0.1:5432/sideii_qa
+        run: bash tests/postgres-concurrency-smoke.sh
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
