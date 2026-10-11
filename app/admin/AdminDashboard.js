@@ -14,6 +14,7 @@ import ImpactPanel from './ImpactPanel';
 import CatalogueOpsPanel from './CatalogueOpsPanel';
 import MerchandisingPanel from './MerchandisingPanel';
 import ProductPreviewPanel from './ProductPreviewPanel';
+import SeoControlCenter from './SeoControlCenter';
 import GrowthOpsPanel from './GrowthOpsPanel';
 import ValueOpsPanel from './ValueOpsPanel';
 import LocalizationOpsPanel from './LocalizationOpsPanel';
@@ -81,7 +82,7 @@ export default function AdminDashboard(){
  useEffect(()=>{load()},[load]);
  useEffect(()=>{if(!selectedOrder){document.body.classList.remove('sideii-admin-modal-open');return}const onKey=e=>{if(e.key==='Escape')setSelectedOrder(null)};document.body.classList.add('sideii-admin-modal-open');window.addEventListener('keydown',onKey);return()=>{document.body.classList.remove('sideii-admin-modal-open');window.removeEventListener('keydown',onKey)}},[selectedOrder]);
  useEffect(()=>{
-  const allowed=new Set(['overview','products','preview','merchandising','orders','inventory','customers','commerce','catalogue','growth','impact','fulfillment','localization','settings','launch']);
+  const allowed=new Set(['overview','products','preview','merchandising','orders','inventory','customers','commerce','catalogue','growth','impact','fulfillment','localization','settings','launch','seo']);
   const initial=String(window.location.hash||'').replace('#','');
   if(allowed.has(initial))setActiveView(initial);
   const onView=e=>{if(allowed.has(e?.detail))setActiveView(e.detail)};
@@ -270,7 +271,7 @@ export default function AdminDashboard(){
   setEditing(null); setMessage('Inventory updated.'); load();
  }
 
- return <section className="adminMain"><header className="adminTop"><div><span>SIDE:II / ADMINISTRATION · {activeView.toUpperCase()}</span><h1>Control <em>room.</em></h1></div><div className="topActions"><Link href="/">View storefront ↗</Link><button type="button" onClick={()=>openAdminView('products','merch')}>＋ New merch</button><button type="button" className="primaryAction" onClick={()=>openAdminView('products','release')}>＋ New release</button></div></header>
+ return <section className="adminMain"><header className="adminTop"><div><span>SIDE:II / ADMINISTRATION · {activeView.toUpperCase()}</span><h1>Control <em>room.</em></h1></div><div className="topActions"><button type="button" onClick={()=>openAdminView('seo')}>SEO AUDIT ↗</button><Link href="/">View storefront ↗</Link><button type="button" onClick={()=>openAdminView('products','merch')}>＋ New merch</button><button type="button" className="primaryAction" onClick={()=>openAdminView('products','release')}>＋ New release</button></div></header>
  {activeView==='overview'&&<section id="overview" className="adminSection adminViewSection"><div className="sectionLabel"><span>01 / OVERVIEW</span><p>Live Supabase catalogue and commerce.</p></div>
  {message&&<p className="dbNotice">{message}</p>}<div className="metricGrid overviewMetricGrid"><article><span>CATALOGUE</span><strong>{String(products.length).padStart(2,'0')}</strong><small>database releases</small></article><article><span>INVENTORY</span><strong>{String(stockUnits).padStart(2,'0')}</strong><small>{reservedUnits} units reserved</small></article><article><span>OPEN ORDERS</span><strong>{String(openOrders).padStart(2,'0')}</strong><small>live order records</small></article><article><span>REVENUE</span><strong>{revenue?money(revenue):'—'}</strong><small>paid orders</small></article></div><AdminAnalyticsPanel products={products}/><div className="dashboardPanels"><article><header><span>RECENT ORDERS</span><button type="button" onClick={()=>openAdminView('orders')}>VIEW ALL →</button></header>{orders.slice(0,4).map(o=><div className="dashboardLine" key={o.id}><div><b>#SII-{String(o.order_no).padStart(4,'0')}</b><small>{o.email}</small></div><span>{o.status?.toUpperCase()}</span><strong>{money(o.total,o.currency)}</strong></div>)}{orders.length===0&&<p className="emptyNote">No orders yet.</p>}</article><article><header><span>LOW STOCK</span><button type="button" onClick={()=>openAdminView('inventory')}>OPEN INVENTORY →</button></header>{lowStockVariants.slice(0,5).map(v=><div className="dashboardLine" key={v.id}><div><b>{v.product.title}</b><small>{v.sku}</small></div><span>LOW</span><strong>{Math.max(0,Number(v.stock_qty||0)-Number(v.reserved_qty||0))}</strong></div>)}{lowStockVariants.length===0&&<p className="dashboardHealthy">ALL ACTIVE STOCK ABOVE THRESHOLD</p>}</article></div></section>}
 
@@ -280,6 +281,8 @@ export default function AdminDashboard(){
  {productView==='release'&&<ReleaseWorkspace onCreated={async()=>{await load();setProductView('all')}}/>}
  {productView==='merch'&&<MerchWorkspace onCreated={load} onContinue={product=>{setMerchSetup(true);setMerchProduct(product)}}/>}
  </section></>}
+
+ {activeView==='seo'&&<div className="adminModuleStack"><SeoControlCenter products={products} onEdit={p=>{if(p.product_type==='merch')setMerchProduct({...p,__initialTab:'seo'});else setEditRelease({...p,__initialTab:'seo'})}}/></div>}
 
  {activeView==='preview'&&<div className="adminModuleStack"><ProductPreviewPanel products={products} preferredProductId={previewProductId} onEditProduct={(p,tab)=>{if(p.product_type==='merch'){setMerchSetup(false);setMerchProduct({...p,__initialTab:tab})}else setEditRelease({...p,__initialTab:tab})}}/></div>}
 
