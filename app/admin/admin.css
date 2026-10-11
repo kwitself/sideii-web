@@ -5609,3 +5609,16 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .seoScoreTrack span{display:block;height:100%;background:#aaa5a0;transition:width .2s ease}
 .seoPageOpen{display:inline-flex;align-items:center;min-height:40px;margin-top:12px;padding:9px 12px;border:1px solid #555555;color:#e8e0dd;text-decoration:none;font:10px Arial,sans-serif;letter-spacing:.12em}
 @media(max-width:760px){.seoV2Tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.seoV2Tabs button{min-width:0;padding:10px 7px;letter-spacing:.04em}.seoTools select{width:100%;max-width:none}}
+
+
+/* SIDE:II EMAIL STUDIO V1 — neutral dark admin preview */
+.emailStudio{min-width:0}.emailStudioBanner{display:flex;gap:15px;align-items:center;padding:15px 18px;border:1px solid #655c4b;background:#171512;margin:18px 0 22px;color:#cfc5b5;font:11px/1.6 Arial,sans-serif}
+.emailStudioBanner b{flex:none;letter-spacing:.13em;color:#eee2cb}
+.emailStudioControls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:16px}
+.emailStudioControls label{display:grid;gap:8px;color:#a9a39f;font:10px Arial,sans-serif;letter-spacing:.12em}
+.emailStudioControls :is(input,select){min-height:45px;width:100%;min-width:0;box-sizing:border-box;background:#101010;border:1px solid #474747;color:#e6e0d9;padding:10px;font:13px Arial,sans-serif}
+.emailStudioActions{display:flex;align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:20px}
+.emailStudioActions button{min-height:44px;border:1px solid #777;background:#e5ded6;color:#181818;padding:12px 20px;font:700 10px Arial,sans-serif;letter-spacing:.1em;cursor:pointer}
+.emailStudioActions span{font:11px/1.5 Arial,sans-serif;color:#9d9692}
+.emailStudioFrame{display:block;width:100%;height:820px;box-sizing:border-box;border:1px solid #454545;background:#090909}
+@media(max-width:760px){.emailStudioBanner{align-items:flex-start;flex-direction:column;gap:5px}.emailStudioControls{grid-template-columns:1fr}.emailStudioFrame{height:860px}}
