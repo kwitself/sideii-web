@@ -6695,3 +6695,21 @@ footer a:focus-visible,
  .globalBagDrawer .globalCheckout .checkoutPolicyNote{font-size:10px!important;line-height:1.65!important;color:#a19a96!important}
  .globalBagDrawer .globalCheckout .checkoutBack{min-height:42px!important;font-size:11px!important}
 }
+
+
+/* FINAL SHARE STUDIO MOBILE QA — compact chooser, readable networks; export card untouched */
+@media(max-width:760px){
+ .productShareSheet .productSharePresets{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}
+ .productShareSheet .productSharePresets>button{min-width:0!important;min-height:88px!important;padding:12px 9px!important;display:flex!important;flex-direction:column;align-items:flex-start;justify-content:space-between;text-align:left}
+ .productShareSheet .productSharePresets>button>span{font-size:clamp(14px,3.7vw,19px)!important;line-height:1.1!important}
+ .productShareSheet .productSharePresets>button>small{font-size:9px!important;line-height:1.35!important;white-space:normal}
+ .productShareSheet .productSharePresets>button>i{font-size:8px!important;letter-spacing:.06em!important}
+ .productShareSheet .productShareControls{min-width:0}
+ .productShareSheet .productShareControlHeading{gap:10px;align-items:baseline;flex-wrap:wrap}
+ .productShareSheet .productShareControlHeading>span{font-size:10px!important;line-height:1.5!important}
+ .productShareSheet .productShareNetworks{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+ .productShareSheet .productShareNetworks>button:first-child{grid-column:1/-1!important}
+ .productShareSheet .productShareNetworks>button{min-height:44px!important;padding:10px 8px!important;font-size:10px!important;letter-spacing:.06em!important}
+ .productShareSheet .productShareCopy,.productShareSheet .productShareActions button{min-height:48px!important;font-size:11px!important}
+}
+@media(max-width:340px){.productShareSheet .productSharePresets>button{padding:10px 6px!important}.productShareSheet .productSharePresets>button>span{font-size:13px!important}}
