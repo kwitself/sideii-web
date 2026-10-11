@@ -15,6 +15,7 @@ import CatalogueOpsPanel from './CatalogueOpsPanel';
 import MerchandisingPanel from './MerchandisingPanel';
 import ProductPreviewPanel from './ProductPreviewPanel';
 import SeoControlCenter from './SeoControlCenter';
+import EmailStudio from './EmailStudio';
 import GrowthOpsPanel from './GrowthOpsPanel';
 import ValueOpsPanel from './ValueOpsPanel';
 import LocalizationOpsPanel from './LocalizationOpsPanel';
@@ -82,7 +83,7 @@ export default function AdminDashboard(){
  useEffect(()=>{load()},[load]);
  useEffect(()=>{if(!selectedOrder){document.body.classList.remove('sideii-admin-modal-open');return}const onKey=e=>{if(e.key==='Escape')setSelectedOrder(null)};document.body.classList.add('sideii-admin-modal-open');window.addEventListener('keydown',onKey);return()=>{document.body.classList.remove('sideii-admin-modal-open');window.removeEventListener('keydown',onKey)}},[selectedOrder]);
  useEffect(()=>{
-  const allowed=new Set(['overview','products','preview','merchandising','orders','inventory','customers','commerce','catalogue','growth','impact','fulfillment','localization','settings','launch','seo']);
+  const allowed=new Set(['overview','products','preview','merchandising','orders','inventory','customers','commerce','catalogue','growth','impact','fulfillment','localization','settings','launch','seo','emails']);
   const initial=String(window.location.hash||'').replace('#','');
   if(allowed.has(initial))setActiveView(initial);
   const onView=e=>{if(allowed.has(e?.detail))setActiveView(e.detail)};
@@ -281,6 +282,8 @@ export default function AdminDashboard(){
  {productView==='release'&&<ReleaseWorkspace onCreated={async()=>{await load();setProductView('all')}}/>}
  {productView==='merch'&&<MerchWorkspace onCreated={load} onContinue={product=>{setMerchSetup(true);setMerchProduct(product)}}/>}
  </section></>}
+
+ {activeView==='emails'&&<div className="adminModuleStack"><EmailStudio/></div>}
 
  {activeView==='seo'&&<div className="adminModuleStack"><SeoControlCenter products={products} onEdit={p=>{if(p.product_type==='merch')setMerchProduct({...p,__initialTab:'seo'});else setEditRelease({...p,__initialTab:'seo'})}}/></div>}
 
