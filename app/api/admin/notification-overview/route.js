@@ -1,5 +1,6 @@
 import {createClient} from '@supabase/supabase-js';
 import {resolveEmailDeliveryStatus} from '../../../lib/server/resolveEmailDeliveryStatus';
+import {notificationReviewState} from '../../../lib/server/notificationReviewState';
 
 // Admin-only, read-only commerce delivery overview. Never sends messages.
 export async function GET(request){
@@ -54,6 +55,7 @@ export async function GET(request){
    for(const [key,summary] of grouped)summary.delivery_status=byReference.get(key)||'unverified';
   }
 
+  for(const summary of recentSummaries)summary.review_state=notificationReviewState(summary);
   return Response.json({ok:true,checked_at:now,runner:{active:!!expires&&new Date(expires)>new Date(now),expires_at:expires},counts:{
    launch_unnotified:launchPending.count??0,
    gift_due:giftPending.count??0,
