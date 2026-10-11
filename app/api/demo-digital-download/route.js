@@ -2,7 +2,8 @@ export const runtime='nodejs';
 
 export async function GET(request){
   const internal=request.headers.get('x-sideii-secure-download');
-  if(internal!==process.env.SIDEII_SECURE_DOWNLOAD_INTERNAL_TOKEN){
+  const configuredToken=process.env.SIDEII_SECURE_DOWNLOAD_INTERNAL_TOKEN;
+  if(!configuredToken||!internal||internal!==configuredToken){
     return new Response('Not found',{status:404});
   }
 
