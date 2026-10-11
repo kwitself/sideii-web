@@ -6674,3 +6674,24 @@ footer a:focus-visible,
 @media(prefers-reduced-motion:reduce){
  .editionFlipStage.phase-idle .editionFlipFace :is(.productVinylObject,.productCdObject,.productCassette){transition:none!important}
 }
+
+
+/* FINAL MOBILE CHECKOUT QA — legibility, compact option panels, clear action */
+@media(max-width:760px){
+ .globalBagDrawer .globalCheckout{min-width:0;padding-bottom:32px}
+ .globalBagDrawer .globalCheckout h3{font-size:clamp(29px,7.5vw,37px)!important;line-height:1.1!important;margin-bottom:24px!important}
+ .globalBagDrawer .globalCheckout>label{margin-bottom:14px!important}
+ .globalBagDrawer .globalCheckout :is(input:not([type=checkbox]),select,textarea){max-width:100%;min-width:0;box-sizing:border-box;font-size:14px!important}
+ .globalBagDrawer .globalCheckout :is(.checkoutInvoice,.checkoutGift){padding:16px!important;margin:16px 0!important}
+ .globalBagDrawer .globalCheckout .checkoutInvoiceType{gap:8px!important}
+ .globalBagDrawer .globalCheckout .checkoutInvoiceType button{min-height:44px!important}
+ .globalBagDrawer .globalCheckout .checkoutSavedAddressHead{margin-bottom:12px!important}
+ .globalBagDrawer .globalCheckout .checkoutInvoiceCheck{min-height:36px;align-items:center}
+ .globalBagDrawer .globalCheckout .checkoutSummary{margin-top:20px!important}
+ .globalBagDrawer .globalCheckout .checkoutSummaryItem{gap:12px;min-width:0}
+ .globalBagDrawer .globalCheckout .checkoutSummaryItem>span{min-width:0;overflow-wrap:anywhere}
+ .globalBagDrawer .globalCheckout .checkoutSummaryItem>strong{white-space:nowrap}
+ .globalBagDrawer .globalCheckout .globalBagCheckout{min-height:54px!important;font-size:12px!important;font-weight:700!important;letter-spacing:.16em!important}
+ .globalBagDrawer .globalCheckout .checkoutPolicyNote{font-size:10px!important;line-height:1.65!important;color:#a19a96!important}
+ .globalBagDrawer .globalCheckout .checkoutBack{min-height:42px!important;font-size:11px!important}
+}
