@@ -5567,20 +5567,20 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 /* SEO CONTROL CENTER V1 */
 .seoCenter{min-width:0}
 .seoMetrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0}
-.seoMetrics article{padding:23px;border:1px solid #343138;background:#100f11;display:flex;flex-direction:column;gap:15px}
+.seoMetrics article{padding:23px;border:1px solid #333333;background:#101010;display:flex;flex-direction:column;gap:15px}
 .seoMetrics small,.seoProductHead small{font:10px/1.5 Arial,sans-serif;letter-spacing:.13em;color:#aaa1a5}
 .seoMetrics strong{font:42px/1 Georgia,serif;color:#e9e0d9;font-weight:400}
 .seoMetrics em{font:13px Arial,sans-serif;color:#807780;font-style:normal}
 .seoTools{display:flex;gap:12px;align-items:center;margin-bottom:18px}
-.seoTools>input{flex:1;min-width:0;min-height:44px;padding:12px;background:#0c0b0d;border:1px solid #4b464c;color:#ece5df}
+.seoTools>input{flex:1;min-width:0;min-height:44px;padding:12px;background:#0c0b0d;border:1px solid #444444;color:#ece5df}
 .seoTools label{display:flex;align-items:center;gap:8px;font:10px Arial,sans-serif;letter-spacing:.1em;white-space:nowrap;color:#d1c8c7}
-.seoTechnical{border:1px solid #39343a;padding:20px;margin:18px 0 22px;background:#111013}
+.seoTechnical{border:1px solid #393939;padding:20px;margin:18px 0 22px;background:#111013}
 .seoTechnical h3{font:24px Georgia,serif;margin:0 0 8px;color:#e8e1df}
 .seoTechnical p{font:12px/1.65 Arial,sans-serif;color:#b9b0b2;max-width:75ch}
 .seoTechnical>div{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.seoTechnical a,.seoProductRow>button{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 14px;border:1px solid #62565f;background:#1b171c;color:#e8e0dd;text-decoration:none;font:10px Arial,sans-serif;letter-spacing:.12em;cursor:pointer}
+.seoTechnical a,.seoProductRow>button{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 14px;border:1px solid #555555;background:#191919;color:#e8e0dd;text-decoration:none;font:10px Arial,sans-serif;letter-spacing:.12em;cursor:pointer}
 .seoProductList{display:grid;gap:13px}
-.seoProductRow{border:1px solid #39343a;background:#100f11;padding:22px;min-width:0}
+.seoProductRow{border:1px solid #393939;background:#101010;padding:22px;min-width:0}
 .seoProductHead{display:flex;justify-content:space-between;align-items:start;gap:22px}
 .seoProductHead>div{min-width:0}
 .seoProductHead h3{margin:8px 0;font:26px/1.12 Georgia,serif;color:#ece6df;overflow-wrap:anywhere}
@@ -5591,9 +5591,9 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .seoProductHead>strong.warn{color:#e8c58c}
 .seoProductHead>strong.bad{color:#d89b9b}
 .seoCheckGrid{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0}
-.seoCheckGrid span{padding:7px 9px;font:10px Arial,sans-serif;border:1px solid #3f3a3f;color:#cec6c7}
-.seoCheckGrid .pass{border-color:#3d5143;color:#b4d0b6}
-.seoCheckGrid .fail{border-color:#694749;color:#e2a5a5}
+.seoCheckGrid span{padding:7px 9px;font:10px Arial,sans-serif;border:1px solid #414141;color:#cec6c7}
+.seoCheckGrid .pass{border-color:#425447;color:#b4d0b6}
+.seoCheckGrid .fail{border-color:#664747;color:#e2a5a5}
 .seoIssueList{padding:4px 0 12px}
 .seoIssueList p,.seoAllClear{margin:8px 0;font:12px/1.55 Arial,sans-serif;color:#bbb2b7}
 .seoIssueList b{color:#e4d9db}
@@ -5602,10 +5602,10 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 
 /* SEO CONTROL CENTER V2 */
 .seoV2Tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 16px}
-.seoV2Tabs button{background:#111014;border:1px solid #514a51;color:#bfb5b9;min-height:43px;padding:10px 15px;font:10px Arial,sans-serif;letter-spacing:.11em;cursor:pointer}
-.seoV2Tabs button.active{background:#dfd6d0;color:#19151a;border-color:#dfd6d0}
-.seoTools select{min-height:44px;max-width:210px;background:#121014;border:1px solid #514a51;color:#ded4d7;padding:0 10px;font-size:11px}
-.seoScoreTrack{height:5px;overflow:hidden;background:#2b252b;margin:15px 0;border-radius:2px}
-.seoScoreTrack span{display:block;height:100%;background:#b39d91;transition:width .2s ease}
-.seoPageOpen{display:inline-flex;align-items:center;min-height:40px;margin-top:12px;padding:9px 12px;border:1px solid #62565f;color:#e8e0dd;text-decoration:none;font:10px Arial,sans-serif;letter-spacing:.12em}
+.seoV2Tabs button{background:#111014;border:1px solid #484848;color:#bfb5b9;min-height:43px;padding:10px 15px;font:10px Arial,sans-serif;letter-spacing:.11em;cursor:pointer}
+.seoV2Tabs button.active{background:#dedbd6;color:#171717;border-color:#dedbd6}
+.seoTools select{min-height:44px;max-width:210px;background:#121212;border:1px solid #484848;color:#ded4d7;padding:0 10px;font-size:11px}
+.seoScoreTrack{height:5px;overflow:hidden;background:#292929;margin:15px 0;border-radius:2px}
+.seoScoreTrack span{display:block;height:100%;background:#aaa5a0;transition:width .2s ease}
+.seoPageOpen{display:inline-flex;align-items:center;min-height:40px;margin-top:12px;padding:9px 12px;border:1px solid #555555;color:#e8e0dd;text-decoration:none;font:10px Arial,sans-serif;letter-spacing:.12em}
 @media(max-width:760px){.seoV2Tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.seoV2Tabs button{min-width:0;padding:10px 7px;letter-spacing:.04em}.seoTools select{width:100%;max-width:none}}
