@@ -34,6 +34,10 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:testonly@127.0.0.1:5432/sideii_qa
         run: psql "$DATABASE_URL" -X -v ON_ERROR_STOP=1 -f tests/payment-index-postgres.sql
+      - name: Verify notification lease ownership and expiration
+        env:
+          DATABASE_URL: postgresql://postgres:testonly@127.0.0.1:5432/sideii_qa
+        run: psql "$DATABASE_URL" -X -v ON_ERROR_STOP=1 -f tests/notification-lease-postgres.sql
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
