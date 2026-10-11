@@ -5542,3 +5542,23 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
  .adminApp .adminPanel :is(label,small){line-height:1.4}
  .adminApp .adminPanel :is(button,a):focus-visible{outline:2px solid #e0cbbf;outline-offset:2px}
 }
+
+
+/* FINAL QA: mobile Admin overview legibility and non-overlapping analytics */
+@layer sideiiAdmin{
+ @media(max-width:760px){
+  .adminApp .analyticsShell,.adminApp .analyticsSide,.adminApp .dashboardPanels{grid-template-columns:minmax(0,1fr)!important;min-width:0!important}
+  .adminApp .analyticsHero,.adminApp .analyticsMain,.adminApp .analyticsSide>*{min-width:0!important;max-width:100%!important;overflow:hidden}
+  .adminApp .analyticsHero{height:auto!important;min-height:0!important;max-height:none!important}
+  .adminApp .analyticsChartWrap,.adminApp .analyticsChartWrap .analyticsSpark{height:180px!important;max-height:180px!important}
+  .adminApp .analyticsRoyaltyGrid,.adminApp .royaltyFormGrid{grid-template-columns:minmax(0,1fr)!important}
+  .adminApp .analyticsHead h2{font-size:clamp(28px,8vw,39px)!important;line-height:1.06!important}
+  .adminApp .analyticsRange{display:flex;flex-wrap:wrap;gap:6px}
+  .adminApp .analyticsRange button{min-width:40px;min-height:38px}
+  .adminApp .dashboardLine{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:10px!important;align-items:center}
+  .adminApp .dashboardLine :is(b,strong,small,span){min-width:0;overflow-wrap:anywhere}
+  .adminApp .dashboardAnalytics :is(input,select,textarea){box-sizing:border-box;max-width:100%;min-width:0;font-size:13px!important}
+  .adminApp .dashboardAnalytics :is(button,a){min-height:40px}
+  .adminApp .sectionLabel{gap:8px!important}
+ }
+}
