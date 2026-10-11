@@ -14,6 +14,11 @@ export async function POST(request){
   if(userError||userData?.user?.app_metadata?.role!=='admin')return Response.json({ok:false,error:'Admin access required'},{status:403});
   if(!resend)return Response.json({ok:true,sent:0,reason:'email_provider_not_configured'});
   const server=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}});
+  const leaseHolder=crypto.randomUUID();
+  const {data:leaseAcquired,error:leaseError}=await server.rpc('acquire_notification_runner_lease',{p_holder:leaseHolder});
+  if(leaseError)return Response.json({ok:false,error:'Notification lease unavailable'},{status:503});
+  if(!leaseAcquired)return Response.json({ok:false,error:'Notification runner already active'},{status:409});
+  try{
   const body=await request.json().catch(()=>({}));
   const mode=['launch','gift','all'].includes(body?.mode)?body.mode:'all';
   const base=(process.env.NEXT_PUBLIC_SITE_URL||'http://localhost:3000').replace(/\/$/,'');
@@ -59,5 +64,9 @@ export async function POST(request){
   }
   const failed=launchFailed+giftFailed;
   return Response.json({ok:failed===0,launch_sent:launchSent,gift_sent:giftSent,launch_failed:launchFailed,gift_failed:giftFailed,total:launchSent+giftSent,failed},{status:failed?502:200});
+  }finally{
+    const {error:releaseError}=await server.rpc('release_notification_runner_lease',{p_holder:leaseHolder});
+    if(releaseError)console.error('Notification lease release failed');
+  }
  }catch(error){return Response.json({ok:false,error:String(error?.message||error)},{status:400})}
 }
