@@ -168,9 +168,19 @@ export default function MerchandisingPanel({products=[]}){
   const slug=slugify(bundleForm.slug||bundleForm.name);
   if(!slug||!bundleForm.name.trim()){setMessage('Bundle name and slug are required.');setBusy('');return}
   if((bundleForm.items||[]).length<2){setMessage('A bundle needs at least two products.');setBusy('');return}
+  const discount=Number(bundleForm.discount_value);
+  if(!Number.isFinite(discount)||discount<0||(bundleForm.discount_type==='percent'&&discount>100)){
+   setMessage('Bundle discount must be between 0 and 100% (or a non-negative fixed amount).');setBusy('');return;
+  }
+  if(bundleForm.starts_at&&bundleForm.ends_at&&new Date(bundleForm.ends_at)<new Date(bundleForm.starts_at)){
+   setMessage('Bundle end date must not be earlier than its start date.');setBusy('');return;
+  }
+  if((bundleForm.items||[]).some(item=>!Number.isInteger(Number(item.quantity))||Number(item.quantity)<1)){
+   setMessage('Bundle quantities must be whole numbers greater than zero.');setBusy('');return;
+  }
   const {data,error}=await supabase.rpc('admin_save_bundle',{
    p_id:bundleForm.id||null,p_slug:slug,p_name:bundleForm.name.trim(),p_description:bundleForm.description||'',
-   p_discount_type:bundleForm.discount_type,p_discount_value:Number(bundleForm.discount_value)||0,p_active:!!bundleForm.active,
+   p_discount_type:bundleForm.discount_type,p_discount_value:discount,p_active:!!bundleForm.active,
    p_starts_at:iso(bundleForm.starts_at),p_ends_at:iso(bundleForm.ends_at)
   });
   if(error){setBusy('');setMessage(error.message);return}
