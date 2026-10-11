@@ -22,14 +22,27 @@ export async function POST(request){
   const base=(process.env.NEXT_PUBLIC_SITE_URL||'http://localhost:3000').replace(/\/$/,'');
   const from=process.env.SIDEII_ORDER_FROM||'SIDE:II Store <onboarding@resend.dev>';
   let sent=0;
+  let failed=0;
   for(const row of rows){
    const items=Array.isArray(row.cart)?row.cart:[];
    const names=items.slice(0,4).map(x=>String(x.title||x.sku||'SIDE:II object')).join(', ');
    const link=base+'/recover/'+row.token;
-   const text=['YOUR BAG IS STILL HERE','',names||'SIDE:II objects','','Return to your saved bag:',link,'','Stock and reservations are not guaranteed until an order is placed.','','Stop recovery reminders:',link+'?unsubscribe=1'].join('\n');
-   const res=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+resend,'Content-Type':'application/json'},body:JSON.stringify({from,to:[row.email],subject:'Your SIDE:II bag is still here',text})});
-   if(res.ok){sent++;await server.rpc('mark_cart_recovery_reminded',{p_token:row.token})}
+   const body=['YOUR BAG IS STILL HERE','',names||'SIDE:II objects','','Return to your saved bag:',link,'','Stock and reservations are not guaranteed until an order is placed.','','Stop recovery reminders:',link+'?unsubscribe=1'].join('\n');
+   let delivered=false,errorText='';
+   try{
+    const res=await fetch('https://api.resend.com/emails',{method:'POST',headers:{
+     Authorization:'Bearer '+resend,'Content-Type':'application/json',
+     'Idempotency-Key':'sideii-cart-'+row.token+'-'+Number(row.reminder_count||0)
+    },body:JSON.stringify({from,to:[row.email],subject:'Your SIDE:II bag is still here',text:body})});
+    delivered=res.ok;
+    if(!res.ok)errorText='Provider status '+res.status;
+   }catch(e){errorText=String(e?.message||e).slice(0,200)}
+   const {data:acked,error:ackError}=await server.rpc('complete_cart_recovery_reminder',{
+    p_token:row.token,p_claim_token:row.claim_token,p_delivered:delivered,p_error:errorText||null
+   });
+   if(delivered&&acked&&!ackError)sent++;
+   else failed++;
   }
-  return Response.json({ok:true,sent,pending:Math.max(0,rows.length-sent)});
+  return Response.json({ok:true,sent,pending:Math.max(0,rows.length-sent),failed});
  }catch(error){return Response.json({ok:false,error:String(error?.message||error)},{status:400})}
 }
