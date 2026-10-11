@@ -17,7 +17,7 @@ export async function GET(request,{params}){
 
   if(value.startsWith('storage-private://')){
    const path=value.slice('storage-private://'.length);
-   if(!path||path.startsWith('/')||path.split('/').some(segment=>segment==='..'))return new Response('Invalid private file path',{status:400});
+   if(!path||path.startsWith('/')||path.includes('\\')||path.split('/').some(segment=>!segment||segment==='.'||segment==='..')||/[\r\n\x00-\x1f]/.test(path))return new Response('Invalid private file path',{status:400});
    const {data:signed,error:signError}=await sb.storage.from('digital-delivery').createSignedUrl(path,60,{download:path.split('/').pop()||'SIDEII-Digital.zip'});
    if(signError||!signed?.signedUrl)return new Response('Digital file unavailable. Contact support.',{status:404,headers:{'Cache-Control':'no-store'}});
    return Response.redirect(signed.signedUrl,302);
@@ -60,7 +60,7 @@ export async function GET(request,{params}){
   }
 
   return Response.redirect(destination,302);
- }catch(error){
-  return new Response(String(error?.message||error),{status:400});
+ }catch{
+  return new Response('Download unavailable',{status:400,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
  }
 }
