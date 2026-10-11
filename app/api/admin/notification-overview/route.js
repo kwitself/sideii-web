@@ -23,7 +23,7 @@ export async function GET(request){
    server.from('email_delivery_queue').select('*',{count:'exact',head:true}).eq('status','failed'),
    server.from('commerce_notification_attempts').select('*',{count:'exact',head:true}).eq('outcome','failed'),
    server.from('commerce_notification_attempts').select('*',{count:'exact',head:true}).eq('outcome','sent'),
-   server.from('commerce_notification_attempts').select('kind,reference_id,outcome,error_code,attempted_at').order('attempted_at',{ascending:false}).limit(200)
+   server.from('commerce_notification_attempts').select('kind,reference_id,outcome,error_code,attempted_at,provider_email_id').order('attempted_at',{ascending:false}).limit(200)
   ]);
   const failure=[lease,launchPending,giftPending,previewFailed,realFailures,realSuccesses,recentAttempts].find(x=>x.error);
   if(failure)return Response.json({ok:false,error:'Delivery overview unavailable'},{status:503});
@@ -37,6 +37,22 @@ export async function GET(request){
    item.attempts++;
   }
   const recentSummaries=[...grouped.values()].slice(0,20);
+  const emailIds=[...new Set(attempts.map(a=>a.provider_email_id).filter(Boolean))];
+  if(emailIds.length){
+   const {data:events,error:eventsError}=await server.from('commerce_notification_webhook_events')
+    .select('provider_email_id,event_type,received_at').in('provider_email_id',emailIds)
+    .order('received_at',{ascending:false}).limit(500);
+   if(eventsError)return Response.json({ok:false,error:'Delivery events unavailable'},{status:503});
+   const byEmail=new Map();
+   for(const item of events||[])if(!byEmail.has(item.provider_email_id))byEmail.set(item.provider_email_id,item.event_type);
+   const byReference=new Map();
+   for(const attempt of attempts){
+    const key=attempt.kind+':'+attempt.reference_id;
+    if(!byReference.has(key)&&attempt.provider_email_id)byReference.set(key,byEmail.get(attempt.provider_email_id)||'email.accepted');
+   }
+   for(const [key,summary] of grouped)summary.delivery_status=byReference.get(key)||'unverified';
+  }
+
   return Response.json({ok:true,checked_at:now,runner:{active:!!expires&&new Date(expires)>new Date(now),expires_at:expires},counts:{
    launch_unnotified:launchPending.count??0,
    gift_due:giftPending.count??0,
