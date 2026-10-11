@@ -30,7 +30,7 @@ export async function POST(request){
    const body=['YOUR BAG IS STILL HERE','',names||'SIDE:II objects','','Return to your saved bag:',link,'','Stock and reservations are not guaranteed until an order is placed.','','Stop recovery reminders:',link+'?unsubscribe=1'].join('\n');
    let delivered=false,errorText='';
    try{
-    const res=await fetch('https://api.resend.com/emails',{method:'POST',headers:{
+    const res=await fetch('https://api.resend.com/emails',{method:'POST',signal:AbortSignal.timeout(15000),headers:{
      Authorization:'Bearer '+resend,'Content-Type':'application/json',
      'Idempotency-Key':'sideii-cart-'+row.token+'-'+Number(row.reminder_count||0)
     },body:JSON.stringify({from,to:[row.email],subject:'Your SIDE:II bag is still here',text:body})});
