@@ -48,3 +48,27 @@ test('invalid order identifier and event id rejected',()=>{
  assert.equal(validatePaymentEvent({...validEvent,order_id:'not-an-id'},'generic').ok,false);
  assert.equal(validatePaymentEvent({...validEvent,event_id:''},'generic').ok,false);
 });
+
+test('control characters and malformed payment provider rejected',()=>{
+ for(const event_id of ['evt\\nspoof','evt\\rspoof','evt\\u0000spoof']){
+  const decoded=event_id.replace('\\n','\n').replace('\\r','\r').replace('\\u0000','\u0000');
+  assert.equal(validatePaymentEvent({...validEvent,event_id:decoded},'generic').ok,false);
+ }
+ for(const provider of ['bad provider','bad/provider','a'.repeat(81),'../generic']){
+  assert.equal(validatePaymentEvent({...validEvent,provider}).ok,false);
+ }
+});
+test('same payment ID may be present in success and refund event envelopes',()=>{
+ const payment_id='psp-payment-001';
+ const succeeded=validatePaymentEvent({...validEvent,payment_id},'generic');
+ const refunded=validatePaymentEvent({...validEvent,event_id:'refund-1',event_type:'payment.refunded',payment_id},'generic');
+ assert.equal(succeeded.ok,true);
+ assert.equal(refunded.ok,true);
+ assert.equal(succeeded.paymentId,refunded.paymentId);
+});
+test('duplicate provider event ID is not a valid idempotency substitute in validation',()=>{
+ const first=validatePaymentEvent(validEvent,'generic');
+ const repeated=validatePaymentEvent({...validEvent},'generic');
+ assert.deepEqual(first,repeated);
+ // DB uniqueness and payload hashes, not this parser, enforce idempotency.
+});
