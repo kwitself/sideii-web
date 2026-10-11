@@ -1,4 +1,5 @@
 import {createClient} from '@supabase/supabase-js';
+import {classifyDownloadTarget} from '../../../lib/server/digitalTarget.mjs';
 
 export const runtime='nodejs';
 
@@ -16,17 +17,17 @@ export async function GET(request,{params}){
   const {data:target,error}=await sb.rpc('consume_digital_download_grant',{p_token:token});
   if(error||!target)return new Response('Download link expired or unavailable',{status:410});
 
-  const value=String(target);
-
-  if(value.startsWith('storage-private://')){
-   const path=value.slice('storage-private://'.length);
-   if(!path||path.startsWith('/')||path.includes('\\')||path.split('/').some(segment=>!segment||segment==='.'||segment==='..')||/[\r\n\x00-\x1f]/.test(path))return new Response('Invalid private file path',{status:400});
+  const destination=classifyDownloadTarget(String(target),request.url,process.env.DIGITAL_DOWNLOAD_ALLOWED_HOSTS||'');
+  if(destination.kind==='invalid')return new Response('Invalid download target',{status:400,headers:{'Cache-Control':'no-store'}});
+  if(destination.kind==='forbidden')return new Response('Download host is not allowed',{status:403,headers:{'Cache-Control':'no-store'}});
+  if(destination.kind==='private'){
+   const path=destination.path;
    const {data:signed,error:signError}=await sb.storage.from('digital-delivery').createSignedUrl(path,60,{download:path.split('/').pop()||'SIDEII-Digital.zip'});
    if(signError||!signed?.signedUrl)return new Response('Digital file unavailable. Contact support.',{status:404,headers:{'Cache-Control':'no-store'}});
    return Response.redirect(signed.signedUrl,302);
   }
 
-  if(value==='sideii-internal://demo-digital'){
+  if(destination.kind==='demo'){
     const body=[
       'SIDE:II — DIGITAL DOWNLOAD DEMO',
       '',
@@ -50,19 +51,7 @@ export async function GET(request,{params}){
     });
   }
 
-  if(value.startsWith('/')){
-   const destination=new URL(value,request.url);
-   if(destination.origin!==new URL(request.url).origin)return new Response('Invalid download target',{status:400});
-   return Response.redirect(destination,302);
-  }
-
-  const destination=new URL(value);
-  const allowed=new Set(String(process.env.DIGITAL_DOWNLOAD_ALLOWED_HOSTS||'').split(',').map(x=>x.trim().toLowerCase()).filter(Boolean));
-  if(destination.protocol!=='https:'||!allowed.has(destination.hostname.toLowerCase())){
-   return new Response('Download host is not allowed',{status:403});
-  }
-
-  return Response.redirect(destination,302);
+  return Response.redirect(destination.url,302);
  }catch{
   return new Response('Download unavailable',{status:400,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
  }
