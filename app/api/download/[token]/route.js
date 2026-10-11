@@ -15,6 +15,14 @@ export async function GET(request,{params}){
 
   const value=String(target);
 
+  if(value.startsWith('storage-private://')){
+   const path=value.slice('storage-private://'.length);
+   if(!path||path.startsWith('/')||path.split('/').some(segment=>segment==='..'))return new Response('Invalid private file path',{status:400});
+   const {data:signed,error:signError}=await sb.storage.from('digital-delivery').createSignedUrl(path,60,{download:path.split('/').pop()||'SIDEII-Digital.zip'});
+   if(signError||!signed?.signedUrl)return new Response('Digital file unavailable. Contact support.',{status:404,headers:{'Cache-Control':'no-store'}});
+   return Response.redirect(signed.signedUrl,302);
+  }
+
   if(value==='sideii-internal://demo-digital'){
     const body=[
       'SIDE:II — DIGITAL DOWNLOAD DEMO',
