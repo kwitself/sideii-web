@@ -1,6 +1,5 @@
 'use client';
 import {useState} from 'react';
-import {supabase} from '../lib/supabase';
 
 export default function OrderTrackingClient(){
  const [orderNo,setOrderNo]=useState('');
@@ -11,8 +10,11 @@ export default function OrderTrackingClient(){
   e.preventDefault();setBusy(true);setResult(undefined);
   const n=Number(String(orderNo).replace(/\D/g,''));
   if(!n||!email.trim()){setBusy(false);setResult(null);return}
-  const {data}=await supabase.rpc('lookup_order_tracking',{p_order_no:n,p_email:email.trim()});
-  setResult(data||null);setBusy(false);
+  try{
+   const response=await fetch('/api/order-tracking',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order_no:n,email:email.trim()})});
+   const data=await response.json();
+   setResult(response.ok?data.order||null:null);
+  }catch{setResult(null)}finally{setBusy(false)}
  }
  return <section className="trackingShell">
   <div className="trackingIntro"><span>ORDER / TRACKING</span><h1>Follow the<br/><em>object.</em></h1><p>Enter your SIDE:II order number and the email used at checkout.</p></div>
