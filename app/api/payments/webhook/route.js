@@ -44,6 +44,16 @@ export async function POST(request){
   const amount=Number(body.amount);
   const paymentId=body.payment_id==null?null:String(body.payment_id).trim();
 
+  const configuredProvider=String(process.env.PAYMENT_PROVIDER||'').trim().toLowerCase();
+  if(configuredProvider&&provider!==configuredProvider){
+   return Response.json({ok:false,error:'Unexpected payment provider'},{status:400});
+  }
+  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(orderId)
+    || !['payment.succeeded','payment.failed','payment.refunded'].includes(eventType)
+    || eventId.length>200 || !/^[A-Z]{3}$/.test(currency)
+    || amount<0 || amount>10000000){
+   return Response.json({ok:false,error:'Invalid payment event data'},{status:400});
+  }
   if(!eventId||!orderId||!Number.isFinite(amount)){
    return Response.json({ok:false,error:'Missing payment event fields'},{status:400});
   }
