@@ -1,6 +1,6 @@
 export async function sendOrderEmailPayload(payload){
  const apiKey=process.env.RESEND_API_KEY;
- if(!apiKey)return {ok:true,email_sent:false,reason:'email_provider_not_configured'};
+ if(!apiKey)return {ok:false,email_sent:false,reason:'email_provider_not_configured',status:503};
 
  const guestPortal=payload.guest_portal_token
   ? String(process.env.NEXT_PUBLIC_SITE_URL||'').replace(/\/$/,'')+'/order#'+encodeURIComponent(String(payload.guest_portal_token))
@@ -43,7 +43,8 @@ export async function sendOrderEmailPayload(payload){
  const from=process.env.SIDEII_ORDER_FROM||'SIDE:II Store <onboarding@resend.dev>';
  const res=await fetch('https://api.resend.com/emails',{
   method:'POST',
-  headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json'},
+  headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json',
+   'Idempotency-Key':'sideii-order-'+String(payload.order_id||payload.order_no)+'-'+String(payload.type||'received')},
   body:JSON.stringify({
    from,
    to:[payload.email],
