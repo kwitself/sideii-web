@@ -1,4 +1,5 @@
 import {createClient} from '@supabase/supabase-js';
+import {notificationRetryDecision} from '../../../../lib/server/notificationRetryPolicy';
 
 export async function POST(request){
  try{
@@ -18,6 +19,14 @@ export async function POST(request){
    const {error}=await server.from('commerce_notification_attempts').insert({kind,reference_id,outcome,error_code});
    if(error)console.error('Notification attempt audit unavailable');
   };
+  const shouldAttempt=async(kind,reference_id)=>{
+   const {data,error}=await server.from('commerce_notification_attempts')
+    .select('outcome,error_code,attempted_at')
+    .eq('kind',kind).eq('reference_id',reference_id)
+    .order('attempted_at',{ascending:false}).limit(5);
+   if(error)return {send:false,reason:'history_unavailable'};
+   return notificationRetryDecision(data);
+  };
   const leaseHolder=crypto.randomUUID();
   const {data:leaseAcquired,error:leaseError}=await server.rpc('acquire_notification_runner_lease',{p_holder:leaseHolder});
   if(leaseError)return Response.json({ok:false,error:'Notification lease unavailable'},{status:503});
@@ -27,13 +36,15 @@ export async function POST(request){
   const mode=['launch','gift','all'].includes(body?.mode)?body.mode:'all';
   const base=(process.env.NEXT_PUBLIC_SITE_URL||'http://localhost:3000').replace(/\/$/,'');
   const from=process.env.SIDEII_ORDER_FROM||'SIDE:II Store <onboarding@resend.dev>';
-  let launchSent=0,giftSent=0,launchFailed=0,giftFailed=0;
+  let launchSent=0,giftSent=0,launchFailed=0,giftFailed=0,skipped=0;
 
   if(mode==='launch'||mode==='all'){
    const {data,error}=await server.rpc('claim_due_launch_notifications',{p_limit:50});
    if(error)return Response.json({ok:false,error:error.message},{status:400});
    const ids=[];
    for(const row of Array.isArray(data)?data:[]){
+    const policy=await shouldAttempt('launch',row.id);
+    if(!policy.send){skipped++;continue;}
     const href=base+(row.product_type==='merch'?'/store/':'/releases/')+row.slug;
     const text=['THE DROP IS LIVE','',String(row.title||'SIDE:II').toUpperCase(),'','The release you asked about is now available.',href].join('\n');
     try{
@@ -53,6 +64,8 @@ export async function POST(request){
    if(error)return Response.json({ok:false,error:error.message},{status:400});
    const ids=[];
    for(const row of Array.isArray(data)?data:[]){
+    const policy=await shouldAttempt('gift',row.order_id);
+    if(!policy.send){skipped++;continue;}
     const giftUrl=base+'/gift/'+row.gift_public_token;
     const text=['A SIDE:II GIFT FOR YOU','','Order #SII-'+String(row.order_no).padStart(4,'0'),row.gift_message?String(row.gift_message):'A gift has been prepared for you.','','Open your gift:',giftUrl,'','Sent through SIDE:II.'].filter(Boolean).join('\n');
     try{
@@ -67,7 +80,7 @@ export async function POST(request){
    }
   }
   const failed=launchFailed+giftFailed;
-  return Response.json({ok:failed===0,launch_sent:launchSent,gift_sent:giftSent,launch_failed:launchFailed,gift_failed:giftFailed,total:launchSent+giftSent,failed},{status:failed?502:200});
+  return Response.json({ok:failed===0,launch_sent:launchSent,gift_sent:giftSent,launch_failed:launchFailed,gift_failed:giftFailed,total:launchSent+giftSent,failed,skipped},{status:failed?502:200});
   }finally{
     const {error:releaseError}=await server.rpc('release_notification_runner_lease',{p_holder:leaseHolder});
     if(releaseError)console.error('Notification lease release failed');
