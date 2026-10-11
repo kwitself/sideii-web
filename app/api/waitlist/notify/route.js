@@ -3,52 +3,45 @@ import {createClient} from '@supabase/supabase-js';
 export async function POST(request){
  try{
   const auth=request.headers.get('authorization')||'';
+  if(!auth.startsWith('Bearer '))return Response.json({ok:false,error:'Unauthorized'},{status:401});
   const {variant_id}=await request.json();
-  const apiKey=process.env.RESEND_API_KEY;
-  if(!apiKey)return Response.json({ok:true,sent:0,reason:'email_provider_not_configured'});
-
+  if(typeof variant_id!=='string'||!/^[0-9a-f-]{36}$/i.test(variant_id))return Response.json({ok:false,error:'Valid variant_id required'},{status:400});
   const url=process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-  if(!url||!key)return Response.json({ok:false,error:'Store email service unavailable'},{status:503});
-
-  const sb=createClient(url,key,{global:{headers:{Authorization:auth}},auth:{persistSession:false}});
-  const {data,error}=await sb.rpc('admin_get_waitlist_pending',{p_variant_id:variant_id});
-  if(error)return Response.json({ok:false,error:error.message},{status:403});
-
+  const secret=process.env.SUPABASE_SECRET_KEY;
+  if(!url||!key||!secret)return Response.json({ok:false,error:'Notification service unavailable'},{status:503});
+  const client=createClient(url,key,{global:{headers:{Authorization:auth}},auth:{persistSession:false}});
+  const {data:user,error:userError}=await client.auth.getUser();
+  if(userError||!user?.user)return Response.json({ok:false,error:'Unauthorized'},{status:401});
+  const {data:admin,error:adminError}=await client.from('admin_users').select('user_id').eq('user_id',user.user.id).maybeSingle();
+  if(adminError||!admin)return Response.json({ok:false,error:'Admin access required'},{status:403});
+  const apiKey=process.env.RESEND_API_KEY;
+  if(!apiKey)return Response.json({ok:true,sent:0,reason:'email_provider_not_configured'});
+  const server=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}});
+  const {data,error}=await server.rpc('claim_stock_waitlist_for_variant',{p_variant_id:variant_id,p_limit:20});
+  if(error)return Response.json({ok:false,error:error.message},{status:400});
   const rows=Array.isArray(data)?data:[];
-  if(!rows.length)return Response.json({ok:true,sent:0});
-
   const from=process.env.SIDEII_ORDER_FROM||'SIDE:II Store <onboarding@resend.dev>';
-  const sentIds=[];
-
+  let sent=0,failed=0;
   for(const row of rows){
-    const text=[
-      'BACK IN STOCK',
-      '',
-      String(row.title||'SIDE:II').toUpperCase(),
-      String(row.format||'').toUpperCase()+' · '+String(row.sku||''),
-      '',
-      'The edition you asked about is available again.',
-      'Visit the SIDE:II store to order while stock lasts.'
-    ].join('\n');
-
-    const res=await fetch('https://api.resend.com/emails',{
-      method:'POST',
-      headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json'},
-      body:JSON.stringify({
-        from,to:[row.email],
-        subject:'Back in stock · '+row.title,
-        text
-      })
-    });
-    if(res.ok)sentIds.push(row.id);
+   const message=['BACK IN STOCK','',String(row.title||'SIDE:II').toUpperCase(),
+    String(row.format||'').toUpperCase()+' · '+String(row.sku||''),
+    '','The edition you asked about is available again.','Visit the SIDE:II store to order while stock lasts.'].join('\n');
+   let delivered=false,errorText='';
+   try{
+    const res=await fetch('https://api.resend.com/emails',{method:'POST',headers:{
+     Authorization:'Bearer '+apiKey,'Content-Type':'application/json',
+     'Idempotency-Key':'sideii-stock-'+row.id
+    },body:JSON.stringify({from,to:[row.email],subject:'Back in stock · '+row.title,text:message})});
+    delivered=res.ok;
+    if(!res.ok)errorText='Provider status '+res.status;
+   }catch(e){errorText=String(e?.message||e).slice(0,200)}
+   const {data:acked,error:ackError}=await server.rpc('complete_stock_waitlist_notification',{
+    p_id:row.id,p_claim_token:row.claim_token,p_delivered:delivered,p_error:errorText||null
+   });
+   if(delivered&&acked&&!ackError)sent++;
+   else failed++;
   }
-
-  if(sentIds.length){
-    await sb.rpc('admin_mark_waitlist_notified',{p_ids:sentIds});
-  }
-  return Response.json({ok:true,sent:sentIds.length,pending:rows.length-sentIds.length});
- }catch(error){
-  return Response.json({ok:false,error:String(error?.message||error)},{status:400});
- }
+  return Response.json({ok:true,sent,failed,pending:Math.max(0,rows.length-sent)});
+ }catch(error){return Response.json({ok:false,error:String(error?.message||error)},{status:400})}
 }
