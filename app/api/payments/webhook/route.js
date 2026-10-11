@@ -75,7 +75,7 @@ export async function POST(request){
    return Response.json({ok:false,error:error.message},{status:400});
   }
 
-  if(data?.event_type==='payment.succeeded'&&!data?.duplicate){
+  if(data?.event_type==='payment.succeeded'&&!data?.duplicate&&process.env.RESEND_API_KEY){
    try{
     const claimed=await sb.rpc('claim_server_order_email',{p_order_id:orderId,p_type:'paid'});
     if(!claimed.error&&claimed.data)await sendOrderEmailPayload(claimed.data);
