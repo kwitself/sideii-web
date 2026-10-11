@@ -14,6 +14,10 @@ export async function POST(request){
   if(userError||userData?.user?.app_metadata?.role!=='admin')return Response.json({ok:false,error:'Admin access required'},{status:403});
   if(!resend)return Response.json({ok:true,sent:0,reason:'email_provider_not_configured'});
   const server=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}});
+  const recordAttempt=async(kind,reference_id,outcome,error_code=null)=>{
+   const {error}=await server.from('commerce_notification_attempts').insert({kind,reference_id,outcome,error_code});
+   if(error)console.error('Notification attempt audit unavailable');
+  };
   const leaseHolder=crypto.randomUUID();
   const {data:leaseAcquired,error:leaseError}=await server.rpc('acquire_notification_runner_lease',{p_holder:leaseHolder});
   if(leaseError)return Response.json({ok:false,error:'Notification lease unavailable'},{status:503});
@@ -34,8 +38,8 @@ export async function POST(request){
     const text=['THE DROP IS LIVE','',String(row.title||'SIDE:II').toUpperCase(),'','The release you asked about is now available.',href].join('\n');
     try{
     const res=await fetch('https://api.resend.com/emails',{method:'POST',signal:AbortSignal.timeout(15000),headers:{Authorization:'Bearer '+resend,'Content-Type':'application/json','Idempotency-Key':'sideii-launch-'+row.id},body:JSON.stringify({from,to:[row.email],subject:'Now live · '+row.title,text})});
-    if(res.ok){ids.push(row.id);launchSent++}else{launchFailed++}
-    }catch{launchFailed++}
+    if(res.ok){ids.push(row.id);launchSent++;await recordAttempt('launch',row.id,'sent')}else{launchFailed++;await recordAttempt('launch',row.id,'failed','http_'+res.status)}
+    }catch{launchFailed++;await recordAttempt('launch',row.id,'failed','network_error')}
 
    }
    if(ids.length){
@@ -53,8 +57,8 @@ export async function POST(request){
     const text=['A SIDE:II GIFT FOR YOU','','Order #SII-'+String(row.order_no).padStart(4,'0'),row.gift_message?String(row.gift_message):'A gift has been prepared for you.','','Open your gift:',giftUrl,'','Sent through SIDE:II.'].filter(Boolean).join('\n');
     try{
     const res=await fetch('https://api.resend.com/emails',{method:'POST',signal:AbortSignal.timeout(15000),headers:{Authorization:'Bearer '+resend,'Content-Type':'application/json','Idempotency-Key':'sideii-gift-'+row.order_id},body:JSON.stringify({from,to:[row.recipient_email],subject:'A SIDE:II gift for you',text})});
-    if(res.ok){ids.push(row.order_id);giftSent++}else{giftFailed++}
-    }catch{giftFailed++}
+    if(res.ok){ids.push(row.order_id);giftSent++;await recordAttempt('gift',row.order_id,'sent')}else{giftFailed++;await recordAttempt('gift',row.order_id,'failed','http_'+res.status)}
+    }catch{giftFailed++;await recordAttempt('gift',row.order_id,'failed','network_error')}
 
    }
    if(ids.length){
