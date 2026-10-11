@@ -1723,3 +1723,34 @@
 .storePage .storeClassicAction :is(a,button){font-size:max(9px,0.7em);letter-spacing:.07em}
 .storePage .storeEditorialList :is(a,button):focus-visible{outline-offset:3px}
 @media(max-width:760px){.storePage .storeDiscoveryMeta{line-height:1.5}.storePage .storeClassicAction :is(a,button){min-height:44px}}
+
+
+/* FINAL MOBILE QA — condensed, touch-friendly storefront */
+.storeMobileFilterToggle{display:none}
+@media(max-width:700px){
+ .storePage .storeHero{padding-top:78px!important;padding-bottom:26px!important}
+ .storePage .storeHero h1{font-size:clamp(44px,11vw,64px)!important;line-height:.96!important;margin:16px 0!important}
+ .storePage .storeHero p{font-size:13px!important;line-height:1.55!important}
+ .storePage .storeEditorialLinks{gap:7px!important}
+ .storePage .storeFilters{gap:10px!important;padding:15px 0!important}
+ .storePage .storeFilters>div{flex-wrap:nowrap!important;max-width:100%!important;overflow-x:auto!important;scrollbar-width:none;overscroll-behavior-x:contain}
+ .storePage .storeFilters>div::-webkit-scrollbar{display:none}
+ .storePage .storeFilters button{min-height:38px!important;white-space:nowrap!important;font-size:10px!important;padding:9px 12px!important}
+ .storePage .storeDiscoveryTools{padding:15px!important;margin-top:4px!important}
+ .storePage .storeSearchField input{min-height:44px;font-size:14px!important}
+ .storeMobileFilterToggle{display:flex;width:100%;margin-top:12px;align-items:center;justify-content:space-between;min-height:44px;padding:0 13px;border:1px solid #555158;background:#1b191d;color:#e3dad5;font:700 11px Arial,sans-serif;letter-spacing:.1em;cursor:pointer}
+ .storePage .storeDiscoveryControls:not(.mobileExpanded){display:none!important}
+ .storePage .storeDiscoveryControls.mobileExpanded{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:12px!important;margin-top:14px!important}
+ .storePage .storeDiscoveryControls>label{min-width:0!important}
+ .storePage .storeDiscoveryControls>label>span{font-size:10px!important}
+ .storePage .storeDiscoveryControls :is(select,input:not([type=checkbox])){min-height:44px!important;font-size:12px!important}
+ .storePage .storeCatalogue{padding-top:20px!important}
+ .storePage .storeProduct{gap:16px!important;padding:28px 0!important}
+ .storePage .storeProductMeta h2{font-size:clamp(27px,7vw,38px)!important;line-height:1.08!important;margin:10px 0 18px!important}
+ .storePage .storeVariant{column-gap:10px!important;padding:14px 0!important}
+ .storePage .storeVariant>button,.storePage .storeVariant .storeVariantView{min-height:44px!important;font-size:11px!important}
+ .storePage .storeProductMeta small,.storePage .storeVariant div>span{font-size:10px!important;line-height:1.5!important}
+ .storePage .storeCover,.storePage .storeCover img{max-width:100%!important}
+ .storePage .storeClassicGrid{gap:18px!important}
+ .storePage .storeClassicAction :is(button,a){min-height:44px!important;font-size:11px!important}
+}
