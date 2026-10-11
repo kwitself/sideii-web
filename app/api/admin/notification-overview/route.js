@@ -23,18 +23,27 @@ export async function GET(request){
    server.from('email_delivery_queue').select('*',{count:'exact',head:true}).eq('status','failed'),
    server.from('commerce_notification_attempts').select('*',{count:'exact',head:true}).eq('outcome','failed'),
    server.from('commerce_notification_attempts').select('*',{count:'exact',head:true}).eq('outcome','sent'),
-   server.from('commerce_notification_attempts').select('kind,outcome,error_code,attempted_at').order('attempted_at',{ascending:false}).limit(20)
+   server.from('commerce_notification_attempts').select('kind,reference_id,outcome,error_code,attempted_at').order('attempted_at',{ascending:false}).limit(200)
   ]);
   const failure=[lease,launchPending,giftPending,previewFailed,realFailures,realSuccesses,recentAttempts].find(x=>x.error);
   if(failure)return Response.json({ok:false,error:'Delivery overview unavailable'},{status:503});
   const expires=lease.data?.expires_at??null;
+  const attempts=recentAttempts.data||[];
+  const grouped=new Map();
+  for(const attempt of attempts){
+   const key=attempt.kind+':'+attempt.reference_id;
+   let item=grouped.get(key);
+   if(!item){item={kind:attempt.kind,outcome:attempt.outcome,error_code:attempt.error_code,attempted_at:attempt.attempted_at,attempts:0};grouped.set(key,item)}
+   item.attempts++;
+  }
+  const recentSummaries=[...grouped.values()].slice(0,20);
   return Response.json({ok:true,checked_at:now,runner:{active:!!expires&&new Date(expires)>new Date(now),expires_at:expires},counts:{
    launch_unnotified:launchPending.count??0,
    gift_due:giftPending.count??0,
    qa_preview_failed:previewFailed.count??0,
    real_send_failures:realFailures.count??0,
    real_send_successes:realSuccesses.count??0
-  },recent_attempts:recentAttempts.data||[],note:'Read-only snapshot. QA preview events are not actual delivery failures.'},{headers:{'Cache-Control':'no-store'}});
+  },recent_attempts:recentSummaries,note:'Read-only snapshot. QA preview events are not actual delivery failures.'},{headers:{'Cache-Control':'no-store'}});
  }catch{
   return Response.json({ok:false,error:'Delivery overview unavailable'},{status:503});
  }
