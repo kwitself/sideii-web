@@ -14,8 +14,9 @@ export function validatePaymentEvent(body,expectedProvider=''){
  const orderId=String(body.order_id??'').trim();
  const currency=String(body.currency||'TRY').trim().toUpperCase();
  const paymentId=body.payment_id==null?null:String(body.payment_id).trim();
+ if(!/^[a-z0-9][a-z0-9._-]{0,79}$/.test(provider))return {ok:false,error:'Invalid payment provider'};
  if(expectedProvider&&provider!==expectedProvider.trim().toLowerCase())return {ok:false,error:'Unexpected payment provider'};
- if(!eventId||eventId.length>200||!orderId)return {ok:false,error:'Missing payment event fields'};
+ if(!eventId||eventId.length>200||/[\x00-\x1f\x7f]/.test(eventId)||!orderId)return {ok:false,error:'Missing payment event fields'};
  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(orderId)||
    !['payment.succeeded','payment.failed','payment.refunded'].includes(eventType)||
    !/^[A-Z]{3}$/.test(currency)||
