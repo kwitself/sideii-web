@@ -72,3 +72,16 @@ test('duplicate provider event ID is not a valid idempotency substitute in valid
  assert.deepEqual(first,repeated);
  // DB uniqueness and payload hashes, not this parser, enforce idempotency.
 });
+
+test('provider payment identifiers reject blank, overly long and control characters',()=>{
+ for(const payment_id of ['', 'x'.repeat(201), 'bad'+String.fromCharCode(10)+'id', 'bad'+String.fromCharCode(0)+'id']){
+  assert.equal(validatePaymentEvent({...validEvent,payment_id},'generic').ok,false);
+ }
+});
+test('provider payment identifiers preserve legitimate punctuation',()=>{
+ for(const payment_id of ['pay_123', 'gateway/transaction-42', 'pay:2026.10']){
+  const result=validatePaymentEvent({...validEvent,payment_id},'generic');
+  assert.equal(result.ok,true);
+  assert.equal(result.paymentId,payment_id);
+ }
+});
