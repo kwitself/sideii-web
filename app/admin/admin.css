@@ -5609,3 +5609,20 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .seoScoreTrack span{display:block;height:100%;background:#b39d91;transition:width .2s ease}
 .seoPageOpen{display:inline-flex;align-items:center;min-height:40px;margin-top:12px;padding:9px 12px;border:1px solid #62565f;color:#e8e0dd;text-decoration:none;font:10px Arial,sans-serif;letter-spacing:.12em}
 @media(max-width:760px){.seoV2Tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.seoV2Tabs button{min-width:0;padding:10px 7px;letter-spacing:.04em}.seoTools select{width:100%;max-width:none}}
+
+
+/* SIDE:II / CONTROL ROOM PLUM UNDERLAY — premium tonal consistency */
+.adminApp{--sideii-admin-plum:#17121a;--sideii-admin-rule:#473a48;--sideii-admin-focus:#b8a0b6}
+.adminApp .adminRail,.adminApp .adminPanel,.adminApp .seoCenter{border-color:var(--sideii-admin-rule)}
+.adminApp .adminRail{background-color:#0d0a10}
+.adminApp .adminNav a:hover,.adminApp .adminNav a.active{background-color:#211825;border-color:#5b485e}
+.adminApp :is(.seoProductRow,.seoMetrics article,.seoTechnical){background-color:#120e15;border-color:#473a48}
+.adminApp .seoV2Tabs button:not(.active){background:#18121b;border-color:#554659}
+.adminApp .seoV2Tabs button:not(.active):hover{background:#281d2b;border-color:#8a718b}
+.adminApp :is(.seoTools input,.seoTools select){background:#130f17;border-color:#554659}
+.adminApp :is(.seoTools input,.seoTools select):focus-visible{outline:2px solid var(--sideii-admin-focus);outline-offset:1px}
+.adminApp .seoScoreTrack{background:#322735}
+.adminApp .seoScoreTrack span{background:#ac91aa}
+.adminApp .seoPageOpen,.adminApp .seoProductRow>button{background:#1e1722;border-color:#625067}
+.adminApp .seoPageOpen:hover,.adminApp .seoProductRow>button:hover{background:#302237;border-color:#987a9b}
+.adminApp .seoV2Tabs button.active{background:#e4dce2;border-color:#e4dce2;color:#18121b}
