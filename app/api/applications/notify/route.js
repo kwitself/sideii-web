@@ -21,16 +21,16 @@ export async function POST(request){
    return Response.json({ok:true,email_sent:false,reason:!client?'supabase_not_configured':'email_provider_not_configured'});
   }
 
-  const {data:claimed,error:claimError}=await client.rpc('claim_production_application_notification',{p_id:applicationId});
+  const recipient=String(process.env.SIDEII_APPLICATION_TO||'').trim();
+  if(!recipient)return Response.json({ok:true,email_sent:false,reason:'notification_email_not_configured'});
+  const secret=process.env.SUPABASE_SECRET_KEY;
+  if(!secret)return Response.json({ok:false,email_sent:false,error:'Server notification boundary unavailable'},{status:503});
+  const server=createClient(url,secret,{auth:{persistSession:false,autoRefreshToken:false}});
+  const {data:claimed,error:claimError}=await server.rpc('claim_production_application_notification',{p_id:applicationId});
   if(claimError)return Response.json({ok:false,error:claimError.message},{status:400});
   application=claimed||null;
   if(!application){
    return Response.json({ok:true,email_sent:false,reason:'already_claimed_or_not_found'});
-  }
-
-  const recipient=String(process.env.SIDEII_APPLICATION_TO||'').trim();
-  if(!recipient){
-   return Response.json({ok:true,email_sent:false,reason:'notification_email_not_configured'});
   }
 
   const lines=[
@@ -61,7 +61,7 @@ export async function POST(request){
 
   const res=await fetch('https://api.resend.com/emails',{
    method:'POST',
-   headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},
+   headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json','Idempotency-Key':'sideii-application-'+applicationId},
    body:JSON.stringify({
     from,
     to:[recipient],
