@@ -9,9 +9,20 @@ BEGIN
  WHERE qa_lease.runner.expires_at<now() RETURNING holder INTO claimed;
  RETURN claimed=p_holder;
 END $$;
-SELECT CASE WHEN qa_lease.acquire('11111111-1111-4111-8111-111111111111') THEN 1 ELSE 1/0 END;
-SELECT CASE WHEN NOT qa_lease.acquire('22222222-2222-4222-8222-222222222222') THEN 1 ELSE 1/0 END;
-UPDATE qa_lease.runner SET expires_at=now()-interval '1 minute' WHERE name='commerce';
-SELECT CASE WHEN qa_lease.acquire('22222222-2222-4222-8222-222222222222') THEN 1 ELSE 1/0 END;
-SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM qa_lease.runner WHERE holder='11111111-1111-4111-8111-111111111111') THEN 1 ELSE 1/0 END;
+DO $assertions$
+BEGIN
+ IF NOT qa_lease.acquire('11111111-1111-4111-8111-111111111111') THEN
+  RAISE EXCEPTION 'first lease acquisition failed';
+ END IF;
+ IF qa_lease.acquire('22222222-2222-4222-8222-222222222222') THEN
+  RAISE EXCEPTION 'unexpired lease was stolen';
+ END IF;
+ UPDATE qa_lease.runner SET expires_at=now()-interval '1 minute' WHERE name='commerce';
+ IF NOT qa_lease.acquire('22222222-2222-4222-8222-222222222222') THEN
+  RAISE EXCEPTION 'expired lease was not acquired';
+ END IF;
+ IF EXISTS(SELECT 1 FROM qa_lease.runner WHERE holder='11111111-1111-4111-8111-111111111111') THEN
+  RAISE EXCEPTION 'stale holder retained lease';
+ END IF;
+END $assertions$;
 DROP SCHEMA qa_lease CASCADE;
