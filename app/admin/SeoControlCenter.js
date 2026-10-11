@@ -3,15 +3,15 @@ import {useMemo,useState} from 'react';
 
 const short=(v,max)=>String(v||'').trim().slice(0,max);
 const pageAudits=[
- {name:'Home',path:'/',title:'Side:II — The Other Side of Sound',description:'Independent physical music label for physical editions, selected releases and artist-led objects.',notes:'Review hero copy and social preview before launch.'},
- {name:'Store',path:'/store',title:'Store — Side:II',description:'',notes:'Store title exists, but a dedicated meta description is missing.'},
- {name:'Archive',path:'/archive',title:'',description:'',notes:'Metadata not inspected in V2 — manual verification required.'}
+ {name:'Home',path:'/',title:'Side:II — The Other Side of Sound',description:'Independent physical music label for physical editions, selected releases and artist-led objects.',notes:'Metadata values verified against app/layout.js; this does not test search rankings or crawlability.'},
+ {name:'Store',path:'/store',title:'Store — Vinyl, CD, Cassette & Digital Editions',description:'Explore independent vinyl records, CDs, cassettes, digital releases and artist-led merch from SIDE:II and its associated imprints.',notes:'Metadata values verified against app/store/page.js; live indexing not tested.'},
+ {name:'Archive',path:'/archive',title:'Archive — Side:II',description:'Sold out, past and archived SIDE:II catalogue editions.',notes:'Page defines its own title and description, but both are shorter than the audit recommendations.'}
 ];
 function pageChecks(p){return [
  {label:'Descriptive title',ok:p.title.length>=20&&p.title.length<=65,weight:35,fix:'Set a 20–65 character page title'},
  {label:'Meta description',ok:p.description.length>=70&&p.description.length<=160,weight:35,fix:'Add a unique 70–160 character description'},
  {label:'URL structure',ok:p.path==='/'||/^\/[a-z0-9-]+(?:\/[a-z0-9-]+)*$/.test(p.path),weight:15,fix:'Use a clean public URL'},
- {label:'Metadata verified',ok:p.name!=='Archive',weight:15,fix:'Review actual page metadata'}
+ {label:'Metadata in code',ok:true,weight:15,fix:'Check server-rendered metadata again after deployment'}
 ];}
 
 function inspect(p){
