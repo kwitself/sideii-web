@@ -18,7 +18,8 @@ const items=[
  ['localization','13','Localization'],
  ['settings','14','Settings'],
  ['launch','15','Launch'],
- ['seo','16','SEO Audit']
+ ['seo','16','SEO Audit'],
+ ['emails','17','Email Studio']
 ];
 
 const valid=new Set(items.map(x=>x[0]));
