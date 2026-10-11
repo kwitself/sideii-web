@@ -17,7 +17,7 @@ SQL
 psql "$DATABASE_URL" -X -q -v ON_ERROR_STOP=1 -c "BEGIN; SELECT id FROM qa_parallel.stock WHERE id=1 FOR UPDATE; SELECT pg_sleep(2); UPDATE qa_parallel.stock SET reserved_qty=reserved_qty+1 WHERE id=1 AND stock_qty-reserved_qty>=1; COMMIT;" > /tmp/sideii-stock-1.log &
 pid1=$!
 sleep 0.3
-stock_second=$(psql "$DATABASE_URL" -XAt -v ON_ERROR_STOP=1 -c "UPDATE qa_parallel.stock SET reserved_qty=reserved_qty+1 WHERE id=1 AND stock_qty-reserved_qty>=1 RETURNING id;")
+stock_second=$(psql "$DATABASE_URL" -XqAt -v ON_ERROR_STOP=1 -c "UPDATE qa_parallel.stock SET reserved_qty=reserved_qty+1 WHERE id=1 AND stock_qty-reserved_qty>=1 RETURNING id;")
 wait "$pid1"
 stock_state=$(psql "$DATABASE_URL" -XAt -c "SELECT reserved_qty FROM qa_parallel.stock WHERE id=1")
 test -z "$stock_second"
@@ -26,7 +26,7 @@ test "$stock_state" = "1"
 psql "$DATABASE_URL" -X -q -v ON_ERROR_STOP=1 -c "BEGIN; SELECT token FROM qa_parallel.grants WHERE token='test-only-token' FOR UPDATE; SELECT pg_sleep(2); UPDATE qa_parallel.grants SET used_at=now() WHERE token='test-only-token' AND used_at IS NULL; COMMIT;" > /tmp/sideii-grant-1.log &
 pid2=$!
 sleep 0.3
-grant_second=$(psql "$DATABASE_URL" -XAt -v ON_ERROR_STOP=1 -c "UPDATE qa_parallel.grants SET used_at=now() WHERE token='test-only-token' AND used_at IS NULL RETURNING token;")
+grant_second=$(psql "$DATABASE_URL" -XqAt -v ON_ERROR_STOP=1 -c "UPDATE qa_parallel.grants SET used_at=now() WHERE token='test-only-token' AND used_at IS NULL RETURNING token;")
 wait "$pid2"
 used_count=$(psql "$DATABASE_URL" -XAt -c "SELECT count(*) FROM qa_parallel.grants WHERE used_at IS NOT NULL")
 test -z "$grant_second"
