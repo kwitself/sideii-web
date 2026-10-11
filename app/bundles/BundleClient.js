@@ -70,16 +70,22 @@ export default function BundleClient({bundles=[],products=[],flexRules=[]}){
   if(valid.length!==rows.length){setMessage('One or more bundle products are unavailable. Nothing was added.');return}
 
   const cart=readCart();
+  const demand=new Map();
   for(const row of valid){
    const {product,variant:v}=row;
    if(product.status!=='AVAILABLE'){setMessage(product.title+' is not currently available. Nothing was added.');return}
-   const qty=Math.max(1,Number(row.cfg.quantity||1));
+   const qty=Number(row.cfg.quantity);
+   if(!Number.isSafeInteger(qty)||qty<1){setMessage('Invalid bundle quantity. Nothing was added.');return}
    const key=String(v.id||v.sku||'');
-   const existing=cart.find(x=>String(x.key||x.variantId||x.sku||'')===key);
-   const allowed=lineMax(product,v);
-   if(allowed<=0){setMessage(product.title+' is sold out. Nothing was added.');return}
-   if(Number(existing?.qty||0)+qty>allowed){
-    setMessage(product.title+' does not have enough available quantity for this bundle. Nothing was added.');
+   if(!key){setMessage('Bundle variant is missing its identifier.');return}
+   const prev=demand.get(key);
+   demand.set(key,{product,variant:v,qty:(prev?.qty||0)+qty});
+  }
+  for(const [key,entry] of demand){
+   const existing=cart.filter(x=>String(x.key||x.variantId||x.sku||'')===key).reduce((n,x)=>n+Number(x.qty||0),0);
+   const allowed=lineMax(entry.product,entry.variant);
+   if(allowed<=0||existing+entry.qty>allowed){
+    setMessage(entry.product.title+' does not have enough available stock for this set. Nothing was added.');
     return;
    }
   }
