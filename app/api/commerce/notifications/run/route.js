@@ -18,7 +18,7 @@ export async function POST(request){
   const mode=['launch','gift','all'].includes(body?.mode)?body.mode:'all';
   const base=(process.env.NEXT_PUBLIC_SITE_URL||'http://localhost:3000').replace(/\/$/,'');
   const from=process.env.SIDEII_ORDER_FROM||'SIDE:II Store <onboarding@resend.dev>';
-  let launchSent=0,giftSent=0;
+  let launchSent=0,giftSent=0,launchFailed=0,giftFailed=0;
 
   if(mode==='launch'||mode==='all'){
    const {data,error}=await server.rpc('claim_due_launch_notifications',{p_limit:50});
@@ -28,7 +28,7 @@ export async function POST(request){
     const href=base+(row.product_type==='merch'?'/store/':'/releases/')+row.slug;
     const text=['THE DROP IS LIVE','',String(row.title||'SIDE:II').toUpperCase(),'','The release you asked about is now available.',href].join('\n');
     const res=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+resend,'Content-Type':'application/json','Idempotency-Key':'sideii-launch-'+row.id},body:JSON.stringify({from,to:[row.email],subject:'Now live · '+row.title,text})});
-    if(res.ok){ids.push(row.id);launchSent++}
+    if(res.ok){ids.push(row.id);launchSent++}else{launchFailed++}
    }
    if(ids.length){
     const {error:markError}=await server.rpc('mark_launch_notifications_sent',{p_ids:ids});
@@ -44,13 +44,14 @@ export async function POST(request){
     const giftUrl=base+'/gift/'+row.gift_public_token;
     const text=['A SIDE:II GIFT FOR YOU','','Order #SII-'+String(row.order_no).padStart(4,'0'),row.gift_message?String(row.gift_message):'A gift has been prepared for you.','','Open your gift:',giftUrl,'','Sent through SIDE:II.'].filter(Boolean).join('\n');
     const res=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+resend,'Content-Type':'application/json','Idempotency-Key':'sideii-gift-'+row.order_id},body:JSON.stringify({from,to:[row.recipient_email],subject:'A SIDE:II gift for you',text})});
-    if(res.ok){ids.push(row.order_id);giftSent++}
+    if(res.ok){ids.push(row.order_id);giftSent++}else{giftFailed++}
    }
    if(ids.length){
     const {error:markError}=await server.rpc('mark_gift_notifications_sent',{p_order_ids:ids});
     if(markError)return Response.json({ok:false,error:'Gift notifications sent but confirmation failed',launch_sent:launchSent,gift_sent:giftSent},{status:502});
    }
   }
-  return Response.json({ok:true,launch_sent:launchSent,gift_sent:giftSent,total:launchSent+giftSent});
+  const failed=launchFailed+giftFailed;
+  return Response.json({ok:failed===0,launch_sent:launchSent,gift_sent:giftSent,launch_failed:launchFailed,gift_failed:giftFailed,total:launchSent+giftSent,failed},{status:failed?502:200});
  }catch(error){return Response.json({ok:false,error:String(error?.message||error)},{status:400})}
 }
