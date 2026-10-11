@@ -6743,36 +6743,3 @@ footer a:focus-visible,
   transform:translateY(6px)!important;
  }
 }
-
-
-/* SIDE:II / GLOBAL EDITORIAL PLUM — quiet violet undertones, monochrome hierarchy preserved */
-:root{
- --sideii-plum-base:#0d0b10;
- --sideii-plum-panel:#151119;
- --sideii-plum-raised:#1c1720;
- --sideii-plum-border:#403640;
- --sideii-plum-hover:#59495a;
- --sideii-plum-muted:#aba0ae;
- --sideii-plum-focus:#bba5ba;
-}
-body{background-color:var(--sideii-plum-base)}
-:where(.globalSiteHeader,.globalBagDrawer,.globalAccountDrawer,.productShareSheet){
- border-color:var(--sideii-plum-border);
-}
-:where(.globalBagDrawer,.globalAccountDrawer,.productShareSheet) :is(input:not([type=checkbox]),textarea,select){
- border-color:var(--sideii-plum-border);
- background-color:#100e13;
-}
-:where(.globalBagDrawer,.globalAccountDrawer,.productShareSheet) :is(input:not([type=checkbox]),textarea,select):focus-visible{
- border-color:var(--sideii-plum-focus);outline:1px solid var(--sideii-plum-focus);outline-offset:1px;
-}
-:where(.globalBagDrawer,.globalAccountDrawer,.productShareSheet) :is(button,a):focus-visible{
- outline:2px solid var(--sideii-plum-focus);outline-offset:2px;
-}
-:where(.globalBagDrawer,.globalAccountDrawer,.productShareSheet) :is(button:not(:disabled),a):hover{
- border-color:var(--sideii-plum-hover);
-}
-.productShareSheet .productSharePresets>button:not(.active){background-color:#131016;border-color:var(--sideii-plum-border)}
-.productShareSheet .productSharePresets>button:not(.active):hover{background-color:var(--sideii-plum-raised);border-color:var(--sideii-plum-hover)}
-.productShareSheet .productShareNetworks>button,.productShareSheet .productShareCopy{border-color:var(--sideii-plum-border)}
-@media(prefers-reduced-motion:reduce){.productShareSheet .productSharePresets>button{transition:none!important}}
