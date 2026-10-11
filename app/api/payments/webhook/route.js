@@ -48,7 +48,7 @@ export async function POST(request){
   });
 
   if(error){
-   return Response.json({ok:false,error:error.message},{status:400});
+   return Response.json({ok:false,error:'Payment processing unavailable'},{status:400});
   }
 
   if(data?.event_type==='payment.succeeded'&&!data?.duplicate&&process.env.RESEND_API_KEY){
@@ -60,6 +60,6 @@ export async function POST(request){
 
   return Response.json(data||{ok:true});
  }catch(error){
-  return Response.json({ok:false,error:String(error?.message||error)},{status:400});
+  return Response.json({ok:false,error:'Payment processing unavailable'},{status:400});
  }
 }
