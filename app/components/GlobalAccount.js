@@ -113,7 +113,7 @@ export default function GlobalAccount(){
     if(!live)return;
     setSession(next||null);setMessage('');
     if(event==='SIGNED_IN'&&next?.user) setTimeout(()=>loadAccount(next.user),0);
-    if(event==='SIGNED_OUT'){setOrders([]);setCollection([]);setPassports([]);setOwnerContent([]);setCollectorSummary(null);setStoreCredit(null);setStoreCreditHistory([]);setSharedLinks([]);setProfile({full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:''});window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:null}))}
+    if(event==='SIGNED_OUT'){writeWishlist([]);setWishlist([]);setAddresses([]);setSelectedOrder(null);setCollectorLevel(null);setCollectorReward(null);setOrders([]);setCollection([]);setPassports([]);setOwnerContent([]);setCollectorSummary(null);setStoreCredit(null);setStoreCreditHistory([]);setSharedLinks([]);setProfile({full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:''});window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:null}))}
   });
   return()=>{live=false;sub.subscription.unsubscribe()};
  },[]);
