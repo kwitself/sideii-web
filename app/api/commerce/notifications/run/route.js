@@ -27,8 +27,11 @@ export async function POST(request){
    for(const row of Array.isArray(data)?data:[]){
     const href=base+(row.product_type==='merch'?'/store/':'/releases/')+row.slug;
     const text=['THE DROP IS LIVE','',String(row.title||'SIDE:II').toUpperCase(),'','The release you asked about is now available.',href].join('\n');
+    try{
     const res=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+resend,'Content-Type':'application/json','Idempotency-Key':'sideii-launch-'+row.id},body:JSON.stringify({from,to:[row.email],subject:'Now live · '+row.title,text})});
     if(res.ok){ids.push(row.id);launchSent++}else{launchFailed++}
+    }catch{launchFailed++}
+
    }
    if(ids.length){
     const {error:markError}=await server.rpc('mark_launch_notifications_sent',{p_ids:ids});
@@ -43,8 +46,11 @@ export async function POST(request){
    for(const row of Array.isArray(data)?data:[]){
     const giftUrl=base+'/gift/'+row.gift_public_token;
     const text=['A SIDE:II GIFT FOR YOU','','Order #SII-'+String(row.order_no).padStart(4,'0'),row.gift_message?String(row.gift_message):'A gift has been prepared for you.','','Open your gift:',giftUrl,'','Sent through SIDE:II.'].filter(Boolean).join('\n');
+    try{
     const res=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+resend,'Content-Type':'application/json','Idempotency-Key':'sideii-gift-'+row.order_id},body:JSON.stringify({from,to:[row.recipient_email],subject:'A SIDE:II gift for you',text})});
     if(res.ok){ids.push(row.order_id);giftSent++}else{giftFailed++}
+    }catch{giftFailed++}
+
    }
    if(ids.length){
     const {error:markError}=await server.rpc('mark_gift_notifications_sent',{p_order_ids:ids});
