@@ -1,4 +1,5 @@
 import {createClient} from '@supabase/supabase-js';
+import {resolveEmailDeliveryStatus} from '../../../lib/server/resolveEmailDeliveryStatus';
 
 // Admin-only, read-only commerce delivery overview. Never sends messages.
 export async function GET(request){
@@ -44,11 +45,11 @@ export async function GET(request){
     .order('received_at',{ascending:false}).limit(500);
    if(eventsError)return Response.json({ok:false,error:'Delivery events unavailable'},{status:503});
    const byEmail=new Map();
-   for(const item of events||[])if(!byEmail.has(item.provider_email_id))byEmail.set(item.provider_email_id,item.event_type);
+   for(const item of events||[])byEmail.set(item.provider_email_id,[...(byEmail.get(item.provider_email_id)||[]),item]);
    const byReference=new Map();
    for(const attempt of attempts){
     const key=attempt.kind+':'+attempt.reference_id;
-    if(!byReference.has(key)&&attempt.provider_email_id)byReference.set(key,byEmail.get(attempt.provider_email_id)||'email.accepted');
+    if(!byReference.has(key)&&attempt.provider_email_id)byReference.set(key,resolveEmailDeliveryStatus(byEmail.get(attempt.provider_email_id))||'email.accepted');
    }
    for(const [key,summary] of grouped)summary.delivery_status=byReference.get(key)||'unverified';
   }
