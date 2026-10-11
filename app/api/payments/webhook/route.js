@@ -1,5 +1,5 @@
 import {createHash} from 'node:crypto';
-import {verifyPaymentSignature} from '../../../lib/server/paymentValidation.mjs';
+import {verifyPaymentSignature,validatePaymentEvent} from '../../../lib/server/paymentValidation.mjs';
 import {createClient} from '@supabase/supabase-js';
 import {sendOrderEmailPayload} from '../../../lib/server/orderEmail';
 
@@ -30,27 +30,9 @@ export async function POST(request){
    return Response.json({ok:false,error:'Invalid JSON'},{status:400});
   }
 
-  const provider=String(body.provider||process.env.PAYMENT_PROVIDER||'generic').trim().toLowerCase();
-  const eventId=String(body.event_id||'').trim();
-  const eventType=String(body.event_type||'').trim().toLowerCase();
-  const orderId=String(body.order_id||'').trim();
-  const currency=String(body.currency||'TRY').trim().toUpperCase();
-  const amount=Number(body.amount);
-  const paymentId=body.payment_id==null?null:String(body.payment_id).trim();
-
-  const configuredProvider=String(process.env.PAYMENT_PROVIDER||'').trim().toLowerCase();
-  if(configuredProvider&&provider!==configuredProvider){
-   return Response.json({ok:false,error:'Unexpected payment provider'},{status:400});
-  }
-  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(orderId)
-    || !['payment.succeeded','payment.failed','payment.refunded'].includes(eventType)
-    || eventId.length>200 || !/^[A-Z]{3}$/.test(currency)
-    || amount<0 || amount>10000000){
-   return Response.json({ok:false,error:'Invalid payment event data'},{status:400});
-  }
-  if(!eventId||!orderId||!Number.isFinite(amount)){
-   return Response.json({ok:false,error:'Missing payment event fields'},{status:400});
-  }
+  const validation=validatePaymentEvent(body,process.env.PAYMENT_PROVIDER||'');
+  if(!validation.ok)return Response.json({ok:false,error:validation.error},{status:400});
+  const {provider,eventId,eventType,orderId,currency,amount,paymentId}=validation;
 
   const sb=createClient(url,serverKey,{auth:{persistSession:false,autoRefreshToken:false}});
   const payloadHash=createHash('sha256').update(raw).digest('hex');
