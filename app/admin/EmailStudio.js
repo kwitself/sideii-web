@@ -32,7 +32,7 @@ export default function EmailStudio(){
  },[selectedOrder]);
  const formatMoney=(value,currency)=>{try{return new Intl.NumberFormat('tr-TR',{style:'currency',currency:currency||'TRY'}).format(Number(value)||0)}catch{return String(value??'')}};
  const queuedEntry=queue.find(q=>q.id===selectedQueuedId);
- const viewOrder=queuedEntry?.payload?.orderNumber?{...queuedEntry.payload,recipient:queuedEntry.recipient}:orderPreview;
+ const viewOrder=queuedEntry ? (queuedEntry.payload?.items&&queuedEntry.payload?.total!=null?{...queuedEntry.payload,recipient:queuedEntry.recipient}:null) : orderPreview;
  const first=viewOrder?.items?.[0];
  const actual=viewOrder?{
  orderNumber:viewOrder.orderNumber,
@@ -46,9 +46,9 @@ export default function EmailStudio(){
  refundAmount:formatMoney(viewOrder.total,viewOrder.currency)
  }:null;
  const displayedEvent=queuedEntry?.event_type||event;
- const details={...(actual||EMAIL_DEMOS[displayedEvent]),...(overrides[event]||{})};
- const previewMode=actual?'REAL QA ORDER / NO EMAIL SENT':'DEMO DATA / NO EMAIL SENT';
- const html=useMemo(()=>premiumEmailHtml(displayedEvent,details),[event,JSON.stringify(details)]);
+ const details={...(actual||(!queuedEntry?EMAIL_DEMOS[displayedEvent]:{})),...(!queuedEntry?(overrides[event]||{}):{})};
+ const previewMode=queuedEntry?(actual?'QUEUED ORDER SNAPSHOT / NO EMAIL SENT':'OLDER QUEUE RECORD / DATA UNAVAILABLE'):actual?'REAL QA ORDER / NO EMAIL SENT':'DEMO DATA / NO EMAIL SENT';
+ const html=useMemo(()=>premiumEmailHtml(displayedEvent,details),[displayedEvent,JSON.stringify(details)]);
  const edit=(key,value)=>setOverrides(previous=>({...previous,[event]:{...(previous[event]||{}),[key]:value}}));
  return <section className="adminSection emailStudio"><div className="sectionLabel"><span>PREMIUM EMAIL STUDIO / V3.2</span><p>Event-specific layouts and content · preview only, no outgoing mail.</p></div>
  <div className="emailStudioBanner"><b>PREVIEW ONLY</b><span>Selected order previews use real QA order data; without a selected order, examples are synthetic. Secure action links and real email delivery remain disabled.</span></div>
@@ -58,7 +58,7 @@ export default function EmailStudio(){
  {(EMAIL_FIELDS[event]||[]).map(field=><label key={event+field}>{labels[field]||field}<input value={details[field]||''} onChange={e=>edit(field,e.target.value)} maxLength={field==='update'?400:120}/></label>)}
  </div>
  <div className="emailStudioActions"><button type="button" onClick={()=>{const b=new Blob([html],{type:'text/html;charset=utf-8'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='sideii-'+event+'-preview.html';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}}>DOWNLOAD HTML PREVIEW ↓</button><span>{event==='password_reset'?'Password reset preview intentionally contains no order data or dummy reset link.':'No customer messages will be sent.'}</span></div>
- <section className="emailQueuePanel"><h3>03 / DELIVERY QUEUE · SIMULATION</h3><p>Admin-only. Unique order/event entries. No outgoing emails are sent.</p><div className="emailQueueCreate"><select aria-label="Select QA order" value={selectedOrder} onChange={e=>{setSelectedOrder(e.target.value);setOverrides({});}}><option value="">SELECT TEST ORDER</option>{orders.map(o=><option key={o.id} value={o.id}>SII-{String(o.order_no).padStart(4,'0')} · {o.status}</option>)}</select><button type="button" disabled={!selectedOrder||!orderPreview||queueBusy||!['order_created','preparing','shipped','digital_ready','preorder_update','cancelled','refund_update'].includes(event)} onClick={createPreview}>{queueBusy?'SAVING…':'QUEUE PREVIEW EVENT'}</button><button type="button" onClick={loadQueue}>REFRESH</button></div>{queueNotice&&<p role="status">{queueNotice}</p>}<div className="emailQueueList"><div><b>EVENT</b><b>ORDER</b><b>STATUS</b></div>{queue.map(q=><div key={q.id}><button type="button" className="emailQueueView" onClick={()=>{setSelectedQueuedId(q.id);setOverrides({});}}>{q.event_type} ↗</button><span>{orders.find(o=>o.id===q.order_id)?'SII-'+String(orders.find(o=>o.id===q.order_id)?.order_no).padStart(4,'0'):'—'}</span><strong>{q.status}</strong></div>)}{!queue.length&&<p>No queued preview events yet.</p>}</div></section>
+ <section className="emailQueuePanel"><h3>03 / DELIVERY QUEUE · SIMULATION</h3><p>Admin-only. Unique order/event entries. No outgoing emails are sent.</p><div className="emailQueueCreate"><select aria-label="Select QA order" value={selectedOrder} onChange={e=>{setSelectedOrder(e.target.value);setSelectedQueuedId('');setOverrides({});}}><option value="">SELECT TEST ORDER</option>{orders.map(o=><option key={o.id} value={o.id}>SII-{String(o.order_no).padStart(4,'0')} · {o.status}</option>)}</select><button type="button" disabled={!selectedOrder||!orderPreview||queueBusy||!['order_created','preparing','shipped','digital_ready','preorder_update','cancelled','refund_update'].includes(event)} onClick={createPreview}>{queueBusy?'SAVING…':'QUEUE PREVIEW EVENT'}</button><button type="button" onClick={loadQueue}>REFRESH</button></div>{queueNotice&&<p role="status">{queueNotice}</p>}<div className="emailQueueList"><div><b>EVENT</b><b>ORDER</b><b>STATUS</b></div>{queue.map(q=><div key={q.id}><button type="button" className="emailQueueView" onClick={()=>{setSelectedQueuedId(q.id);setSelectedOrder(q.order_id||'');setEvent(q.event_type);setOverrides({});}}>{q.event_type} ↗</button><span>{orders.find(o=>o.id===q.order_id)?'SII-'+String(orders.find(o=>o.id===q.order_id)?.order_no).padStart(4,'0'):'—'}</span><strong>{q.status}</strong></div>)}{!queue.length&&<p>No queued preview events yet.</p>}</div></section>
  {queuedEntry&&<p className="emailStudioDataState">QUEUED SNAPSHOT · {queuedEntry.event_type} · {queuedEntry.payload?.orderNumber||'OLD ENTRY WITHOUT SNAPSHOT'} <button type="button" onClick={()=>setSelectedQueuedId('')}>RETURN TO LIVE ORDER</button></p>}
  <iframe key={displayedEvent+'-'+selectedOrder+'-'+selectedQueuedId} title={EMAIL_EVENTS.find(x=>x[0]===displayedEvent)?.[1]+' email preview'} className="emailStudioFrame" sandbox="" srcDoc={html}/>
  </section>;
