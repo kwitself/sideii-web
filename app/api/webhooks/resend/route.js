@@ -1,4 +1,5 @@
 import {verifyResendSignature} from '../../../lib/server/verifyResendSignature';
+import {createClient} from '@supabase/supabase-js';
 
 export async function POST(request){
  const secret=process.env.RESEND_WEBHOOK_SECRET;
@@ -17,7 +18,18 @@ export async function POST(request){
  if(typeof payload?.type!=='string'||typeof payload?.data?.email_id!=='string'){
   return Response.json({ok:false,error:'Invalid event'},{status:400});
  }
- // Verified endpoint. Event persistence and provider-id correlation are separate release gates.
- // Acknowledge valid events without modifying customer orders or notification state.
+ const url=process.env.NEXT_PUBLIC_SUPABASE_URL;
+ const serviceKey=process.env.SUPABASE_SECRET_KEY;
+ if(!url||!serviceKey)return Response.json({ok:false,error:'Webhook storage unavailable'},{status:503});
+ const server=createClient(url,serviceKey,{auth:{persistSession:false,autoRefreshToken:false}});
+ const accepted=new Set(['email.sent','email.delivered','email.delivery_delayed','email.bounced','email.complained','email.failed']);
+ if(!accepted.has(payload.type))return new Response(null,{status:204});
+ const emailId=payload.data.email_id;
+ if(emailId.length>255||id.length>255)return Response.json({ok:false,error:'Invalid identifiers'},{status:400});
+ const {error}=await server.from('commerce_notification_webhook_events').upsert(
+  {event_id:id,provider_email_id:emailId,event_type:payload.type},
+  {onConflict:'event_id',ignoreDuplicates:true}
+ );
+ if(error)return Response.json({ok:false,error:'Webhook storage unavailable'},{status:503});
  return new Response(null,{status:204});
 }
