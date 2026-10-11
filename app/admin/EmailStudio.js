@@ -7,6 +7,7 @@ const labels={orderNumber:'ORDER REFERENCE',productName:'EDITION / PRODUCT',form
 export default function EmailStudio(){
  const [event,setEvent]=useState('order_created');
  const [orders,setOrders]=useState([]),[selectedOrder,setSelectedOrder]=useState('');
+ const [selectedQueuedId,setSelectedQueuedId]=useState('');
  const [queue,setQueue]=useState([]),[queueNotice,setQueueNotice]=useState(''),[queueBusy,setQueueBusy]=useState(false);
  const loadQueue=async()=>{if(!supabase)return;const [{data:orderData},{data:queueData,error}]=await Promise.all([
  supabase.from('orders').select('id,order_no,email,status,payment_status').order('created_at',{ascending:false}).limit(30),
@@ -30,31 +31,35 @@ export default function EmailStudio(){
  return()=>{cancelled=true};
  },[selectedOrder]);
  const formatMoney=(value,currency)=>{try{return new Intl.NumberFormat('tr-TR',{style:'currency',currency:currency||'TRY'}).format(Number(value)||0)}catch{return String(value??'')}};
- const first=orderPreview?.items?.[0];
- const actual=orderPreview?{
- orderNumber:orderPreview.orderNumber,
- productName:(orderPreview.items||[]).map(i=>i.title+(Number(i.quantity)>1?' ×'+i.quantity:'')).join(' / ')||'Order items unavailable',
- format:(orderPreview.items||[]).map(i=>i.format||'EDITION').join(' · ')||'EDITION',
- total:formatMoney(orderPreview.total,orderPreview.currency),
- recipient:orderPreview.recipient||'',
- trackingNumber:orderPreview.trackingNumber||'Not assigned',
+ const queuedEntry=queue.find(q=>q.id===selectedQueuedId);
+ const viewOrder=queuedEntry?.payload?.orderNumber?{...queuedEntry.payload,recipient:queuedEntry.recipient}:orderPreview;
+ const first=viewOrder?.items?.[0];
+ const actual=viewOrder?{
+ orderNumber:viewOrder.orderNumber,
+ productName:(viewOrder.items||[]).map(i=>i.title+(Number(i.quantity)>1?' ×'+i.quantity:'')).join(' / ')||'Order items unavailable',
+ format:(viewOrder.items||[]).map(i=>i.format||'EDITION').join(' · ')||'EDITION',
+ total:formatMoney(viewOrder.total,viewOrder.currency),
+ recipient:viewOrder.recipient||'',
+ trackingNumber:viewOrder.trackingNumber||'Not assigned',
  downloadLimit:first?.digitalDownloadLimit?String(first.digitalDownloadLimit)+' DOWNLOADS':'Not assigned',
- refundStatus:'NOT VERIFIED · '+String(orderPreview.paymentStatus||'unknown').toUpperCase(),
- refundAmount:formatMoney(orderPreview.total,orderPreview.currency)
+ refundStatus:'NOT VERIFIED · '+String(viewOrder.paymentStatus||'unknown').toUpperCase(),
+ refundAmount:formatMoney(viewOrder.total,viewOrder.currency)
  }:null;
- const details={...(actual||EMAIL_DEMOS[event]),...(overrides[event]||{})};
+ const displayedEvent=queuedEntry?.event_type||event;
+ const details={...(actual||EMAIL_DEMOS[displayedEvent]),...(overrides[event]||{})};
  const previewMode=actual?'REAL QA ORDER / NO EMAIL SENT':'DEMO DATA / NO EMAIL SENT';
- const html=useMemo(()=>premiumEmailHtml(event,details),[event,JSON.stringify(details)]);
+ const html=useMemo(()=>premiumEmailHtml(displayedEvent,details),[event,JSON.stringify(details)]);
  const edit=(key,value)=>setOverrides(previous=>({...previous,[event]:{...(previous[event]||{}),[key]:value}}));
- return <section className="adminSection emailStudio"><div className="sectionLabel"><span>PREMIUM EMAIL STUDIO / V2</span><p>Event-specific layouts and content · preview only, no outgoing mail.</p></div>
+ return <section className="adminSection emailStudio"><div className="sectionLabel"><span>PREMIUM EMAIL STUDIO / V3.2</span><p>Event-specific layouts and content · preview only, no outgoing mail.</p></div>
  <div className="emailStudioBanner"><b>PREVIEW ONLY</b><span>Selected order previews use real QA order data; without a selected order, examples are synthetic. Secure action links and real email delivery remain disabled.</span></div>
  <p role="status" className="emailStudioDataState">{orderLoading?'Loading selected order…':orderError?'Order data unavailable: '+orderError:previewMode}</p>
  <div className="emailStudioControls">
- <label>EMAIL EVENT<select value={event} onChange={e=>setEvent(e.target.value)}>{EMAIL_EVENTS.map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
+ <label>EMAIL EVENT<select value={event} onChange={e=>{setEvent(e.target.value);setSelectedQueuedId('');}}>{EMAIL_EVENTS.map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
  {(EMAIL_FIELDS[event]||[]).map(field=><label key={event+field}>{labels[field]||field}<input value={details[field]||''} onChange={e=>edit(field,e.target.value)} maxLength={field==='update'?400:120}/></label>)}
  </div>
  <div className="emailStudioActions"><button type="button" onClick={()=>{const b=new Blob([html],{type:'text/html;charset=utf-8'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='sideii-'+event+'-preview.html';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}}>DOWNLOAD HTML PREVIEW ↓</button><span>{event==='password_reset'?'Password reset preview intentionally contains no order data or dummy reset link.':'No customer messages will be sent.'}</span></div>
- <section className="emailQueuePanel"><h3>03 / DELIVERY QUEUE · SIMULATION</h3><p>Admin-only. Unique order/event entries. No outgoing emails are sent.</p><div className="emailQueueCreate"><select aria-label="Select QA order" value={selectedOrder} onChange={e=>{setSelectedOrder(e.target.value);setOverrides({});}}><option value="">SELECT TEST ORDER</option>{orders.map(o=><option key={o.id} value={o.id}>SII-{String(o.order_no).padStart(4,'0')} · {o.status}</option>)}</select><button type="button" disabled={!selectedOrder||!orderPreview||queueBusy||!['order_created','preparing','shipped','digital_ready','preorder_update','cancelled','refund_update'].includes(event)} onClick={createPreview}>{queueBusy?'SAVING…':'QUEUE PREVIEW EVENT'}</button><button type="button" onClick={loadQueue}>REFRESH</button></div>{queueNotice&&<p role="status">{queueNotice}</p>}<div className="emailQueueList"><div><b>EVENT</b><b>ORDER</b><b>STATUS</b></div>{queue.map(q=><div key={q.id}><span>{q.event_type}</span><span>{orders.find(o=>o.id===q.order_id)?'SII-'+String(orders.find(o=>o.id===q.order_id)?.order_no).padStart(4,'0'):'—'}</span><strong>{q.status}</strong></div>)}{!queue.length&&<p>No queued preview events yet.</p>}</div></section>
- <iframe key={event+'-'+selectedOrder} title={EMAIL_EVENTS.find(x=>x[0]===event)?.[1]+' email preview'} className="emailStudioFrame" sandbox="" srcDoc={html}/>
+ <section className="emailQueuePanel"><h3>03 / DELIVERY QUEUE · SIMULATION</h3><p>Admin-only. Unique order/event entries. No outgoing emails are sent.</p><div className="emailQueueCreate"><select aria-label="Select QA order" value={selectedOrder} onChange={e=>{setSelectedOrder(e.target.value);setOverrides({});}}><option value="">SELECT TEST ORDER</option>{orders.map(o=><option key={o.id} value={o.id}>SII-{String(o.order_no).padStart(4,'0')} · {o.status}</option>)}</select><button type="button" disabled={!selectedOrder||!orderPreview||queueBusy||!['order_created','preparing','shipped','digital_ready','preorder_update','cancelled','refund_update'].includes(event)} onClick={createPreview}>{queueBusy?'SAVING…':'QUEUE PREVIEW EVENT'}</button><button type="button" onClick={loadQueue}>REFRESH</button></div>{queueNotice&&<p role="status">{queueNotice}</p>}<div className="emailQueueList"><div><b>EVENT</b><b>ORDER</b><b>STATUS</b></div>{queue.map(q=><div key={q.id}><button type="button" className="emailQueueView" onClick={()=>{setSelectedQueuedId(q.id);setOverrides({});}}>{q.event_type} ↗</button><span>{orders.find(o=>o.id===q.order_id)?'SII-'+String(orders.find(o=>o.id===q.order_id)?.order_no).padStart(4,'0'):'—'}</span><strong>{q.status}</strong></div>)}{!queue.length&&<p>No queued preview events yet.</p>}</div></section>
+ {queuedEntry&&<p className="emailStudioDataState">QUEUED SNAPSHOT · {queuedEntry.event_type} · {queuedEntry.payload?.orderNumber||'OLD ENTRY WITHOUT SNAPSHOT'} <button type="button" onClick={()=>setSelectedQueuedId('')}>RETURN TO LIVE ORDER</button></p>}
+ <iframe key={displayedEvent+'-'+selectedOrder+'-'+selectedQueuedId} title={EMAIL_EVENTS.find(x=>x[0]===displayedEvent)?.[1]+' email preview'} className="emailStudioFrame" sandbox="" srcDoc={html}/>
  </section>;
 }
