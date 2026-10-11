@@ -5639,3 +5639,5 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 @media(max-width:760px){.emailQueuePanel{padding:13px}.emailQueueCreate{display:grid;grid-template-columns:1fr}.emailQueueCreate select{width:100%;min-width:0}}
 
 .emailStudioDataState{font:11px/1.5 Arial,sans-serif;letter-spacing:.07em;color:#b4aea8;padding:11px 14px;border-left:2px solid #777;background:#151515;margin:15px 0}
+
+.emailQueueView{color:#e5dfd8;background:transparent;border:0;padding:4px 0;cursor:pointer;text-align:left;font:inherit}.emailQueueView:hover{text-decoration:underline}.emailStudioDataState button{margin-left:14px;background:none;border:1px solid #666;padding:6px 10px;color:#eee;cursor:pointer}
