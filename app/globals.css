@@ -6713,3 +6713,22 @@ footer a:focus-visible,
  .productShareSheet .productShareCopy,.productShareSheet .productShareActions button{min-height:48px!important;font-size:11px!important}
 }
 @media(max-width:340px){.productShareSheet .productSharePresets>button{padding:10px 6px!important}.productShareSheet .productSharePresets>button>span{font-size:13px!important}}
+
+
+/* SHARE STUDIO: placeholder catalogue number is a quiet editorial detail, not the hero. */
+.productShareExactCard .productVisual .productCover>b{
+ font-size:clamp(13px,2.1vw,26px)!important;
+ line-height:1!important;
+ font-weight:400!important;
+ letter-spacing:.04em!important;
+ color:#777279!important;
+ opacity:.28!important;
+ right:8%!important;
+ top:7%!important;
+}
+@media(max-width:760px){
+ .productShareExactCard .productVisual .productCover>b{
+  font-size:clamp(11px,3vw,17px)!important;
+  opacity:.22!important;
+ }
+}
