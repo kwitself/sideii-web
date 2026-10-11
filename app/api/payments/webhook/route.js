@@ -1,14 +1,9 @@
-import {createHmac,timingSafeEqual,createHash} from 'node:crypto';
+import {createHash} from 'node:crypto';
+import {verifyPaymentSignature} from '../../../lib/server/paymentValidation.mjs';
 import {createClient} from '@supabase/supabase-js';
 import {sendOrderEmailPayload} from '../../../lib/server/orderEmail';
 
 export const runtime='nodejs';
-
-function safeEqualHex(a,b){
- const left=Buffer.from(String(a||'').trim().toLowerCase(),'hex');
- const right=Buffer.from(String(b||'').trim().toLowerCase(),'hex');
- return left.length>0&&left.length===right.length&&timingSafeEqual(left,right);
-}
 
 export async function POST(request){
  try{
@@ -26,8 +21,7 @@ export async function POST(request){
   }
 
   const supplied=request.headers.get('x-sideii-signature')||'';
-  const expected=createHmac('sha256',webhookSecret).update(raw).digest('hex');
-  if(!safeEqualHex(supplied,expected)){
+  if(!verifyPaymentSignature(raw,supplied,webhookSecret)){
    return Response.json({ok:false,error:'Invalid webhook signature'},{status:401});
   }
 
