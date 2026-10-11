@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createHmac} from 'node:crypto';
+import {verifyResendSignature} from '../app/lib/server/verifyResendSignature.js';
+const secret='whsec_'+Buffer.from('test-signing-key').toString('base64');
+const now=Date.parse('2026-10-12T00:00:00Z');
+const timestamp=String(now/1000),id='msg_test',body='{"type":"email.delivered","data":{"email_id":"email_test"}}';
+const signature='v1,'+createHmac('sha256',Buffer.from('test-signing-key')).update(id+'.'+timestamp+'.'+body).digest('base64');
+test('valid signed event',()=>assert.equal(verifyResendSignature({body,id,timestamp,signature,secret,now}),true));
+test('tampered payload refused',()=>assert.equal(verifyResendSignature({body:body+' ',id,timestamp,signature,secret,now}),false));
+test('old signed payload refused',()=>assert.equal(verifyResendSignature({body,id,timestamp,signature,secret,now:now+3600000}),false));
+test('unsigned payload refused',()=>assert.equal(verifyResendSignature({body,id,timestamp,signature:'',secret,now}),false));
