@@ -30,6 +30,10 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:testonly@127.0.0.1:5432/sideii_qa
         run: bash tests/postgres-concurrency-smoke.sh
+      - name: Verify refund-compatible payment event index constraints
+        env:
+          DATABASE_URL: postgresql://postgres:testonly@127.0.0.1:5432/sideii_qa
+        run: psql "$DATABASE_URL" -X -v ON_ERROR_STOP=1 -f tests/payment-index-postgres.sql
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
