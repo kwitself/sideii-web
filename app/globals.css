@@ -6732,3 +6732,14 @@ footer a:focus-visible,
   opacity:.22!important;
  }
 }
+
+
+/* SHARE STUDIO / LINK CARD — optical vertical alignment of physical media */
+.productShareExactCard.exact-link .productShareExactVisual{
+ transform:translateY(10px)!important;
+}
+@media(max-width:760px){
+ .productShareExactCard.exact-link .productShareExactVisual{
+  transform:translateY(6px)!important;
+ }
+}
