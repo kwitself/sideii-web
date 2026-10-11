@@ -30,7 +30,10 @@ export async function POST(request){
     const res=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+resend,'Content-Type':'application/json','Idempotency-Key':'sideii-launch-'+row.id},body:JSON.stringify({from,to:[row.email],subject:'Now live · '+row.title,text})});
     if(res.ok){ids.push(row.id);launchSent++}
    }
-   if(ids.length)await server.rpc('mark_launch_notifications_sent',{p_ids:ids});
+   if(ids.length){
+    const {error:markError}=await server.rpc('mark_launch_notifications_sent',{p_ids:ids});
+    if(markError)return Response.json({ok:false,error:'Launch notifications sent but confirmation failed',launch_sent:launchSent,gift_sent:giftSent},{status:502});
+   }
   }
 
   if(mode==='gift'||mode==='all'){
@@ -43,7 +46,10 @@ export async function POST(request){
     const res=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+resend,'Content-Type':'application/json','Idempotency-Key':'sideii-gift-'+row.order_id},body:JSON.stringify({from,to:[row.recipient_email],subject:'A SIDE:II gift for you',text})});
     if(res.ok){ids.push(row.order_id);giftSent++}
    }
-   if(ids.length)await server.rpc('mark_gift_notifications_sent',{p_order_ids:ids});
+   if(ids.length){
+    const {error:markError}=await server.rpc('mark_gift_notifications_sent',{p_order_ids:ids});
+    if(markError)return Response.json({ok:false,error:'Gift notifications sent but confirmation failed',launch_sent:launchSent,gift_sent:giftSent},{status:502});
+   }
   }
   return Response.json({ok:true,launch_sent:launchSent,gift_sent:giftSent,total:launchSent+giftSent});
  }catch(error){return Response.json({ok:false,error:String(error?.message||error)},{status:400})}
