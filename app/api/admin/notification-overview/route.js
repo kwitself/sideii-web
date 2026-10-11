@@ -16,15 +16,16 @@ export async function GET(request){
   }
   const server=createClient(url,serverKey,{auth:{persistSession:false,autoRefreshToken:false}});
   const now=new Date().toISOString();
-  const [lease,launchPending,giftPending,previewFailed,realFailures,realSuccesses]=await Promise.all([
+  const [lease,launchPending,giftPending,previewFailed,realFailures,realSuccesses,recentAttempts]=await Promise.all([
    server.from('notification_runner_lease').select('expires_at').eq('name','commerce').maybeSingle(),
    server.from('launch_subscriptions').select('*',{count:'exact',head:true}).is('notified_at',null),
    server.from('orders').select('*',{count:'exact',head:true}).eq('is_gift',true).eq('payment_status','paid').is('gift_notified_at',null).not('gift_recipient_email','is',null).not('status','in','(cancelled,refunded)').or('gift_delivery_at.is.null,gift_delivery_at.lte.'+now),
    server.from('email_delivery_queue').select('*',{count:'exact',head:true}).eq('status','failed'),
    server.from('commerce_notification_attempts').select('*',{count:'exact',head:true}).eq('outcome','failed'),
-   server.from('commerce_notification_attempts').select('*',{count:'exact',head:true}).eq('outcome','sent')
+   server.from('commerce_notification_attempts').select('*',{count:'exact',head:true}).eq('outcome','sent'),
+   server.from('commerce_notification_attempts').select('kind,outcome,error_code,attempted_at').order('attempted_at',{ascending:false}).limit(20)
   ]);
-  const failure=[lease,launchPending,giftPending,previewFailed,realFailures,realSuccesses].find(x=>x.error);
+  const failure=[lease,launchPending,giftPending,previewFailed,realFailures,realSuccesses,recentAttempts].find(x=>x.error);
   if(failure)return Response.json({ok:false,error:'Delivery overview unavailable'},{status:503});
   const expires=lease.data?.expires_at??null;
   return Response.json({ok:true,checked_at:now,runner:{active:!!expires&&new Date(expires)>new Date(now),expires_at:expires},counts:{
@@ -33,7 +34,7 @@ export async function GET(request){
    qa_preview_failed:previewFailed.count??0,
    real_send_failures:realFailures.count??0,
    real_send_successes:realSuccesses.count??0
-  },note:'Read-only snapshot. QA preview events are not actual delivery failures.'},{headers:{'Cache-Control':'no-store'}});
+  },recent_attempts:recentAttempts.data||[],note:'Read-only snapshot. QA preview events are not actual delivery failures.'},{headers:{'Cache-Control':'no-store'}});
  }catch{
   return Response.json({ok:false,error:'Delivery overview unavailable'},{status:503});
  }
