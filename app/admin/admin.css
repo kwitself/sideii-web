@@ -5622,3 +5622,18 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .emailStudioActions span{font:11px/1.5 Arial,sans-serif;color:#9d9692}
 .emailStudioFrame{display:block;width:100%;height:820px;box-sizing:border-box;border:1px solid #454545;background:#090909}
 @media(max-width:760px){.emailStudioBanner{align-items:flex-start;flex-direction:column;gap:5px}.emailStudioControls{grid-template-columns:1fr}.emailStudioFrame{height:860px}}
+
+
+/* EMAIL STUDIO V3: preview-only delivery queue */
+.emailQueuePanel{border:1px solid #3f3f3f;background:#111;padding:20px;margin:24px 0}
+.emailQueuePanel h3{font:normal 23px Georgia,serif;color:#e8e1da;margin:0 0 8px}
+.emailQueuePanel>p{font:12px/1.6 Arial,sans-serif;color:#aaa39d}
+.emailQueueCreate{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.emailQueueCreate select{flex:1;min-width:190px;min-height:43px;background:#111;border:1px solid #515151;color:#eee;padding:10px}
+.emailQueueCreate button{min-height:43px;padding:10px 14px;border:1px solid #626262;background:#1d1d1d;color:#ddd;font:10px Arial,sans-serif;letter-spacing:.08em;cursor:pointer}
+.emailQueueCreate button:disabled{opacity:.4;cursor:not-allowed}
+.emailQueueList{overflow-x:auto}
+.emailQueueList>div{display:grid;grid-template-columns:minmax(0,2fr) minmax(90px,1fr) 90px;gap:10px;align-items:center;padding:12px 8px;border-bottom:1px solid #363636;font:11px Arial,sans-serif;color:#bcb6b0}
+.emailQueueList>div strong{font-size:10px;letter-spacing:.09em;color:#dad4c9;text-transform:uppercase}
+.emailQueueList>div:first-child{color:#888;font-size:9px;letter-spacing:.12em}
+@media(max-width:760px){.emailQueuePanel{padding:13px}.emailQueueCreate{display:grid;grid-template-columns:1fr}.emailQueueCreate select{width:100%;min-width:0}}
