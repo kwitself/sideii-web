@@ -1,6 +1,7 @@
 import {createHash} from 'node:crypto';
 import {createClient} from '@supabase/supabase-js';
 import {trackingClientIp} from '../../lib/server/trackingClientIp';
+import {trackingRateLimitScope} from '../../lib/server/trackingRateLimitScope';
 
 export const runtime='nodejs';
 export async function POST(request){
@@ -14,7 +15,7 @@ export async function POST(request){
    return Response.json({ok:false,error:'Invalid tracking details'},{status:400});
   }
   const ip=trackingClientIp(request.headers,{vercel:process.env.VERCEL==='1'});
-  const scope=process.env.NODE_ENV==='development'?'local:'+email:'ip:'+ip;
+  const scope=trackingRateLimitScope({development:process.env.NODE_ENV==='development',ip,email});
   const hashed=createHash('sha256').update('sideii:tracking:v2:'+scope).digest('hex');
   const server=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});
   const limited=await server.rpc('consume_order_tracking_limit',{p_key_hash:hashed});
