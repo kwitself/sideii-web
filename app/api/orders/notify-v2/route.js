@@ -14,6 +14,8 @@ export async function POST(request){
   const publishable=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   if(!url||!publishable)return Response.json({ok:false,error:'Store email service unavailable'},{status:503});
 
+  if(!process.env.RESEND_API_KEY)return Response.json({ok:false,email_sent:false,error:'Email provider not configured'},{status:503});
+
   let payload=null;
 
   if(type==='received'){
