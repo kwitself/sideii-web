@@ -305,7 +305,7 @@ export default function FinanceAccountingPanel({products=[]}){
  const createParty=async(e)=>{e.preventDefault();setBusy(true);setError('');const {error}=await supabase.rpc('admin_finance_party_create',{p_type:partyDraft.party_type,p_name:partyDraft.name,p_reference:partyDraft.reference||null,p_notes:partyDraft.notes||null});if(error)setError(error.message);else{setMessage('Current account created.');setPartyDraft(v=>({...v,name:'',reference:'',notes:''}));await load()}setBusy(false)};
  const createPartyEntry=async(e)=>{e.preventDefault();if(!window.confirm('Record this manual current-account movement? No bank transfer or payment will be initiated.'))return;setBusy(true);setError('');const {error}=await supabase.rpc('admin_finance_party_entry_create',{p_party_id:partyEntryDraft.party_id,p_date:partyEntryDraft.entry_date,p_due_date:partyEntryDraft.due_date||null,p_direction:partyEntryDraft.direction,p_amount:Number(partyEntryDraft.amount),p_reference:partyEntryDraft.reference,p_notes:partyEntryDraft.notes||null});if(error)setError(error.message);else{setMessage('Manual movement recorded.');setPartyEntryDraft(v=>({...v,amount:'',reference:'',notes:''}));await load()}setBusy(false)};
  const forecastRows=useMemo(()=>{
- const today=new Date().toISOString().slice(0,10);
+ const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Istanbul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
  const candidates=partyAging.filter(e=>e.due_date&&e.due_date>=today);
  const groups=new Map();
  candidates.forEach(e=>{const month=String(e.due_date).slice(0,7),item=groups.get(month)||{month,receivable:0,payable:0,count:0};item[e.direction==='receivable'?'receivable':'payable']+=e.remaining;item.count++;groups.set(month,item)});
