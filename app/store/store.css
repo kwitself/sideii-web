@@ -2028,3 +2028,41 @@
  .storePage .storeCoverPlaceholder .storePlaceholderTitle{font-size:clamp(20px,5vw,32px)}
  .storePage .storeCoverPlaceholder .storePlaceholderFoot{font-size:8px}
 }
+
+
+/* PAKET B / QA screenshot: make artwork fallback feel like printed cover art */
+.storePage .storeCardMediaLink:has(.storeCoverPlaceholder),
+.storePage .storeCover:has(.storeCoverPlaceholder),
+.storePage .storeCardMediaLink:has(.storeCoverPlaceholder):hover,
+.storePage .storeCover:has(.storeCoverPlaceholder):hover{
+ text-decoration:none!important;
+}
+.storePage .storeCoverPlaceholder,
+.storePage .storeCoverPlaceholder *,
+.storePage .storeCardMediaLink .storeCoverPlaceholder *,
+.storePage .storeCover .storeCoverPlaceholder *{
+ text-decoration:none!important;text-decoration-line:none!important;
+ border-bottom:0!important;
+}
+.storePage .storeCoverPlaceholder{
+ justify-content:initial!important;gap:0!important;
+ background:radial-gradient(ellipse at 70% 19%,#30252e 0%,transparent 62%),linear-gradient(150deg,#1b171b,#0e0d10 80%);
+}
+.storePage .storeCoverPlaceholder .storePlaceholderImprint{margin-bottom:auto;max-width:88%}
+.storePage .storeCoverPlaceholder .storePlaceholderTitle{
+ margin-top:auto;margin-bottom:clamp(15px,2vw,28px);
+ font-size:clamp(26px,2.25vw,42px);
+ text-transform:none;line-height:1.09;
+}
+.storePage .storeCoverPlaceholder .storePlaceholderCatalogue{
+ margin-bottom:12px;font-size:clamp(10px,.85vw,13px);
+}
+.storePage .storeCoverPlaceholder .storePlaceholderFoot{
+ margin-top:auto;opacity:.75;font-size:9px;
+}
+.storePage .storeClassicPlaceholder.storeCoverPlaceholder .storePlaceholderTitle{font-size:clamp(26px,2.25vw,42px)}
+@media(max-width:700px){
+ .storePage .storeCoverPlaceholder .storePlaceholderTitle,
+ .storePage .storeClassicPlaceholder.storeCoverPlaceholder .storePlaceholderTitle{font-size:clamp(20px,5vw,30px)}
+ .storePage .storeCoverPlaceholder .storePlaceholderCatalogue{font-size:10px}
+}
