@@ -215,7 +215,9 @@ export default function StoreClient({releases}){
    const next=node.getBoundingClientRect();
    const dx=old.left-next.left,dy=old.top-next.top;
    if(Math.abs(dx)+Math.abs(dy)<2)return;
-   node.animate([{transform:`translate(${dx}px,${dy}px)`},{transform:'translate(0,0)'}],{duration:520,easing:'cubic-bezier(.2,.8,.2,1)'});
+   node.getAnimations().forEach(animation=>animation.cancel());
+   node.animate([{transform:`translate3d(${dx}px,${dy}px,0)`},{transform:'translate3d(0,0,0)'}],{duration:620,easing:'cubic-bezier(.22,1,.36,1)'});
+
   });
  },[displayedIdentity,viewMode]);
  useEffect(()=>{
@@ -313,7 +315,7 @@ export default function StoreClient({releases}){
    <div className="storeClassicPrice">{card.price_mode!=='hidden'&&<strong>{card.price_mode==='from'&&minVariantPrice!=null?'FROM '+fmt(minVariantPrice):(primary.price!=null?fmt(primary.price):'—')}</strong>}{card.stock_mode!=='hidden'&&<span className="storeClassicStock">{stockText(r,primary,card.stock_mode||'quantity')}</span>}{primary.editionNumberingEnabled&&primary.editionTotal&&<span>{primary.editionTotal} EDITION</span>}</div>
    <div className="storeClassicAction">{classicCta==='view'||card.quick_add===false?<Link href={productHref(r)}>VIEW PRODUCT</Link>:classicCta==='options'||multi?<Link href={productHref(r)}>SELECT OPTIONS</Link>:r.status==='AVAILABLE'&&soldOut&&!canPreorder?<Link href={productHref(r)}>{r.commerceConfig?.waitlist===false?'VIEW PRODUCT':'WAITLIST / VIEW'}</Link>:<button type="button" disabled={unavailable} onClick={()=>add(r,primary)}>{r.status!=='AVAILABLE'?'COMING SOON':canPreorder?'PRE-ORDER':'ADD TO BAG'}</button>}</div>
   </div>
- </article>})}</div>:<div className="storeEditorialList" ref={catalogueRef}>{displayedRows.map(r=>{const card=r.storefrontConfig?.card||{};const editorialCta=card.editorial_cta&&card.editorial_cta!=='inherit'?card.editorial_cta:(card.cta==='view'?'view':'quick');const secondaryImage=card.secondary_hover===false?null:secondaryImageFor(r);return <article className={"storeProduct title-"+(card.title_scale||'regular')+" "+(card.secondary_mobile?'secondaryMobile ':'')+(r.isMerch?"merchProduct ":"")+(r.productOrigin==="distributed"?"selectedProduct ":"")+(r.imprint==="lethargia"?"lethargiaProduct":"")} key={r.slug}>
+ </article>})}</div>:<div className="storeEditorialList" ref={catalogueRef}>{displayedRows.map(r=>{const card=r.storefrontConfig?.card||{};const editorialCta=card.editorial_cta&&card.editorial_cta!=='inherit'?card.editorial_cta:(card.cta==='view'?'view':'quick');const secondaryImage=card.secondary_hover===false?null:secondaryImageFor(r);return <article className={"storeProduct title-"+(card.title_scale||'regular')+" "+(card.secondary_mobile?'secondaryMobile ':'')+(r.isMerch?"merchProduct ":"")+(r.productOrigin==="distributed"?"selectedProduct ":"")+(r.imprint==="lethargia"?"lethargiaProduct":"")} key={r.slug} data-catalogue-key={r.slug}>
     {card.wishlist!==false&&<button type="button" className={"storeWishlistButton "+(wishlist.some(x=>x.product_slug===r.slug)?"active":"")} aria-label="Toggle wishlist" onClick={()=>toggleWishlist(r)}>{wishlist.some(x=>x.product_slug===r.slug)?'♥':'♡'}</button>}
     <Link href={r.isMerch?('/store/'+r.slug):('/releases/'+r.slug)} className={"storeCover "+(secondaryImage?'hasSecondary':'')}>{r.isMerch&&(r.mockups?.front||r.mockups?.back)?<MerchMockupPreview product={r} raster/>:r.cover?<img className="storePrimaryImage" src={r.cover} alt={r.title} style={{objectFit:card.image_fit||'cover',objectPosition:cardPosition(card)}}/>:<span>{r.catalogue}</span>}{secondaryImage&&<img className="storeSecondaryImage" src={secondaryImage} alt="" style={{objectFit:card.image_fit||'cover',objectPosition:cardPosition(card)}}/>}</Link>
     <div className="storeProductMeta">
