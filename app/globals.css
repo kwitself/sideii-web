@@ -7232,3 +7232,46 @@ body>.releaseGalleryLightbox .releaseGalleryLightboxBar button{position:relative
  .globalBagDrawer.open>.globalBagCheckout{bottom:env(safe-area-inset-bottom,0px)!important}
  .globalBagDrawer .globalBagItems article>strong{padding-top:0!important}
 }
+
+
+/* PAKET B / Checkout screenshot polish: legible form, compact options, clear summary */
+.globalBagDrawer .globalCheckout{padding-bottom:38px!important}
+.globalBagDrawer .globalCheckout>h3{font-size:clamp(31px,3vw,43px)!important;line-height:1.08!important;margin:8px 0 24px!important}
+.globalBagDrawer .globalCheckout>label{display:block;margin-bottom:16px!important;min-width:0}
+.globalBagDrawer .globalCheckout>label>span,
+.globalBagDrawer .globalCheckout .checkoutSplit label>span{
+ font-size:10px!important;letter-spacing:.13em!important;line-height:1.5!important;color:#b9aeb5!important;
+}
+.globalBagDrawer .globalCheckout :is(input:not([type=checkbox]),select,textarea){
+ min-height:46px!important;font-size:13px!important;line-height:1.4!important;
+ padding:12px 13px!important;
+}
+.globalBagDrawer .globalCheckout textarea{min-height:86px!important}
+.globalBagDrawer .globalCheckout :is(.checkoutInvoice,.checkoutGift){
+ padding:16px!important;margin:17px 0!important;background:#111014!important;border-color:#39333b!important;
+}
+.globalBagDrawer .globalCheckout :is(.checkoutInvoice,.checkoutGift) .checkoutSavedAddressHead{margin-bottom:12px!important}
+.globalBagDrawer .globalCheckout .checkoutInvoiceType{gap:8px!important;margin:12px 0!important}
+.globalBagDrawer .globalCheckout .checkoutInvoiceType button{min-height:44px!important;transition:background .22s,border-color .22s,color .22s}
+.globalBagDrawer .globalCheckout .checkoutInvoiceCheck{margin-top:10px!important;min-height:30px}
+.globalBagDrawer .globalCheckout .checkoutSummary{
+ margin-top:27px!important;border-top:1px solid #655a64!important;border-bottom:1px solid #655a64!important;
+}
+.globalBagDrawer .globalCheckout .checkoutSummaryHead{padding:17px 0!important}
+.globalBagDrawer .globalCheckout .checkoutSummaryItem{padding:16px 0!important}
+.globalBagDrawer .globalCheckout .checkoutSummaryRow{padding:14px 0!important}
+.globalBagDrawer .globalCheckout .checkoutSummaryTotal{padding:18px 0!important}
+.globalBagDrawer .globalCheckout .checkoutSummaryTotal strong{font-size:clamp(21px,2vw,29px)!important}
+.globalBagDrawer .globalCheckout .globalBagCheckout{min-height:56px!important;transition:background .22s,color .22s}
+.globalBagDrawer .globalCheckout .checkoutPolicyNote{line-height:1.6!important;font-size:10px!important}
+@media(max-width:760px){
+ .globalBagDrawer .globalCheckout>h3{font-size:34px!important;margin-top:10px!important}
+ .globalBagDrawer .globalCheckout>label{margin-bottom:14px!important}
+ .globalBagDrawer .globalCheckout :is(.checkoutInvoice,.checkoutGift){padding:14px!important;margin:16px 0!important}
+ .globalBagDrawer .globalCheckout .checkoutInvoiceType{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .globalBagDrawer .globalCheckout .checkoutSummaryItem{gap:10px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .globalBagDrawer .globalCheckout .checkoutInvoiceType button,
+ .globalBagDrawer .globalCheckout .globalBagCheckout{transition:none!important}
+}
