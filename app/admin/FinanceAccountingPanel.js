@@ -259,7 +259,7 @@ export default function FinanceAccountingPanel({products=[]}){
  const exportMonthlyDrift=()=>exportCsv('sideii-party-month-end-drift.csv',['Month','Party','Frozen receivable','Current receivable','Difference','Frozen payable','Current payable','Difference'],partyMonthlyDrift.map(r=>[r.period_month,r.name,r.receivable_balance,r.receivableNow,r.receivableDrift,r.payable_balance,r.payableNow,r.payableDrift]));
  const allocatedByEntry=useMemo(()=>{const m=new Map();partyAllocations.forEach(a=>{for(const id of [a.settlement_entry_id,a.obligation_entry_id])m.set(id,(m.get(id)||0)+Number(a.amount||0))});return m},[partyAllocations]);
  const partyAging=useMemo(()=>{
- const today=new Date().toISOString().slice(0,10);
+ const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Istanbul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
  return partyData.entries.filter(e=>['receivable','payable'].includes(e.direction)).map(e=>{
  const remaining=Math.max(0,Number(e.amount||0)-(allocatedByEntry.get(e.id)||0));
  const days=e.due_date?Math.max(0,Math.floor((Date.parse(today+'T00:00:00Z')-Date.parse(e.due_date+'T00:00:00Z'))/86400000)):null;
