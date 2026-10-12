@@ -30,6 +30,11 @@ for(const marker of [
   assert.ok(migrations.includes(marker), `Missing finance SQL invariant: ${marker}`);
 }
 assert.ok(!panel.includes("supabase.rpc('issue_invoice'"), 'Unreviewed invoice issue RPC');
+assert.ok(panel.includes("const content='\\uFEFF'"), 'CSV export must contain a UTF-8 BOM');
+assert.ok(panel.includes(".join('\\r\\n')"), 'CSV export must use real CRLF row separators');
+assert.ok(panel.includes("const isNumeric="), 'CSV exporter should preserve numeric cells');
+assert.ok(panel.includes("const normalized=v.replace("), 'CSV spreadsheet formula prevention missing');
+
 const money = (amount, rate, included) => {
   const a=Number(amount)||0, r=(Number(rate)||0)/100;
   const net=included?a/(1+r):a;
