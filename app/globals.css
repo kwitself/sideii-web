@@ -6743,3 +6743,34 @@ footer a:focus-visible,
   transform:translateY(6px)!important;
  }
 }
+
+
+/* PAKET B / Release detail premium clarity — visual-only QA pass */
+@media(min-width:1024px){
+ .productPage .editionExperience{grid-template-columns:minmax(0,1.12fr) minmax(360px,.88fr)!important;gap:clamp(46px,5vw,90px)!important;align-items:center}
+ .productPage .editionPanel{max-width:680px!important;width:100%;min-width:0}
+ .productPage .editionDynamicLead{font-size:clamp(25px,2vw,33px)!important;line-height:1.12!important;margin-bottom:26px!important}
+ .productPage .editionDynamicLead small{font-size:11px!important;letter-spacing:.13em;line-height:1.65!important;margin-top:9px!important}
+ .productPage .editionChooser{margin:0 0 26px!important}
+ .productPage .editionChooser>span{display:block;font-size:10px!important;line-height:1.5;letter-spacing:.16em;margin-bottom:13px!important}
+ .productPage .editionChooser button{min-height:43px!important;padding:0 19px!important;font-size:11px!important;transition:background .22s ease,color .22s ease,border-color .22s ease}
+ .productPage .editionFacts{margin-top:22px!important;margin-bottom:28px!important}
+ .productPage .editionFacts>div{min-height:46px!important;gap:14px}
+ .productPage .editionFacts dt{font-size:10px!important;letter-spacing:.1em;color:#aba4a8!important}
+ .productPage .editionFacts dd{font-size:11px!important;letter-spacing:.06em;line-height:1.5;color:#dfd9dc!important}
+ .productPage .editionPanel>.productButton{min-height:52px!important;font-size:12px!important;letter-spacing:.13em!important;transition:background .22s ease,border-color .22s ease,color .22s ease}
+ .productPage .releaseWaitlist{margin-top:10px!important}
+ .productPage .releaseWaitlist input{min-height:44px!important;font-size:11px!important}
+ .productPage .releaseWaitlist button{min-height:44px!important;font-size:10px!important}
+ .productPage .releaseBagLink{display:flex;align-items:center;justify-content:center;min-height:43px!important;font-size:10px!important;letter-spacing:.12em}
+}
+@media(max-width:1023px){
+ .productPage .editionPanel{min-width:0;max-width:100%!important}
+ .productPage .editionDynamicLead{font-size:clamp(23px,4vw,31px)!important;line-height:1.15!important}
+ .productPage .editionChooser button,.productPage .editionPanel>.productButton{min-height:44px!important}
+ .productPage .editionFacts>div{min-height:43px!important;gap:12px}
+ .productPage .releaseWaitlist input,.productPage .releaseWaitlist button{min-height:44px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .productPage .editionChooser button,.productPage .editionPanel>.productButton{transition:none!important}
+}
