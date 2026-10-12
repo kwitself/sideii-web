@@ -5688,3 +5688,38 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
  .adminApp .orderModal{width:min(96vw,600px)!important;max-height:90dvh;overflow-y:auto}
 }
 @media(prefers-reduced-motion:reduce){.adminApp .orderList .orderRow{transition:none!important}}
+
+
+/* Finance & Accounting · SIDE:II control room */
+.adminApp .financePanel{width:100%;min-width:0}
+.adminApp .financeTop{display:flex;justify-content:space-between;align-items:end;gap:24px;margin:24px 0}
+.adminApp .financeTop h2{font:400 clamp(28px,2.8vw,45px)/1.1 Georgia,serif;color:#e6dfe2;letter-spacing:-.04em;margin:0 0 12px}
+.adminApp .financeTop h2 em{color:#857c85}
+.adminApp .financeTop small{font:11px/1.6 Arial,sans-serif;color:#aaa0aa;max-width:620px;display:block}
+.adminApp .financeTop select{max-width:190px}
+.adminApp .financeKpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 24px}
+.adminApp .financeKpi{display:flex;flex-direction:column;gap:12px;padding:22px;border:1px solid #39313d;background:linear-gradient(145deg,#171319,#0e0d10);min-width:0}
+.adminApp .financeKpi>span{font:600 10px/1.4 Arial,sans-serif;letter-spacing:.13em;color:#ab9eaa}
+.adminApp .financeKpi>strong{font:400 clamp(24px,2vw,34px)/1.15 Georgia,serif;color:#f0e8ec;overflow-wrap:anywhere}
+.adminApp .financeKpi>small{font:10px/1.5 Arial,sans-serif;color:#827883}
+.adminApp .financeColumns{display:grid;grid-template-columns:1fr 1.25fr;gap:16px;align-items:start}
+.adminApp .financeBox{margin:0 0 16px;padding:24px;min-width:0;border:1px solid #3d343f;background:#111014}
+.adminApp .financeBox>h3{font:400 24px/1.2 Georgia,serif;color:#e5dbe2;margin:0 0 12px}
+.adminApp .financeBox>p{font:11px/1.6 Arial,sans-serif;color:#aaa0aa;margin:0 0 18px}
+.adminApp .financeFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.adminApp .financeFields label:has(input[type=checkbox]){align-self:center}
+.adminApp .financeCheck{display:flex;gap:10px;align-items:center;font:10px/1.5 Arial,sans-serif;letter-spacing:.09em;color:#c8bec7}
+.adminApp .financeCheck input{width:17px;height:17px;accent-color:#ddd0d9}
+.adminApp .financeBox .saveButton{min-height:44px;margin-top:20px}
+.adminApp .financeRows>div{display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:13px 0;border-bottom:1px solid #302932;font:12px/1.5 Arial,sans-serif;color:#a89da8}
+.adminApp .financeRows strong{font-size:14px;color:#ece4e9;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.adminApp .financeWarning{border-left:2px solid #a18b76;padding:8px 14px;margin:16px 0 0!important;color:#d6c1af!important}
+.adminApp .financeLedger>div{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid #352e37}
+.adminApp .financeLedger>div>span{font:12px/1.5 Arial,sans-serif;color:#e9e0e6;overflow-wrap:anywhere}
+.adminApp .financeLedger small{display:block;font:10px/1.6 Arial,sans-serif;color:#998f99}
+.adminApp .financeLedger strong{font:14px Georgia,serif;color:#e8dee5;white-space:nowrap}
+.adminApp .financeLedger button{border:1px solid #58464f;padding:9px 12px;background:transparent;color:#c9b8c1;font:9px Arial,sans-serif;letter-spacing:.1em;cursor:pointer;transition:background .2s}
+.adminApp .financeLedger button:hover{background:#38252d}
+@media(max-width:1000px){.adminApp .financeColumns{grid-template-columns:1fr}.adminApp .financeKpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.adminApp .financeTop{flex-direction:column;align-items:stretch}.adminApp .financeTop select{max-width:none}.adminApp .financeKpis{grid-template-columns:1fr}.adminApp .financeFields{grid-template-columns:1fr}.adminApp .financeBox{padding:16px}.adminApp .financeLedger>div{grid-template-columns:minmax(0,1fr) auto}.adminApp .financeLedger button{grid-column:1 / -1;justify-self:start}}
+@media(prefers-reduced-motion:reduce){.adminApp .financeLedger button{transition:none!important}}
