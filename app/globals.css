@@ -7011,3 +7011,40 @@ body>.releaseGalleryLightbox .releaseGalleryLightboxBar button{position:relative
  .productPage .editionChooser>div{gap:6px!important}
  .productPage .releaseGalleryCarouselStage{padding-left:39px!important;padding-right:39px!important}
 }
+
+
+/* PAKET B / Narrow-device product QA: prevent clipped cards and gallery controls */
+@media(max-width:760px){
+ .productPage{width:100%;min-width:0;overflow-x:clip}
+ .productPage :is(.productHero,.releaseGalleryCarousel,.trackSection,.productNote,.productDiscovery){min-width:0;max-width:100%;box-sizing:border-box}
+ .productPage .releaseGalleryCarouselStage{
+  display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+  position:relative;min-width:0;padding:16px 40px!important;
+ }
+ .productPage .releaseGalleryCarouselViewport{
+  grid-column:1;min-width:0!important;width:100%!important;min-height:190px!important;
+ }
+ .productPage .releaseGalleryCarouselViewport>img{max-height:min(70vw,420px)!important;max-width:100%!important}
+ .productPage .releaseGalleryCarouselArrow{
+  position:absolute!important;top:50%;z-index:5!important;
+  width:32px!important;height:42px!important;transform:translateY(-50%)!important;
+ }
+ .productPage .releaseGalleryCarouselArrow.prev{left:3px!important}
+ .productPage .releaseGalleryCarouselArrow.next{right:3px!important}
+ .productPage .releaseGalleryCarouselThumbs{justify-content:center;max-width:100%}
+ .productPage .discoveryGrid,.productPage .recentGrid{
+  display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;
+  overscroll-behavior-inline:contain;scroll-snap-type:x proximity;
+  scroll-padding-inline:0;scrollbar-width:thin;max-width:100%;box-sizing:border-box;
+ }
+ .productPage .discoveryGrid>.discoveryCard,.productPage .recentGrid>.discoveryCard{
+  flex:0 0 min(90%,350px)!important;max-width:none!important;
+  grid-template-columns:72px minmax(0,1fr)!important;
+  scroll-snap-align:start;
+ }
+ .productPage .discoveryCard :is(b,strong,span){overflow-wrap:anywhere}
+}
+@media(max-width:380px){
+ .productPage .releaseGalleryCarouselStage{padding-left:34px!important;padding-right:34px!important}
+ .productPage .discoveryGrid>.discoveryCard,.productPage .recentGrid>.discoveryCard{flex-basis:100%!important}
+}
