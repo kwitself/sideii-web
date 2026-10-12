@@ -4,7 +4,7 @@ import {supabase} from '../lib/supabase';
 const tr=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY'}).format(Number(n)||0);
 const cats=['production','packaging','shipping','payment_fee','marketing','software','tax','refund','other'];
 const netVat=(amount,rate,included)=>{const a=Number(amount)||0,r=(Number(rate)||0)/100;const net=included?a/(1+r):a;return {net,vat:net*r,gross:included?a:net*(1+r)}};
-const inputStyle={minHeight:40,background:'#111015',border:'1px solid #443b46',padding:'9px 11px',color:'#e7dfe4',width:'100%',minWidth:0};
+const inputStyle={minHeight:40,background:'#0e0e0f',border:'1px solid #363638',padding:'9px 11px',color:'#e5e2de',width:'100%',minWidth:0};
 export default function FinanceAccountingPanel({products=[]}){
  const [data,setData]=useState({settings:{sales_vat_rate:0,shipping_vat_rate:0,prices_include_vat:true},expenses:[]});
  const [orders,setOrders]=useState([]),[costs,setCosts]=useState([]),[rules,setRules]=useState([]);
