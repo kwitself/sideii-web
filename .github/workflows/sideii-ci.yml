@@ -17,5 +17,7 @@ jobs:
           cache: npm
       - name: Install locked dependencies
         run: npm ci
+      - name: Verify finance safety invariants
+        run: node scripts/check-finance-invariants.mjs
       - name: Build Next.js
         run: npm run build
