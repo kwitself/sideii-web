@@ -1,5 +1,5 @@
 /* SIDE:II Admin UI — focused accessibility and surface polish; existing layout stays intact. */
-@layer sideiiAdmin {
+
  .adminApp { color-scheme: dark; }
  .adminApp :is(button, a, input, select, textarea, [role="button"]) {
    transition: background-color .16s ease, color .16s ease, border-color .16s ease, box-shadow .16s ease, transform .16s ease;
@@ -46,10 +46,10 @@
    .adminApp :is(.financeAuditScroll) { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
    .adminApp :is(button,select,input) { touch-action: manipulation; }
  }
-}
+
 
 /* Admin phase 2: dashboard, catalogue, and order readability */
-@layer sideiiAdmin {
+
  .adminApp .adminTop { gap: 20px; }
  .adminApp .adminTop .topActions { flex-wrap: wrap; align-items: center; }
  .adminApp .overviewMetricGrid > article {
@@ -91,10 +91,10 @@
    .adminApp .orderList .orderRow { padding: 16px; }
    .adminApp .sectionLabel { align-items: flex-start; flex-direction: column; }
  }
-}
+
 
 /* Screenshot review: increased legibility for wide-screen control room. */
-@layer sideiiAdmin {
+
  .adminApp { --admin-legible-text:#d8d5d0; --admin-muted-text:#a6a19d; }
  .adminApp .adminRail .adminNav :is(a,button) { font-size:11px; line-height:1.5; min-height:38px; }
  .adminApp .adminTop { padding-bottom:24px; }
@@ -129,4 +129,14 @@
   .adminApp .overviewMetricGrid > article { padding:16px; }
   .adminApp .orderList .orderRow { min-height:74px; padding:14px; }
  }
-}
+
+
+/* Unlayered overrides: original admin.css has later unlayered rules which
+   take precedence over layered CSS even when loaded earlier. */
+.adminApp .productPanel .tableHead,
+.adminApp .productPanel .productRow { min-width: 1040px; grid-template-columns: 2.2fr .7fr 1.05fr .55fr .45fr 1.8fr; }
+.adminApp .productPanel .rowActions { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+.adminApp .productPanel .rowActions :is(button,a) { font-size:11px; padding:7px 9px; min-height:32px; }
+.adminApp .productPanel .productRow { min-height:76px; }
+.adminApp .productPanel { overflow-x:auto; }
+.adminApp .productControlBar :is(input,select) { font-size:12px; min-height:42px; }
