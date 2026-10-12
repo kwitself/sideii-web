@@ -16,7 +16,7 @@ for(const marker of [
   assert.ok(panel.includes(marker), `Missing finance UI invariant: ${marker}`);
 }
 for(const marker of [
-  "SECURITY DEFINER",
+  "security definer",
   "Admin required",
   "Eligible paid order required",
   "Complete item VAT snapshots required",
