@@ -241,7 +241,7 @@ export default function FinanceAccountingPanel({products=[]}){
  return {...r,name:partyData.parties.find(p=>p.id===r.party_id)?.name||'—',receivableNow:receivable,payableNow:payable,receivableDrift:receivable-Number(r.receivable_balance),payableDrift:payable-Number(r.payable_balance)};
  }),[partyReconciliations,partyData]);
  const crossLedgerReview=useMemo(()=>{
- const norm=x=>String(x||'').trim().toLowerCase().replace(/\\s+/g,'');
+ const norm=x=>String(x||'').trim().toLowerCase().replace(/\s+/g,'');
  return partyData.entries.filter(e=>['receipt','payment'].includes(e.direction)).map(e=>{
  const ref=norm(e.reference);
  const candidates=movementLedger.filter(m=>m.currency==='TRY'&&ref&&norm(m.reference)===ref&&Math.abs(Number(m[e.direction==='receipt'?'inflow':'outflow']||0)-Number(e.amount||0))<0.01);
