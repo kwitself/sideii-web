@@ -95,6 +95,17 @@ export default function FinanceAccountingPanel({products=[]}){
   if(error)setError(error.message);else{setMessage('Product unit cost updated.');await load()}
   setBusy(false);
  };
+ const addArtistPayment=async(e)=>{
+  e.preventDefault();setBusy(true);setError('');
+  const {error}=await supabase.rpc('admin_finance_add_artist_payment',{p_royalty_rule_id:payDraft.royalty_rule_id,p_payment_date:payDraft.payment_date,p_amount:Number(payDraft.amount),p_payment_method:payDraft.payment_method,p_reference:payDraft.reference||null,p_notes:payDraft.notes||null});
+  if(error)setError(error.message);else{setMessage('Payment recorded.');setPayDraft(d=>({...d,amount:'',reference:'',notes:''}));await load()}
+  setBusy(false);
+ };
+ const settlement=useMemo(()=>{
+  const paidByRule=new Map();
+  artistPayments.forEach(p=>paidByRule.set(p.royalty_rule_id,(paidByRule.get(p.royalty_rule_id)||0)+Number(p.amount||0)));
+  return calculation.artistRows.map(r=>({...r,paidAmount:paidByRule.get(r.id)||0,estimatedRemaining:r.share-(paidByRule.get(r.id)||0)}));
+ },[calculation.artistRows,artistPayments]);
  const saveSettings=async()=>{setBusy(true);setError('');const {error}=await supabase.rpc('admin_finance_save_settings',{p_sales_vat_rate:Number(settings.sales_vat_rate),p_shipping_vat_rate:Number(settings.shipping_vat_rate),p_prices_include_vat:!!settings.prices_include_vat});if(error)setError(error.message);else{setMessage('VAT settings saved. Estimates recalculated.');await load()}setBusy(false)};
  const addExpense=async(e)=>{e.preventDefault();setBusy(true);setError('');const {error}=await supabase.rpc('admin_finance_add_expense',{p_expense_date:draft.expense_date,p_category:draft.category,p_description:draft.description,p_gross_amount:Number(draft.gross_amount),p_vat_rate:Number(draft.vat_rate),p_vat_included:draft.vat_included,p_deductible_vat:draft.deductible_vat,p_product_id:draft.product_id||null,p_reference:draft.reference||null});if(error)setError(error.message);else{setDraft(v=>({...v,description:'',gross_amount:'',reference:''}));setMessage('Expense recorded.');await load()}setBusy(false)};
  const deleteExpense=async(id)=>{if(!window.confirm('Delete this accounting entry?'))return;setBusy(true);const {error}=await supabase.rpc('admin_finance_delete_expense',{p_id:id});if(error)setError(error.message);else await load();setBusy(false)};
