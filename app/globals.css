@@ -6924,3 +6924,47 @@ body>.releaseGalleryLightbox .releaseGalleryLightboxBar button{position:relative
 @media(max-width:760px){
  body>.releaseGalleryLightbox .releaseGalleryLightboxBody{grid-template-columns:38px minmax(0,1fr) 38px!important}
 }
+
+
+/* PAKET B / Product detail lower sections — editorial rhythm and readability */
+.productPage .trackSection{
+ border-top:1px solid #302c32!important;
+ border-bottom:1px solid #302c32!important;
+ padding-top:clamp(40px,5vw,78px)!important;
+ padding-bottom:clamp(48px,5vw,82px)!important;
+}
+.productPage .trackSection>span,.productPage .productNote>span{
+ font-size:10px!important;letter-spacing:.19em!important;color:#b1a5ad!important;
+}
+.productPage .trackSection ol{margin:0;min-width:0}
+.productPage .trackSection li{min-height:54px!important;align-items:center;transition:background .22s ease,padding-left .22s ease}
+.productPage .trackSection li:hover{background:#ffffff06;padding-left:10px!important}
+.productPage .trackSection li>b{font-size:10px!important;color:#9b9099!important;letter-spacing:.08em}
+.productPage .trackSection li>span{font-size:clamp(16px,1.25vw,20px)!important;line-height:1.4!important;color:#e4dce0!important}
+.productPage .productNote{
+ padding-top:clamp(50px,6vw,90px)!important;
+ padding-bottom:clamp(58px,7vw,108px)!important;
+}
+.productPage .productNote>p{font-size:clamp(25px,2.4vw,40px)!important;line-height:1.18!important;letter-spacing:-.025em;max-width:850px!important}
+.productPage .productNote .pressingMeta{font-size:10px!important;letter-spacing:.13em;color:#a49aa2}
+.productPage .releasePressEntry a,.productPage .productNote>a{
+ display:inline-flex;align-items:center;min-height:40px;
+ font-size:10px!important;letter-spacing:.12em;
+ transition:color .22s ease,opacity .22s ease;
+}
+.productPage .releasePressEntry a:hover,.productPage .productNote>a:hover{color:#fff!important}
+.productPage .productDiscovery{border-top:1px solid #302c32;padding-top:clamp(32px,4vw,64px)!important}
+.productPage .discoveryCard{transition:background .22s ease,border-color .22s ease,transform .22s ease}
+.productPage .discoveryCard:hover{border-color:#746974;transform:translateY(-3px)}
+@media(max-width:760px){
+ .productPage .trackSection{padding-top:36px!important;padding-bottom:42px!important}
+ .productPage .trackSection li{min-height:49px!important}
+ .productPage .trackSection li>span{font-size:16px!important}
+ .productPage .productNote{padding-top:48px!important;padding-bottom:66px!important}
+ .productPage .productNote>p{font-size:clamp(25px,6vw,34px)!important;line-height:1.22!important}
+ .productPage .discoveryCard:hover{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+ .productPage .trackSection li,.productPage .releasePressEntry a,
+ .productPage .productNote>a,.productPage .discoveryCard{transition:none!important}
+}
