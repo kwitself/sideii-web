@@ -7048,3 +7048,26 @@ body>.releaseGalleryLightbox .releaseGalleryLightboxBar button{position:relative
  .productPage .releaseGalleryCarouselStage{padding-left:34px!important;padding-right:34px!important}
  .productPage .discoveryGrid>.discoveryCard,.productPage .recentGrid>.discoveryCard{flex-basis:100%!important}
 }
+
+
+/* Mobile release QA: dedicated gallery control gutters and full-width snap cards */
+@media(max-width:760px){
+ .productPage .releaseGalleryCarouselStage{padding:16px 46px!important}
+ .productPage .releaseGalleryCarouselArrow{
+  width:34px!important;height:46px!important;
+  border-color:#4b424d!important;background:#171319f2!important;
+ }
+ .productPage .releaseGalleryCarouselArrow.prev{left:6px!important}
+ .productPage .releaseGalleryCarouselArrow.next{right:6px!important}
+ .productPage .releaseGalleryCarouselStage::before,
+ .productPage .releaseGalleryCarouselStage::after{width:35px!important}
+ .productPage .discoveryGrid>.discoveryCard,
+ .productPage .recentGrid>.discoveryCard{
+  flex:0 0 100%!important;width:100%!important;box-sizing:border-box!important;
+  grid-template-columns:76px minmax(0,1fr)!important;
+ }
+ .productPage .discoveryGrid,.productPage .recentGrid{scroll-snap-type:x mandatory!important}
+}
+@media(max-width:360px){
+ .productPage .releaseGalleryCarouselStage{padding-left:42px!important;padding-right:42px!important}
+}
