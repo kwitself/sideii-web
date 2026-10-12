@@ -17,6 +17,8 @@ export default function FinanceAccountingPanel({products=[]}){
  const [orderAudit,setOrderAudit]=useState([]);
  const [paymentAudit,setPaymentAudit]=useState([]);
  const [settlements,setSettlements]=useState([]);
+ const [refunds,setRefunds]=useState([]);
+ const [refundDraft,setRefundDraft]=useState({order_id:'',refund_date:new Date().toISOString().slice(0,10),amount:'',reason:'',provider_reference:''});
  const [settleDraft,setSettleDraft]=useState({order_id:'',settlement_date:new Date().toISOString().slice(0,10),gross_amount:'',fee_amount:'0',provider:'other',reference:''});
  const [paymentFilter,setPaymentFilter]=useState('exceptions');
  const [auditFilter,setAuditFilter]=useState('all');
@@ -25,7 +27,7 @@ export default function FinanceAccountingPanel({products=[]}){
  async function load(){
   if(!supabase)return;
   setLoading(true);setError('');
-  const [f,o,c,r,ap,snap,audit,recon,settle]=await Promise.all([
+  const [f,o,c,r,ap,snap,audit,recon,settle,refundRows]=await Promise.all([
    supabase.rpc('admin_finance_read'),
    supabase.from('orders').select('id,order_no,created_at,payment_status,status,total,subtotal,shipping_total,support_total,currency,order_items(variant_id,quantity,line_total,support_amount)').order('created_at',{ascending:false}).limit(1000),
    supabase.rpc('admin_list_product_costs'),
@@ -34,7 +36,8 @@ export default function FinanceAccountingPanel({products=[]}){
    supabase.rpc('admin_finance_snapshot_status'),
    supabase.rpc('admin_finance_order_audit',{p_limit:200}),
    supabase.rpc('admin_finance_payment_reconciliation',{p_limit:200}),
-   supabase.rpc('admin_finance_list_settlements')
+   supabase.rpc('admin_finance_list_settlements'),
+   supabase.rpc('admin_finance_list_refunds')
   ]);
   if(f.error)setError('Finance: '+f.error.message);else setData(f.data);
   if(o.error)setError(v=>v||'Orders: '+o.error.message);else setOrders(o.data||[]);
@@ -45,6 +48,7 @@ export default function FinanceAccountingPanel({products=[]}){
   if(audit.error)setError(v=>v||'Audit: '+audit.error.message);else setOrderAudit(audit.data||[]);
   if(recon.error)setError(v=>v||'Payments audit: '+recon.error.message);else setPaymentAudit(recon.data||[]);
   if(settle.error)setError(v=>v||'Settlement ledger: '+settle.error.message);else setSettlements(settle.data||[]);
+  if(refundRows.error)setError(v=>v||'Refunds: '+refundRows.error.message);else setRefunds(refundRows.data||[]);
   setLoading(false);
  }
  useEffect(()=>{load()},[]);
@@ -124,6 +128,8 @@ export default function FinanceAccountingPanel({products=[]}){
  },[calculation.artistRows,artistPayments]);
  const saveSettlement=async(e)=>{e.preventDefault();setBusy(true);setError('');const {error}=await supabase.rpc('admin_finance_add_settlement',{p_order_id:settleDraft.order_id,p_settlement_date:settleDraft.settlement_date,p_gross_amount:Number(settleDraft.gross_amount),p_fee_amount:Number(settleDraft.fee_amount),p_provider:settleDraft.provider,p_reference:settleDraft.reference||null,p_notes:null});if(error)setError(error.message);else{setMessage('Settlement entry saved.');setSettleDraft(v=>({...v,gross_amount:'',fee_amount:'0',reference:''}));await load()}setBusy(false)};
  const settlementTotals=useMemo(()=>settlements.reduce((a,s)=>({gross:a.gross+Number(s.gross_amount||0),fees:a.fees+Number(s.fee_amount||0),net:a.net+Number(s.net_amount||0)}),{gross:0,fees:0,net:0}),[settlements]);
+ const saveRefund=async(e)=>{e.preventDefault();if(!window.confirm('Confirm this is a record of an already-processed refund? This will NOT send money.'))return;setBusy(true);setError('');const {error}=await supabase.rpc('admin_finance_add_refund',{p_order_id:refundDraft.order_id,p_refund_date:refundDraft.refund_date,p_amount:Number(refundDraft.amount),p_reason:refundDraft.reason,p_provider_reference:refundDraft.provider_reference||null,p_notes:null});if(error)setError(error.message);else{setMessage('Refund record added. No payment action was initiated.');setRefundDraft(d=>({...d,amount:'',reason:'',provider_reference:''}));await load()}setBusy(false)};
+ const refundTotal=useMemo(()=>refunds.reduce((sum,r)=>sum+Number(r.amount||0),0),[refunds]);
  const saveSettings=async()=>{setBusy(true);setError('');const {error}=await supabase.rpc('admin_finance_save_settings',{p_sales_vat_rate:Number(settings.sales_vat_rate),p_shipping_vat_rate:Number(settings.shipping_vat_rate),p_prices_include_vat:!!settings.prices_include_vat});if(error)setError(error.message);else{setMessage('VAT settings saved. Estimates recalculated.');await load()}setBusy(false)};
  const addExpense=async(e)=>{e.preventDefault();setBusy(true);setError('');const {error}=await supabase.rpc('admin_finance_add_expense',{p_expense_date:draft.expense_date,p_category:draft.category,p_description:draft.description,p_gross_amount:Number(draft.gross_amount),p_vat_rate:Number(draft.vat_rate),p_vat_included:draft.vat_included,p_deductible_vat:draft.deductible_vat,p_product_id:draft.product_id||null,p_reference:draft.reference||null});if(error)setError(error.message);else{setDraft(v=>({...v,description:'',gross_amount:'',reference:''}));setMessage('Expense recorded.');await load()}setBusy(false)};
  const deleteExpense=async(id)=>{if(!window.confirm('Delete this accounting entry?'))return;setBusy(true);const {error}=await supabase.rpc('admin_finance_delete_expense',{p_id:id});if(error)setError(error.message);else await load();setBusy(false)};
@@ -136,7 +142,7 @@ export default function FinanceAccountingPanel({products=[]}){
   <div className="financeTop"><div><h2>Numbers, <em>with context.</em></h2><small>Prices and tax rates are configurable. Confirm tax classification and filings with your accountant.</small></div><select style={inputStyle} value={period} onChange={e=>setPeriod(e.target.value)}><option value="all">ALL AVAILABLE</option><option value="30">LAST 30 DAYS</option><option value="90">LAST 90 DAYS</option><option value="365">LAST 365 DAYS</option></select></div>
   <div className="financeHealth" role="status"><strong>ACCOUNTING READINESS</strong><span>{loading?'CHECKING DATA':Number(settings.sales_vat_rate)===0?'SALES VAT NOT CONFIGURED':'VAT RATE CONFIGURED'}</span><span>{costs.length===0?'NO PRODUCT COSTS RECORDED':costs.length+' PRODUCT COST RECORDS'}</span><span>{rules.filter(r=>r.active).length===0?'NO ACTIVE ARTIST RULES':rules.filter(r=>r.active).length+' ARTIST RULES'}</span><small>Figures are estimates using current rates and costs, not finalized statutory accounts.</small></div>
   {snapshotStatus&&<div className="financeHealth" role="status"><strong>ORDER COST / VAT SNAPSHOTS</strong><span>{snapshotStatus.captured} NEW ITEM RECORDS</span><span>{snapshotStatus.legacy_without_snapshot} HISTORICAL ITEMS NOT BACKFILLED</span><span>{snapshotStatus.cost_missing} MISSING COST</span><span>{snapshotStatus.vat_unconfigured} VAT NOT VERIFIED</span><small>Snapshot records are captured when new order items are inserted. Historic orders remain unchanged. Displayed profit estimates are still calculated separately from current settings.</small></div>}
-  <nav className="financeTabs" aria-label="Finance sections">{[['overview','OVERVIEW'],['vat','VAT'],['expenses','EXPENSES'],['costs','PRODUCT COSTS'],['artists','ARTIST ROYALTIES'],['audit','ORDER AUDIT'],['reconcile','PAYMENT RECONCILIATION'],['settlements','SETTLEMENTS']].map(([id,label])=><button type="button" key={id} className={financeTab===id?'active':''} aria-current={financeTab===id?'page':undefined} onClick={()=>setFinanceTab(id)}>{label}</button>)}</nav>
+  <nav className="financeTabs" aria-label="Finance sections">{[['overview','OVERVIEW'],['vat','VAT'],['expenses','EXPENSES'],['costs','PRODUCT COSTS'],['artists','ARTIST ROYALTIES'],['audit','ORDER AUDIT'],['reconcile','PAYMENT RECONCILIATION'],['settlements','SETTLEMENTS'],['refunds','REFUNDS']].map(([id,label])=><button type="button" key={id} className={financeTab===id?'active':''} aria-current={financeTab===id?'page':undefined} onClick={()=>setFinanceTab(id)}>{label}</button>)}</nav>
 {financeTab==='overview'&&<div className="financeKpis">{card('NET SALES (EST.)',calculation.salesNet,'excluding estimated VAT')}{card('OUTPUT VAT',calculation.outputVat+calculation.shippingVat,'sales and shipping')}{card('INPUT VAT (ELIGIBLE)',calculation.inputVat,'recorded expenses')}{card('VAT BALANCE (EST.)',calculation.vatBalance,'negative = potential credit')}{card('OPERATING RESULT',calculation.operatingProfit,'before tax and artist payments')}{card('ARTIST SHARE (EST.)',calculation.artistShare,'product profit basis')}</div>}
   <div className="financeColumns">
    {financeTab==='vat'&&<section className="adminPanel financeBox"><h3>VAT SETTINGS</h3><p>Defaults for estimated reporting only. Not a tax invoice or e-ledger.</p><div className="financeFields">
@@ -197,5 +203,13 @@ export default function FinanceAccountingPanel({products=[]}){
     {control('BANK REFERENCE',field(settleDraft.reference,v=>setSettleDraft(d=>({...d,reference:v})),'text',{maxLength:150}))}
     <button className="saveButton" disabled={busy||loading||!settleDraft.order_id}>RECORD SETTLEMENT</button>
    </form><div className="financeLedger">{settlements.map(s=><div key={s.id}><span>{s.settlement_date} · ORDER #{orders.find(o=>o.id===s.order_id)?.order_no||'—'}<small>{s.provider} · {s.reference||'No reference'}</small></span><strong>{tr(s.net_amount)}<small>Gross {tr(s.gross_amount)} · Fee {tr(s.fee_amount)}</small></strong></div>)}{settlements.length===0&&<p>No settlement entries yet.</p>}</div></section>}
+  {financeTab==='refunds'&&<section className="adminPanel financeBox"><h3>REFUND JOURNAL</h3><p>Record refunds already completed outside SIDE:II. This form does NOT issue a payment refund, alter order status, or create a tax credit note. Full and partial entries are both supported, with a per-order total cap.</p><div className="financeKpis">{card('REFUNDS RECORDED',refundTotal)}{card('NET OF RECORDED REFUNDS',settlementTotals.net-refundTotal,'Settlement net less recorded refunds; not a bank balance')}</div><form onSubmit={saveRefund} className="financeFields">
+    {control('ORDER',<select required style={inputStyle} value={refundDraft.order_id} onChange={e=>setRefundDraft(d=>({...d,order_id:e.target.value}))}><option value="">SELECT TRY ORDER</option>{orders.filter(o=>o.currency==='TRY').map(o=><option key={o.id} value={o.id}>#{o.order_no} · {tr(o.total)}</option>)}</select>)}
+    {control('REFUND DATE',field(refundDraft.refund_date,v=>setRefundDraft(d=>({...d,refund_date:v})),'date',{required:true}))}
+    {control('REFUND AMOUNT TRY',field(refundDraft.amount,v=>setRefundDraft(d=>({...d,amount:v})),'number',{required:true,min:'.01',step:'.01'}))}
+    {control('REASON',field(refundDraft.reason,v=>setRefundDraft(d=>({...d,reason:v})),'text',{required:true,minLength:3,maxLength:250}))}
+    {control('PROVIDER REFERENCE',field(refundDraft.provider_reference,v=>setRefundDraft(d=>({...d,provider_reference:v})),'text',{maxLength:150}))}
+    <button className="saveButton" disabled={busy||loading||!refundDraft.order_id}>RECORD COMPLETED REFUND</button>
+   </form><div className="financeLedger">{refunds.length?refunds.map(r=><div key={r.id}><span>{r.refund_date} · ORDER #{orders.find(o=>o.id===r.order_id)?.order_no||'—'}<small>{r.reason} · {r.provider_reference||'No reference'}</small></span><strong>{tr(r.amount)}</strong></div>):<p>No refunds recorded yet.</p>}</div><p className="financeWarning">Refund amounts are not automatically deducted from estimated tax, order snapshots, or artist royalties. Those adjustments require an approved reconciliation workflow.</p></section>}
  </section>;
 }
