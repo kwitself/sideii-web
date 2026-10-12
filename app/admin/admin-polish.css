@@ -214,3 +214,38 @@
 @media(max-height:760px) { .adminApp .adminRail { padding-top:14px; padding-bottom:12px; } .adminApp .adminBrand { padding-bottom:12px; } .adminApp .adminNav { padding-top:10px; } }
 @media(max-width:800px) { .adminApp .adminRail { padding:20px 14px; } }
 @media(prefers-reduced-motion:reduce){ .adminApp .adminNav a { transition:none; } }
+
+/* Settings UI: precise form hierarchy without changing stored shipping logic. */
+.adminApp #settings .singleAdminCard { min-width:0; }
+.adminApp #settings .singleAdminCard > article { min-width:0; max-width:100%; }
+.adminApp #settings .singleAdminCard h2 { line-height:1.07; }
+.adminApp #settings .shippingSettings {
+ display:flex; flex-direction:column; align-items:stretch; gap:16px;
+ margin-top:24px; padding-top:20px; border-top:1px solid #343237;
+}
+.adminApp #settings .shippingToggle {
+ display:flex; align-items:center; gap:13px; min-height:52px; padding:13px 15px;
+ border:1px solid #343237; background:#141416;
+ color:#ddd8d2; font:600 11px/1.4 Arial,sans-serif; letter-spacing:.06em;
+ cursor:pointer;
+}
+.adminApp #settings .shippingToggle:hover { border-color:#716b70; background:#1b1a1c; }
+.adminApp #settings .shippingToggle:focus-within { outline:2px solid #d7d0c7; outline-offset:2px; }
+.adminApp #settings .shippingToggle input { min-height:17px; width:17px; height:17px; flex:0 0 17px; accent-color:#ded8d0; cursor:pointer; }
+.adminApp #settings .shippingFields { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+.adminApp #settings .shippingFields label { display:flex; min-width:0; flex-direction:column; gap:9px; }
+.adminApp #settings .shippingFields label > span { font:600 10px/1.45 Arial,sans-serif; letter-spacing:.075em; color:#aba5a0; }
+.adminApp #settings .shippingFields input {
+ width:100%; min-width:0; min-height:46px; padding:10px 13px;
+ font:500 14px/1.3 Arial,sans-serif; font-variant-numeric:tabular-nums;
+ color:#ede8e1; background:#111113; border:1px solid #454147;
+}
+.adminApp #settings .shippingFields input:hover { border-color:#766f73; }
+.adminApp #settings .shippingFields input:focus-visible { border-color:#ddd5cc; outline:2px solid #c7bfb553; outline-offset:1px; }
+.adminApp #settings .shippingSettings > .saveButton { align-self:flex-start; min-height:44px; padding:11px 22px; font:600 11px/1 Arial,sans-serif; letter-spacing:.09em; }
+.adminApp #settings .applicationNotificationSettings { margin-top:28px; padding:22px; border:1px solid #302d32; background:#121214; }
+.adminApp #settings .applicationNotificationSettings h3 { margin:0 0 12px; color:#e8e1d9; font-size:13px; }
+.adminApp #settings .applicationNotificationSettings p { margin:0; color:#aba5a0; line-height:1.65; overflow-wrap:anywhere; }
+.adminApp #settings .applicationNotificationSettings code { color:#e5ded4; }
+@media (max-width:830px) { .adminApp #settings .shippingFields { grid-template-columns:1fr; } }
+@media (prefers-reduced-motion:reduce) { .adminApp #settings .shippingToggle { transition:none; } }
