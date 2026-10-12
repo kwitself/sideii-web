@@ -315,12 +315,15 @@ export default function FinanceAccountingPanel({products=[]}){
   if(!snapshot||Number(snapshot.snapshot_items)!==items.length||Number(snapshot.vat_verified_items)!==items.length)
    flags.push({record:'ORDER '+o.order_no,reason:'INCOMPLETE VAT ITEM SNAPSHOT',reference:String(o.id)});
  }
- for(const e of feeMatches.filter(x=>x.status!=='REFERENCE + AMOUNT MATCH'))
-  flags.push({record:'PAYMENT FEE',reason:e.status,reference:e.expense.reference||String(e.expense.id)});
+ for(const e of entries.filter(x=>x.category==='payment_fee')){
+  const ref=String(e.reference||'').trim().toLowerCase();
+  const verifiedByReference=ref&&settlements.some(s=>s.currency==='TRY'&&String(s.reference||'').trim().toLowerCase()===ref&&Math.abs(Number(s.fee_amount||0)-Number(e.gross_amount||0))<0.01);
+  if(!verifiedByReference)flags.push({record:'PAYMENT FEE',reason:'NOT REFERENCE-MATCHED TO SETTLEMENT',reference:e.reference||String(e.id)});
+ }
  for(const a of unallocatedPartyEntries)
   flags.push({record:'CURRENT ACCOUNT',reason:'UNALLOCATED '+a.direction.toUpperCase(),reference:a.reference||String(a.id)});
  return flags;
- },[orders,snapshotVat,feeMatches,unallocatedPartyEntries]);
+ },[orders,snapshotVat,entries,settlements,unallocatedPartyEntries]);
  const exportHandoffExceptions=()=>exportCsv('sideii-accountant-handoff-exceptions.csv',['Record','Reason','Source reference'],handoffExceptions.map(x=>[x.record,x.reason,x.reference]));
  const exportHandoffSettlements=()=>exportCsv('sideii-accountant-settlements.csv',['Date','Order ID','Provider','Reference','Gross TRY','Fee TRY','Net TRY','Currency','Verification'],settlements.map(x=>[x.settlement_date,x.order_id,x.provider,x.reference,x.gross_amount,x.fee_amount,x.net_amount,x.currency,'MANUAL - BANK UNVERIFIED']));
  const exportHandoffRefunds=()=>exportCsv('sideii-accountant-refunds.csv',['Date','Order ID','Reference','Reason','Amount','Currency','Verification'],refunds.map(x=>[x.refund_date,x.order_id,x.provider_reference,x.reason,x.amount,x.currency,'MANUAL - PAYMENT UNVERIFIED']));
