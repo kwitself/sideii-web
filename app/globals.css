@@ -7387,3 +7387,17 @@ body>.releaseGalleryLightbox .releaseGalleryLightboxBar button{position:relative
 .globalAccountDrawer .accountProfile,.globalAccountDrawer .accountCollection,.globalAccountDrawer .accountOrders{scroll-margin-top:84px}
 @media(max-width:420px){.globalAccountDrawer .accountQuickNav{gap:5px}.globalAccountDrawer .accountQuickNav button{font-size:9px;letter-spacing:.06em}}
 @media(prefers-reduced-motion:reduce){.globalAccountDrawer .accountQuickNav button{transition:none!important}}
+
+
+/* Account quick navigation: normal flow, never cover profile form controls */
+.globalAccountDrawer .accountQuickNav{
+ position:static!important;
+ top:auto!important;
+ z-index:auto!important;
+ backdrop-filter:none!important;
+}
+.globalAccountDrawer .accountProfile,
+.globalAccountDrawer .accountCollection,
+.globalAccountDrawer .accountOrders{
+ scroll-margin-top:20px!important;
+}
