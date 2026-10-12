@@ -6853,3 +6853,45 @@ footer a:focus-visible,
 .releaseGalleryCarouselThumbs img{display:block;width:100%;height:100%;object-fit:contain}
 @media(max-width:760px){.releaseGalleryCarouselStage{padding:22px 52px;min-height:310px}.releaseGalleryCarouselViewport{min-height:220px}.releaseGalleryCarouselViewport>img{max-height:72vw}.releaseGalleryCarouselArrow{height:40px;width:40px;font-size:29px}.releaseGalleryCarouselArrow.prev{left:6px}.releaseGalleryCarouselArrow.next{right:6px}.releaseGalleryCarouselThumbs button{width:62px;height:62px}}
 @media(prefers-reduced-motion:reduce){.releaseGalleryCarouselViewport>img{animation:none!important}.releaseGalleryCarouselArrow,.releaseGalleryCarouselThumbs button{transition:none!important}}
+
+
+/* PAKET B / Final gallery finish — subtle feather, zoom, lightbox and swipe */
+.productPage .releaseGalleryCarouselStage{overflow:hidden;isolation:isolate}
+.productPage .releaseGalleryCarouselStage::before,.productPage .releaseGalleryCarouselStage::after{
+ content:"";pointer-events:none;position:absolute;z-index:1;top:0;bottom:0;width:clamp(45px,12%,180px);
+}
+.productPage .releaseGalleryCarouselStage::before{left:0;background:linear-gradient(90deg,#0b0a0df2,transparent)}
+.productPage .releaseGalleryCarouselStage::after{right:0;background:linear-gradient(270deg,#0b0a0df2,transparent)}
+.productPage .releaseGalleryCarouselViewport{
+ position:relative;z-index:0;display:flex;align-items:center;justify-content:center;width:100%;min-width:0;min-height:260px;
+ padding:0;border:0;background:transparent;color:inherit;cursor:zoom-in;overflow:visible;
+}
+.productPage .releaseGalleryCarouselViewport>img{display:block;max-width:100%;max-height:clamp(260px,32vw,485px);object-fit:contain;transition:filter .3s ease}
+.productPage .releaseGalleryCarouselViewport:hover>img{filter:brightness(1.08)}
+.productPage .releaseGalleryZoomHint{position:absolute;bottom:10px;right:0;opacity:.65;font:600 9px/1.3 Arial,sans-serif;letter-spacing:.15em;transition:opacity .22s ease}
+.productPage .releaseGalleryCarouselViewport:hover .releaseGalleryZoomHint{opacity:1}
+.productPage .releaseGalleryCarouselArrow{z-index:3}
+.productPage .releaseGalleryCarouselStage:focus-within{border-color:#726571}
+.releaseGalleryLightbox{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;background:#08070aF5;backdrop-filter:blur(18px);animation:releaseGalleryLightboxIn .24s ease both}
+@keyframes releaseGalleryLightboxIn{from{opacity:0}to{opacity:1}}
+.releaseGalleryLightboxBar{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:18px clamp(20px,3vw,54px);border-bottom:1px solid #3d363e;color:#eae1e6;font:18px/1.2 Georgia,serif}
+.releaseGalleryLightboxBar small{font:600 10px/1 Arial,sans-serif;color:#9d939c;letter-spacing:.13em;margin-left:14px}
+.releaseGalleryLightboxBar button{min-width:84px;min-height:44px;padding:0 14px;border:1px solid #645761;background:#1b161d;color:#f1e6ec;font:600 10px/1 Arial,sans-serif;letter-spacing:.12em;cursor:pointer}
+.releaseGalleryLightboxBody{display:grid;grid-template-columns:54px minmax(0,1fr) 54px;align-items:center;gap:clamp(8px,2vw,28px);flex:1;min-height:0;padding:16px clamp(12px,3vw,48px)}
+.releaseGalleryLightboxBody>img{display:block;max-width:100%;max-height:calc(100dvh - 132px);width:auto;height:auto;object-fit:contain;justify-self:center;box-shadow:0 24px 70px #0009}
+.releaseGalleryLightboxBody>img.fromRight{animation:releaseGalleryNext .32s ease both}.releaseGalleryLightboxBody>img.fromLeft{animation:releaseGalleryPrev .32s ease both}
+.releaseGalleryLightboxArrow{width:50px;height:50px;border:1px solid #534753;background:#1b161d;color:#f3e9ef;cursor:pointer;font:36px/1 Georgia,serif;transition:background .2s,border-color .2s}
+.releaseGalleryLightboxArrow:hover,.releaseGalleryLightboxBar button:hover{background:#322833;border-color:#bbacba}
+.releaseGalleryLightbox button:focus-visible{outline:2px solid #e4d2df;outline-offset:3px}
+@media(max-width:760px){
+ .productPage .releaseGalleryCarouselStage::before,.productPage .releaseGalleryCarouselStage::after{width:46px}
+ .productPage .releaseGalleryCarouselViewport{min-height:210px}
+ .releaseGalleryLightboxBody{grid-template-columns:32px minmax(0,1fr) 32px;padding:12px 7px;gap:3px}
+ .releaseGalleryLightboxArrow{width:32px;height:44px;font-size:26px}
+ .releaseGalleryLightboxBar{font-size:14px;padding:12px 14px}
+ .releaseGalleryLightboxBody>img{max-height:calc(100dvh - 110px)}
+}
+@media(prefers-reduced-motion:reduce){
+ .releaseGalleryLightbox,.releaseGalleryLightboxBody>img{animation:none!important}
+ .productPage .releaseGalleryCarouselViewport>img,.productPage .releaseGalleryZoomHint,.releaseGalleryLightboxArrow{transition:none!important}
+}
