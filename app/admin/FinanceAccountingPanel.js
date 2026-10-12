@@ -149,8 +149,14 @@ export default function FinanceAccountingPanel({products=[]}){
   return [...rows.values()].sort((a,b)=>b.month.localeCompare(a.month));
  },[filtered,settings]);
  const exportCsv=(filename,head,rows)=>{
-  const safe=value=>{let v=String(value??'');if(/^[\\s]*[=+@-]/.test(v))v="'"+v;return '"'+v.replaceAll('"','""')+'"'};
-  const content='\\uFEFF'+[head,...rows].map(row=>row.map(safe).join(';')).join('\\r\\n');
+  const safe=value=>{
+   const v=String(value??'');
+   const normalized=v.replace(/^\s+/u,'');
+   const isNumeric=/^-?\d+(?:[.,]\d+)?$/.test(normalized);
+   const escaped=!isNumeric&&/^[=+@-]/.test(normalized)?"'"+v:v;
+   return '"'+escaped.replaceAll('"','""')+'"';
+  };
+  const content='\uFEFF'+[head,...rows].map(row=>row.map(safe).join(';')).join('\r\n');
   const url=URL.createObjectURL(new Blob([content],{type:'text/csv;charset=utf-8'}));
   const a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
  };
