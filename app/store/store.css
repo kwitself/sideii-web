@@ -1929,3 +1929,17 @@
  .storePage .storeDiscoveryControls.mobileExpanded>label{animation:none!important}
  .storePage .storeMobileFilterToggle>span:last-child{transition:none!important}
 }
+
+/* PAKET B / Advanced filters closing motion */
+@keyframes sideiiAdvancedFiltersConceal{
+ from{opacity:1;transform:translateY(0);clip-path:inset(0 0 0 0)}
+ to{opacity:0;transform:translateY(-10px);clip-path:inset(0 0 100% 0)}
+}
+.storePage .storeDiscoveryControls.mobileExpanded.mobileClosing{
+ animation:sideiiAdvancedFiltersConceal 360ms cubic-bezier(.4,0,.6,1) both;
+ pointer-events:none;
+}
+.storePage .storeDiscoveryControls.mobileExpanded.mobileClosing>label{animation:none}
+@media(prefers-reduced-motion:reduce){
+ .storePage .storeDiscoveryControls.mobileExpanded.mobileClosing{animation:none!important}
+}
