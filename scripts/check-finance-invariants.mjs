@@ -1,5 +1,6 @@
 import {readFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
+import {runInNewContext} from 'node:vm';
 
 const panel = readFileSync('app/admin/FinanceAccountingPanel.js','utf8');
 const migrations = readFileSync('supabase/migrations/20261013_finance_invoice_draft_server_validation_v2.sql','utf8');
@@ -35,11 +36,9 @@ assert.ok(panel.includes(".join('\\r\\n')"), 'CSV export must use real CRLF row 
 assert.ok(panel.includes("const isNumeric="), 'CSV exporter should preserve numeric cells');
 assert.ok(panel.includes("const normalized=v.replace("), 'CSV spreadsheet formula prevention missing');
 
-const money = (amount, rate, included) => {
-  const a=Number(amount)||0, r=(Number(rate)||0)/100;
-  const net=included?a/(1+r):a;
-  return {net,vat:net*r,gross:included?a:net*(1+r)};
-};
+const helperSource=panel.match(/^const netVat=.*;$/m)?.[0];
+assert.ok(helperSource,'Production VAT helper not found');
+const money=runInNewContext(helperSource+'\\nnetVat',{Number});
 const near=(actual,expected,label)=>assert.ok(Math.abs(actual-expected)<0.005,`${label}: expected ${expected}, got ${actual}`);
 near(money(120,20,true).net,100,'VAT inclusive net');
 near(money(120,20,true).vat,20,'VAT inclusive amount');
@@ -51,6 +50,6 @@ for(const rate of [0,1,10,20]){
     near(m.net+m.vat,m.gross,`VAT balance rate=${rate}, included=${included}`);
   }
 }
-assert.match(panel,/const netVat=\(amount,rate,included\)/, 'Finance VAT helper has changed; update invariant fixtures');
+assert.equal(typeof money,'function','Real production VAT helper must be callable');
 
 console.log('Finance static invariants verified; these checks are NOT a replacement for build or e2e testing.');
