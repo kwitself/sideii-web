@@ -5760,3 +5760,14 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .adminApp .financeAudit th,.adminApp .financeAudit td{padding:12px;border-bottom:1px solid #303033;text-align:left;font-size:11px}
 .adminApp .financeAudit th{background:#151515;color:#bbb}
 .adminApp .financeAudit td small{display:block;color:#999}
+
+/* Finance navigation / classic SIDE:II */
+.adminApp .financeNavGroups{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0 22px}
+.adminApp .financeNavGroup{border:1px solid #333;background:#101011;padding:13px;min-width:0}
+.adminApp .financeNavGroupLabel{display:block;color:#888;font-size:9px;letter-spacing:.14em;margin-bottom:12px}
+.adminApp .financeNavButtons{display:flex;flex-wrap:wrap;gap:6px}
+.adminApp .financeNavButtons button{border:1px solid #363638;background:#19191a;color:#c2c2c2;padding:10px 11px;min-height:37px;font-size:10px;letter-spacing:.06em;cursor:pointer}
+.adminApp .financeNavButtons button.active{background:#dfdcd7;color:#111;border-color:#dfdcd7}
+.adminApp .financeNavButtons button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media(max-width:1100px){.adminApp .financeNavGroups{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.adminApp .financeNavGroups{grid-template-columns:1fr}}
