@@ -13,23 +13,26 @@ export default function FinanceAccountingPanel({products=[]}){
  const [period,setPeriod]=useState('all');
  const [financeTab,setFinanceTab]=useState('overview');
  const [artistPayments,setArtistPayments]=useState([]);
+ const [snapshotStatus,setSnapshotStatus]=useState(null);
  const [payDraft,setPayDraft]=useState({royalty_rule_id:'',payment_date:new Date().toISOString().slice(0,10),amount:'',payment_method:'bank_transfer',reference:'',notes:''});
  const [costDraft,setCostDraft]=useState({product_id:'',unit_cost:'0',packaging_cost:'0',handling_cost:'0',notes:''});
  async function load(){
   if(!supabase)return;
   setLoading(true);setError('');
-  const [f,o,c,r,ap]=await Promise.all([
+  const [f,o,c,r,ap,snap]=await Promise.all([
    supabase.rpc('admin_finance_read'),
    supabase.from('orders').select('id,order_no,created_at,payment_status,status,total,subtotal,shipping_total,support_total,currency,order_items(variant_id,quantity,line_total,support_amount)').order('created_at',{ascending:false}).limit(1000),
    supabase.rpc('admin_list_product_costs'),
    supabase.rpc('admin_list_royalty_rules'),
-   supabase.rpc('admin_finance_list_artist_payments')
+   supabase.rpc('admin_finance_list_artist_payments'),
+   supabase.rpc('admin_finance_snapshot_status')
   ]);
   if(f.error)setError('Finance: '+f.error.message);else setData(f.data);
   if(o.error)setError(v=>v||'Orders: '+o.error.message);else setOrders(o.data||[]);
   if(c.error)setError(v=>v||'Costs: '+c.error.message);else setCosts(c.data||[]);
   if(r.error)setError(v=>v||'Royalties: '+r.error.message);else setRules(r.data||[]);
   if(ap.error)setError(v=>v||'Artist payments: '+ap.error.message);else setArtistPayments(ap.data||[]);
+  if(snap.error)setError(v=>v||'Snapshots: '+snap.error.message);else setSnapshotStatus(snap.data);
   setLoading(false);
  }
  useEffect(()=>{load()},[]);
@@ -118,6 +121,7 @@ export default function FinanceAccountingPanel({products=[]}){
   {error&&<p className="dbNotice" role="alert">{error}</p>}{message&&<p className="dbNotice" role="status">{message}</p>}
   <div className="financeTop"><div><h2>Numbers, <em>with context.</em></h2><small>Prices and tax rates are configurable. Confirm tax classification and filings with your accountant.</small></div><select style={inputStyle} value={period} onChange={e=>setPeriod(e.target.value)}><option value="all">ALL AVAILABLE</option><option value="30">LAST 30 DAYS</option><option value="90">LAST 90 DAYS</option><option value="365">LAST 365 DAYS</option></select></div>
   <div className="financeHealth" role="status"><strong>ACCOUNTING READINESS</strong><span>{loading?'CHECKING DATA':Number(settings.sales_vat_rate)===0?'SALES VAT NOT CONFIGURED':'VAT RATE CONFIGURED'}</span><span>{costs.length===0?'NO PRODUCT COSTS RECORDED':costs.length+' PRODUCT COST RECORDS'}</span><span>{rules.filter(r=>r.active).length===0?'NO ACTIVE ARTIST RULES':rules.filter(r=>r.active).length+' ARTIST RULES'}</span><small>Figures are estimates using current rates and costs, not finalized statutory accounts.</small></div>
+  {snapshotStatus&&<div className="financeHealth" role="status"><strong>ORDER COST / VAT SNAPSHOTS</strong><span>{snapshotStatus.captured} NEW ITEM RECORDS</span><span>{snapshotStatus.legacy_without_snapshot} HISTORICAL ITEMS NOT BACKFILLED</span><span>{snapshotStatus.cost_missing} MISSING COST</span><span>{snapshotStatus.vat_unconfigured} VAT NOT VERIFIED</span><small>Snapshot records are captured when new order items are inserted. Historic orders remain unchanged. Displayed profit estimates are still calculated separately from current settings.</small></div>}
   <nav className="financeTabs" aria-label="Finance sections">{[['overview','OVERVIEW'],['vat','VAT'],['expenses','EXPENSES'],['costs','PRODUCT COSTS'],['artists','ARTIST ROYALTIES']].map(([id,label])=><button type="button" key={id} className={financeTab===id?'active':''} aria-current={financeTab===id?'page':undefined} onClick={()=>setFinanceTab(id)}>{label}</button>)}</nav>
 {financeTab==='overview'&&<div className="financeKpis">{card('NET SALES (EST.)',calculation.salesNet,'excluding estimated VAT')}{card('OUTPUT VAT',calculation.outputVat+calculation.shippingVat,'sales and shipping')}{card('INPUT VAT (ELIGIBLE)',calculation.inputVat,'recorded expenses')}{card('VAT BALANCE (EST.)',calculation.vatBalance,'negative = potential credit')}{card('OPERATING RESULT',calculation.operatingProfit,'before tax and artist payments')}{card('ARTIST SHARE (EST.)',calculation.artistShare,'product profit basis')}</div>}
   <div className="financeColumns">
