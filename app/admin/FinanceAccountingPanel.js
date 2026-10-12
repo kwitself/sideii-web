@@ -347,6 +347,8 @@ export default function FinanceAccountingPanel({products=[]}){
  if(tax&&!/^\d{10,11}$/.test(tax))issues.push('TAX ID FORMAT REVIEW');
  if(d.document_type==='e_invoice'&&!tax)issues.push('E-INVOICE TAX ID MISSING');
  if(!items.length)issues.push('ITEM VAT SNAPSHOT MISSING');
+ if(order&&items.length!==(order.order_items||[]).length)issues.push('ITEM COUNT MISMATCH');
+ if(items.some(x=>!Number.isFinite(Number(x.quantity))||Number(x.quantity)<=0))issues.push('INVALID ITEM QUANTITY');
  if(items.some(x=>x.vat_rate===null||x.vat_rate===undefined||x.net_estimate===null||x.vat_estimate===null))issues.push('ITEM VAT DETAILS INCOMPLETE');
  issues.push('RECIPIENT GIB REGISTRATION UNVERIFIED','SHIPPING / DISCOUNT / REFUND TAX REVIEW','AUTHORIZED INTEGRATOR NOT CONNECTED');
  return {...d,issues};
