@@ -1892,3 +1892,40 @@
 @media(max-width:390px){
  .storePage .storeDiscoveryControls.mobileExpanded{grid-template-columns:minmax(0,1fr)!important}
 }
+
+
+/* PAKET B / Advanced filters motion — tactile, restrained expansion */
+@keyframes sideiiAdvancedFiltersReveal{
+ from{opacity:0;transform:translateY(-10px);clip-path:inset(0 0 100% 0)}
+ to{opacity:1;transform:translateY(0);clip-path:inset(0 0 0 0)}
+}
+@keyframes sideiiAdvancedFieldReveal{
+ from{opacity:0;transform:translateY(-6px)}
+ to{opacity:1;transform:translateY(0)}
+}
+.storePage .storeDiscoveryControls.mobileExpanded{
+ transform-origin:top center;
+ animation:sideiiAdvancedFiltersReveal 360ms cubic-bezier(.2,.8,.2,1) both;
+}
+.storePage .storeDiscoveryControls.mobileExpanded>label{
+ animation:sideiiAdvancedFieldReveal 260ms ease-out both;
+}
+.storePage .storeDiscoveryControls.mobileExpanded>label:nth-child(n+3){
+ animation-delay:65ms;
+}
+.storePage .storeMobileFilterToggle>span:last-child{
+ display:inline-block;
+ transition:transform 280ms cubic-bezier(.2,.8,.2,1);
+}
+.storePage .storeMobileFilterToggle[aria-expanded="true"]>span:last-child{
+ transform:rotate(180deg);
+}
+.storePage .storeMobileFilterToggle[aria-expanded="true"]{
+ background:#242025;
+ border-color:#827581;
+}
+@media(prefers-reduced-motion:reduce){
+ .storePage .storeDiscoveryControls.mobileExpanded,
+ .storePage .storeDiscoveryControls.mobileExpanded>label{animation:none!important}
+ .storePage .storeMobileFilterToggle>span:last-child{transition:none!important}
+}
