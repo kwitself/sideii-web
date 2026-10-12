@@ -52,4 +52,29 @@ for(const rate of [0,1,10,20]){
 }
 assert.equal(typeof money,'function','Real production VAT helper must be callable');
 
-console.log('Finance static invariants verified; these checks are NOT a replacement for build or e2e testing.');
+
+const csvStart=panel.indexOf('const exportCsv=(filename,head,rows)=>');
+const csvEnd=panel.indexOf(' const downloadExpenses=',csvStart);
+assert.ok(csvStart>=0&&csvEnd>csvStart,'Production CSV exporter not found');
+const blobs=[];
+const csvURL={createObjectURL:(blob)=>{blobs.push(blob);return 'blob:finance-test'},revokeObjectURL:()=>{}};
+const csvDocument={createElement:()=>({click(){},set href(_){},set download(_){}})};
+const csv=runInNewContext(panel.slice(csvStart,csvEnd)+'\nexportCsv',{
+ URL:csvURL,Blob,document:csvDocument,setTimeout:()=>{}
+});
+csv('test.csv',['Name','Amount','Note'],[
+ ['Türkçe',-42,'=SUM(1,2)'],
+ ['Quoted',12.5,'a "quote"'],
+ ['Whitespace',3,'  +evil']
+]);
+assert.equal(blobs.length,1,'Exactly one CSV download should be built');
+const output=await blobs[0].text();
+assert.ok(output.startsWith('\uFEFF'),'CSV must actually begin with a BOM');
+assert.ok(output.includes('\r\n'),'CSV must contain CRLF separators');
+assert.ok(output.includes('Türkçe'),'CSV must preserve Unicode');
+assert.ok(output.includes('"-42"'),'Negative numeric amounts must stay numeric');
+assert.ok(output.includes('"\'=SUM(1,2)"'),'Formula-like cells must be neutralized');
+assert.ok(output.includes('a ""quote""'),'Quotes must be doubled');
+assert.ok(output.includes('"\'  +evil"'),'Leading whitespace must not bypass formula protection');
+
+console.log('Production finance VAT and CSV checks passed; these checks are NOT a replacement for build or e2e testing.');
