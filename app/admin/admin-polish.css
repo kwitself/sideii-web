@@ -188,3 +188,29 @@
  .adminApp .orderList .orderStatusGroup { grid-column:1/-1; grid-row:2; }
  .adminApp .orderList .orderRow > b { grid-column:2; grid-row:1; }
 }
+
+/* Navigation rail — high-contrast, readable compact cards. */
+.adminApp .adminRail { padding:26px 16px 20px; min-width:0; }
+.adminApp .adminBrand { padding:4px 10px 22px; }
+.adminApp .adminNav { gap:4px; padding:18px 2px 12px; min-height:0; flex:1 1 auto; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:#454348 transparent; }
+.adminApp .adminNav a {
+ position:relative; display:flex; align-items:center; gap:12px;
+ flex:0 0 auto; min-height:38px; height:auto; padding:9px 12px;
+ font:500 11px/1.4 Arial,Helvetica,sans-serif; letter-spacing:.035em;
+ color:#b5b0ac; border:1px solid transparent; border-radius:2px; background:transparent;
+}
+.adminApp .adminNav a i { flex:0 0 19px; font:500 9px/1 Arial,sans-serif; letter-spacing:.035em; color:#777278; }
+.adminApp .adminNav a:hover { color:#f0ece6; border-color:#373539; background:#161618; }
+.adminApp .adminNav a.active {
+ color:#f0ebe4; font-weight:600; background:#202023;
+ border-color:#4d494d; box-shadow:inset 2px 0 0 #dbd5ca;
+}
+.adminApp .adminNav a.active i { color:#d8d1c8; }
+.adminApp .adminNav a:focus-visible { outline:2px solid #ded7ce; outline-offset:-2px; }
+.adminApp .railFoot { flex-shrink:0; gap:7px; padding:16px 10px 0; background:#080809; }
+.adminApp .railFoot > span { color:#98938f; font-size:9px; letter-spacing:.13em; }
+.adminApp .railFoot b { color:#cbc5bd; font-size:10px; letter-spacing:.055em; }
+.adminApp .railFoot small { color:#85807f; font-size:9px; letter-spacing:.08em; }
+@media(max-height:760px) { .adminApp .adminRail { padding-top:14px; padding-bottom:12px; } .adminApp .adminBrand { padding-bottom:12px; } .adminApp .adminNav { padding-top:10px; } }
+@media(max-width:800px) { .adminApp .adminRail { padding:20px 14px; } }
+@media(prefers-reduced-motion:reduce){ .adminApp .adminNav a { transition:none; } }
