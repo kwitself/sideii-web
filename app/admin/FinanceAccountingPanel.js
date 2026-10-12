@@ -80,7 +80,7 @@ export default function FinanceAccountingPanel({products=[]}){
     {control('AMOUNT',field(draft.gross_amount,v=>setDraft(d=>({...d,gross_amount:v})),'number',{required:true,min:0,step:.01}))}
     {control('EXPENSE VAT %',field(draft.vat_rate,v=>setDraft(d=>({...d,vat_rate:v})),'number',{min:0,max:100,step:.1}))}
     {control('RELATED PRODUCT',<select style={inputStyle} value={draft.product_id} onChange={e=>setDraft(d=>({...d,product_id:e.target.value}))}><option value="">GENERAL / NONE</option>{products.map(p=><option key={p.id} value={p.id}>{p.title}</option>)}</select>)}
-    {control('INVOICE / REFERENCE',field(draft.reference,v=>setDraft(d=>({...d,reference:v})))}
+    {control('INVOICE / REFERENCE',field(draft.reference,v=>setDraft(d=>({...d,reference:v}))))}
     <label className="financeCheck"><input type="checkbox" checked={draft.vat_included} onChange={e=>setDraft(d=>({...d,vat_included:e.target.checked}))}/> AMOUNT INCLUDES VAT</label>
     <label className="financeCheck"><input type="checkbox" checked={draft.deductible_vat} onChange={e=>setDraft(d=>({...d,deductible_vat:e.target.checked}))}/> DEDUCTIBLE INPUT VAT</label>
    </div><button className="saveButton" disabled={busy||loading}>ADD EXPENSE</button></form>
