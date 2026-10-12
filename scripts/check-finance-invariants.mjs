@@ -12,6 +12,8 @@ for(const marker of [
   "UNISSUED E-INVOICE / E-ARCHIVE DRAFTS",
   "ACCOUNTANT HANDOFF",
   "CASH FORECAST",
+  "EXPORT REVIEW JSON",
+  "UNISSUED_INVOICE_REVIEW_ONLY",
 ]){
   assert.ok(panel.includes(marker), `Missing finance UI invariant: ${marker}`);
 }
