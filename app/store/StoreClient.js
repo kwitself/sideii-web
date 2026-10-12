@@ -207,6 +207,20 @@ export default function StoreClient({releases}){
   minPrice!==''&&{key:'min',label:'MIN · '+minPrice,clear:()=>setMinPrice('')},
   maxPrice!==''&&{key:'max',label:'MAX · '+maxPrice,clear:()=>setMaxPrice('')}
  ].filter(Boolean);
+ const [visibleChips,setVisibleChips]=useState([]);
+ const chipSignature=activeChips.map(chip=>chip.key+'='+chip.label).join('|');
+ useEffect(()=>{
+  const next=activeChips.map(chip=>({...chip,leaving:false}));
+  setVisibleChips(previous=>{
+   const old=new Map(previous.map(chip=>[chip.key,chip]));
+   const entering=next.map(chip=>({...chip,entering:!old.has(chip.key)}));
+   const leaving=previous.filter(chip=>!next.some(item=>item.key===chip.key)).map(chip=>({...chip,leaving:true,entering:false}));
+   return [...entering,...leaving];
+  });
+  const timeout=setTimeout(()=>setVisibleChips(previous=>previous.filter(chip=>!chip.leaving).map(chip=>({...chip,entering:false}))),300);
+  return()=>clearTimeout(timeout);
+ // Deliberately keyed by primitive filter signature, not freshly built chip callbacks.
+ },[chipSignature]);
  const add=(r,v)=>{addCartItem(r,v);window.dispatchEvent(new Event('sideii-open-bag'))};
  const productHref=r=>r.isMerch?('/store/'+r.slug):('/releases/'+r.slug);
  const cardPosition=card=>card?.image_position==='custom'?((card.crop_x??50)+'% '+(card.crop_y??50)+'%'):(card?.image_position||'center');
@@ -242,7 +256,7 @@ export default function StoreClient({releases}){
     <label className={"storeDiscoveryToggle "+(preorderOnly?'active':'')}><input type="checkbox" checked={preorderOnly} onChange={e=>setPreorderOnly(e.target.checked)}/><span>PRE-ORDER ONLY</span></label>
     <label className={"storeDiscoveryToggle "+(limitedOnly?'active':'')}><input type="checkbox" checked={limitedOnly} onChange={e=>setLimitedOnly(e.target.checked)}/><span>LIMITED ONLY</span></label>
    </div>
-   {activeChips.length>0&&<div className="storeActiveFilters">{activeChips.map(chip=><button type="button" key={chip.key} onClick={chip.clear}><span>{chip.label}</span><b>×</b></button>)}</div>}
+   <div className={"storeActiveFilters"+(visibleChips.length?" hasChips":"")} aria-label="Active catalogue filters">{visibleChips.map(chip=><button type="button" key={chip.key} className={chip.leaving?"chipLeaving":"chipEntering"} disabled={chip.leaving} onClick={chip.clear}><span>{chip.label}</span><b>×</b></button>)}</div>
    <div className="storeDiscoveryMeta"><span>{filtered.length} / {uniqueReleases.filter(r=>r.storefrontConfig?.visibility?.store!==false).length} OBJECTS{activeFilterCount?' · '+activeFilterCount+' ACTIVE FILTER'+(activeFilterCount===1?'':'S'):''}{search.trim()?' · SEARCH RANKED':''}</span><button type="button" onClick={resetDiscovery}>RESET DISCOVERY</button></div>
   </section>
   {filter==='lethargia'&&<section className="storeImprintContext shell"><div><small>A SIDE:II IMPRINT</small><img src="/brand/lethargia/lethargia-logo.png" alt="Lethargia Records"/></div><p>Independent editions developed under their own visual and physical logic.</p><Link href="/imprints/lethargia">OPEN IMPRINT ↗</Link></section>}
