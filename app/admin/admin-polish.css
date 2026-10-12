@@ -47,3 +47,48 @@
    .adminApp :is(button,select,input) { touch-action: manipulation; }
  }
 }
+
+/* Admin phase 2: dashboard, catalogue, and order readability */
+@layer sideiiAdmin {
+ .adminApp .adminTop { gap: 20px; }
+ .adminApp .adminTop .topActions { flex-wrap: wrap; align-items: center; }
+ .adminApp .overviewMetricGrid > article {
+   min-width: 0;
+   position: relative;
+   border-color: #343337;
+   background: linear-gradient(155deg,#151517,#0c0c0d);
+ }
+ .adminApp .overviewMetricGrid > article strong { font-variant-numeric: tabular-nums; }
+ .adminApp .overviewMetricGrid > article:hover { border-color: #69646a; }
+ .adminApp .productControlBar { align-items: stretch; gap: 10px; }
+ .adminApp .productControlBar :is(input,select,button) { min-height: 42px; }
+ .adminApp .productControlBar .productSearchWrap { min-width: min(100%,220px); }
+ .adminApp .productPanel { overflow-x: auto; overscroll-behavior-x: contain; scrollbar-color: #48454a #141416; }
+ .adminApp .productPanel :is(.tableHead,.productRow) { min-width: 780px; }
+ .adminApp .productPanel .tableHead { position: sticky; top: 0; z-index: 1; background: #161618; }
+ .adminApp .productPanel :is(.tableHead,.productRow) > * { min-width: 0; }
+ .adminApp .productPanel .productRow:hover { background: #ffffff09; }
+ .adminApp .productPanel .productRow:focus-within { background: #ffffff10; }
+ .adminApp .orderList .orderRow {
+   cursor: pointer;
+   border-bottom: 1px solid #2c2b2e;
+   gap: 16px;
+ }
+ .adminApp .orderList .orderRow:hover { background: #ffffff09; }
+ .adminApp .orderList .orderRow:focus-within { background: #ffffff10; }
+ .adminApp .orderList .orderRow :is(strong,b) { font-variant-numeric: tabular-nums; }
+ .adminApp .orderList .orderRow :is(small,span) { overflow-wrap: anywhere; }
+ .adminApp .bulkActionBar { flex-wrap: wrap; gap: 8px; }
+ .adminApp .sectionLabel { gap: 12px; }
+ @media (max-width: 900px) {
+   .adminApp .adminTop { align-items: flex-start; }
+   .adminApp .adminTop .topActions { justify-content: flex-start; }
+   .adminApp .productControlBar { flex-wrap: wrap; }
+   .adminApp .productControlBar .productSearchWrap { flex: 1 1 260px; }
+ }
+ @media (max-width: 600px) {
+   .adminApp .adminTop .topActions :is(button,a) { min-height: 40px; }
+   .adminApp .orderList .orderRow { padding: 16px; }
+   .adminApp .sectionLabel { align-items: flex-start; flex-direction: column; }
+ }
+}
