@@ -1989,3 +1989,42 @@
  .storePage .storeCatalogue :is(.storeClassicGrid,.storeEditorialList){transition:none!important}
  .storePage .storeCatalogue.storeResultsEntering :is(.storeClassicGrid>.storeClassicCard,.storeEditorialList>.storeProduct){animation:none!important}
 }
+
+
+/* PAKET B / Honest artwork-pending catalogue cards — never fabricate covers */
+.storePage .storeCoverPlaceholder{
+ position:relative;display:flex!important;flex-direction:column;
+ align-items:flex-start!important;justify-content:space-between!important;
+ width:100%!important;height:100%!important;min-height:0;
+ padding:clamp(19px,2.7vw,38px)!important;overflow:hidden;
+ background:radial-gradient(ellipse at 75% 20%,#2c242e 0%,transparent 56%),linear-gradient(145deg,#19171b,#100f12 74%);
+ text-align:left;letter-spacing:normal;
+}
+.storePage .storeCoverPlaceholder::before{
+ content:"";position:absolute;inset:13px;border:1px solid #ffffff17;pointer-events:none;
+}
+.storePage .storeCoverPlaceholder .storePlaceholderImprint{
+ font:600 clamp(10px,.8vw,12px)/1.4 Arial,sans-serif;letter-spacing:.2em;
+ color:#c3b7bf;position:relative;z-index:1;
+}
+.storePage .storeCoverPlaceholder .storePlaceholderTitle{
+ display:block;font:400 clamp(25px,3vw,48px)/1.05 Georgia,serif;
+ letter-spacing:-.045em;color:#f0e6e7;overflow-wrap:anywhere;
+ max-width:95%;position:relative;z-index:1;
+}
+.storePage .storeCoverPlaceholder .storePlaceholderCatalogue{
+ display:block;font:500 clamp(11px,1.1vw,15px)/1.4 Arial,sans-serif;
+ color:#b2a2ab;letter-spacing:.14em;position:relative;z-index:1;
+}
+.storePage .storeCoverPlaceholder .storePlaceholderFoot{
+ display:block;font:600 9px/1.4 Arial,sans-serif;letter-spacing:.15em;
+ color:#797079;position:relative;z-index:1;
+}
+.storePage .storeClassicPlaceholder.storeCoverPlaceholder{font-family:inherit}
+.storePage .storeClassicPlaceholder.storeCoverPlaceholder .storePlaceholderTitle{font-size:clamp(25px,2.5vw,43px)}
+@media(max-width:700px){
+ .storePage .storeCoverPlaceholder{padding:19px!important}
+ .storePage .storeCoverPlaceholder::before{inset:9px}
+ .storePage .storeCoverPlaceholder .storePlaceholderTitle{font-size:clamp(20px,5vw,32px)}
+ .storePage .storeCoverPlaceholder .storePlaceholderFoot{font-size:8px}
+}
