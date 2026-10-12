@@ -202,33 +202,31 @@ export default function StoreClient({releases}){
  const displayedIdentity=displayedRows.map(row=>row.slug||row.id||row.catalogue).join('|');
  useLayoutEffect(()=>{
   const container=catalogueRef.current;
-  if(!container)return;
-  if(previousRects.current&&resultsReordering&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-   container.querySelectorAll('[data-catalogue-key]').forEach(node=>{
-    const old=previousRects.current.get(node.dataset.catalogueKey);
-    if(!old){
-     node.animate([{opacity:0,transform:'translateY(12px) scale(.98)'},{opacity:1,transform:'translateY(0) scale(1)'}],{duration:350,easing:'cubic-bezier(.2,.8,.2,1)'});
-     return;
-    }
-    const next=node.getBoundingClientRect();
-    const dx=old.left-next.left,dy=old.top-next.top;
-    if(Math.abs(dx)+Math.abs(dy)<2)return;
-    node.animate([{transform:`translate(${dx}px,${dy}px)`},{transform:'translate(0,0)'}],{duration:420,easing:'cubic-bezier(.2,.8,.2,1)'});
-   });
-  }
+  const positions=previousRects.current;
+  if(!container||!positions)return;
   previousRects.current=null;
-  return()=>{
-   const positions=new Map();
-   container.querySelectorAll('[data-catalogue-key]').forEach(node=>positions.set(node.dataset.catalogueKey,node.getBoundingClientRect()));
-   previousRects.current=positions;
-  };
- },[displayedIdentity,viewMode,resultsReordering]);
+  if(typeof window==='undefined'||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  container.querySelectorAll('[data-catalogue-key]').forEach(node=>{
+   const old=positions.get(node.dataset.catalogueKey);
+   if(!old){
+    node.animate([{opacity:0,transform:'translateY(12px) scale(.98)'},{opacity:1,transform:'translateY(0) scale(1)'}],{duration:350,easing:'cubic-bezier(.2,.8,.2,1)'});
+    return;
+   }
+   const next=node.getBoundingClientRect();
+   const dx=old.left-next.left,dy=old.top-next.top;
+   if(Math.abs(dx)+Math.abs(dy)<2)return;
+   node.animate([{transform:`translate(${dx}px,${dy}px)`},{transform:'translate(0,0)'}],{duration:520,easing:'cubic-bezier(.2,.8,.2,1)'});
+  });
+ },[displayedIdentity,viewMode]);
  useEffect(()=>{
   const current=displayedRows.map(row=>row.slug||row.id||row.catalogue);
-  const next=sortedFiltered.map(row=>row.slug||row.id||row.catalogue);
   if(current.join('|')===resultIdentity)return;
-  // Keep shared cards mounted between filter changes so FLIP can move them
-  // into their new positions instead of fading out the entire catalogue.
+  // Read card geometry BEFORE React commits the updated list.
+  const positions=new Map();
+  catalogueRef.current?.querySelectorAll('[data-catalogue-key]').forEach(node=>{
+   positions.set(node.dataset.catalogueKey,node.getBoundingClientRect());
+  });
+  previousRects.current=positions;
   setResultsLeaving(false);
   setResultsReordering(true);
   setPresentedRows(sortedFiltered);
