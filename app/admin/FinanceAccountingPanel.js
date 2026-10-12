@@ -15,20 +15,23 @@ export default function FinanceAccountingPanel({products=[]}){
  const [artistPayments,setArtistPayments]=useState([]);
  const [snapshotStatus,setSnapshotStatus]=useState(null);
  const [orderAudit,setOrderAudit]=useState([]);
+ const [paymentAudit,setPaymentAudit]=useState([]);
+ const [paymentFilter,setPaymentFilter]=useState('exceptions');
  const [auditFilter,setAuditFilter]=useState('all');
  const [payDraft,setPayDraft]=useState({royalty_rule_id:'',payment_date:new Date().toISOString().slice(0,10),amount:'',payment_method:'bank_transfer',reference:'',notes:''});
  const [costDraft,setCostDraft]=useState({product_id:'',unit_cost:'0',packaging_cost:'0',handling_cost:'0',notes:''});
  async function load(){
   if(!supabase)return;
   setLoading(true);setError('');
-  const [f,o,c,r,ap,snap,audit]=await Promise.all([
+  const [f,o,c,r,ap,snap,audit,recon]=await Promise.all([
    supabase.rpc('admin_finance_read'),
    supabase.from('orders').select('id,order_no,created_at,payment_status,status,total,subtotal,shipping_total,support_total,currency,order_items(variant_id,quantity,line_total,support_amount)').order('created_at',{ascending:false}).limit(1000),
    supabase.rpc('admin_list_product_costs'),
    supabase.rpc('admin_list_royalty_rules'),
    supabase.rpc('admin_finance_list_artist_payments'),
    supabase.rpc('admin_finance_snapshot_status'),
-   supabase.rpc('admin_finance_order_audit',{p_limit:200})
+   supabase.rpc('admin_finance_order_audit',{p_limit:200}),
+   supabase.rpc('admin_finance_payment_reconciliation',{p_limit:200})
   ]);
   if(f.error)setError('Finance: '+f.error.message);else setData(f.data);
   if(o.error)setError(v=>v||'Orders: '+o.error.message);else setOrders(o.data||[]);
@@ -37,6 +40,7 @@ export default function FinanceAccountingPanel({products=[]}){
   if(ap.error)setError(v=>v||'Artist payments: '+ap.error.message);else setArtistPayments(ap.data||[]);
   if(snap.error)setError(v=>v||'Snapshots: '+snap.error.message);else setSnapshotStatus(snap.data);
   if(audit.error)setError(v=>v||'Audit: '+audit.error.message);else setOrderAudit(audit.data||[]);
+  if(recon.error)setError(v=>v||'Payments audit: '+recon.error.message);else setPaymentAudit(recon.data||[]);
   setLoading(false);
  }
  useEffect(()=>{load()},[]);
@@ -126,7 +130,7 @@ export default function FinanceAccountingPanel({products=[]}){
   <div className="financeTop"><div><h2>Numbers, <em>with context.</em></h2><small>Prices and tax rates are configurable. Confirm tax classification and filings with your accountant.</small></div><select style={inputStyle} value={period} onChange={e=>setPeriod(e.target.value)}><option value="all">ALL AVAILABLE</option><option value="30">LAST 30 DAYS</option><option value="90">LAST 90 DAYS</option><option value="365">LAST 365 DAYS</option></select></div>
   <div className="financeHealth" role="status"><strong>ACCOUNTING READINESS</strong><span>{loading?'CHECKING DATA':Number(settings.sales_vat_rate)===0?'SALES VAT NOT CONFIGURED':'VAT RATE CONFIGURED'}</span><span>{costs.length===0?'NO PRODUCT COSTS RECORDED':costs.length+' PRODUCT COST RECORDS'}</span><span>{rules.filter(r=>r.active).length===0?'NO ACTIVE ARTIST RULES':rules.filter(r=>r.active).length+' ARTIST RULES'}</span><small>Figures are estimates using current rates and costs, not finalized statutory accounts.</small></div>
   {snapshotStatus&&<div className="financeHealth" role="status"><strong>ORDER COST / VAT SNAPSHOTS</strong><span>{snapshotStatus.captured} NEW ITEM RECORDS</span><span>{snapshotStatus.legacy_without_snapshot} HISTORICAL ITEMS NOT BACKFILLED</span><span>{snapshotStatus.cost_missing} MISSING COST</span><span>{snapshotStatus.vat_unconfigured} VAT NOT VERIFIED</span><small>Snapshot records are captured when new order items are inserted. Historic orders remain unchanged. Displayed profit estimates are still calculated separately from current settings.</small></div>}
-  <nav className="financeTabs" aria-label="Finance sections">{[['overview','OVERVIEW'],['vat','VAT'],['expenses','EXPENSES'],['costs','PRODUCT COSTS'],['artists','ARTIST ROYALTIES'],['audit','ORDER AUDIT']].map(([id,label])=><button type="button" key={id} className={financeTab===id?'active':''} aria-current={financeTab===id?'page':undefined} onClick={()=>setFinanceTab(id)}>{label}</button>)}</nav>
+  <nav className="financeTabs" aria-label="Finance sections">{[['overview','OVERVIEW'],['vat','VAT'],['expenses','EXPENSES'],['costs','PRODUCT COSTS'],['artists','ARTIST ROYALTIES'],['audit','ORDER AUDIT'],['reconcile','PAYMENT RECONCILIATION']].map(([id,label])=><button type="button" key={id} className={financeTab===id?'active':''} aria-current={financeTab===id?'page':undefined} onClick={()=>setFinanceTab(id)}>{label}</button>)}</nav>
 {financeTab==='overview'&&<div className="financeKpis">{card('NET SALES (EST.)',calculation.salesNet,'excluding estimated VAT')}{card('OUTPUT VAT',calculation.outputVat+calculation.shippingVat,'sales and shipping')}{card('INPUT VAT (ELIGIBLE)',calculation.inputVat,'recorded expenses')}{card('VAT BALANCE (EST.)',calculation.vatBalance,'negative = potential credit')}{card('OPERATING RESULT',calculation.operatingProfit,'before tax and artist payments')}{card('ARTIST SHARE (EST.)',calculation.artistShare,'product profit basis')}</div>}
   <div className="financeColumns">
    {financeTab==='vat'&&<section className="adminPanel financeBox"><h3>VAT SETTINGS</h3><p>Defaults for estimated reporting only. Not a tax invoice or e-ledger.</p><div className="financeFields">
@@ -177,5 +181,6 @@ export default function FinanceAccountingPanel({products=[]}){
     {orderAudit.length===0&&<p>No order line data available.</p>}
     <small>Showing up to 200 most recent orders with line items. Other currencies are not converted; values are presented in the store's TRY-oriented reporting format.</small>
    </section>}
+  {financeTab==='reconcile'&&<section className="adminPanel financeBox financeAudit"><div className="financeHeading"><h3>PAYMENT RECONCILIATION</h3><select style={inputStyle} value={paymentFilter} onChange={e=>setPaymentFilter(e.target.value)}><option value="exceptions">REVIEW REQUIRED</option><option value="all">ALL ORDERS</option><option value="paid">PAID ORDERS</option></select></div><p>Read-only review of order payment status and provider event records. Provider event totals are not necessarily net settled funds; refunds, fee deductions and event types may require manual review.</p><div className="financeAuditScroll"><table><thead><tr><th>ORDER</th><th>PAYMENT STATUS</th><th>ORDER TOTAL</th><th>EVENTS</th><th>EVENT AMOUNTS</th><th>EVENT TYPES</th><th>REVIEW</th></tr></thead><tbody>{paymentAudit.filter(o=>{const issue=(o.payment_status==='paid'&&Number(o.event_count)===0)||(o.payment_status!=='paid'&&Number(o.event_count)>0)||(['refunded','cancelled'].includes(String(o.order_status).toLowerCase())&&o.payment_status==='paid');return paymentFilter==='all'||(paymentFilter==='paid'&&o.payment_status==='paid')||(paymentFilter==='exceptions'&&issue)}).map(o=>{const missing=o.payment_status==='paid'&&Number(o.event_count)===0,extra=o.payment_status!=='paid'&&Number(o.event_count)>0,conflict=['refunded','cancelled'].includes(String(o.order_status).toLowerCase())&&o.payment_status==='paid';return <tr key={o.order_id}><td><strong>#{o.order_no}</strong><small>{String(o.created_at).slice(0,10)}</small></td><td>{o.payment_status}<small>{o.order_status}</small></td><td>{o.order_total} {o.currency}</td><td>{o.event_count}</td><td>{o.event_amount??'—'} {o.currency}</td><td>{o.event_types||'—'}</td><td>{conflict?'STATUS CONFLICT':missing?'PAID · NO EVENT':extra?'EVENT · NOT PAID':'CHECK EVENT TYPES'}</td></tr>})}</tbody></table></div><small>Limited to the 200 newest orders. This is an exception queue, not a bank settlement or legally finalized accounting report.</small></section>}
  </section>;
 }
