@@ -5747,3 +5747,10 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .adminApp .financeColumns:has(> :only-child){grid-template-columns:1fr}
 @media(max-width:620px){.adminApp .financeTabs{gap:5px}.adminApp .financeTabs button{flex:1 1 42%;font-size:9px;padding:10px 8px}}
 @media(prefers-reduced-motion:reduce){.adminApp .financeTabs button{transition:none}}
+
+/* Finance readiness — monochrome status strip */
+.adminApp .financeHealth{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:13px 15px;margin:14px 0;border:1px solid #363638;background:#111112;color:#b5b5b5}
+.adminApp .financeHealth strong{font:600 10px/1.4 Arial,sans-serif;letter-spacing:.13em;color:#f0eeeb;padding-right:8px}
+.adminApp .financeHealth>span{font:600 10px/1.4 Arial,sans-serif;letter-spacing:.07em;padding-left:14px;border-left:1px solid #3a3a3c}
+.adminApp .financeHealth small{flex-basis:100%;font:10px/1.5 Arial,sans-serif;color:#919193}
+@media(max-width:650px){.adminApp .financeHealth{gap:9px 12px}.adminApp .financeHealth>span{flex-basis:calc(50% - 12px);border-left:0;padding-left:0}}
