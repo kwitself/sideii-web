@@ -1770,3 +1770,40 @@
  .storePage .storeVariant>button,.storePage .storeVariant>.storeVariantView{grid-column:1/-1!important;width:100%;min-height:44px!important;font-size:11px!important;letter-spacing:.1em!important}
  .storePage .storeProduct{padding:28px 0 34px!important}
 }
+
+
+/* PAKET B / Store visual pass 01 — editorial and classic catalogue */
+@media (min-width: 1100px){
+ .storePage .storeClassicGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+ .storePage .storeProduct{grid-template-columns:minmax(210px,290px) minmax(0,1fr);gap:clamp(28px,4vw,68px);padding:34px 0}
+ .storePage .storeProductMeta h2{font-size:clamp(30px,3vw,44px);line-height:1.08;margin:12px 0 24px}
+}
+.storePage .storeClassicCard{border-color:#38353b;background:linear-gradient(160deg,#141316,#0c0b0e);overflow:hidden}
+.storePage .storeClassicMedia{background:radial-gradient(ellipse at 48% 37%,#29252b 0%,#141216 51%,#09090b 100%)}
+.storePage .storeClassicMeta{padding:18px 18px 17px}
+.storePage .storeClassicMeta>small{font-size:10px;line-height:1.5;letter-spacing:.10em;color:#a49ba3}
+.storePage .storeClassicMeta h3{font-size:clamp(21px,1.7vw,29px);line-height:1.12;margin:9px 0 20px}
+.storePage .storeClassicPrice strong{font-size:clamp(21px,1.6vw,27px)}
+.storePage .storeClassicAction :is(a,button){min-height:43px;font-size:10px!important;letter-spacing:.09em}
+.storePage .storeProductMeta>small{color:#b1a9ad;font-size:10px!important;line-height:1.5}
+.storePage .storeProductMeta h2{color:#eee8e0}
+.storePage .storeCover{background:radial-gradient(ellipse at 50% 42%,#211e23,#101013 72%);border:1px solid #353238}
+.storePage .storeVariant{gap:12px;padding:17px 0}
+.storePage .storeVariant div>span{color:#aaa2a9!important;font-size:10px!important;line-height:1.5}
+.storePage .storeVariant :is(button,.storeVariantView){min-height:40px;transition:border-color .2s,color .2s,background .2s}
+.storePage :is(.storeClassicCard,.storeProduct) :is(button,a):focus-visible{outline:2px solid #d6c3c9;outline-offset:3px}
+.storePage .storeDiscoveryTools{border-color:#38343a;background:linear-gradient(135deg,#151317,#0c0b0e)}
+.storePage .storeDiscoveryControls select,.storePage .storeDiscoveryControls input[type="number"]{min-height:43px;font-size:11px!important}
+.storePage .storeSearchField input{min-height:43px;font-size:12px!important}
+@media (max-width:1099px) and (min-width:701px){
+ .storePage .storeClassicGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+ .storePage .storeProduct{grid-template-columns:minmax(160px,32%) minmax(0,1fr);gap:28px}
+}
+@media(max-width:700px){
+ .storePage .storeClassicGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px!important}
+ .storePage .storeClassicMeta{padding:13px}
+ .storePage .storeClassicMeta h3{font-size:20px}
+ .storePage .storeClassicPrice strong{font-size:20px}
+}
+@media(max-width:390px){.storePage .storeClassicGrid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.storePage .storeVariant :is(button,.storeVariantView){transition:none}}
