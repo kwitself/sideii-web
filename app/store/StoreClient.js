@@ -1,7 +1,7 @@
 'use client';
 import GlobalHeader from '../components/GlobalHeader';
 import Link from 'next/link';
-import {useEffect,useLayoutEffect,useMemo,useRef,useState} from 'react';
+import {useEffect,useMemo,useState} from 'react';
 import {supabase} from '../lib/supabase';
 import {addCartItem} from '../lib/cart';
 import {readWishlist,writeWishlist,wishlistItemFromProduct} from '../lib/wishlist';
@@ -194,45 +194,13 @@ export default function StoreClient({releases}){
  },[filtered,sortMode,search]);
  const [presentedRows,setPresentedRows]=useState(null);
  const [resultsLeaving,setResultsLeaving]=useState(false);
- const [resultsReordering,setResultsReordering]=useState(false);
- const catalogueRef=useRef(null);
- const previousRects=useRef(null);
  const resultIdentity=sortedFiltered.map(row=>row.slug||row.id||row.catalogue).join('|');
- const displayedRows=presentedRows??sortedFiltered;
- const displayedIdentity=displayedRows.map(row=>row.slug||row.id||row.catalogue).join('|');
- useLayoutEffect(()=>{
-  const container=catalogueRef.current;
-  const positions=previousRects.current;
-  if(!container||!positions)return;
-  previousRects.current=null;
-  if(typeof window==='undefined'||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-  container.querySelectorAll('[data-catalogue-key]').forEach(node=>{
-   const old=positions.get(node.dataset.catalogueKey);
-   if(!old){
-    node.animate([{opacity:0,transform:'translateY(12px) scale(.98)'},{opacity:1,transform:'translateY(0) scale(1)'}],{duration:350,easing:'cubic-bezier(.2,.8,.2,1)'});
-    return;
-   }
-   const next=node.getBoundingClientRect();
-   const dx=old.left-next.left,dy=old.top-next.top;
-   if(Math.abs(dx)+Math.abs(dy)<2)return;
-   node.getAnimations().forEach(animation=>animation.cancel());
-   node.animate([{transform:`translate3d(${dx}px,${dy}px,0)`},{transform:'translate3d(0,0,0)'}],{duration:620,easing:'cubic-bezier(.22,1,.36,1)'});
-
-  });
- },[displayedIdentity,viewMode]);
  useEffect(()=>{
-  const current=displayedRows.map(row=>row.slug||row.id||row.catalogue);
-  if(current.join('|')===resultIdentity)return;
-  // Read card geometry BEFORE React commits the updated list.
-  const positions=new Map();
-  catalogueRef.current?.querySelectorAll('[data-catalogue-key]').forEach(node=>{
-   positions.set(node.dataset.catalogueKey,node.getBoundingClientRect());
-  });
-  previousRects.current=positions;
-  setResultsLeaving(false);
-  setResultsReordering(true);
-  setPresentedRows(sortedFiltered);
+  setResultsLeaving(true);
+  const timer=setTimeout(()=>{setPresentedRows(sortedFiltered);setResultsLeaving(false)},180);
+  return()=>clearTimeout(timer);
  },[resultIdentity]);
+ const displayedRows=presentedRows??sortedFiltered;
 
  const resetDiscovery=()=>{setFilter('all');setFormatFilter('all');setSearch('');setAvailability('all');setCollectionFilter('all');setCategoryFilter('all');setSizeFilter('all');setColorFilter('all');setLimitedOnly(false);setPreorderOnly(false);setMinPrice('');setMaxPrice('');setSortMode('newest')};
  const activeFilterCount=[filter!=='all',formatFilter!=='all',availability!=='all',collectionFilter!=='all',categoryFilter!=='all',sizeFilter!=='all',colorFilter!=='all',limitedOnly,preorderOnly,minPrice!=='',maxPrice!==''].filter(Boolean).length;
@@ -302,8 +270,8 @@ export default function StoreClient({releases}){
    <div className="storeDiscoveryMeta"><span>{filtered.length} / {uniqueReleases.filter(r=>r.storefrontConfig?.visibility?.store!==false).length} OBJECTS{activeFilterCount?' · '+activeFilterCount+' ACTIVE FILTER'+(activeFilterCount===1?'':'S'):''}{search.trim()?' · SEARCH RANKED':''}</span><button type="button" onClick={resetDiscovery}>RESET DISCOVERY</button></div>
   </section>
   {filter==='lethargia'&&<section className="storeImprintContext shell"><div><small>A SIDE:II IMPRINT</small><img src="/brand/lethargia/lethargia-logo.png" alt="Lethargia Records"/></div><p>Independent editions developed under their own visual and physical logic.</p><Link href="/imprints/lethargia">OPEN IMPRINT ↗</Link></section>}
-  <section className={"storeCatalogue shell "+(viewMode==='classic'?'classicMode':'editorialMode')+(resultsLeaving?" storeResultsLeaving":resultsReordering?" storeResultsReordering":" storeResultsEntering")}>
-   {viewMode==='classic'?<div className="storeClassicGrid" ref={catalogueRef}>{displayedRows.map((r,i)=>{const cfg=r.storefrontConfig||{},card=cfg.card||{},badgeCfg=cfg.badge||{};const variants=r.variants||[];const classicCta=card.classic_cta&&card.classic_cta!=='inherit'?card.classic_cta:card.cta;const secondaryImage=card.secondary_hover===false?null:secondaryImageFor(r);const prices=variants.map(v=>Number(v.price)).filter(Number.isFinite);const minVariantPrice=prices.length?Math.min(...prices):null;const primary=variants.find(v=>v.format==='digital'||v.stock>0||v.preorderEnabled)||variants[0]||{};const soldOut=primary.format!=='digital'&&Number(primary.stock||0)<=0;const canPreorder=soldOut&&primary.preorderEnabled;const multi=variants.length>1;const unavailable=r.status!=='AVAILABLE'||(soldOut&&!canPreorder);const autoBadge=r.status!=='AVAILABLE'?'COMING SOON':canPreorder?'PRE-ORDER':soldOut?'SOLD OUT':primary.editionNumberingEnabled&&primary.editionTotal?'LIMITED':i<2?'NEW':null;const badge=badgeCfg.mode==='none'?null:badgeCfg.mode==='manual'?(badgeCfg.text||null):autoBadge;return <article className={"storeClassicCard title-"+(card.title_scale||'regular')+" "+(card.secondary_mobile?'secondaryMobile ':'')+(card.density==='compact'?"compact ":"")+(r.isMerch?"merch ":"")+(r.imprint==="lethargia"?"lethargia ":"")} key={r.slug} data-catalogue-key={r.slug}>
+  <section className={"storeCatalogue shell "+(viewMode==='classic'?'classicMode':'editorialMode')+(resultsLeaving?" storeResultsLeaving":" storeResultsEntering")}>
+   {viewMode==='classic'?<div className="storeClassicGrid">{displayedRows.map((r,i)=>{const cfg=r.storefrontConfig||{},card=cfg.card||{},badgeCfg=cfg.badge||{};const variants=r.variants||[];const classicCta=card.classic_cta&&card.classic_cta!=='inherit'?card.classic_cta:card.cta;const secondaryImage=card.secondary_hover===false?null:secondaryImageFor(r);const prices=variants.map(v=>Number(v.price)).filter(Number.isFinite);const minVariantPrice=prices.length?Math.min(...prices):null;const primary=variants.find(v=>v.format==='digital'||v.stock>0||v.preorderEnabled)||variants[0]||{};const soldOut=primary.format!=='digital'&&Number(primary.stock||0)<=0;const canPreorder=soldOut&&primary.preorderEnabled;const multi=variants.length>1;const unavailable=r.status!=='AVAILABLE'||(soldOut&&!canPreorder);const autoBadge=r.status!=='AVAILABLE'?'COMING SOON':canPreorder?'PRE-ORDER':soldOut?'SOLD OUT':primary.editionNumberingEnabled&&primary.editionTotal?'LIMITED':i<2?'NEW':null;const badge=badgeCfg.mode==='none'?null:badgeCfg.mode==='manual'?(badgeCfg.text||null):autoBadge;return <article className={"storeClassicCard title-"+(card.title_scale||'regular')+" "+(card.secondary_mobile?'secondaryMobile ':'')+(card.density==='compact'?"compact ":"")+(r.isMerch?"merch ":"")+(r.imprint==="lethargia"?"lethargia ":"")} key={r.slug}>
   <div className="storeClassicMedia">
    {badge&&<span className={"storeClassicBadge "+(badgeCfg.tone||'neutral')+" "+String(badge).toLowerCase().replaceAll(' ','-')}>{badge}</span>}
    {card.wishlist!==false&&<button type="button" className={"storeClassicWish "+(wishlist.some(x=>x.product_slug===r.slug)?"active":"")} aria-label="Toggle wishlist" onClick={()=>toggleWishlist(r)}>{wishlist.some(x=>x.product_slug===r.slug)?'♥':'♡'}</button>}
@@ -315,7 +283,7 @@ export default function StoreClient({releases}){
    <div className="storeClassicPrice">{card.price_mode!=='hidden'&&<strong>{card.price_mode==='from'&&minVariantPrice!=null?'FROM '+fmt(minVariantPrice):(primary.price!=null?fmt(primary.price):'—')}</strong>}{card.stock_mode!=='hidden'&&<span className="storeClassicStock">{stockText(r,primary,card.stock_mode||'quantity')}</span>}{primary.editionNumberingEnabled&&primary.editionTotal&&<span>{primary.editionTotal} EDITION</span>}</div>
    <div className="storeClassicAction">{classicCta==='view'||card.quick_add===false?<Link href={productHref(r)}>VIEW PRODUCT</Link>:classicCta==='options'||multi?<Link href={productHref(r)}>SELECT OPTIONS</Link>:r.status==='AVAILABLE'&&soldOut&&!canPreorder?<Link href={productHref(r)}>{r.commerceConfig?.waitlist===false?'VIEW PRODUCT':'WAITLIST / VIEW'}</Link>:<button type="button" disabled={unavailable} onClick={()=>add(r,primary)}>{r.status!=='AVAILABLE'?'COMING SOON':canPreorder?'PRE-ORDER':'ADD TO BAG'}</button>}</div>
   </div>
- </article>})}</div>:<div className="storeEditorialList" ref={catalogueRef}>{displayedRows.map(r=>{const card=r.storefrontConfig?.card||{};const editorialCta=card.editorial_cta&&card.editorial_cta!=='inherit'?card.editorial_cta:(card.cta==='view'?'view':'quick');const secondaryImage=card.secondary_hover===false?null:secondaryImageFor(r);return <article className={"storeProduct title-"+(card.title_scale||'regular')+" "+(card.secondary_mobile?'secondaryMobile ':'')+(r.isMerch?"merchProduct ":"")+(r.productOrigin==="distributed"?"selectedProduct ":"")+(r.imprint==="lethargia"?"lethargiaProduct":"")} key={r.slug} data-catalogue-key={r.slug}>
+ </article>})}</div>:<div className="storeEditorialList">{displayedRows.map(r=>{const card=r.storefrontConfig?.card||{};const editorialCta=card.editorial_cta&&card.editorial_cta!=='inherit'?card.editorial_cta:(card.cta==='view'?'view':'quick');const secondaryImage=card.secondary_hover===false?null:secondaryImageFor(r);return <article className={"storeProduct title-"+(card.title_scale||'regular')+" "+(card.secondary_mobile?'secondaryMobile ':'')+(r.isMerch?"merchProduct ":"")+(r.productOrigin==="distributed"?"selectedProduct ":"")+(r.imprint==="lethargia"?"lethargiaProduct":"")} key={r.slug}>
     {card.wishlist!==false&&<button type="button" className={"storeWishlistButton "+(wishlist.some(x=>x.product_slug===r.slug)?"active":"")} aria-label="Toggle wishlist" onClick={()=>toggleWishlist(r)}>{wishlist.some(x=>x.product_slug===r.slug)?'♥':'♡'}</button>}
     <Link href={r.isMerch?('/store/'+r.slug):('/releases/'+r.slug)} className={"storeCover "+(secondaryImage?'hasSecondary':'')}>{r.isMerch&&(r.mockups?.front||r.mockups?.back)?<MerchMockupPreview product={r} raster/>:r.cover?<img className="storePrimaryImage" src={r.cover} alt={r.title} style={{objectFit:card.image_fit||'cover',objectPosition:cardPosition(card)}}/>:<span>{r.catalogue}</span>}{secondaryImage&&<img className="storeSecondaryImage" src={secondaryImage} alt="" style={{objectFit:card.image_fit||'cover',objectPosition:cardPosition(card)}}/>}</Link>
     <div className="storeProductMeta">
