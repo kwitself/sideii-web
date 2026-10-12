@@ -7071,3 +7071,59 @@ body>.releaseGalleryLightbox .releaseGalleryLightboxBar button{position:relative
 @media(max-width:360px){
  .productPage .releaseGalleryCarouselStage{padding-left:42px!important;padding-right:42px!important}
 }
+
+
+/* PAKET B / Mobile discovery cards: prevent text overlap on narrow viewports */
+@media(max-width:760px){
+ .productPage .discoveryGrid>.discoveryCard,
+ .productPage .recentGrid>.discoveryCard{
+  display:grid!important;
+  grid-template-columns:76px minmax(0,1fr)!important;
+  align-items:center!important;
+  column-gap:14px!important;
+  row-gap:0!important;
+  padding:12px!important;
+  min-height:102px!important;
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+  text-decoration:none!important;
+ }
+ .productPage .discoveryCard>.discoveryVisual{
+  width:76px!important;height:76px!important;
+  min-width:0!important;min-height:0!important;
+  aspect-ratio:1!important;
+  grid-column:1;
+ }
+ .productPage .discoveryCard>div:not(.discoveryVisual){
+  display:flex!important;flex-direction:column!important;
+  align-items:flex-start!important;justify-content:center!important;
+  gap:5px!important;
+  min-width:0!important;width:100%!important;max-width:100%!important;
+  line-height:normal!important;overflow:hidden;
+ }
+ .productPage .discoveryCard>div:not(.discoveryVisual)>small{
+  display:block!important;width:100%;margin:0!important;
+  font-size:9px!important;line-height:1.35!important;
+  letter-spacing:.1em!important;color:#9a9099!important;
+  white-space:normal!important;overflow-wrap:anywhere!important;
+ }
+ .productPage .discoveryCard>div:not(.discoveryVisual)>h3{
+  display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  width:100%!important;max-width:100%!important;margin:0!important;
+  font-size:clamp(15px,4vw,19px)!important;line-height:1.22!important;
+  white-space:normal!important;overflow:hidden!important;
+  overflow-wrap:anywhere!important;
+ }
+ .productPage .discoveryCard>div:not(.discoveryVisual)>b{
+  display:block!important;width:100%;margin:0!important;
+  font-size:9px!important;line-height:1.35!important;
+  letter-spacing:.09em!important;white-space:normal!important;
+  overflow-wrap:anywhere!important;
+ }
+}
+@media(max-width:380px){
+ .productPage .discoveryGrid>.discoveryCard,
+ .productPage .recentGrid>.discoveryCard{grid-template-columns:68px minmax(0,1fr)!important;column-gap:12px!important}
+ .productPage .discoveryCard>.discoveryVisual{width:68px!important;height:68px!important}
+}
