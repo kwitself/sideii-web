@@ -296,7 +296,11 @@ export default function GlobalAccount(){
      {mode==='signin'&&<button type="button" className="accountTextButton" onClick={resetPassword}>{t('FORGOT PASSWORD?')}</button>}
     </form>
    </div>:<div className="accountBody">
-    <header className="accountIdentity"><b>{displayName}</b><small>{session.user.email}</small></header>
+    <header className="accountIdentity"><b>{displayName}</b><small>{session.user.email}</small></header><nav className="accountQuickNav" aria-label="Account sections">
+     <button type="button" onClick={()=>drawerRef.current?.querySelector('.accountProfile')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})}>PROFILE</button>
+     <button type="button" onClick={()=>drawerRef.current?.querySelector('.accountCollection')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})}>COLLECTION</button>
+     <button type="button" onClick={()=>drawerRef.current?.querySelector('.accountOrders')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})}>ORDERS</button>
+    </nav>
     <form className="accountProfile" onSubmit={saveProfile}>
      <label>{t('FULL NAME')}<input value={profile.full_name} onChange={e=>setProfile({...profile,full_name:e.target.value})}/></label>
      <label>PHONE<input value={profile.phone} onChange={e=>setProfile({...profile,phone:e.target.value})}/></label>
