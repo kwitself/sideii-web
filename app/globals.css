@@ -7275,3 +7275,46 @@ body>.releaseGalleryLightbox .releaseGalleryLightboxBar button{position:relative
  .globalBagDrawer .globalCheckout .checkoutInvoiceType button,
  .globalBagDrawer .globalCheckout .globalBagCheckout{transition:none!important}
 }
+
+
+/* PAKET B / Checkout final panel density, screenshot verified */
+.globalBagDrawer .globalCheckout .checkoutInvoice,
+.globalBagDrawer .globalCheckout .checkoutGift{
+ min-height:0!important;
+ height:auto!important;
+ padding:14px 16px!important;
+ margin:16px 0!important;
+}
+.globalBagDrawer .globalCheckout .checkoutInvoice .checkoutSavedAddressHead,
+.globalBagDrawer .globalCheckout .checkoutGift .checkoutSavedAddressHead{
+ margin:0 0 12px!important;
+ padding-bottom:10px!important;
+}
+.globalBagDrawer .globalCheckout .checkoutInvoiceType{
+ margin:0 0 10px!important;
+ gap:8px!important;
+}
+.globalBagDrawer .globalCheckout .checkoutInvoiceType button{min-height:44px!important}
+.globalBagDrawer .globalCheckout .checkoutInvoiceCheck{
+ display:flex!important;align-items:center!important;gap:10px!important;
+ margin:8px 0 0!important;padding:0!important;
+ min-height:28px!important;line-height:1.4!important;
+}
+.globalBagDrawer .globalCheckout .checkoutInvoiceCheck>span{
+ font-size:10px!important;line-height:1.45!important;
+ letter-spacing:.09em!important;white-space:normal;
+}
+.globalBagDrawer .globalCheckout .checkoutInvoiceCheck>input[type=checkbox]{
+ width:15px!important;height:15px!important;flex:none;
+}
+.globalBagDrawer .globalCheckout .checkoutGift:has(.checkoutInvoiceCheck input:checked),
+.globalBagDrawer .globalCheckout .checkoutInvoice:has(.checkoutInvoiceType button.active:last-child){
+ padding-bottom:18px!important;
+}
+.globalBagDrawer .globalCheckout .checkoutStoreValue{
+ min-height:0!important;height:auto!important;
+}
+@media(max-width:760px){
+ .globalBagDrawer .globalCheckout .checkoutInvoice,
+ .globalBagDrawer .globalCheckout .checkoutGift{padding:14px!important}
+}
