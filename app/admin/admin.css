@@ -5754,3 +5754,9 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 .adminApp .financeHealth>span{font:600 10px/1.4 Arial,sans-serif;letter-spacing:.07em;padding-left:14px;border-left:1px solid #3a3a3c}
 .adminApp .financeHealth small{flex-basis:100%;font:10px/1.5 Arial,sans-serif;color:#919193}
 @media(max-width:650px){.adminApp .financeHealth{gap:9px 12px}.adminApp .financeHealth>span{flex-basis:calc(50% - 12px);border-left:0;padding-left:0}}
+
+.adminApp .financeAuditScroll{overflow-x:auto;max-width:100%;border:1px solid #333}
+.adminApp .financeAudit table{width:100%;min-width:850px;border-collapse:collapse}
+.adminApp .financeAudit th,.adminApp .financeAudit td{padding:12px;border-bottom:1px solid #303033;text-align:left;font-size:11px}
+.adminApp .financeAudit th{background:#151515;color:#bbb}
+.adminApp .financeAudit td small{display:block;color:#999}
