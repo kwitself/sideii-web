@@ -5723,3 +5723,16 @@ button:disabled{cursor:not-allowed!important;opacity:.48}
 @media(max-width:1000px){.adminApp .financeColumns{grid-template-columns:1fr}.adminApp .financeKpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.adminApp .financeTop{flex-direction:column;align-items:stretch}.adminApp .financeTop select{max-width:none}.adminApp .financeKpis{grid-template-columns:1fr}.adminApp .financeFields{grid-template-columns:1fr}.adminApp .financeBox{padding:16px}.adminApp .financeLedger>div{grid-template-columns:minmax(0,1fr) auto}.adminApp .financeLedger button{grid-column:1 / -1;justify-self:start}}
 @media(prefers-reduced-motion:reduce){.adminApp .financeLedger button{transition:none!important}}
+
+/* Finance phase 2 — monthly overview and export controls */
+.adminApp .financeHeading{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.adminApp .financeHeading h3{font:400 24px Georgia,serif;margin:0;color:#e5dbe2}
+.adminApp .financeHeading button{padding:10px 14px;min-height:40px;border:1px solid #6c5e6a;background:#201b22;color:#e6d9e2;font:600 10px Arial,sans-serif;letter-spacing:.1em;cursor:pointer}
+.adminApp .financeHeading button:hover{background:#342936}
+.adminApp .financeMonthly{display:grid;gap:8px}
+.adminApp .financeMonthly>div{display:grid;grid-template-columns:100px 1fr 1.2fr 1.2fr 1.2fr 1.35fr;align-items:center;gap:12px;padding:17px 12px;border:1px solid #39313b;background:#151218}
+.adminApp .financeMonthly b{font:18px Georgia,serif;color:#f0e8eb}
+.adminApp .financeMonthly span,.adminApp .financeMonthly strong{font:11px/1.5 Arial,sans-serif;color:#c8bcc6}
+.adminApp .financeMonthly strong{color:#f2e8ef;text-align:right}
+@media(max-width:1100px){.adminApp .financeMonthly>div{grid-template-columns:repeat(3,minmax(0,1fr))}.adminApp .financeMonthly strong{text-align:left}}
+@media(max-width:620px){.adminApp .financeMonthly>div{grid-template-columns:repeat(2,minmax(0,1fr))}}
