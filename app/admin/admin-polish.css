@@ -1,0 +1,49 @@
+/* SIDE:II Admin UI — focused accessibility and surface polish; existing layout stays intact. */
+@layer sideiiAdmin {
+ .adminApp { color-scheme: dark; }
+ .adminApp :is(button, a, input, select, textarea, [role="button"]) {
+   transition: background-color .16s ease, color .16s ease, border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+ }
+ .adminApp :is(button, a, input, select, textarea, [role="button"]):focus-visible {
+   outline: 2px solid #d5d1c8;
+   outline-offset: 3px;
+ }
+ .adminApp :is(button,[role="button"]):disabled {
+   opacity: .45;
+   cursor: not-allowed;
+   transform: none;
+ }
+ .adminApp :is(button,[role="button"]):not(:disabled):active { transform: translateY(1px); }
+ .adminApp :is(input,select,textarea):not(:disabled):hover { border-color: #666167; }
+ .adminApp :is(input,select,textarea):not(:disabled):focus-visible {
+   border-color: #c5bfb5;
+   box-shadow: 0 0 0 2px #c5bfb523;
+ }
+ .adminApp :is(.adminPanel,.financeBox) { min-width: 0; }
+ .adminApp :is(.adminPanel,.financeBox) :is(table) {
+   border-collapse: collapse;
+   font-variant-numeric: tabular-nums;
+ }
+ .adminApp :is(.adminPanel,.financeBox) :is(th,td) {
+   vertical-align: middle;
+ }
+ .adminApp :is(.adminPanel,.financeBox) tbody tr:hover { background: #ffffff08; }
+ .adminApp :is(.adminPanel,.financeBox) tbody tr:focus-within { background: #ffffff0e; }
+ .adminApp :is(.adminPanel,.financeBox) th {
+   color: #aaa6a0;
+   font-weight: 600;
+   letter-spacing: .055em;
+ }
+ .adminApp :is(.adminPanel,.financeBox) :is(td,th) {
+   overflow-wrap: anywhere;
+ }
+ .adminApp :is(.saveButton):not(:disabled):hover { background: #efebe2; border-color: #efebe2; }
+ @media (prefers-reduced-motion: reduce) {
+   .adminApp :is(button,a,input,select,textarea,[role="button"]) { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+ }
+ @media (max-width: 760px) {
+   .adminApp :is(.adminPanel,.financeBox) { max-width: 100%; }
+   .adminApp :is(.financeAuditScroll) { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+   .adminApp :is(button,select,input) { touch-action: manipulation; }
+ }
+}
