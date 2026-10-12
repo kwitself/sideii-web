@@ -140,3 +140,23 @@
 .adminApp .productPanel .productRow { min-height:76px; }
 .adminApp .productPanel { overflow-x:auto; }
 .adminApp .productControlBar :is(input,select) { font-size:12px; min-height:42px; }
+
+/* Product actions: real row buttons override legacy 8px admin rules. */
+.adminApp .productPanel .productRow { grid-template-columns: minmax(240px,2fr) minmax(100px,.7fr) minmax(115px,.9fr) minmax(85px,.55fr) minmax(65px,.4fr) minmax(440px,2fr); min-width:1160px; }
+.adminApp .productPanel .tableHead { grid-template-columns: minmax(240px,2fr) minmax(100px,.7fr) minmax(115px,.9fr) minmax(85px,.55fr) minmax(65px,.4fr) minmax(440px,2fr); min-width:1160px; }
+.adminApp .productPanel .productRow .rowActions { display:flex; align-items:center; flex-wrap:wrap; gap:6px; padding-block:8px; }
+.adminApp .productPanel .productRow .rowActions :is(button,a) {
+ display:inline-flex; align-items:center; justify-content:center;
+ min-height:32px; padding:7px 10px; font:500 10px/1.25 Arial,Helvetica,sans-serif;
+ letter-spacing:.035em; border:1px solid #414045; color:#d8d3cd;
+ background:#171719; text-decoration:none; opacity:1; white-space:nowrap;
+}
+.adminApp .productPanel .productRow .rowActions :is(button,a):hover { background:#27272a; border-color:#928b84; color:#fff; }
+.adminApp .productPanel .productRow .rowActions .deleteReleaseButton { color:#db9b9b; border-color:#644141; }
+.adminApp .productPanel .productRow .rowActions .deleteReleaseButton:hover { background:#402325; color:#fff; }
+.adminApp .productPanel .productRow .editionCell { min-width:0; }
+.adminApp .productPanel .productRow .editionCell :is(strong,b) { color:#ebe5dd; font-size:13px; }
+.adminApp .productPanel .productRow .editionCell small { color:#a19b98; font-size:10px; }
+@media (max-width:1240px) {
+ .adminApp .productPanel { overflow-x:auto; }
+}
