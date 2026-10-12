@@ -6829,3 +6829,27 @@ footer a:focus-visible,
 @media(prefers-reduced-motion:reduce){
  .productPage .releaseGallery>div:not(:has(>img:only-child))>img{transition:none!important}
 }
+
+
+/* PAKET B / Release gallery carousel — centered with soft directional transitions */
+.releaseGalleryCarousel{padding:clamp(34px,4vw,62px) 0 clamp(44px,5vw,76px);border-top:1px solid #29262c}
+.releaseGalleryCarouselHeading{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.releaseGalleryCarouselHeading>span,.releaseGalleryCarouselHeading>small{font:600 10px/1.4 Arial,sans-serif;letter-spacing:.17em;color:#a69da5}
+.releaseGalleryCarouselStage{position:relative;display:flex;align-items:center;justify-content:center;min-height:clamp(300px,36vw,540px);padding:26px 74px;border:1px solid #302b32;background:radial-gradient(ellipse at 50% 40%,#1b171c,#0b0a0d 70%)}
+.releaseGalleryCarouselViewport{display:flex;align-items:center;justify-content:center;width:100%;min-width:0;min-height:260px}
+.releaseGalleryCarouselViewport>img{display:block;width:auto;max-width:100%;height:auto;max-height:clamp(265px,32vw,485px);object-fit:contain;box-shadow:0 22px 46px #0006}
+@keyframes releaseGalleryNext{from{opacity:0;transform:translateX(18px) scale(.985)}to{opacity:1;transform:translateX(0) scale(1)}}
+@keyframes releaseGalleryPrev{from{opacity:0;transform:translateX(-18px) scale(.985)}to{opacity:1;transform:translateX(0) scale(1)}}
+.releaseGalleryCarouselViewport>img.fromRight{animation:releaseGalleryNext .35s cubic-bezier(.22,1,.36,1) both}
+.releaseGalleryCarouselViewport>img.fromLeft{animation:releaseGalleryPrev .35s cubic-bezier(.22,1,.36,1) both}
+.releaseGalleryCarouselArrow{position:absolute;top:50%;transform:translateY(-50%);z-index:2;display:flex;justify-content:center;align-items:center;width:48px;height:48px;border:1px solid #564e57;background:#121015e8;color:#eee4e8;font:36px/1 Georgia,serif;cursor:pointer;transition:background .22s,border-color .22s,color .22s}
+.releaseGalleryCarouselArrow.prev{left:18px}.releaseGalleryCarouselArrow.next{right:18px}
+.releaseGalleryCarouselArrow:hover{background:#292329;border-color:#d5c5cd;color:#fff}
+.releaseGalleryCarouselArrow:focus-visible,.releaseGalleryCarouselThumbs button:focus-visible,.releaseGalleryCarouselStage:focus-visible{outline:2px solid #e2ced6;outline-offset:3px}
+.releaseGalleryCarouselThumbs{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;margin-top:18px}
+.releaseGalleryCarouselThumbs button{width:76px;height:76px;padding:4px;border:1px solid #3c363e;background:#121014;opacity:.58;cursor:pointer;transition:opacity .22s,border-color .22s,transform .22s}
+.releaseGalleryCarouselThumbs button.active{opacity:1;border-color:#d2c6cf;transform:translateY(-2px)}
+.releaseGalleryCarouselThumbs button:hover{opacity:1;border-color:#90818e}
+.releaseGalleryCarouselThumbs img{display:block;width:100%;height:100%;object-fit:contain}
+@media(max-width:760px){.releaseGalleryCarouselStage{padding:22px 52px;min-height:310px}.releaseGalleryCarouselViewport{min-height:220px}.releaseGalleryCarouselViewport>img{max-height:72vw}.releaseGalleryCarouselArrow{height:40px;width:40px;font-size:29px}.releaseGalleryCarouselArrow.prev{left:6px}.releaseGalleryCarouselArrow.next{right:6px}.releaseGalleryCarouselThumbs button{width:62px;height:62px}}
+@media(prefers-reduced-motion:reduce){.releaseGalleryCarouselViewport>img{animation:none!important}.releaseGalleryCarouselArrow,.releaseGalleryCarouselThumbs button{transition:none!important}}
