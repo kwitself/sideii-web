@@ -1,5 +1,6 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
+import {createPortal} from 'react-dom';
 
 export default function ReleaseGalleryCarousel({images=[],title='Release'}){
  const gallery=images.filter(Boolean);
@@ -7,6 +8,8 @@ export default function ReleaseGalleryCarousel({images=[],title='Release'}){
  const [active,setActive]=useState(0);
  const [direction,setDirection]=useState(1);
  const [lightbox,setLightbox]=useState(false);
+ const [mounted,setMounted]=useState(false);
+ useEffect(()=>setMounted(true),[]);
  const touchStart=useRef(null);
  const closeButton=useRef(null);
  const opener=useRef(null);
@@ -15,7 +18,9 @@ export default function ReleaseGalleryCarousel({images=[],title='Release'}){
  useEffect(()=>{
   if(!lightbox)return;
   const previousOverflow=document.body.style.overflow;
+  const previousHtmlOverflow=document.documentElement.style.overflow;
   document.body.style.overflow='hidden';
+  document.documentElement.style.overflow='hidden';
   closeButton.current?.focus();
   const key=e=>{
    if(e.key==='Escape'){e.preventDefault();setLightbox(false)}
@@ -30,7 +35,7 @@ export default function ReleaseGalleryCarousel({images=[],title='Release'}){
    }
   };
   window.addEventListener('keydown',key);
-  return()=>{window.removeEventListener('keydown',key);document.body.style.overflow=previousOverflow;opener.current?.focus()};
+  return()=>{window.removeEventListener('keydown',key);document.body.style.overflow=previousOverflow;document.documentElement.style.overflow=previousHtmlOverflow;opener.current?.focus()};
  },[lightbox,count]);
  if(!count)return null;
  const prev=()=>{setDirection(-1);setActive(i=>(i-1+count)%count)};
@@ -49,13 +54,13 @@ export default function ReleaseGalleryCarousel({images=[],title='Release'}){
    </div>
    {count>1&&<div className="releaseGalleryCarouselThumbs" aria-label="Choose image">{gallery.map((src,i)=><button type="button" key={src+'-'+i} className={i===current?'active':''} aria-label={'View image '+(i+1)} aria-current={i===current?'true':undefined} onClick={()=>go(i)}><img src={src} alt="" loading="lazy"/></button>)}</div>}
   </section>
-  {lightbox&&<div className="releaseGalleryLightbox" role="dialog" aria-modal="true" aria-label={title+' image viewer'} onMouseDown={e=>{if(e.target===e.currentTarget)setLightbox(false)}} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+  {mounted&&lightbox&&createPortal(<div className="releaseGalleryLightbox" role="dialog" aria-modal="true" aria-label={title+' image viewer'} onMouseDown={e=>{if(e.target===e.currentTarget)setLightbox(false)}} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
    <div className="releaseGalleryLightboxBar"><span>{title} <small>{current+1} / {count}</small></span><button ref={closeButton} type="button" onClick={()=>setLightbox(false)} aria-label="Close full-screen gallery">CLOSE ×</button></div>
    <div className="releaseGalleryLightboxBody">
     {count>1&&<button type="button" className="releaseGalleryLightboxArrow" onClick={prev} aria-label="Previous image">‹</button>}
     <img key={gallery[current]} className={direction<0?'fromLeft':'fromRight'} src={gallery[current]} alt={title+' enlarged detail '+(current+1)} />
     {count>1&&<button type="button" className="releaseGalleryLightboxArrow" onClick={next} aria-label="Next image">›</button>}
    </div>
-  </div>}
+  </div>,document.body)}
  </>;
 }
