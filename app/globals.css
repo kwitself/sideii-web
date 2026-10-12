@@ -6895,3 +6895,32 @@ footer a:focus-visible,
  .releaseGalleryLightbox,.releaseGalleryLightboxBody>img{animation:none!important}
  .productPage .releaseGalleryCarouselViewport>img,.productPage .releaseGalleryZoomHint,.releaseGalleryLightboxArrow{transition:none!important}
 }
+
+
+/* Gallery lightbox portal hardening: truly viewport-fixed, above global header/bag */
+body>.releaseGalleryLightbox{
+ position:fixed!important;inset:0!important;z-index:2147483000!important;
+ width:100vw!important;height:100dvh!important;max-width:none!important;
+ margin:0!important;padding:0!important;box-sizing:border-box!important;
+ display:flex!important;flex-direction:column!important;overflow:hidden!important;
+ background:rgba(7,6,9,.975)!important;
+}
+body>.releaseGalleryLightbox .releaseGalleryLightboxBar{
+ flex:0 0 auto!important;min-height:64px;box-sizing:border-box;
+ position:relative;z-index:2;
+}
+body>.releaseGalleryLightbox .releaseGalleryLightboxBody{
+ flex:1 1 auto!important;min-height:0!important;width:100%!important;
+ display:grid!important;grid-template-columns:54px minmax(0,1fr) 54px!important;
+ align-items:center!important;justify-items:center!important;box-sizing:border-box;
+}
+body>.releaseGalleryLightbox .releaseGalleryLightboxBody>img{
+ grid-column:2;max-width:100%!important;max-height:calc(100dvh - 110px)!important;
+ justify-self:center!important;align-self:center!important;
+}
+body>.releaseGalleryLightbox .releaseGalleryLightboxBody>.releaseGalleryLightboxArrow:first-child{grid-column:1}
+body>.releaseGalleryLightbox .releaseGalleryLightboxBody>.releaseGalleryLightboxArrow:last-child{grid-column:3}
+body>.releaseGalleryLightbox .releaseGalleryLightboxBar button{position:relative;z-index:4}
+@media(max-width:760px){
+ body>.releaseGalleryLightbox .releaseGalleryLightboxBody{grid-template-columns:38px minmax(0,1fr) 38px!important}
+}
