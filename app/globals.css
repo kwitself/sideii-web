@@ -7127,3 +7127,51 @@ body>.releaseGalleryLightbox .releaseGalleryLightboxBar button{position:relative
  .productPage .recentGrid>.discoveryCard{grid-template-columns:68px minmax(0,1fr)!important;column-gap:12px!important}
  .productPage .discoveryCard>.discoveryVisual{width:68px!important;height:68px!important}
 }
+
+
+/* PAKET B / Bag + checkout — premium clarity without changing commerce logic */
+.globalBagDrawer>.globalBagItems{margin-top:24px!important}
+.globalBagDrawer .globalBagItems article{
+ border-bottom:1px solid #373139!important;
+ gap:14px!important;align-items:start;
+ transition:background .23s ease,border-color .23s ease;
+}
+.globalBagDrawer .globalBagItems article:hover{background:#ffffff04;border-bottom-color:#756674!important}
+.globalBagDrawer .globalBagItems article>div{min-width:0}
+.globalBagDrawer .globalBagItems article>div>b{
+ display:block;font-size:clamp(15px,1.1vw,19px)!important;
+ line-height:1.24!important;overflow-wrap:anywhere;white-space:normal;
+}
+.globalBagDrawer .globalBagItems article>div>small{
+ display:block;margin-top:5px;line-height:1.55!important;
+ color:#b6aab3!important;overflow-wrap:anywhere;
+}
+.globalBagDrawer .globalBagItems article>strong{
+ font-size:clamp(14px,1.1vw,18px)!important;
+ font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+.globalBagDrawer .globalBagActions{gap:12px;margin-top:14px}
+.globalBagDrawer .globalBagQty{min-height:38px;align-items:center}
+.globalBagDrawer .globalBagQty button{min-width:37px;min-height:37px;transition:background .2s,border-color .2s}
+.globalBagDrawer .globalBagQty button:hover:not(:disabled){background:#242027;border-color:#9c8a97}
+.globalBagDrawer .globalBagRemove{min-height:37px;transition:color .2s,border-color .2s}
+.globalBagDrawer .globalCheckout h3{letter-spacing:-.035em!important;line-height:1.08!important}
+.globalBagDrawer .globalCheckout :is(input:not([type=checkbox]),select,textarea){transition:border-color .22s,background .22s}
+.globalBagDrawer .globalCheckout :is(input:not([type=checkbox]),select,textarea):focus-visible{
+ outline:2px solid #b4a0af;outline-offset:1px;border-color:#c7b6c2!important;
+}
+.globalBagDrawer .checkoutSummaryItem{gap:12px;align-items:start}
+.globalBagDrawer .checkoutSummaryItem>span{min-width:0;overflow-wrap:anywhere;line-height:1.5}
+.globalBagDrawer .checkoutSummaryItem>strong{white-space:nowrap;font-variant-numeric:tabular-nums}
+@media(max-width:760px){
+ .globalBagDrawer .globalBagItems article{grid-template-columns:62px minmax(0,1fr)!important;gap:12px!important;padding:18px 0!important}
+ .globalBagDrawer .globalBagItems article>img{width:62px!important;height:62px!important;object-fit:contain}
+ .globalBagDrawer .globalBagItems article>strong{grid-column:2;justify-self:start;margin-top:0!important}
+ .globalBagDrawer .globalBagItems article>div>b{font-size:17px!important}
+ .globalBagDrawer .globalBagQty button{min-width:44px;min-height:44px}
+ .globalBagDrawer .globalBagRemove{min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){
+ .globalBagDrawer .globalBagItems article,.globalBagDrawer .globalBagQty button,
+ .globalBagDrawer .globalBagRemove,.globalBagDrawer .globalCheckout :is(input,select,textarea){transition:none!important}
+}
