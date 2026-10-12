@@ -38,7 +38,7 @@ assert.ok(panel.includes("const normalized=v.replace("), 'CSV spreadsheet formul
 
 const helperSource=panel.match(/^const netVat=.*;$/m)?.[0];
 assert.ok(helperSource,'Production VAT helper not found');
-const money=runInNewContext(helperSource+'\\nnetVat',{Number});
+const money=runInNewContext(helperSource+'\nnetVat',{Number});
 const near=(actual,expected,label)=>assert.ok(Math.abs(actual-expected)<0.005,`${label}: expected ${expected}, got ${actual}`);
 near(money(120,20,true).net,100,'VAT inclusive net');
 near(money(120,20,true).vat,20,'VAT inclusive amount');
