@@ -22,6 +22,7 @@ import LocalizationOpsPanel from './LocalizationOpsPanel';
 import FulfillmentMediaOpsPanel from './FulfillmentMediaOpsPanel';
 import LaunchReadinessPanel from './LaunchReadinessPanel';
 import AdminAnalyticsPanel from './AdminAnalyticsPanel';
+import FinanceAccountingPanel from './FinanceAccountingPanel';
 import WearOpsPanel from './WearOpsPanel';
 import MerchMockupPreview from '../components/MerchMockupPreview';
 import {evaluateProductQa} from '../lib/productQa';
@@ -83,7 +84,7 @@ export default function AdminDashboard(){
  useEffect(()=>{load()},[load]);
  useEffect(()=>{if(!selectedOrder){document.body.classList.remove('sideii-admin-modal-open');return}const onKey=e=>{if(e.key==='Escape')setSelectedOrder(null)};document.body.classList.add('sideii-admin-modal-open');window.addEventListener('keydown',onKey);return()=>{document.body.classList.remove('sideii-admin-modal-open');window.removeEventListener('keydown',onKey)}},[selectedOrder]);
  useEffect(()=>{
-  const allowed=new Set(['overview','products','preview','merchandising','orders','inventory','customers','commerce','catalogue','growth','impact','fulfillment','localization','settings','launch','seo','emails']);
+  const allowed=new Set(['overview','products','preview','merchandising','orders','inventory','customers','commerce','catalogue','growth','impact','fulfillment','localization','settings','launch','seo','emails','finance']);
   const initial=String(window.location.hash||'').replace('#','');
   if(allowed.has(initial))setActiveView(initial);
   const onView=e=>{if(allowed.has(e?.detail))setActiveView(e.detail)};
@@ -301,7 +302,7 @@ export default function AdminDashboard(){
 {activeView==='commerce'&&<div className="adminModuleStack"><DiscountsPanel/><CommerceOpsPanel products={products} onChanged={load}/><CommerceExpansionPanel products={products}/><ValueOpsPanel/></div>}
 {activeView==='settings'&&<section id="settings" className="adminSection adminSectionStandalone"><div className="lowerGrid singleAdminCard"><article><span>08 / SETTINGS</span><h2>Store<br/><em>configuration.</em></h2><p>Shipping settings and server-side production application delivery.</p><form className="shippingSettings" onSubmit={saveShippingSettings}><label className="shippingToggle"><input type="checkbox" checked={!!shippingSettings.enabled} onChange={e=>setShippingSettings({...shippingSettings,enabled:e.target.checked})}/><span>SHIPPING CALCULATION ACTIVE</span></label><label className="shippingToggle internationalToggle"><input type="checkbox" checked={!!shippingSettings.international_enabled} onChange={e=>setShippingSettings({...shippingSettings,international_enabled:e.target.checked})}/><span>INTERNATIONAL SALES / SHIPPING</span></label><div className="shippingFields"><label><span>CD / CASSETTE RATE · ₺</span><input type="number" min="0" step="0.01" inputMode="decimal" value={shippingSettings.standard_rate} onChange={e=>setShippingSettings({...shippingSettings,standard_rate:e.target.value})}/></label><label><span>VINYL RATE · ₺</span><input type="number" min="0" step="0.01" inputMode="decimal" value={shippingSettings.vinyl_rate} onChange={e=>setShippingSettings({...shippingSettings,vinyl_rate:e.target.value})}/></label><label><span>FREE SHIPPING FROM · ₺</span><input type="number" min="0" step="0.01" inputMode="decimal" placeholder="NO THRESHOLD" value={shippingSettings.free_shipping_threshold} onChange={e=>setShippingSettings({...shippingSettings,free_shipping_threshold:e.target.value})}/></label></div><button className="saveButton" disabled={shippingSaving}>{shippingSaving?'SAVING…':'SAVE SHIPPING'}</button></form><div className="shippingSettings applicationNotificationSettings"><h3>PRODUCTION APPLICATIONS</h3><p>Application recipient is server-only. Configure <code>SIDEII_APPLICATION_TO</code> in the server environment and verify it in Launch Readiness.</p></div></article></div></section>}
 {activeView==='impact'&&<div className="adminModuleStack"><ImpactPanel products={products}/></div>}
-{activeView==='catalogue'&&<div className="adminModuleStack"><CatalogueOpsPanel products={products}/></div>}
+{activeView==='finance'&&<FinanceAccountingPanel products={products}/>}{activeView==='catalogue'&&<div className="adminModuleStack"><CatalogueOpsPanel products={products}/></div>}
 {activeView==='growth'&&<div className="adminModuleStack"><GrowthOpsPanel products={products}/></div>}
 {activeView==='localization'&&<div className="adminModuleStack"><LocalizationOpsPanel/></div>}
 {activeView==='fulfillment'&&<div className="adminModuleStack"><FulfillmentMediaOpsPanel products={products}/></div>}
