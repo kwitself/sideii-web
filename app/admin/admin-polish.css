@@ -92,3 +92,41 @@
    .adminApp .sectionLabel { align-items: flex-start; flex-direction: column; }
  }
 }
+
+/* Screenshot review: increased legibility for wide-screen control room. */
+@layer sideiiAdmin {
+ .adminApp { --admin-legible-text:#d8d5d0; --admin-muted-text:#a6a19d; }
+ .adminApp .adminRail .adminNav :is(a,button) { font-size:11px; line-height:1.5; min-height:38px; }
+ .adminApp .adminTop { padding-bottom:24px; }
+ .adminApp .adminTop .topActions :is(a,button) { min-height:38px; padding:9px 13px; font-size:10px; letter-spacing:.055em; }
+ .adminApp .sectionLabel > span { font-size:10px; letter-spacing:.13em; color:#b3aea9; }
+ .adminApp .sectionLabel > p { color:#a7a09e; }
+ .adminApp .overviewMetricGrid > article { padding:22px; }
+ .adminApp .overviewMetricGrid > article > span { font-size:10px; color:#aaa5a1; }
+ .adminApp .overviewMetricGrid > article strong { line-height:1.2; }
+ .adminApp .overviewMetricGrid > article small { font-size:11px; color:#a39e9b; }
+ .adminApp .productControlBar :is(input,select) { font-size:12px; }
+ .adminApp .productPanel .tableHead { min-height:48px; font-size:10px; color:#b4aea8; }
+ .adminApp .productPanel .productRow { min-height:70px; }
+ .adminApp .productPanel .productRow :is(button,a,select) { min-height:30px; font-size:10px; }
+ .adminApp .productPanel .rowActions { display:flex; flex-wrap:wrap; gap:5px; align-items:center; }
+ .adminApp .productPanel .rowActions :is(button,a) { padding:6px 8px; white-space:nowrap; }
+ .adminApp .productPanel :is(.tableHead,.productRow) { min-width:1000px; grid-template-columns:2.2fr .7fr 1.05fr .55fr .45fr 1.8fr; }
+ .adminApp .orderList .orderRow { min-height:78px; padding:18px 22px; }
+ .adminApp .orderList .orderRow strong { font-size:14px; color:#e6e1dc; }
+ .adminApp .orderList .orderRow b { font-size:14px; color:#e8e3dd; }
+ .adminApp .orderList .orderRow small { font-size:11px; color:#aaa5a0; }
+ .adminApp .orderList .orderRow > span { font-size:11px; color:#b0aba7; }
+ .adminApp :is(.adminPanel,.financeBox) :is(input,select,textarea) { min-height:40px; font-size:12px; }
+ .adminApp :is(.adminPanel,.financeBox) :is(label,small) { line-height:1.5; }
+ .adminApp :is(.adminPanel,.financeBox) .saveButton { min-height:40px; padding:9px 16px; font-size:10px; }
+ .adminApp .adminSectionStandalone .adminPanel { padding:clamp(20px,2vw,36px); }
+ @media (max-width:1100px) {
+  .adminApp .productPanel :is(.tableHead,.productRow) { min-width:950px; }
+  .adminApp .orderList .orderRow { gap:10px; }
+ }
+ @media (max-width:640px) {
+  .adminApp .overviewMetricGrid > article { padding:16px; }
+  .adminApp .orderList .orderRow { min-height:74px; padding:14px; }
+ }
+}
