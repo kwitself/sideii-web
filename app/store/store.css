@@ -1943,3 +1943,24 @@
 @media(prefers-reduced-motion:reduce){
  .storePage .storeDiscoveryControls.mobileExpanded.mobileClosing{animation:none!important}
 }
+
+
+/* PAKET B / Motion standard — animate filter chip insertions and removals. */
+@keyframes sideiiFilterChipIn{
+ from{opacity:0;transform:translateY(-8px) scale(.96);max-width:0;padding-left:0;padding-right:0;margin-right:0}
+ to{opacity:1;transform:translateY(0) scale(1);max-width:330px}
+}
+@keyframes sideiiFilterChipOut{
+ from{opacity:1;transform:translateY(0) scale(1);max-width:330px}
+ to{opacity:0;transform:translateY(-6px) scale(.95);max-width:0;padding-left:0;padding-right:0;margin-right:0;border-width:0}
+}
+.storePage .storeActiveFilters{display:flex;flex-wrap:wrap;column-gap:8px;row-gap:8px;overflow:hidden;min-height:0;transition:margin .3s ease,padding .3s ease}
+.storePage .storeActiveFilters:not(.hasChips){margin-top:0!important;margin-bottom:0!important;padding-top:0!important;padding-bottom:0!important}
+.storePage .storeActiveFilters button{white-space:nowrap;overflow:hidden;will-change:transform,opacity}
+.storePage .storeActiveFilters button.chipEntering{animation:sideiiFilterChipIn 300ms cubic-bezier(.22,1,.36,1) both}
+.storePage .storeActiveFilters button.chipLeaving{animation:sideiiFilterChipOut 280ms cubic-bezier(.4,0,.8,.3) both;pointer-events:none}
+.storePage .storeDiscoveryMeta span{transition:color .25s ease}
+@media(prefers-reduced-motion:reduce){
+ .storePage .storeActiveFilters,.storePage .storeDiscoveryMeta span{transition:none!important}
+ .storePage .storeActiveFilters button.chipEntering,.storePage .storeActiveFilters button.chipLeaving{animation:none!important}
+}
