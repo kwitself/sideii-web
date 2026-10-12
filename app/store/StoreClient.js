@@ -206,7 +206,10 @@ export default function StoreClient({releases}){
   if(previousRects.current&&resultsReordering&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
    container.querySelectorAll('[data-catalogue-key]').forEach(node=>{
     const old=previousRects.current.get(node.dataset.catalogueKey);
-    if(!old)return;
+    if(!old){
+     node.animate([{opacity:0,transform:'translateY(12px) scale(.98)'},{opacity:1,transform:'translateY(0) scale(1)'}],{duration:350,easing:'cubic-bezier(.2,.8,.2,1)'});
+     return;
+    }
     const next=node.getBoundingClientRect();
     const dx=old.left-next.left,dy=old.top-next.top;
     if(Math.abs(dx)+Math.abs(dy)<2)return;
@@ -224,13 +227,11 @@ export default function StoreClient({releases}){
   const current=displayedRows.map(row=>row.slug||row.id||row.catalogue);
   const next=sortedFiltered.map(row=>row.slug||row.id||row.catalogue);
   if(current.join('|')===resultIdentity)return;
-  if(current.length===next.length&&current.every(id=>next.includes(id))){
-   setResultsLeaving(false);setResultsReordering(true);setPresentedRows(sortedFiltered);
-   return;
-  }
-  setResultsReordering(false);setResultsLeaving(true);
-  const timer=setTimeout(()=>{setPresentedRows(sortedFiltered);setResultsLeaving(false)},180);
-  return()=>clearTimeout(timer);
+  // Keep shared cards mounted between filter changes so FLIP can move them
+  // into their new positions instead of fading out the entire catalogue.
+  setResultsLeaving(false);
+  setResultsReordering(true);
+  setPresentedRows(sortedFiltered);
  },[resultIdentity]);
 
  const resetDiscovery=()=>{setFilter('all');setFormatFilter('all');setSearch('');setAvailability('all');setCollectionFilter('all');setCategoryFilter('all');setSizeFilter('all');setColorFilter('all');setLimitedOnly(false);setPreorderOnly(false);setMinPrice('');setMaxPrice('');setSortMode('newest')};
