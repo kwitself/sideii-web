@@ -11,20 +11,24 @@ export default function FinanceAccountingPanel({products=[]}){
  const [loading,setLoading]=useState(true),[busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState('');
  const [draft,setDraft]=useState({expense_date:new Date().toISOString().slice(0,10),category:'production',description:'',gross_amount:'',vat_rate:'0',vat_included:true,deductible_vat:false,product_id:'',reference:''});
  const [period,setPeriod]=useState('all');
+ const [artistPayments,setArtistPayments]=useState([]);
+ const [payDraft,setPayDraft]=useState({royalty_rule_id:'',payment_date:new Date().toISOString().slice(0,10),amount:'',payment_method:'bank_transfer',reference:'',notes:''});
  const [costDraft,setCostDraft]=useState({product_id:'',unit_cost:'0',packaging_cost:'0',handling_cost:'0',notes:''});
  async function load(){
   if(!supabase)return;
   setLoading(true);setError('');
-  const [f,o,c,r]=await Promise.all([
+  const [f,o,c,r,ap]=await Promise.all([
    supabase.rpc('admin_finance_read'),
    supabase.from('orders').select('id,order_no,created_at,payment_status,status,total,subtotal,shipping_total,support_total,currency,order_items(variant_id,quantity,line_total,support_amount)').order('created_at',{ascending:false}).limit(1000),
    supabase.rpc('admin_list_product_costs'),
-   supabase.rpc('admin_list_royalty_rules')
+   supabase.rpc('admin_list_royalty_rules'),
+   supabase.rpc('admin_finance_list_artist_payments')
   ]);
   if(f.error)setError('Finance: '+f.error.message);else setData(f.data);
   if(o.error)setError(v=>v||'Orders: '+o.error.message);else setOrders(o.data||[]);
   if(c.error)setError(v=>v||'Costs: '+c.error.message);else setCosts(c.data||[]);
   if(r.error)setError(v=>v||'Royalties: '+r.error.message);else setRules(r.data||[]);
+  if(ap.error)setError(v=>v||'Artist payments: '+ap.error.message);else setArtistPayments(ap.data||[]);
   setLoading(false);
  }
  useEffect(()=>{load()},[]);
