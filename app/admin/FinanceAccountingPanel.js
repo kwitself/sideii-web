@@ -2,7 +2,7 @@
 import {useEffect,useMemo,useState} from 'react';
 import {supabase} from '../lib/supabase';
 const tr=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY'}).format(Number(n)||0);
-const financeGroups=[{name:'WORKSPACE',tabs:[['overview','OVERVIEW'],['profit','ORDER PROFIT'],['reports','REPORTS']]},{name:'ACCOUNTING',tabs:[['vat','VAT'],['expenses','EXPENSES'],['costs','PRODUCT COSTS'],['artists','ARTIST ROYALTIES']]},{name:'PAYMENTS',tabs:[['reconcile','RECONCILIATION'],['settlements','SETTLEMENTS'],['refunds','REFUNDS']]},{name:'CONTROLS',tabs:[['audit','ORDER AUDIT'],['periods','PERIOD CLOSE']]}];
+const financeGroups=[{name:'WORKSPACE',tabs:[['overview','OVERVIEW'],['profit','ORDER PROFIT'],['reports','REPORTS']]},{name:'ACCOUNTING',tabs:[['vat','VAT'],['expenses','EXPENSES'],['costs','PRODUCT COSTS'],['artists','ARTIST ROYALTIES']]},{name:'PAYMENTS',tabs:[['reconcile','RECONCILIATION'],['settlements','SETTLEMENTS'],['refunds','REFUNDS']]},{name:'CONTROLS',tabs:[['audit','ORDER AUDIT'],['periods','PERIOD CLOSE'],['integrity','DATA INTEGRITY']]}];
 const cats=['production','packaging','shipping','payment_fee','marketing','software','tax','refund','other'];
 const netVat=(amount,rate,included)=>{const a=Number(amount)||0,r=(Number(rate)||0)/100;const net=included?a/(1+r):a;return {net,vat:net*r,gross:included?a:net*(1+r)}};
 const inputStyle={minHeight:40,background:'#0e0e0f',border:'1px solid #363638',padding:'9px 11px',color:'#e5e2de',width:'100%',minWidth:0};
@@ -18,6 +18,8 @@ export default function FinanceAccountingPanel({products=[]}){
  const [accrualDraft,setAccrualDraft]=useState({rule_id:'',month:'',base:'',reference:''});
  const [snapshotStatus,setSnapshotStatus]=useState(null);
  const [orderAudit,setOrderAudit]=useState([]);
+ const [integrityRows,setIntegrityRows]=useState([]);
+ const [integrityFilter,setIntegrityFilter]=useState('issues');
  const [paymentAudit,setPaymentAudit]=useState([]);
  const [settlements,setSettlements]=useState([]);
  const [refunds,setRefunds]=useState([]);
@@ -35,7 +37,7 @@ export default function FinanceAccountingPanel({products=[]}){
  async function load(){
   if(!supabase)return;
   setLoading(true);setError('');
-  const [f,o,c,r,ap,snap,audit,recon,settle,refundRows,periodRows,varianceRows,accrualRows]=await Promise.all([
+  const [f,o,c,r,ap,snap,audit,recon,settle,refundRows,periodRows,varianceRows,accrualRows,integrity]=await Promise.all([
    supabase.rpc('admin_finance_read'),
    supabase.from('orders').select('id,order_no,created_at,payment_status,status,total,subtotal,shipping_total,support_total,currency,order_items(variant_id,quantity,line_total,support_amount)').order('created_at',{ascending:false}).limit(1000),
    supabase.rpc('admin_list_product_costs'),
@@ -48,7 +50,8 @@ export default function FinanceAccountingPanel({products=[]}){
    supabase.rpc('admin_finance_list_refunds'),
    supabase.rpc('admin_finance_list_closures'),
    supabase.rpc('admin_finance_period_variances'),
-   supabase.rpc('admin_finance_list_artist_accruals')
+   supabase.rpc('admin_finance_list_artist_accruals'),
+   supabase.rpc('admin_finance_order_integrity',{p_limit:200})
   ]);
   if(f.error)setError('Finance: '+f.error.message);else setData(f.data);
   if(o.error)setError(v=>v||'Orders: '+o.error.message);else setOrders(o.data||[]);
@@ -63,6 +66,7 @@ export default function FinanceAccountingPanel({products=[]}){
   if(periodRows.error)setError(v=>v||'Period closures: '+periodRows.error.message);else setClosures(periodRows.data||[]);
   if(varianceRows.error)setError(v=>v||'Period variance: '+varianceRows.error.message);else setPeriodVariances(varianceRows.data||[]);
   if(accrualRows.error)setError(v=>v||'Artist accruals: '+accrualRows.error.message);else setArtistAccruals(accrualRows.data||[]);
+  if(integrity.error)setError(v=>v||'Integrity: '+integrity.error.message);else setIntegrityRows(integrity.data||[]);
   setLoading(false);
  }
  useEffect(()=>{load()},[]);
@@ -277,5 +281,6 @@ export default function FinanceAccountingPanel({products=[]}){
   {financeTab==='profit'&&<section className="adminPanel financeBox financeAudit"><div className="financeHeading"><h3>ORDER PROFIT REVIEW</h3><button type="button" onClick={exportOrderProfit}>EXPORT CSV ↓</button></div><p>Order-level management estimate using current product costs and VAT defaults. Refund amounts are shown separately because their tax and inventory allocation is not finalized.</p><div className="financeHeading"><select style={inputStyle} value={profitFilter} onChange={e=>setProfitFilter(e.target.value)}><option value="review">NEEDS REVIEW</option><option value="all">ALL TRY ORDERS</option><option value="paid">PAID</option></select></div><div className="financeAuditScroll"><table><thead><tr><th>ORDER</th><th>STATUS</th><th>GROSS</th><th>NET SALES EST.</th><th>CURRENT COGS</th><th>FEES</th><th>REFUND CASH</th><th>INDICATIVE MARGIN</th><th>QUALITY</th></tr></thead><tbody>{orderProfitRows.filter(r=>profitFilter==='all'||(profitFilter==='paid'&&r.paid)||(profitFilter==='review'&&r.requiresReview)).map(r=><tr key={r.id}><td>#{r.no}<small>{r.date}</small></td><td>{r.status}</td><td>{tr(r.total)}</td><td>{r.netSales===null?'—':tr(r.netSales)}</td><td>{tr(r.cogs)}</td><td>{tr(r.fee)}</td><td>{tr(r.refund)}</td><td>{r.estimated===null?'—':tr(r.estimated)}</td><td>{r.unmapped?'COST MISSING':r.refund?'REFUND REVIEW':!r.paid?'UNPAID':Number(settings.sales_vat_rate)===0?'VAT NOT SET':'ESTIMATE'}</td></tr>)}</tbody></table></div><p className="financeWarning">Indicative margin excludes overhead, royalty accrual, inventory valuation and refund allocation; it is not final profit. Unmapped costs and current rather than sale-time costs can materially overstate results.</p></section>}
   {financeTab==='artists'&&<section className="adminPanel financeBox"><div className="financeHeading"><h3>ARTIST BALANCE RECONCILIATION</h3><button type="button" onClick={exportArtistBalance} disabled={!artistBalance.length}>EXPORT CSV ↓</button></div><p>Approved accruals minus recorded artist payments, grouped by agreement. Payments are not allocated to particular months; review the supporting bank and contract records before treating any amount as a finalized payable.</p><div className="financeLedger">{artistBalance.length?artistBalance.map(r=><div key={r.id}><span>{r.name}<small>{r.months} approved periods · accrued {tr(r.accrued)} · paid {tr(r.paid)}</small></span><strong>{tr(r.balance)}<small>{r.balance<0?'PAYMENTS EXCEED ACCRUALS':'UNSETTLED BALANCE'}</small></strong></div>):<p>No accrual or payment entries yet.</p>}</div></section>}
   {financeTab==='artists'&&<section className="adminPanel financeBox"><h3>REVIEWED ARTIST ACCRUALS</h3><p>Record a verified period and agreed revenue/profit base, with a supporting reference. The active rule percentage is copied into an immutable accrual. One entry per artist rule and month. This form never issues a payout.</p><form onSubmit={recordAccrual} className="financeFields">{control('ARTIST RULE',<select required style={inputStyle} value={accrualDraft.rule_id} onChange={e=>setAccrualDraft(v=>({...v,rule_id:e.target.value}))}><option value="">SELECT ACTIVE AGREEMENT</option>{rules.filter(r=>r.active).map(r=><option value={r.id} key={r.id}>{r.payee_name} · {r.share_percent}% · {products.find(p=>p.id===r.product_id)?.title||'Product'}</option>)}</select>)}{control('COMPLETED MONTH',<input required type="month" style={inputStyle} value={accrualDraft.month} onChange={e=>setAccrualDraft(v=>({...v,month:e.target.value}))}/>)}{control('VERIFIED BASE TRY',field(accrualDraft.base,v=>setAccrualDraft(d=>({...d,base:v})),'number',{min:0,step:'.01',required:true}))}{control('SOURCE REFERENCE',field(accrualDraft.reference,v=>setAccrualDraft(d=>({...d,reference:v})),'text',{required:true,minLength:3,maxLength:250}))}<button className="saveButton" disabled={busy||loading||!accrualDraft.rule_id}>RECORD REVIEWED ACCRUAL</button></form><div className="financeLedger">{artistAccruals.length?artistAccruals.map(a=><div key={a.id}><span>{a.period_month.slice(0,7)} · {a.payee_name}<small>{a.share_percent}% of {tr(a.agreed_base)} · {a.source_reference}</small></span><strong>{tr(a.accrued_amount)}</strong></div>):<p>No reviewed artist accruals recorded.</p>}</div><p className="financeWarning">Reviewed accruals are independent of the live rolling estimates above. Confirm VAT treatment, refunds, contract terms and the evidence before recording. Payments remain tracked separately.</p></section>}
+  {financeTab==='integrity'&&<section className="adminPanel financeBox financeAudit"><div className="financeHeading"><h3>ORDER DATA INTEGRITY</h3><select style={inputStyle} value={integrityFilter} onChange={e=>setIntegrityFilter(e.target.value)}><option value="issues">REVIEW REQUIRED</option><option value="all">ALL ORDERS</option></select></div><p>Cross-checks historical snapshot coverage, missing product costs and VAT settings, manual refunds and recorded settlements. This is a read-only exception queue, not an approval of financial statements.</p><div className="financeAuditScroll"><table><thead><tr><th>ORDER</th><th>STATUS</th><th>SNAPSHOTS</th><th>COST GAPS</th><th>VAT GAPS</th><th>REFUNDS</th><th>SETTLEMENT GROSS</th><th>FEES</th><th>REVIEW STATUS</th></tr></thead><tbody>{integrityRows.filter(r=>integrityFilter==='all'||r.review_code!=='REVIEW_COMPLETE_NOT_CERTIFIED').map(r=><tr key={r.order_id}><td>#{r.order_no}<small>{String(r.order_created_at).slice(0,10)}</small></td><td>{r.payment_status}<small>{r.order_status}</small></td><td>{r.snapshot_count}/{r.item_count}</td><td>{r.cost_missing}</td><td>{r.vat_unverified}</td><td>{tr(r.refund_recorded)}</td><td>{tr(r.settlement_gross)}</td><td>{tr(r.settlement_fees)}</td><td>{String(r.review_code).replaceAll('_',' ')}</td></tr>)}</tbody></table></div><p className="financeWarning">No automatic VAT corrections, royalty adjustments or double-entry postings are made. Existing manual refund and settlement journals are cross-checked but not bank-verified. The report contains up to 200 recent orders.</p></section>}
  </section>;
 }
