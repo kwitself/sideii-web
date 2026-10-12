@@ -1964,3 +1964,28 @@
  .storePage .storeActiveFilters,.storePage .storeDiscoveryMeta span{transition:none!important}
  .storePage .storeActiveFilters button.chipEntering,.storePage .storeActiveFilters button.chipLeaving{animation:none!important}
 }
+
+
+/* PAKET B / Soft catalogue result transitions for filtering and sorting */
+@keyframes sideiiCatalogueItemsIn{
+ from{opacity:0;transform:translateY(12px)}
+ to{opacity:1;transform:translateY(0)}
+}
+.storePage .storeCatalogue :is(.storeClassicGrid,.storeEditorialList){
+ opacity:1;transform:translateY(0);
+ transition:opacity 180ms ease,transform 180ms ease;
+}
+.storePage .storeCatalogue.storeResultsLeaving :is(.storeClassicGrid,.storeEditorialList){
+ opacity:0;transform:translateY(6px);
+ pointer-events:none;
+}
+.storePage .storeCatalogue.storeResultsEntering :is(.storeClassicGrid>.storeClassicCard,.storeEditorialList>.storeProduct){
+ animation:sideiiCatalogueItemsIn 340ms cubic-bezier(.2,.8,.2,1) both;
+}
+.storePage .storeCatalogue.storeResultsEntering :is(.storeClassicGrid>.storeClassicCard,.storeEditorialList>.storeProduct):nth-child(2){animation-delay:35ms}
+.storePage .storeCatalogue.storeResultsEntering :is(.storeClassicGrid>.storeClassicCard,.storeEditorialList>.storeProduct):nth-child(3){animation-delay:65ms}
+.storePage .storeCatalogue.storeResultsEntering :is(.storeClassicGrid>.storeClassicCard,.storeEditorialList>.storeProduct):nth-child(n+4){animation-delay:85ms}
+@media(prefers-reduced-motion:reduce){
+ .storePage .storeCatalogue :is(.storeClassicGrid,.storeEditorialList){transition:none!important}
+ .storePage .storeCatalogue.storeResultsEntering :is(.storeClassicGrid>.storeClassicCard,.storeEditorialList>.storeProduct){animation:none!important}
+}
