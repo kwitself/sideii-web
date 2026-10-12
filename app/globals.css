@@ -7318,3 +7318,51 @@ body>.releaseGalleryLightbox .releaseGalleryLightboxBar button{position:relative
  .globalBagDrawer .globalCheckout .checkoutInvoice,
  .globalBagDrawer .globalCheckout .checkoutGift{padding:14px!important}
 }
+
+
+/* PAKET B / Account premium hierarchy: profile, collection and order detail */
+.globalAccountDrawer .accountIdentity{padding-bottom:22px!important;border-bottom:1px solid #3b353d}
+.globalAccountDrawer .accountIdentity b{font-size:clamp(28px,2.6vw,38px)!important;line-height:1.1!important;letter-spacing:-.035em}
+.globalAccountDrawer .accountIdentity small{font-size:11px!important;line-height:1.6!important;color:#afa5ad!important}
+.globalAccountDrawer .accountProfile label,.globalAccountDrawer .accountAddressForm label{
+ font-size:10px!important;letter-spacing:.12em!important;line-height:1.5!important;color:#b4aab2!important;
+}
+.globalAccountDrawer .accountProfile :is(input,select,textarea),
+.globalAccountDrawer .accountAddressForm :is(input,select,textarea){
+ min-height:44px!important;font-size:13px!important;line-height:1.45!important;
+ transition:border-color .22s,background .22s;
+}
+.globalAccountDrawer .accountProfile :is(input,select,textarea):focus-visible,
+.globalAccountDrawer .accountAddressForm :is(input,select,textarea):focus-visible{
+ outline:2px solid #b9a7b5;outline-offset:1px;
+}
+.globalAccountDrawer .accountSectionHead{
+ border-bottom:1px solid #3c363e!important;
+ padding-bottom:13px!important;margin-bottom:13px!important;
+}
+.globalAccountDrawer .accountSectionHead>span{font-size:11px!important;letter-spacing:.13em!important}
+.globalAccountDrawer .accountOrderRow{
+ border:1px solid #403940!important;
+ background:#121014!important;
+ transition:border-color .2s,background .2s;
+}
+.globalAccountDrawer .accountOrderRow:hover{border-color:#847581!important;background:#1a161c!important}
+.globalAccountDrawer .accountOrderDetail{
+ border-top:1px solid #4d444e!important;
+ padding-top:22px!important;
+ animation:sideiiAccountDetailIn .3s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes sideiiAccountDetailIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.globalAccountDrawer .accountOrderDetailHead h3{font-size:clamp(25px,2.3vw,34px)!important;line-height:1.1!important}
+.globalAccountDrawer .accountOrderItems article{padding:16px 0!important;border-bottom:1px solid #332d35}
+.globalAccountDrawer .accountOrderItems article>div{min-width:0;overflow-wrap:anywhere}
+@media(max-width:760px){
+ .globalAccountDrawer .accountIdentity b{font-size:30px!important}
+ .globalAccountDrawer .accountProfile label,.globalAccountDrawer .accountAddressForm label{font-size:10px!important}
+ .globalAccountDrawer .accountOrderRow{padding:16px 12px!important}
+ .globalAccountDrawer .accountOrderDetailHead{gap:12px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .globalAccountDrawer .accountOrderDetail{animation:none!important}
+ .globalAccountDrawer .accountOrderRow,.globalAccountDrawer .accountProfile :is(input,select,textarea){transition:none!important}
+}
