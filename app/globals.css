@@ -6968,3 +6968,46 @@ body>.releaseGalleryLightbox .releaseGalleryLightboxBar button{position:relative
  .productPage .trackSection li,.productPage .releasePressEntry a,
  .productPage .productNote>a,.productPage .discoveryCard{transition:none!important}
 }
+
+
+/* PAKET B / Mobile release detail screenshot fixes — 390px */
+@media(max-width:760px){
+ .productPage .editionExperience{min-width:0!important;max-width:100%!important}
+ .productPage .editionPanel{padding-left:0!important;padding-right:0!important;min-width:0!important}
+ .productPage .editionChooser{margin-bottom:18px!important}
+ .productPage .editionChooser>div{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;width:100%!important;
+ }
+ .productPage .editionChooser>div>button{
+  width:100%!important;min-width:0!important;min-height:45px!important;
+  margin:0!important;padding:0 8px!important;letter-spacing:.1em;
+ }
+ .productPage .editionPanel>.productButton{min-height:50px!important;font-size:11px!important}
+ .productPage .releaseBagLink{min-height:44px!important}
+ .productPage .releaseGalleryCarouselStage{
+  min-height:0!important;padding:18px 44px!important;
+ }
+ .productPage .releaseGalleryCarouselViewport{min-height:220px!important}
+ .productPage .releaseGalleryCarouselViewport>img{
+  width:auto!important;height:auto!important;max-width:100%!important;max-height:70vw!important;
+ }
+ .productPage .releaseGalleryCarouselArrow{width:34px!important;height:44px!important;font-size:25px!important}
+ .productPage .releaseGalleryCarouselArrow.prev{left:4px!important}
+ .productPage .releaseGalleryCarouselArrow.next{right:4px!important}
+ .productPage .releaseGalleryCarouselThumbs{gap:9px!important;margin-top:13px!important}
+ .productPage .releaseGalleryCarouselThumbs button{width:57px!important;height:57px!important}
+ .productPage .productDiscovery{min-width:0!important}
+ .productPage .discoveryGrid,.productPage .recentGrid{
+  gap:12px!important;padding-bottom:12px!important;scroll-padding-inline:0;
+ }
+ .productPage .discoveryCard,.productPage .recentGrid .discoveryCard{
+  flex:0 0 min(86vw,340px)!important;min-width:0!important;
+  grid-template-columns:92px minmax(0,1fr)!important;
+ }
+ .productPage .releaseHeroPair{max-width:100%;min-width:0}
+}
+@media(max-width:360px){
+ .productPage .editionChooser>div{gap:6px!important}
+ .productPage .releaseGalleryCarouselStage{padding-left:39px!important;padding-right:39px!important}
+}
