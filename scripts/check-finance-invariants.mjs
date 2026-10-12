@@ -14,6 +14,8 @@ for(const marker of [
   "CASH FORECAST",
   "EXPORT REVIEW JSON",
   "UNISSUED_INVOICE_REVIEW_ONLY",
+  "ITEM COUNT MISMATCH",
+  "INVALID ITEM QUANTITY",
 ]){
   assert.ok(panel.includes(marker), `Missing finance UI invariant: ${marker}`);
 }
