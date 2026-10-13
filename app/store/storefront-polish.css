@@ -23,3 +23,17 @@
 @media (prefers-reduced-motion:reduce) {
  .storePage :is(button,a,input,select) { transition:none!important; animation:none!important; }
 }
+
+/* Interaction pass: restrained movement, no layout shifts or mockup transforms. */
+@media (hover:hover) and (prefers-reduced-motion:no-preference) {
+ .storePage :is(.storeClassicMeta,.storeProductMeta) :is(a,button):not(:disabled):hover { color:#f7f3ed; }
+ .storePage :is(.storeClassicAction,.storeViewToggle,.storeFilters) button:not(:disabled):active { transform:translateY(1px); }
+ .storePage :is(.storeClassicGrid,.storeEditorialList) a:focus-visible { outline-offset:3px; }
+ .storePage :is(.storeClassicAction,.storeViewToggle) :is(a,button) { transition:background-color .18s ease,border-color .18s ease,color .18s ease,transform .12s ease; }
+}
+@media (hover:none) {
+ .storePage :is(.storeClassicAction,.storeViewToggle,.storeFilters) button { -webkit-tap-highlight-color:transparent; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .storePage :is(.storeClassicAction,.storeViewToggle,.storeFilters) :is(a,button) { transform:none!important; transition:none!important; }
+}
