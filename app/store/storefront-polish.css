@@ -37,3 +37,18 @@
 @media(prefers-reduced-motion:reduce) {
  .storePage :is(.storeClassicAction,.storeViewToggle,.storeFilters) :is(a,button) { transform:none!important; transition:none!important; }
 }
+
+/* Responsive pass — store cards, discovery controls and wide screens. */
+@media(min-width:1600px){
+ .storePage .storeHero.shell,.storePage .storeFilters.shell,.storePage .storeDiscoveryTools.shell { max-width:1440px; }
+}
+@media(max-width:760px){
+ .storePage .storeHero h1 { overflow-wrap:anywhere; }
+ .storePage :is(.storeClassicMeta,.storeProductMeta) { min-width:0; }
+ .storePage :is(.storeClassicAction,.storeDiscoveryControls,.storeViewToggle) { flex-wrap:wrap; }
+ .storePage :is(.storeSearchField,.storeDiscoveryControls) :is(input,select,button) { max-width:100%; }
+}
+@media(max-width:420px){
+ .storePage .storeClassicGrid { grid-template-columns:minmax(0,1fr); }
+ .storePage :is(.storeClassicMeta,.storeProductMeta) :is(h2,h3,p) { overflow-wrap:anywhere; }
+}
