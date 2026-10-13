@@ -23,5 +23,7 @@ jobs:
         run: node scripts/check-cart-smoke.mjs
       - name: Verify checkout safety guardrails
         run: node scripts/check-checkout-guards.mjs
+      - name: Verify order notification security boundaries
+        run: node scripts/check-order-notification-guards.mjs
       - name: Build Next.js
         run: npm run build
