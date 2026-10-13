@@ -1,0 +1,19 @@
+/* SIDE:II cart and checkout responsive safety rails; no payment logic changes. */
+.globalBagDrawer { max-width:100vw; }
+.globalBagDrawer :is(.globalBagItems,.checkoutForm,.globalCheckout,.checkoutSummary,.checkoutSplit,.checkoutInvoice,.checkoutSavedAddresses) { min-width:0; max-width:100%; }
+.globalBagDrawer :is(.globalBagItemVisual,.checkoutSummaryItem) { min-width:0; }
+.globalBagDrawer :is(.checkoutSummaryItem,.checkoutSavedAddressPreview,.checkoutError) { overflow-wrap:anywhere; }
+.globalBagDrawer :is(input,select,textarea) { max-width:100%; min-width:0; }
+.globalBagDrawer :is(button,input,select,textarea):focus-visible { outline:2px solid #ded7cc; outline-offset:2px; }
+@media(max-width:700px){
+ .globalBagDrawer :is(.checkoutSplit,.checkoutInvoice,.checkoutSavedAddresses) { max-width:100%; }
+ .globalBagDrawer .checkoutSplit > * { min-width:0; }
+ .globalBagDrawer .checkoutSummary { overflow-wrap:anywhere; }
+}
+@media(max-width:380px){
+ .globalBagDrawer :is(.checkoutSummaryRow,.globalBagTotal) { font-variant-numeric:tabular-nums; }
+ .globalBagDrawer .checkoutSupportRow { min-width:0; }
+}
+@media(prefers-reduced-motion:reduce){
+ .globalBagDrawer :is(button,input,select,textarea) { scroll-behavior:auto; }
+}
