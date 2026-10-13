@@ -307,3 +307,27 @@
 @media(prefers-reduced-motion:reduce) {
  .adminApp :is(.discountsSection,.catalogueOps,.growthOps) :is(button,input,select,textarea) { transition:none; }
 }
+
+/* Admin completion pass: Fulfillment, Localization, SEO, Launch. */
+.adminApp :is(.fulfillmentMediaOps,.localizationOps,.seoCenter,.launchReadinessPanel) { min-width:0; }
+.adminApp :is(.fulfillmentMediaOps,.localizationOps,.seoCenter) :is(.adminPanel,.localizationCard) { min-width:0; border-color:#373338; background:#111113; }
+.adminApp :is(.fulfillmentMediaOps,.localizationOps,.seoCenter,.launchReadinessPanel) :is(input,select,textarea) {
+ max-width:100%; min-width:0; min-height:42px; background:#111113; border-color:#48434a; color:#e8e2da; font-size:12px;
+}
+.adminApp :is(.fulfillmentMediaOps,.localizationOps,.seoCenter,.launchReadinessPanel) :is(button,.saveButton,.ghostButton) { min-height:38px; font-size:10px; letter-spacing:.06em; }
+.adminApp :is(.fulfillmentMediaOps,.localizationOps,.seoCenter,.launchReadinessPanel) :is(button,a,input,select):focus-visible { outline:2px solid #d7d0c6; outline-offset:2px; }
+.adminApp :is(.fulfillmentMediaOps,.localizationOps,.seoCenter) :is(.locationRow,.locationHealthRow,.locationStockRow,.pressKitRow,.localeRow,.seoProductRow) { border-bottom:1px solid #343035; }
+.adminApp :is(.fulfillmentMediaOps,.localizationOps,.seoCenter) :is(.locationRow,.locationStockRow,.pressKitRow,.localeRow,.seoProductRow):hover { background:#ffffff09; }
+.adminApp :is(.fulfillmentMediaOps,.localizationOps,.seoCenter) :is(.locationSummary,.locationMatrix,.pressKitList,.seoProductList,.seoTechnical) { max-width:100%; overflow-x:auto; }
+.adminApp :is(.fulfillmentMediaOps,.localizationOps) :is(.locationRow,.locationHealthRow,.localeRow) { font-variant-numeric:tabular-nums; }
+.adminApp .seoCenter :is(.seoProductHead,.seoV2Tabs,.seoTools) { color:#c0b9b1; }
+.adminApp .seoCenter :is(.seoIssueList,.seoCheckGrid) { line-height:1.55; }
+.adminApp .launchReadinessPanel { border-color:#413b41; padding:clamp(18px,2vw,30px); }
+.adminApp .launchReadinessPanel .launchReadinessNote { color:#b9b2aa; line-height:1.65; }
+@media(max-width:900px) {
+ .adminApp :is(.fulfillmentMediaOps,.localizationOps) :is(.fulfillmentMediaGrid,.localizationGrid) { grid-template-columns:minmax(0,1fr); }
+ .adminApp .seoCenter :is(.seoV2Tabs,.seoTools) { flex-wrap:wrap; gap:8px; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .adminApp :is(.fulfillmentMediaOps,.localizationOps,.seoCenter,.launchReadinessPanel) :is(button,a,input,select) { transition:none; }
+}
