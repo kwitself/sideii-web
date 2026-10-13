@@ -1,5 +1,6 @@
 import './globals.css';
 import './physical-formats.css';
+import './cart-responsive.css';
 import GlobalBag from './components/GlobalBag';
 import GlobalAccount from './components/GlobalAccount';
 import {LocaleCurrencyProvider} from './components/LocaleCurrencyProvider';
