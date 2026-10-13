@@ -1,0 +1,23 @@
+/* SIDE:II Release detail visual consistency — scoped to product pages. */
+.productPage { color-scheme:dark; }
+.productPage :is(button,a,input,select,audio):focus-visible { outline:2px solid #ded7cb; outline-offset:3px; }
+.productPage :is(.productInfo,.editionPanel,.editionExperience,.editionChooser,.editionFacts) { min-width:0; }
+.productPage .releaseHeroPair h1 { overflow-wrap:anywhere; }
+.productPage .editionPanel :is(p,small,span) { line-height:1.5; }
+.productPage .editionFacts { font-variant-numeric:tabular-nums; }
+.productPage .editionChooser :is(button,[role="button"]) { min-height:38px; touch-action:manipulation; }
+.productPage .editionPanel :is(input,select) { min-width:0; max-width:100%; }
+.productPage .editionPanel :is(button,a,input,select) { transition:color .16s ease,background-color .16s ease,border-color .16s ease,box-shadow .16s ease; }
+.productPage .releaseListen audio { display:block; width:100%; max-width:100%; }
+.productPage :is(.releaseBooklet,.releaseListen,.trackSection,.productNote) { min-width:0; }
+.productPage .trackSection li { min-width:0; }
+.productPage .trackSection li > span { overflow-wrap:anywhere; }
+.productPage .releaseCredits p { overflow-wrap:anywhere; }
+@media(max-width:760px) {
+ .productPage .productReleaseLayout > * { min-width:0; }
+ .productPage .releaseHeroPair { min-width:0; }
+ .productPage :is(.editionExperience,.editionPanel) { max-width:100%; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .productPage .editionPanel :is(button,a,input,select) { transition:none; }
+}
