@@ -1,1 +1,27 @@
-{"name":"sideii-web","version":"0.1.2","private":true,"scripts":{"dev":"next dev","build":"next build","start":"next start"},"dependencies":{"@supabase/supabase-js":"2.58.0","html-to-image":"1.11.13","next":"^16.4.0","qrcode":"1.5.4","react":"19.2.0","react-dom":"19.2.0"},"devDependencies":{"baseline-browser-mapping":"^2.11.28"},"allowScripts":{"sharp@0.34.5":true}}
+{
+  "name": "sideii-web",
+  "version": "0.1.2",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "qa:cart": "node scripts/check-cart-smoke.mjs",
+    "qa:finance": "node scripts/check-finance-invariants.mjs",
+    "qa": "npm run qa:cart && npm run qa:finance"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.58.0",
+    "html-to-image": "1.11.13",
+    "next": "^16.4.0",
+    "qrcode": "1.5.4",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "baseline-browser-mapping": "^2.11.28"
+  },
+  "allowScripts": {
+    "sharp@0.34.5": true
+  }
+}
