@@ -4,8 +4,9 @@ import {sendOrderEmailPayload} from '../../../lib/server/orderEmail';
 export async function POST(request){
  try{
   const body=await request.json();
-  const orderId=body.order_id;
-  const type=String(body.type||'received').toLowerCase();
+  const orderId=body?.order_id;
+  const type=String(body?.type||'received').toLowerCase();
+  if(typeof orderId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(orderId))return Response.json({ok:false,error:'Invalid order identifier'},{status:400});
   if(!['received','paid','preparing','shipped','completed'].includes(type)){
    return Response.json({ok:false,error:'Invalid notification type'},{status:400});
   }
