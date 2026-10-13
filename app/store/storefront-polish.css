@@ -1,0 +1,25 @@
+/* SIDE:II Storefront consistency pass — additive and layout-safe. */
+.storePage { color-scheme:dark; }
+.storePage :is(button,a,input,select,[role="button"]):focus-visible {
+ outline:2px solid #e0d9cf;
+ outline-offset:3px;
+}
+.storePage :is(button,a,input,select) { transition:background-color .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease; }
+.storePage :is(button,input,select):disabled { opacity:.5; cursor:not-allowed; }
+.storePage :is(.storeClassicMeta,.storeProductMeta,.storeDiscoveryMeta) { min-width:0; }
+.storePage :is(.storeClassicMeta,.storeProductMeta) :is(h2,h3,p,small) { overflow-wrap:anywhere; }
+.storePage :is(.storeClassicPrice,.storeVariant) { font-variant-numeric:tabular-nums; }
+.storePage :is(.storeSearchField,.storeDiscoveryTools,.storeFilters) :is(input,select) { min-width:0; }
+.storePage :is(.storeSearchField,.storeDiscoveryTools,.storeFilters) input:focus-visible {
+ border-color:#d0c8be;
+ box-shadow:0 0 0 2px #cfc7bb24;
+}
+.storePage .storeClassicAction :is(button,a):not(:disabled):hover { border-color:#b5ada3; }
+.storePage .storeClassicMeta :is(small,span) { line-height:1.45; }
+@media (max-width:760px) {
+ .storePage :is(.storeDiscoveryTools,.storeFilters,.storeClassicGrid,.storeEditorialList) { min-width:0; max-width:100%; }
+ .storePage :is(.storeSearchField,.storeDiscoveryTools) :is(input,select,button) { touch-action:manipulation; }
+}
+@media (prefers-reduced-motion:reduce) {
+ .storePage :is(button,a,input,select) { transition:none!important; animation:none!important; }
+}
