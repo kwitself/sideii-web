@@ -3,6 +3,7 @@ import {notFound} from 'next/navigation';
 import {getStoreProduct,getRelatedProducts,getProductBundles} from '../../lib/catalogue';
 import MerchProductClient from './MerchProductClient';
 import '../store.css';
+import './merch-polish.css';
 import GlobalHeader from '../../components/GlobalHeader';
 import ProductDiscovery from '../../components/ProductDiscovery';
 import {jsonLd,productSchema} from '../../lib/productCommerceMeta';
