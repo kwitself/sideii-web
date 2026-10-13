@@ -21,5 +21,7 @@ jobs:
         run: node scripts/check-finance-invariants.mjs
       - name: Verify cart and inventory smoke scenarios
         run: node scripts/check-cart-smoke.mjs
+      - name: Verify checkout safety guardrails
+        run: node scripts/check-checkout-guards.mjs
       - name: Build Next.js
         run: npm run build
