@@ -19,5 +19,7 @@ jobs:
         run: npm ci
       - name: Verify finance safety invariants
         run: node scripts/check-finance-invariants.mjs
+      - name: Verify cart and inventory smoke scenarios
+        run: node scripts/check-cart-smoke.mjs
       - name: Build Next.js
         run: npm run build
