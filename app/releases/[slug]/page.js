@@ -1,3 +1,4 @@
+import './release-polish.css';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getDatabaseRelease, getProductCredits, getPublicPressKit, getRelatedProducts, getProductBundles } from '../../lib/catalogue';
