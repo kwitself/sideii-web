@@ -76,7 +76,7 @@ assert.ok(output.includes('"-42"'),'Negative numeric amounts must stay numeric')
 assert.ok(output.includes('"\'=SUM(1,2)"'),'Formula-like cells must be neutralized');
 assert.ok(output.includes('a ""quote""'),'Quotes must be doubled');
 assert.ok(output.includes('"\'  +evil"'),'Leading whitespace must not bypass formula protection');
-assert.equal(output.split('\\r\\n').length,4,'CSV must contain header and three data rows');
+assert.equal(output.split('\r\n').length,4,'CSV must contain header and three data rows');
 assert.ok(!output.includes('\\\\r\\\\n'),'CSV must not emit literal backslash escape sequences');
 assert.ok(output.includes('"12.5"'),'Decimal numerics must remain unprefixed');
 
