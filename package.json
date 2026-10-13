@@ -8,7 +8,8 @@
     "start": "next start",
     "qa:cart": "node scripts/check-cart-smoke.mjs",
     "qa:finance": "node scripts/check-finance-invariants.mjs",
-    "qa": "npm run qa:cart && npm run qa:finance"
+    "qa": "npm run qa:cart && npm run qa:finance && npm run qa:checkout",
+    "qa:checkout": "node scripts/check-checkout-guards.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.58.0",
