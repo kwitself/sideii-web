@@ -276,3 +276,34 @@
  .adminApp .inventoryCard { flex-wrap:wrap; }
  .adminApp #customers .singleAdminCard > article { min-height:190px; }
 }
+
+/* Shared module polish: Commerce, Catalogue and Growth — classic SIDE:II. */
+.adminApp :is(.discountsSection,.catalogueOps,.growthOps) { min-width:0; }
+.adminApp :is(.discountsSection,.catalogueOps,.growthOps) .sectionLabel { gap:12px; }
+.adminApp :is(.discountsSection,.catalogueOps,.growthOps) .adminPanel {
+ min-width:0; border-color:#343136; background:#111113;
+}
+.adminApp :is(.discountsSection,.catalogueOps,.growthOps) :is(.discountGrid,.discountLayout,.catalogueOpsGrid,.growthOpsGrid,.catalogueSplit,.growthSplit) > * { min-width:0; }
+.adminApp :is(.discountsSection,.catalogueOps,.growthOps) :is(input,select,textarea) {
+ max-width:100%; min-width:0; min-height:42px; font-size:12px;
+ color:#e5e0d9; background:#101012; border-color:#48444a;
+}
+.adminApp :is(.discountsSection,.catalogueOps,.growthOps) :is(input,select,textarea):focus-visible {
+ outline:2px solid #c9c1b7; outline-offset:2px;
+}
+.adminApp :is(.discountsSection,.catalogueOps,.growthOps) label { color:#b7b0aa; line-height:1.55; }
+.adminApp :is(.discountsSection,.catalogueOps,.growthOps) :is(.saveButton,.ghostButton,.formActions button) {
+ min-height:39px; padding:9px 14px; font-size:10px; letter-spacing:.065em;
+}
+.adminApp :is(.discountsSection,.catalogueOps,.growthOps) :is(.discountList,.ownerContentList,.growthList,.catalogueAlerts) { overflow-x:auto; max-width:100%; }
+.adminApp :is(.discountsSection,.catalogueOps,.growthOps) :is(.discountListHead,.catalogueAlertRow,.ownerContentRow,.growthListBlock,.auditRow,.wholesaleAdminRow) { border-bottom:1px solid #353238; }
+.adminApp :is(.discountsSection,.catalogueOps,.growthOps) :is(.catalogueAlertRow,.ownerContentRow,.auditRow,.wholesaleAdminRow):hover { background:#ffffff08; }
+.adminApp :is(.discountsSection,.catalogueOps,.growthOps) :is(.discountIntro,.emptyNote) { color:#aaa39d; line-height:1.6; }
+.adminApp :is(.discountsSection,.catalogueOps,.growthOps) :is(.discountUsage,.discountExpiry,.growthMiniList) { font-variant-numeric:tabular-nums; }
+@media(max-width:820px) {
+ .adminApp :is(.discountsSection,.catalogueOps,.growthOps) :is(.discountLayout,.catalogueOpsGrid,.growthOpsGrid) { grid-template-columns:minmax(0,1fr); }
+ .adminApp :is(.discountsSection,.catalogueOps,.growthOps) :is(.formActions) { display:flex; flex-wrap:wrap; gap:8px; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .adminApp :is(.discountsSection,.catalogueOps,.growthOps) :is(button,input,select,textarea) { transition:none; }
+}
