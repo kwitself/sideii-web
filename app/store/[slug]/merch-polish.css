@@ -1,0 +1,22 @@
+/* SIDE:II merch detail + bundle discovery: scoped finishing pass. */
+.merchDetailPage { color-scheme:dark; }
+.merchDetailPage :is(button,a,input,select,[role="button"]):focus-visible,
+.productDiscovery :is(button,a,[role="button"]):focus-visible { outline:2px solid #ded7cd; outline-offset:3px; }
+.merchDetailPage :is(.merchDetail,.merchDetailVisual,.merchDetailInfo,.merchDetailGallery,.merchDetailFacts,.merchVariantChooser) { min-width:0; }
+.merchDetailPage .merchDetailInfo :is(h1,h2,p,small) { overflow-wrap:anywhere; }
+.merchDetailPage .merchBuyRow { min-width:0; flex-wrap:wrap; }
+.merchDetailPage .merchVariantChooser :is(button,select) { min-height:40px; touch-action:manipulation; }
+.merchDetailPage :is(.merchBuyRow,.merchWaitlist) :is(input,button) { max-width:100%; min-height:40px; }
+.merchDetailPage .merchDetailRasterStage { max-width:100%; }
+.productDiscovery { min-width:0; }
+.productDiscovery :is(.completeSetGrid,.discoveryGrid,.completeSetCard,.discoveryCard,.completeSetMeta,.completeSetItems) { min-width:0; }
+.productDiscovery :is(.completeSetMeta,.discoveryCard) :is(h2,h3,p,small,span) { overflow-wrap:anywhere; }
+.productDiscovery :is(.completeSetActions,.discoveryCard) :is(a,button) { touch-action:manipulation; }
+.productDiscovery .completeSetActions { flex-wrap:wrap; }
+@media(max-width:760px) {
+ .merchDetailPage .merchDetail { max-width:100%; }
+ .productDiscovery :is(.completeSetGrid,.discoveryGrid) { max-width:100%; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .merchDetailPage :is(button,a,input,select),.productDiscovery :is(button,a) { transition:none!important; }
+}
