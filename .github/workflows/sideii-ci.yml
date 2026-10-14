@@ -17,13 +17,7 @@ jobs:
           cache: npm
       - name: Install locked dependencies
         run: npm ci
-      - name: Verify finance safety invariants
-        run: node scripts/check-finance-invariants.mjs
-      - name: Verify cart and inventory smoke scenarios
-        run: node scripts/check-cart-smoke.mjs
-      - name: Verify checkout safety guardrails
-        run: node scripts/check-checkout-guards.mjs
-      - name: Verify order notification security boundaries
-        run: node scripts/check-order-notification-guards.mjs
+      - name: Run all SIDE II safety checks
+        run: npm run qa
       - name: Build Next.js
         run: npm run build
