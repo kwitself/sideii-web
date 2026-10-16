@@ -21,4 +21,9 @@ for(const marker of [
 ]) assert.ok(submit.includes(marker),`Checkout guard missing: ${marker}`);
 assert.ok(submit.indexOf('if(!data?.order_id)')<submit.indexOf('update([])'),'Order confirmation must precede cart clear');
 assert.ok(submit.indexOf('setDone(finalData)')<submit.indexOf('update([])'),'Order completion must precede cart clear');
+
+assert.ok(submit.includes("if(data?.order_id){setDone({...data,post_order_error:"),'Created orders must be shown even if follow-up steps throw');
+assert.ok(source.includes("done.post_order_error&&<p role=\"alert\""),'Post-order failure warning must be visible');
+assert.ok(source.includes("done.store_value_error&&<p role=\"alert\""),'Gift/store credit failure warning must be visible');
+assert.ok(source.includes("done.gift_update_error&&<p role=\"alert\""),'Gift detail failure warning must be visible');
 console.log('Checkout safety source guardrails passed; this is NOT an end-to-end payment test.');
