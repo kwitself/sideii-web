@@ -1,3 +1,4 @@
+import {getPublicSiteUrl} from './lib/public-site-url';
 import {createClient} from '@supabase/supabase-js';
 import {getArchiveReleases,getStoreReleases} from './lib/catalogue';
 
@@ -14,7 +15,8 @@ function client(){
 }
 
 export default async function sitemap(){
- const base=(process.env.NEXT_PUBLIC_SITE_URL||'https://sideii-web.vercel.app').replace(/\/$/,'');
+ const base=getPublicSiteUrl();
+ if(!base)return [];
  const staticRoutes=['/','/store','/wear','/impact','/lethargia','/imprints/lethargia','/archive','/collections','/bundles','/artists','/credits','/timeline','/wholesale','/policies','/apply'];
  const [store,archive]=await Promise.all([getStoreReleases(),getArchiveReleases()]);
  const dynamic=[...(store||[]),...(archive||[])].map(x=>x.isMerch?'/store/'+x.slug:'/releases/'+x.slug);
