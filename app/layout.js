@@ -6,7 +6,10 @@ import GlobalAccount from './components/GlobalAccount';
 import {LocaleCurrencyProvider} from './components/LocaleCurrencyProvider';
 import CommerceTelemetry from './components/CommerceTelemetry';
 
-const siteUrl=process.env.NEXT_PUBLIC_SITE_URL||'https://sideii-web.vercel.app';
+const configuredSiteUrl=process.env.NEXT_PUBLIC_SITE_URL?.trim();
+const siteUrl=configuredSiteUrl||'http://localhost:3000';
+const canonicalSiteConfigured=Boolean(configuredSiteUrl);
+
 
 export const metadata = {
   metadataBase: new URL(siteUrl),
@@ -30,8 +33,8 @@ export const metadata = {
     description: 'Independent physical music label for physical editions, selected releases and artist-led objects.',
   },
   robots: {
-    index: true,
-    follow: true,
+    index: canonicalSiteConfigured,
+    follow: canonicalSiteConfigured,
   },
 };
 
