@@ -1,9 +1,10 @@
+import {getPublicSiteUrl} from './lib/public-site-url';
+
 export default function robots(){
- const base=(process.env.NEXT_PUBLIC_SITE_URL||'https://sideii-web.vercel.app').replace(/\/$/,'');
+ const base=getPublicSiteUrl();
+ if(!base)return {rules:[{userAgent:'*',disallow:'/'}]};
  return {
-  rules:[
-   {userAgent:'*',allow:'/',disallow:['/admin','/api/']},
-  ],
-  sitemap:base+'/sitemap.xml',
+  rules:[{userAgent:'*',allow:'/',disallow:['/admin','/api/','/order','/account','/checkout']}],
+  sitemap:base+'/sitemap.xml'
  };
 }
