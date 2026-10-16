@@ -1,3 +1,4 @@
+import {getPublicSiteUrl} from './lib/public-site-url';
 import './globals.css';
 import './physical-formats.css';
 import './cart-responsive.css';
@@ -6,17 +7,7 @@ import GlobalAccount from './components/GlobalAccount';
 import {LocaleCurrencyProvider} from './components/LocaleCurrencyProvider';
 import CommerceTelemetry from './components/CommerceTelemetry';
 
-const configuredSiteUrl=process.env.NEXT_PUBLIC_SITE_URL?.trim();
-const validPublicSiteUrl=(()=>{
-  if(!configuredSiteUrl)return null;
-  try{
-    const url=new URL(configuredSiteUrl);
-    if(url.protocol!=='https:'||url.username||url.password||url.search||url.hash)return null;
-    const host=url.hostname.toLowerCase();
-    if(host==='localhost'||host.endsWith('.localhost')||host==='127.0.0.1'||host==='0.0.0.0'||host==='[::1]'||!host.includes('.'))return null;
-    return url.origin;
-  }catch{return null;}
-})();
+const validPublicSiteUrl=getPublicSiteUrl();
 const siteUrl=validPublicSiteUrl||'http://localhost:3000';
 const canonicalSiteConfigured=Boolean(validPublicSiteUrl);
 
