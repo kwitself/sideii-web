@@ -56,3 +56,27 @@
  .globalBagDrawer { padding-left:14px; padding-right:14px; }
  .globalBagDrawer .orderDone strong { font-size:clamp(18px,6vw,29px); }
 }
+
+/* Final QA: prevent hidden receipt actions and horizontal scroll in the checkout drawer. */
+.globalBagDrawer {
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+.globalBagDrawer :is(.checkoutForm,.orderDone) { box-sizing:border-box; width:100%; min-width:0; }
+.globalBagDrawer :is(.orderDonePaymentPending,.orderDoneManage,.orderDoneIyziLink) { overflow-wrap:anywhere; word-break:normal; }
+.globalBagDrawer :is(.orderDoneIyziLink,.orderDoneManage):focus-visible {
+  outline:2px solid #ded7cc;
+  outline-offset:3px;
+}
+@media(max-width:380px){
+  .globalBagDrawer {
+    padding-left:max(14px,env(safe-area-inset-left));
+    padding-right:max(14px,env(safe-area-inset-right));
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .globalBagDrawer { scroll-behavior:auto; }
+  .globalBagDrawer :is(.orderDoneIyziLink,.orderDoneManage) { transition:none; }
+}
