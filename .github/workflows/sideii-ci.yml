@@ -28,6 +28,7 @@ jobs:
           node --check scripts/check-checkout-guards.mjs
           node --check scripts/check-order-notification-guards.mjs
           node --check scripts/check-payment-stock-guards.mjs
+          node --check scripts/check-launch-seo-guards.mjs
       - name: Run all SIDE II safety checks
         id: qa
         run: npm run qa
