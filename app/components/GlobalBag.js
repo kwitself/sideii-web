@@ -270,7 +270,7 @@ export default function GlobalBag(){
   })}catch{}
   setRecoveryToken(null);try{localStorage.removeItem('sideii-recovery-token')}catch{}
  }
- setDone(finalData);setStoreValue(v=>({...v,gift_code:'',gift_valid:false,gift_available:0,use_credit:false,message:''}));update([]);setCheckout(false);try{fetch('/api/orders/notify-v2',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({order_id:data?.order_id,notification_token:data?.notification_token,type:'received'})})}catch{}}catch(err){setError(err?.message||'Could not confirm the order. Your cart has been kept. Please check your orders before retrying.')}finally{setBusy(false)}}
+ setDone(finalData);setStoreValue(v=>({...v,gift_code:'',gift_valid:false,gift_available:0,use_credit:false,message:''}));update([]);setCheckout(false);try{fetch('/api/orders/notify-v2',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({order_id:data?.order_id,notification_token:data?.notification_token,type:'received'})})}catch{}}catch(err){if(data?.order_id){setDone({...data,post_order_error:'Your order was created, but a follow-up step could not be completed. Do not place the order again. Please contact support with your order number.'});update([]);setCheckout(false)}else{setError(err?.message||'Could not confirm the order. Your cart has been kept. Please check your orders before retrying.')}}finally{setBusy(false)}}
  const close=()=>{setOpen(false);setCheckout(false);setError('')};
  useEffect(()=>{if(!open)return;
   const previousOverflow=document.body.style.overflow;
