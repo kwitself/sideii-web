@@ -1,14 +1,13 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-
-// Static launch guardrail; does not make HTTP requests or change production data.
 const layout=readFileSync('app/layout.js','utf8');
-assert.ok(layout.includes('process.env.NEXT_PUBLIC_SITE_URL'), 'Site URL must be configurable');
-assert.ok(!layout.includes('sideii-web.vercel.app'), 'Old deployment URL must not be canonical');
-assert.ok(layout.includes("url.protocol!=='https:'"), 'Canonical URL must require HTTPS');
-assert.ok(layout.includes("host==='localhost'"), 'Localhost cannot enable indexing');
-assert.ok(layout.includes("const canonicalSiteConfigured=Boolean(validPublicSiteUrl)"), 'Indexing must depend on validated public URL');
-assert.ok(layout.includes('index: canonicalSiteConfigured'), 'No indexing before canonical URL setup');
-assert.ok(layout.includes('follow: canonicalSiteConfigured'), 'No link following before canonical URL setup');
-assert.ok(layout.includes("metadataBase: new URL(siteUrl)"), 'Metadata base must use configured site URL');
-console.log('Launch SEO fallback and canonical indexing guards passed (static verification).');
+const robots=readFileSync('app/robots.js','utf8');
+const sitemap=readFileSync('app/sitemap.js','utf8');
+const policy=readFileSync('app/lib/public-site-url.js','utf8');
+assert.ok(layout.includes('getPublicSiteUrl()')&&layout.includes('index: canonicalSiteConfigured'),'Metadata must enforce the canonical policy');
+assert.ok(policy.includes("url.protocol!=='https:'")&&policy.includes("host==='localhost'"),'HTTPS and local host guards required');
+assert.ok(robots.includes("if(!base)return")&&robots.includes("disallow:'/'"),'Robots must block staging without canonical URL');
+assert.ok(robots.includes("'/admin'")&&robots.includes("'/api/'")&&robots.includes("'/order'"),'Private pages must be disallowed');
+assert.ok(sitemap.includes('if(!base)return []'),'Sitemap must be empty without canonical URL');
+for(const [name,source] of [['robots',robots],['sitemap',sitemap],['layout',layout]])assert.ok(!source.includes('sideii-web.vercel.app'),name+' must not use obsolete host');
+console.log('Canonical URL, robots and sitemap guards passed (static checks).');
