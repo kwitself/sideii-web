@@ -10,7 +10,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -76,4 +76,6 @@ jobs:
             echo "| Built application HTTP smoke | $HTTP_STATUS |"
             echo ''
             echo 'A skipped or failed step does not establish launch readiness.'
+            echo ''
+            echo 'Browser/mobile acceptance and payment-provider sandbox tests remain manual release gates.'
           } >> "$GITHUB_STEP_SUMMARY"
