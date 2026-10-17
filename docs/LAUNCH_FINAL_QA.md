@@ -32,3 +32,32 @@ The CI workflow runs the full sequence on GitHub main. GitHub Actions run status
 **No-go** until GitHub Actions QA + production build + HTTP smoke are green, real browser/mobile validation is recorded, and payment provider sandbox + order email tests are signed off.
 
 HTTP smoke uses only GET requests. It does not authorize or perform a charge, stock movement, refund, invoice issuance, or production order.
+
+## Repeatable verification commands
+From repository root on a machine with Node 22 and locked dependencies:
+
+```bash
+npm ci
+npm run qa
+npm run build
+npm run start
+```
+
+In a separate terminal while the application is running:
+
+```bash
+npm run qa:http
+```
+
+CI performs the same sequence automatically and writes a step-by-step summary.
+A workflow configuration, commit status or deployment indicator **is not evidence** that tests passed. Inspect the actual Actions job log for the current commit.
+
+## Release status — pending external verification
+- [ ] GitHub Actions: install, source QA, production build and HTTP smoke all show success
+- [ ] Browser acceptance: mobile, desktop, keyboard and responsive cart/checkout
+- [ ] Payment provider sandbox: success, duplicate event, failure, refund and order reconciliation
+- [ ] Order email: delivery to customer and operator; no duplicate sends
+- [ ] Public HTTPS URL, production environment and SEO reviewed
+- [ ] Final go/no-go authorization from store owner
+
+No real payment, financial posting or order is created by the QA scripts above.
