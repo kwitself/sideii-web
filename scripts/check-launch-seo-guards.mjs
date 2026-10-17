@@ -13,7 +13,7 @@ for(const [name,source] of [['robots',robots],['sitemap',sitemap],['layout',layo
 // Execute the exact production URL validator rather than only searching for source markers.
 const encoded=Buffer.from(policy,'utf8').toString('base64');
 const {getPublicSiteUrl}=await import('data:text/javascript;base64,'+encoded);
-for(const raw of [undefined,'','http://sideii.com','https://localhost:3000','https://127.0.0.1','https://192.168.1.10','https://10.0.0.5','https://172.16.0.1','https://172.31.255.254','https://169.254.3.2','https://192.168.254.10','https://0.0.0.0','https://224.0.0.1','https://sideii.local','https://sideii.internal','https://user:password@sideii.com','https://sideii.com?utm=1','not a url']){
+for(const raw of ['','   ','http://sideii.com','https://localhost:3000','https://127.0.0.1','https://192.168.1.10','https://10.0.0.5','https://172.16.0.1','https://172.31.255.254','https://169.254.3.2','https://192.168.254.10','https://0.0.0.0','https://224.0.0.1','https://sideii.local','https://sideii.internal','https://user:password@sideii.com','https://sideii.com?utm=1','not a url']){
  assert.equal(getPublicSiteUrl(raw),null,'Must reject unsafe canonical site URL: '+raw);
 }
 assert.equal(getPublicSiteUrl(' https://SIDEII.COM/store/ '),'https://sideii.com','Valid canonical must normalize to origin');
