@@ -12,7 +12,8 @@
     "qa:checkout": "node scripts/check-checkout-guards.mjs",
     "qa:notifications": "node scripts/check-order-notification-guards.mjs",
     "qa:inventory": "node scripts/check-payment-stock-guards.mjs",
-    "qa:seo": "node scripts/check-launch-seo-guards.mjs"
+    "qa:seo": "node scripts/check-launch-seo-guards.mjs",
+    "qa:http": "node scripts/check-http-smoke.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.58.0",
