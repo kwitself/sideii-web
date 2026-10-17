@@ -54,7 +54,15 @@ jobs:
             tail -n 100 /tmp/sideii-next.log
             exit 1
           fi
-          npm run qa:http
+          npm run qa:http || { tail -n 120 /tmp/sideii-next.log; exit 1; }
+      - name: Upload failed build runtime logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sideii-next-runtime-logs
+          path: /tmp/sideii-next.log
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Record QA outcome
         if: always()
         env:
