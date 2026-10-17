@@ -29,12 +29,32 @@ jobs:
           node --check scripts/check-order-notification-guards.mjs
           node --check scripts/check-payment-stock-guards.mjs
           node --check scripts/check-launch-seo-guards.mjs
+          node --check scripts/check-http-smoke.mjs
       - name: Run all SIDE II safety checks
         id: qa
         run: npm run qa
       - name: Build Next.js
         id: build
         run: npm run build
+      - name: Read-only HTTP smoke against built app
+        id: http
+        run: |
+          npm run start > /tmp/sideii-next.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          ready=0
+          for i in $(seq 1 30); do
+            if curl --silent --fail --output /dev/null http://127.0.0.1:3000/; then
+              ready=1
+              break
+            fi
+            sleep 2
+          done
+          if [ "$ready" -ne 1 ]; then
+            tail -n 100 /tmp/sideii-next.log
+            exit 1
+          fi
+          npm run qa:http
       - name: Record QA outcome
         if: always()
         env:
@@ -42,6 +62,7 @@ jobs:
           SYNTAX_STATUS: ${{ steps.syntax.outcome }}
           QA_STATUS: ${{ steps.qa.outcome }}
           BUILD_STATUS: ${{ steps.build.outcome }}
+          HTTP_STATUS: ${{ steps.http.outcome }}
         run: |
           {
             echo '## SIDE:II release QA'
@@ -52,6 +73,7 @@ jobs:
             echo "| Node syntax | $SYNTAX_STATUS |"
             echo "| npm run qa | $QA_STATUS |"
             echo "| Next.js production build | $BUILD_STATUS |"
+            echo "| Built application HTTP smoke | $HTTP_STATUS |"
             echo ''
             echo 'A skipped or failed step does not establish launch readiness.'
           } >> "$GITHUB_STEP_SUMMARY"
