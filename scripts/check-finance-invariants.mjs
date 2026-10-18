@@ -68,8 +68,9 @@ csv('test.csv',['Name','Amount','Note'],[
  ['Whitespace',3,'  +evil']
 ]);
 assert.equal(blobs.length,1,'Exactly one CSV download should be built');
-const output=await blobs[0].text();
-assert.ok(output.startsWith('\uFEFF'),'CSV must actually begin with a BOM');
+const bytes=new Uint8Array(await blobs[0].arrayBuffer());
+assert.deepEqual([...bytes.slice(0,3)],[0xEF,0xBB,0xBF],'CSV must actually begin with a UTF-8 BOM');
+const output=new TextDecoder('utf-8').decode(bytes);
 assert.ok(output.includes('\r\n'),'CSV must contain CRLF separators');
 assert.ok(output.includes('Türkçe'),'CSV must preserve Unicode');
 assert.ok(output.includes('"-42"'),'Negative numeric amounts must stay numeric');
