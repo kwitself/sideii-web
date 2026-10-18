@@ -35,7 +35,7 @@ export default function ReleaseWorkspace({onCreated}){
    if(!window.confirm('Publish this release publicly now? Choose Cancel and SAVE DRAFT if it is not ready.')){setSaving(false);return;}
   }
   const slugBase=slugify(`${form.catalogue_no}-${form.title}`)||`release-${Date.now()}`;
-  const {data:product,error:pErr}=await supabase.from('products').insert({catalogue_no:form.catalogue_no.trim(),slug:slugBase,title:form.title.trim(),artist_project:form.artist_project.trim()||null,description:form.description.trim()||null,imprint:form.imprint,has_shrinkwrap:form.has_shrinkwrap,release_date:form.release_date||null,credits:form.credits.trim()||null,tracklist:form.tracklist.split('\n').map(x=>x.trim()).filter(Boolean),status:dbStatus,is_public:dbStatus==='active'||dbStatus==='forthcoming',product_origin:form.product_origin,original_label:form.product_origin==='distributed'?form.original_label.trim():null,original_catalogue_no:form.product_origin==='distributed'?(form.original_catalogue_no.trim()||null):null,barcode:form.barcode.trim()||null}).select('id').single();
+  const {data:product,error:pErr}=await supabase.from('products').insert({catalogue_no:form.catalogue_no.trim(),slug:slugBase,title:form.title.trim(),artist_project:form.artist_project.trim()||null,description:form.description.trim()||null,imprint:form.imprint,has_shrinkwrap:form.has_shrinkwrap,release_date:form.release_date||null,credits:form.credits.trim()||null,tracklist:form.tracklist.split('\n').map(x=>x.trim()).filter(Boolean),status:dbStatus,is_public:false,product_origin:form.product_origin,original_label:form.product_origin==='distributed'?form.original_label.trim():null,original_catalogue_no:form.product_origin==='distributed'?(form.original_catalogue_no.trim()||null):null,barcode:form.barcode.trim()||null}).select('id').single();
   if(pErr){setSaving(false);setMessage(`Product: ${pErr.message}`);return;}
   const stock=Math.max(0,Number.parseInt(form.stock||'0',10)||0); const price=Math.max(0,Number.parseFloat(form.price||'0')||0);
   const sku=`${form.catalogue_no.trim()}-${form.format}`.replace(/\s+/g,'-');
@@ -52,6 +52,10 @@ export default function ReleaseWorkspace({onCreated}){
     const {error:updateErr}=await supabase.from('products').update({artwork_path:path}).eq('id',product.id);
     if(updateErr) artworkWarning=` Artwork link failed: ${updateErr.message}`;
    }
+  }
+  if(!artworkWarning&&(dbStatus==='active'||dbStatus==='forthcoming')){
+   const {error:publishError}=await supabase.from('products').update({is_public:true}).eq('id',product.id);
+   if(publishError)artworkWarning=` Publishing failed: ${publishError.message}. Product remains hidden.`;
   }
   setSaving(false);
   setMessage((draft?'Draft saved.':'Release created.')+artworkWarning);
