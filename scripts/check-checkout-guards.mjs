@@ -26,4 +26,5 @@ assert.ok(submit.includes("if(data?.order_id){setDone({...data,post_order_error:
 assert.ok(source.includes("done.post_order_error&&<p role=\"alert\""),'Post-order failure warning must be visible');
 assert.ok(source.includes("done.store_value_error&&<p role=\"alert\""),'Gift/store credit failure warning must be visible');
 assert.ok(source.includes("done.gift_update_error&&<p role=\"alert\""),'Gift detail failure warning must be visible');
+assert.ok(submit.includes("void fetch('/api/orders/notify-v2'")&&submit.includes(".catch(()=>{})"),'Order notification rejection must not break completed checkout');
 console.log('Checkout safety source guardrails passed; this is NOT an end-to-end payment test.');
