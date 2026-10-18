@@ -118,10 +118,13 @@ export default function AdminDashboard(){
   setBulkSaving(true);setMessage('');
   try{
    if(['active','draft','archived','forthcoming'].includes(action)){
-    if(action==='active'){
+    if(action==='active'||action==='forthcoming'){
+     const fixtures=products.filter(p=>ids.includes(p.id)&&(/^qa-/i.test(String(p.slug||''))||(p.product_variants||[]).some(v=>/^QA-/i.test(String(v.sku||'')))));
+     if(fixtures.length){setMessage('QA test products cannot be publicly published through bulk actions.');setBulkSaving(false);return}
      const blocked=products.filter(p=>ids.includes(p.id)).map(p=>({p,qa:evaluateProductQa(p)})).filter(x=>!x.qa.ready);
      if(blocked.length){setMessage(blocked.length+' selected product(s) blocked by QA. Run QA before publishing.');setQaReport(blocked[0]);setBulkSaving(false);return}
     }
+    if((action==='active'||action==='forthcoming')&&!window.confirm('Publish '+ids.length+' selected products publicly?')){setBulkSaving(false);return}
     const isPublic=action==='active'||action==='forthcoming';
     const {error}=await supabase.from('products').update({status:action,is_public:isPublic}).in('id',ids);
     if(error)throw error;
@@ -144,10 +147,11 @@ export default function AdminDashboard(){
  }
 
  async function changeStatus(p,status){
-  if(status==='active'){
+  if(status==='active'||status==='forthcoming'){
+   if(/^qa-/i.test(String(p.slug||''))||(p.product_variants||[]).some(v=>/^QA-/i.test(String(v.sku||'')))){setMessage('QA test fixtures must remain hidden from the public storefront.');return}
    const qa=evaluateProductQa(p);
    if(!qa.ready){setQaReport({product:p,qa});setMessage('Publish blocked: '+qa.blockers.length+' blocker(s) must be fixed.');return}
-   if(qa.warnings.length&&!window.confirm(qa.warnings.length+' warning(s) remain. Publish anyway?'))return;
+   if(!window.confirm('Publish '+p.title+' publicly as '+status.toUpperCase()+'?'+(qa.warnings.length?' '+qa.warnings.length+' warning(s) remain.':'')))return;
   }
   setStatusSaving(p.id); setMessage('');
   const isPublic=status==='active'||status==='forthcoming';
