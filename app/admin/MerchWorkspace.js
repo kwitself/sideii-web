@@ -11,6 +11,10 @@ export default function MerchWorkspace({onCreated,onContinue}){
  const set=(k,v)=>setForm(p=>({...p,[k]:v}));
  async function save(){
   if(!form.title.trim()){setMessage('Product name is required.');return}
+  if(form.status==='active'||form.status==='forthcoming'){
+   if(!(Number(form.price)>0)){setMessage('Add a positive sale price before publishing, or keep this as DRAFT.');return;}
+   if(!window.confirm('Publish this merch product publicly now? Choose Cancel and select DRAFT for preparation.'))return;
+  }
   setSaving(true);setMessage('');
   const {data:createdId,error}=await supabase.rpc('admin_create_merch',{
    p_title:form.title.trim(),p_category:form.category,p_imprint:form.imprint,p_description:form.description.trim()||null,p_status:form.status,
