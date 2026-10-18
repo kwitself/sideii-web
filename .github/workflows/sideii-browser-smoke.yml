@@ -1,0 +1,45 @@
+name: SIDE II Browser Smoke
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked app dependencies
+        run: npm ci
+      - name: Install browser test runner (CI only, without lockfile edits)
+        run: npm install --no-save --package-lock=false playwright@1.56.1
+      - name: Install headless Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Build Next.js
+        run: npm run build
+      - name: Start and exercise production site in Chromium
+        run: |
+          npm run start > /tmp/sideii-browser-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          ready=0
+          for i in $(seq 1 45); do
+            if curl --fail --silent --output /dev/null http://127.0.0.1:3000/; then ready=1; break; fi
+            sleep 2
+          done
+          if [ "$ready" -ne 1 ]; then tail -n 100 /tmp/sideii-browser-server.log; exit 1; fi
+          node scripts/check-browser-smoke.mjs
+      - name: Upload browser server logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sideii-browser-smoke-logs
+          path: /tmp/sideii-browser-server.log
+          if-no-files-found: ignore
+          retention-days: 7
