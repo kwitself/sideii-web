@@ -5,7 +5,7 @@ import {chromium} from 'playwright';
 const base=(process.env.BROWSER_BASE_URL||'http://127.0.0.1:3000').replace(/\/$/,'');
 const browser=await chromium.launch({headless:true});
 try{
- for(const viewport of [{width:375,height:812},{width:768,height:1024},{width:1440,height:900}]){
+ for(const viewport of [{width:320,height:720},{width:375,height:812},{width:768,height:1024},{width:1440,height:900},{width:1920,height:1080}]){
   const page=await browser.newPage({viewport,deviceScaleFactor:1});
   const errors=[];
   page.on('pageerror',e=>errors.push(e.message));
@@ -20,7 +20,8 @@ try{
    }));
    assert.ok(state.title.length>0,`${path}: missing document title`);
    assert.ok(state.content>30,`${path}: no visible document content`);
-   // Report overflow, but avoid false launch failures from decorative full-bleed sections.
+   assert.ok(state.horizontalOverflow<=4,`${path} @${viewport.width}px: horizontal overflow ${state.horizontalOverflow}px`);
+   // A small pixel tolerance accommodates fractional rendering differences.
    console.log(JSON.stringify({page:path,viewport:viewport.width,title:state.title,
     horizontalOverflowPx:state.horizontalOverflow,jsErrors:errors.slice(-5)}));
    // Exercise the real shared cart drawer without modifying cart contents or submitting checkout.
@@ -47,5 +48,5 @@ try{
   }
   await page.close();
  }
- console.log('Browser smoke: home/store and bag open/close verified at 375, 768 and 1440 pixels (no checkout submission).');
+ console.log('Browser smoke: home/store and bag open/close verified at 320, 375, 768, 1440 and 1920 pixels (no checkout submission).');
 }finally{await browser.close()}
