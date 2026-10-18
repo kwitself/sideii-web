@@ -8,13 +8,14 @@
     "start": "next start",
     "qa:cart": "node scripts/check-cart-smoke.mjs",
     "qa:finance": "node scripts/check-finance-invariants.mjs",
-    "qa": "npm run qa:cart && npm run qa:finance && npm run qa:checkout && npm run qa:notifications && npm run qa:inventory && npm run qa:seo && npm run qa:iyzilink",
+    "qa": "npm run qa:cart && npm run qa:finance && npm run qa:checkout && npm run qa:notifications && npm run qa:inventory && npm run qa:seo && npm run qa:iyzilink && npm run qa:catalogue",
     "qa:checkout": "node scripts/check-checkout-guards.mjs",
     "qa:notifications": "node scripts/check-order-notification-guards.mjs",
     "qa:inventory": "node scripts/check-payment-stock-guards.mjs",
     "qa:seo": "node scripts/check-launch-seo-guards.mjs",
     "qa:http": "node scripts/check-http-smoke.mjs",
-    "qa:iyzilink": "node scripts/check-iyzilink-guards.mjs"
+    "qa:iyzilink": "node scripts/check-iyzilink-guards.mjs",
+    "qa:catalogue": "node scripts/check-catalogue-launch-guards.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.58.0",
