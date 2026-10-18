@@ -12,7 +12,7 @@ for(const marker of [
  "if(created.error)",
  "if(!data?.order_id)",
  "Your cart has been kept",
- "catch(err){setError(",
+ "catch(err){if(data?.order_id){",
  "finally{setBusy(false)}",
  "reserve_order_value",
  "get_guest_order_payment_link",
