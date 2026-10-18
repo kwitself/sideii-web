@@ -61,3 +61,14 @@ A workflow configuration, commit status or deployment indicator **is not evidenc
 - [ ] Final go/no-go authorization from store owner
 
 No real payment, financial posting or order is created by the QA scripts above.
+
+## Automated real-browser acceptance
+The separate `SIDE II Browser Smoke` workflow builds the site, starts Next.js,
+and opens Home and Store in real headless Chromium at 375, 768 and 1440 px.
+It checks HTTP responses, document content and uncaught page errors, and logs
+horizontal overflow without failing solely for decorative overflow.
+It does **not** complete checkout, contact the payment provider or create an order.
+
+Payment provider sandbox acceptance remains a separate external-system gate:
+verify success/failure/duplicate callback, stock, email and refunds using
+test credentials, with the store owner reviewing results before enabling live charging.
