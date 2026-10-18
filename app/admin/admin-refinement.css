@@ -1,0 +1,101 @@
+/* Control Room: shared, monochrome workspace rules. Loaded after legacy styles. */
+.adminApp {
+  --admin-bg:#0a0a0a; --admin-surface:#111; --admin-surface-raised:#171717;
+  --admin-text:#e5e5e5; --admin-muted:#b0b0b0; --admin-dim:#999;
+  background:#0a0a0a; color:#e5e5e5;
+}
+.adminApp .adminMain { max-width:1700px; margin-inline:auto; min-width:0; padding-inline:clamp(24px,3vw,56px); }
+.adminApp .adminTop { min-height:150px; padding-block:30px; }
+.adminApp .adminTop h1 { font-size:clamp(36px,3.6vw,58px)!important; }
+.adminApp .adminViewSection { min-height:0; }
+.adminApp .adminSection { padding-block:28px!important; }
+.adminApp :is(.adminPanel,.financeBox,.overviewMetricGrid>article) { background:#111; border-color:#333; box-shadow:none; }
+.adminApp .adminRail { background:#0c0c0c; }
+.adminApp .adminNav { overflow-x:hidden!important; }
+.adminApp .adminNav a { font-size:13px!important; min-height:42px!important; color:#bdbdbd; transform:none; }
+.adminApp .adminNav a i { color:#999; }
+.adminApp .adminNav a.active { background:#242424; border-color:#454545; color:#fafafa; transform:none; }
+.adminApp .adminNav a:before { display:none; }
+.adminApp .sectionLabel>span { font-size:12px; letter-spacing:.1em; color:#c3c3c3; }
+.adminApp .sectionLabel>p { font-size:13px; color:#aaa; line-height:1.5; }
+.adminApp :is(.emptyNote,.dbNotice,.workspaceMessage) { font-size:14px; line-height:1.6; color:#bdbdbd; }
+.adminApp .dbNotice { padding:14px 18px; border:1px solid #555; background:#191919; overflow-wrap:anywhere; }
+.adminApp .adminPanel :is(label>span,header>span), .adminApp .financeNavGroupLabel { font-size:11px; color:#bbb; }
+.adminApp :is(.adminPanel,.financeBox) :is(input:not([type=checkbox]):not([type=radio]),select,textarea) { font-size:14px!important; min-height:42px; }
+.adminApp :is(.growthOpsGrid,.fulfillmentGrid,.catalogueOpsGrid,.analyticsShell) { align-items:start; }
+.adminApp .growthList:has(.auditRow) { max-height:560px; overflow:auto; }
+.adminApp .growthList .auditRow { padding-block:12px; }
+.adminApp .growthList .auditRow :is(span,small,time) { font-size:11px; color:#aaa; line-height:1.5; }
+.adminApp .growthList .auditRow b { font-size:14px; }
+.adminApp .analyticsHero { min-height:340px; }
+.adminApp .analyticsFoot { position:static; margin-top:16px; padding-block:12px; }
+.adminApp .inventoryCard { min-height:160px; }
+.adminApp .inventoryList { margin-top:0; }
+.adminApp .inventoryRow { min-width:0; gap:16px; }
+.adminApp .inventoryRow :is(span,small,label) { font-size:12px; line-height:1.5; }
+.adminApp .inventoryRow strong { font-size:16px; }
+.adminApp .inventoryRow input[readonly] { color:#aaa; background:#1b1b1b; cursor:default; }
+.adminApp .customerList>article { display:flex; justify-content:space-between; gap:20px; padding:20px 24px; border-bottom:1px solid #303030; }
+.adminApp .customerList>article>div { min-width:0; display:grid; gap:6px; }
+.adminApp .customerList strong { font-size:16px; font-weight:500; }
+.adminApp .customerList :is(span,time) { font-size:13px; color:#b0b0b0; overflow-wrap:anywhere; }
+.adminApp .loadMoreButton { margin-top:16px; min-height:44px; }
+.adminApp .financeNavGroups { grid-template-columns:minmax(0,2fr) repeat(3,minmax(0,1fr)); align-items:start; }
+.adminApp .financeNavGroup { background:#111; padding:15px; }
+.adminApp .financeNavButtons button { font-size:11px; min-height:40px; line-height:1.4; }
+.adminApp .financeKpi { padding:22px; gap:10px; }
+.adminApp .financeKpi :is(span,small) { font-size:12px; color:#b6b6b6; }
+.adminApp .financeKpi strong { font-variant-numeric:tabular-nums; }
+.adminApp .financeBox :is(p,small) { font-size:12px; color:#b0b0b0; }
+.adminApp .financeHealth { padding:16px; }
+.adminApp .financeHealth :is(span,small,strong) { font-size:11px; line-height:1.5; }
+.adminApp .financeRows>div { font-size:13px; color:#bdbdbd; }
+.adminApp .financeAuditScroll { overscroll-behavior-x:contain; }
+.adminApp .financeAuditScroll:focus-visible { outline:2px solid #ddd; }
+.sideii-admin-page .globalBagTrigger { display:none!important; }
+.sideii-admin-page .adminSession { position:relative; inset:auto; justify-content:flex-end; min-height:44px; margin:0; border-width:0 0 1px; font-size:11px; background:#0c0c0c; }
+.sideii-admin-page .adminSession button { min-height:32px; font-size:11px; color:#ccc; }
+.adminApp .analyticsScope { color:#aaa; font-size:13px; line-height:1.6; margin:0 0 20px; }
+.adminApp .adminFooter { color:#999; font-size:10px; padding-top:28px; height:70px; }
+.editOverlay { z-index:10000; padding:10px; }
+.editOverlay .editModal { color-scheme:dark; background:#111; border-color:#444; max-height:calc(100dvh - 20px); }
+.editOverlay .editModal :is(input,select,textarea) { font-size:14px; }
+.editOverlay .editModal :is(button,input,select,textarea):focus-visible { outline:2px solid #ddd!important; outline-offset:3px; }
+.adminApp .orderModal:focus, .editOverlay .editModal:focus { outline:none; }
+@media(min-width:801px) {
+  .adminApp { display:grid; grid-template-columns:220px minmax(0,1fr); }
+  .adminApp .adminRail { position:sticky!important; top:0; height:100dvh!important; width:220px!important; min-width:220px!important; padding:24px 14px!important; }
+  .adminApp .adminNav { display:flex!important; flex-direction:column!important; padding-block:16px!important; }
+  .adminApp .adminNav a { min-width:0; padding:10px; }
+}
+@media(max-width:1200px) {
+  .adminApp .financeNavGroups { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:800px) {
+  .adminApp { display:block; }
+  .adminApp .adminMain { width:100%; padding-inline:16px!important; }
+  .adminApp .adminTop { min-height:0!important; padding-block:24px!important; }
+  .adminApp .adminRail { max-width:calc(100vw - 32px); }
+  .adminApp .adminRail .adminNav { flex-direction:column!important; }
+  .adminApp .productPanel { overflow:visible!important; }
+  .adminApp .productPanel :is(.tableHead,.productRow) { min-width:0!important; width:100%; }
+  .adminApp .productPanel .tableHead { display:none!important; }
+  .adminApp .productPanel .productRow { grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important; }
+  .adminApp .productPanel .productRow>.formatPill { display:inline-flex!important; background:#171717!important; border-color:#444!important; font-size:11px!important; }
+  .adminApp .productPanel .productRow>.statusSelect { display:block!important; background:#171717!important; border-color:#444!important; }
+  .adminApp .productPanel .productRow .rowActions { display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr))!important; }
+  .adminApp .productPanel .productRow .rowActions :is(a,button) { min-height:44px!important; font-size:11px!important; padding:10px 8px!important; }
+  .adminApp .productPanel .productRow .editionCell small { font-size:11px!important; }
+  .adminApp .productPanel .productRow>span::before { font-size:10px!important; }
+  .adminApp :is(.inventoryRow,.customerList>article) { flex-wrap:wrap; }
+  .adminApp .inventoryRow { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
+  .adminApp .inventoryRow>div:first-child { grid-column:1/-1; }
+  .adminApp .inventoryRow button { min-height:44px; }
+  .adminApp .financeNavGroups { grid-template-columns:minmax(0,1fr); }
+  .adminApp .financeNavButtons button { flex:1 1 120px; min-height:44px; }
+  .adminApp .sectionLabel { flex-direction:column; align-items:flex-start; }
+  .adminApp .customerList>article { padding:16px; }
+  .adminApp :is(.adminPanel,.financeBox) :is(input:not([type=checkbox]):not([type=radio]),select,textarea) { font-size:16px!important; }
+  .editOverlay .editModal { padding:18px!important; width:calc(100vw - 20px)!important; }
+  .editOverlay .editModal :is(input,select,textarea) { font-size:16px!important; }
+}
