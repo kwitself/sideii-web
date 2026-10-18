@@ -27,4 +27,5 @@ assert.ok(source.includes("done.post_order_error&&<p role=\"alert\""),'Post-orde
 assert.ok(source.includes("done.store_value_error&&<p role=\"alert\""),'Gift/store credit failure warning must be visible');
 assert.ok(source.includes("done.gift_update_error&&<p role=\"alert\""),'Gift detail failure warning must be visible');
 assert.ok(submit.includes("void fetch('/api/orders/notify-v2'")&&submit.includes(".catch(()=>{})"),'Order notification rejection must not break completed checkout');
+assert.ok(source.includes('trustedIyziLink(done.payment_link.url)'),'External payment URLs must pass provider hostname validation');
 console.log('Checkout safety source guardrails passed; this is NOT an end-to-end payment test.');
