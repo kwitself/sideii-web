@@ -29,6 +29,11 @@ export default function ReleaseWorkspace({onCreated}){
   if(!form.catalogue_no.trim()||!form.title.trim()){setMessage('Catalogue no. and title are required.');return;} if(form.product_origin==='distributed'&&!form.original_label.trim()){setMessage('Original label is required for Selected / Distribution.');return;}
   setSaving(true);setMessage('');
   const dbStatus=draft?'draft':(statusMap[form.status]||'draft');
+  if(dbStatus==='active'||dbStatus==='forthcoming'){
+   if(!(Number(form.price)>0)){setSaving(false);setMessage('Add a positive sale price before publishing. Save as draft to continue setup.');return;}
+   if(!artwork){setSaving(false);setMessage('Add cover artwork before publishing. Save as draft to continue setup.');return;}
+   if(!window.confirm('Publish this release publicly now? Choose Cancel and SAVE DRAFT if it is not ready.')){setSaving(false);return;}
+  }
   const slugBase=slugify(`${form.catalogue_no}-${form.title}`)||`release-${Date.now()}`;
   const {data:product,error:pErr}=await supabase.from('products').insert({catalogue_no:form.catalogue_no.trim(),slug:slugBase,title:form.title.trim(),artist_project:form.artist_project.trim()||null,description:form.description.trim()||null,imprint:form.imprint,has_shrinkwrap:form.has_shrinkwrap,release_date:form.release_date||null,credits:form.credits.trim()||null,tracklist:form.tracklist.split('\n').map(x=>x.trim()).filter(Boolean),status:dbStatus,is_public:dbStatus==='active'||dbStatus==='forthcoming',product_origin:form.product_origin,original_label:form.product_origin==='distributed'?form.original_label.trim():null,original_catalogue_no:form.product_origin==='distributed'?(form.original_catalogue_no.trim()||null):null,barcode:form.barcode.trim()||null}).select('id').single();
   if(pErr){setSaving(false);setMessage(`Product: ${pErr.message}`);return;}
