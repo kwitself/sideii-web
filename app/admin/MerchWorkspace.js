@@ -1,6 +1,6 @@
 'use client';
 
-import {useState} from 'react';
+import {useEffect,useState} from 'react';
 import {supabase} from '../lib/supabase';
 
 const initial={title:'',category:'apparel',imprint:'sideii',description:'',status:'draft',price:'',stock:'',size:'',color:'BLACK',style:'',weight_g:'',sku:''};
@@ -8,16 +8,15 @@ const initial={title:'',category:'apparel',imprint:'sideii',description:'',statu
 export default function MerchWorkspace({onCreated,onContinue}){
  const [form,setForm]=useState(initial),[saving,setSaving]=useState(false),[message,setMessage]=useState('');
  const [imagePreview,setImagePreview]=useState('');
+ useEffect(()=>()=>{if(imagePreview)URL.revokeObjectURL(imagePreview)},[imagePreview]);
  const set=(k,v)=>setForm(p=>({...p,[k]:v}));
  async function save(){
   if(!form.title.trim()){setMessage('Product name is required.');return}
-  if(form.status==='active'||form.status==='forthcoming'){
-   if(!(Number(form.price)>0)){setMessage('Add a positive sale price before publishing, or keep this as DRAFT.');return;}
-   if(!window.confirm('Publish this merch product publicly now? Choose Cancel and select DRAFT for preparation.'))return;
-  }
+  if(saving||!supabase)return;
   setSaving(true);setMessage('');
+  try {
   const {data:createdId,error}=await supabase.rpc('admin_create_merch',{
-   p_title:form.title.trim(),p_category:form.category,p_imprint:form.imprint,p_description:form.description.trim()||null,p_status:form.status,
+   p_title:form.title.trim(),p_category:form.category,p_imprint:form.imprint,p_description:form.description.trim()||null,p_status:'draft',
    p_price:Math.max(0,Number(form.price)||0),p_stock:Math.max(0,parseInt(form.stock||'0',10)||0),p_size:form.size.trim()||null,
    p_color:form.color.trim()||null,p_style:form.style.trim()||null,p_weight_g:form.weight_g?Math.max(0,parseInt(form.weight_g,10)||0):null,p_sku:form.sku.trim()||null
   });
@@ -29,6 +28,7 @@ export default function MerchWorkspace({onCreated,onContinue}){
    createdProduct=data||null;
   }
   setForm(initial);setImagePreview('');if(onCreated)await onCreated();if(createdProduct&&onContinue)onContinue(createdProduct);
+  } catch(error){setMessage(error.message||'Could not create the product.');} finally{setSaving(false);}
  }
  return <section id="new-merch" className="adminSection merchWorkspace"><div className="sectionLabel"><span>NEW / MERCH WORKSPACE</span><p>Apparel, objects, patches and accessories.</p></div>
  <div className="adminPanel merchForm merchCreateV2">
@@ -43,7 +43,7 @@ export default function MerchWorkspace({onCreated,onContinue}){
     <label><span>PRODUCT NAME</span><input value={form.title} onChange={e=>set('title',e.target.value)} placeholder="SIDE:II Logo T-Shirt"/></label>
     <label><span>CATEGORY</span><select value={form.category} onChange={e=>set('category',e.target.value)}><option value="apparel">APPAREL / T-SHIRT</option><option value="mug">MUG</option><option value="lighter">LIGHTER</option><option value="beanie">BEANIE</option><option value="patch">PATCH</option><option value="accessory">OTHER ACCESSORY</option></select></label>
     <label><span>IMPRINT</span><select value={form.imprint} onChange={e=>set('imprint',e.target.value)}><option value="sideii">SIDE:II</option><option value="lethargia">LETHARGIA RECORDS</option></select></label>
-    <label><span>STATUS</span><select value={form.status} onChange={e=>set('status',e.target.value)}><option value="draft">DRAFT</option><option value="forthcoming">FORTHCOMING</option><option value="active">AVAILABLE</option></select></label>
+    <label><span>STATUS</span><input value="DRAFT — publish after gallery and variants are ready" readOnly/></label>
     <label><span>PRICE / TRY</span><input type="number" min="0" step="0.01" inputMode="decimal" value={form.price} onChange={e=>set('price',e.target.value)} placeholder="0.00"/></label>
     <label><span>INITIAL STOCK</span><input type="number" min="0" value={form.stock} onChange={e=>set('stock',e.target.value)} placeholder="0"/></label>
     {form.category==='apparel'&&<label><span>SIZE</span><select value={form.size} onChange={e=>set('size',e.target.value)}><option value="">SELECT SIZE</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></select></label>}

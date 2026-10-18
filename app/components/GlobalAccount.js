@@ -10,6 +10,11 @@ import {useLocaleCurrency} from './LocaleCurrencyProvider';
 import PostPurchaseOffers from './PostPurchaseOffers';
 
 export default function GlobalAccount(){
+ const pathname=usePathname();
+ if(pathname==='/admin'||pathname?.startsWith('/admin/'))return null;
+ return <StorefrontAccount/>;
+}
+function StorefrontAccount(){
  const drawerRef=useRef(null);
  const {money,t}=useLocaleCurrency();
  const pathname=usePathname();

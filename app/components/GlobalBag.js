@@ -31,6 +31,11 @@ function ReservationCountdown({expiresAt}){
  return <div className={'orderReservationClock '+(left<=0?'expired':'')}><span>STOCK RESERVED</span><b>{left>0?mm+':'+ss:'EXPIRED'}</b><small>{left>0?'Complete payment before the reservation expires.':'Recheck availability before trying again.'}</small></div>;
 }
 export default function GlobalBag(){
+ const pathname=usePathname();
+ if(pathname==='/admin'||pathname?.startsWith('/admin/'))return null;
+ return <StorefrontBag/>;
+}
+function StorefrontBag(){
  const drawerRef=useRef(null);
  const {money:fmt,t}=useLocaleCurrency();
  const pathname=usePathname(),[cart,setCart]=useState([]),[open,setOpen]=useState(false),[checkout,setCheckout]=useState(false),[busy,setBusy]=useState(false),[done,setDone]=useState(null),[error,setError]=useState(''),[quote,setQuote]=useState(null),[promoInput,setPromoInput]=useState(''),[promoCode,setPromoCode]=useState(''),[promoBusy,setPromoBusy]=useState(false),[quoteError,setQuoteError]=useState('');
