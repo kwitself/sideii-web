@@ -23,9 +23,21 @@ try{
    // Report overflow, but avoid false launch failures from decorative full-bleed sections.
    console.log(JSON.stringify({page:path,viewport:viewport.width,title:state.title,
     horizontalOverflowPx:state.horizontalOverflow,jsErrors:errors.slice(-5)}));
+   // Exercise the real shared cart drawer without modifying cart contents or submitting checkout.
+   const bag=page.locator('button.globalBagTrigger');
+   await bag.waitFor({state:'visible',timeout:15000});
+   await bag.click();
+   const drawer=page.locator('aside.globalBagDrawer[role="dialog"]');
+   await drawer.waitFor({state:'visible',timeout:10000});
+   assert.equal(await drawer.getAttribute('aria-hidden'),'false','Open bag must be accessible');
+   assert.equal(await bag.count(),0,'Floating bag trigger should hide while drawer is open');
+   await page.locator('button.globalBagClose').click();
+   await bag.waitFor({state:'visible',timeout:10000});
+   assert.equal(await drawer.getAttribute('aria-hidden'),'true','Closed bag must be hidden from accessibility tree');
+   console.log(`PASS bag open/close ${path} @${viewport.width}px`);
    assert.ok(errors.length===0,`${path} @${viewport.width}px: uncaught browser JS error: ${errors.join(' | ')}`);
   }
   await page.close();
  }
- console.log('Browser smoke: home/store rendered at 375, 768 and 1440 pixels (no checkout submission).');
+ console.log('Browser smoke: home/store and bag open/close verified at 375, 768 and 1440 pixels (no checkout submission).');
 }finally{await browser.close()}
