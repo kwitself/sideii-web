@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const admin=readFileSync('app/admin/AdminDashboard.js','utf8');
+const release=readFileSync('app/admin/ReleaseWorkspace.js','utf8');
+const merch=readFileSync('app/admin/MerchWorkspace.js','utf8');
+assert.ok(admin.includes("if(action==='active'||action==='forthcoming')"),'Bulk publication must validate forthcoming too');
+assert.ok(admin.includes("if(status==='active'||status==='forthcoming')"),'Single product publication must validate forthcoming too');
+assert.ok(admin.includes('QA test fixtures must remain hidden'),'Single publication must block QA fixtures');
+assert.ok(admin.includes('QA test products cannot be publicly published'),'Bulk publication must block QA fixtures');
+assert.ok(admin.includes("window.confirm('Publish '+ids.length"),'Bulk publication must be explicitly confirmed');
+assert.ok(release.includes('status:dbStatus,is_public:false'),'New release must initially be nonpublic');
+assert.ok(release.includes("if(!artworkWarning&&(dbStatus==='active'||dbStatus==='forthcoming'))"),'Release publication must follow successful artwork upload');
+assert.ok(merch.includes("window.confirm('Publish this merch product publicly now?"),'Merch publishing must be explicitly confirmed');
+console.log('Catalogue launch publishing source guardrails passed.');
