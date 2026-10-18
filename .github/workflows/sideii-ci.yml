@@ -31,6 +31,7 @@ jobs:
           node --check scripts/check-launch-seo-guards.mjs
           node --check scripts/check-http-smoke.mjs
           node --check scripts/check-iyzilink-guards.mjs
+          node --check scripts/check-catalogue-launch-guards.mjs
       - name: Run all SIDE II safety checks
         id: qa
         run: npm run qa
