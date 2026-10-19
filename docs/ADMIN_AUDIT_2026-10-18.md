@@ -2,6 +2,7 @@
 
 Base: `a947c2413b74c2e0ca38c0c84d0baca36a66e141` (`main`).
 Work branch: `audit/admin-quality-20261018`.
+Final save-flow follow-up: 19 October 2026.
 
 ## Scope and boundaries
 
@@ -19,7 +20,8 @@ The connected production database was inspected read-only. No real order, charge
 | A release could become public before its variants were saved | Keep the product hidden during variant persistence, publish only after all writes succeed, and retain a recoverable hidden record on failure | `EditReleaseModal.js`, `ReleaseWorkspace.js` |
 | QA fixtures could be published or deleted through some admin actions | Detect QA catalogue numbers, slugs and SKUs; block publication/deletion; keep new QA releases draft-only | `adminSafety.js`, `AdminDashboard.js`, editors |
 | Failed initial creation could be submitted again | Remember the created draft and offer a return to the product list; disable duplicate creation | `ReleaseWorkspace.js` |
-| Editing stock overwrote order reservations and could silently overwrite newer stock | Preserve reservations, require non-negative integers and stock at least equal to reservations, and condition updates on the originally read stock/reservations | `adminSafety.js`, `AdminDashboard.js`, both editors |
+| Editing stock overwrote order reservations and could silently overwrite newer stock | Preserve reservations, require non-negative integers and stock at least equal to reservations, skip zero-quantity ledger entries, and condition updates on the originally read stock/reservations | `adminSafety.js`, `AdminDashboard.js`, both editors |
+| Save controls became available before completion; restock notification HTTP failures were ignored | Keep controls busy through follow-up requests, report failed notification requests, and avoid claiming a successfully published product is hidden if a later refresh fails | `AdminDashboard.js`, `EditReleaseModal.js`, `MerchWorkspace.js`, `ReleaseWorkspace.js` |
 | Digital stock distorted physical inventory totals | Separate digital and inactive editions from active physical-stock totals | `adminSafety.js`, `AdminDashboard.js` |
 | Finance failures appeared as zero balances; estimates mixed currencies | Fail visibly with retry, exclude QA/non-TRY orders from order estimates, and disclose the 1,000-order scope | `FinanceAccountingPanel.js`, `AdminAnalyticsPanel.js` |
 | Analytics hid losses and labelled a trailing year as YTD | Preserve negative estimates, label 365 days accurately, and state the chart's actual 30-day visual window | `AdminAnalyticsPanel.js` |
@@ -52,7 +54,7 @@ The browser scripts require Playwright/Chromium. CI installs the pinned existing
 
 Evidence from this work:
 
-- 62 Node regression tests passed, including nine added admin safety tests. Existing payment-signature, payment-event, digital-target, notification and inventory-concurrency model tests remain enabled.
+- 64 Node regression tests passed, including eleven added admin safety tests. Existing payment-signature, payment-event, digital-target, notification and inventory-concurrency model tests remain enabled.
 - All eight existing QA scripts passed. Catalogue source guards now also cover draft-first creation and QA fixture protection.
 - Production build and GET-only home/store/robots/sitemap checks passed.
 - `npm audit --omit=dev` reported zero known vulnerabilities at the audit time. This does not establish absence of unknown vulnerabilities.

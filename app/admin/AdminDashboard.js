@@ -289,7 +289,7 @@ export default function AdminDashboard(){
   try{
    const {stock,ledgerError}=await updateStockSafely(supabase,v);
    let notificationWarning='';
-   if(stock>Number(v.originalStock)){try{const {data}=await supabase.auth.getSession();if(data.session?.access_token)await fetch('/api/waitlist/notify',{method:'POST',headers:{'content-type':'application/json',Authorization:'Bearer '+data.session.access_token},body:JSON.stringify({variant_id:v.id})});}catch{notificationWarning=' Back-in-stock notification could not be requested.';}}
+   if(stock>Number(v.originalStock)){try{const {data}=await supabase.auth.getSession();if(!data.session?.access_token)throw new Error('Session unavailable');const response=await fetch('/api/waitlist/notify',{method:'POST',headers:{'content-type':'application/json',Authorization:'Bearer '+data.session.access_token},body:JSON.stringify({variant_id:v.id})});if(!response.ok)throw new Error('Notification request failed');}catch{notificationWarning=' Back-in-stock notification could not be requested.';}}
    setEditing(null);
    setMessage((ledgerError?'Stock saved, but movement logging failed: '+ledgerError.message:'Inventory updated.')+notificationWarning);
    await load();

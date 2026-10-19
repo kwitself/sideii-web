@@ -20,7 +20,7 @@ export default function MerchWorkspace({onCreated,onContinue}){
    p_price:Math.max(0,Number(form.price)||0),p_stock:Math.max(0,parseInt(form.stock||'0',10)||0),p_size:form.size.trim()||null,
    p_color:form.color.trim()||null,p_style:form.style.trim()||null,p_weight_g:form.weight_g?Math.max(0,parseInt(form.weight_g,10)||0):null,p_sku:form.sku.trim()||null
   });
-  setSaving(false);if(error){setMessage(error.message);return}
+  if(error)throw error;
   setMessage('Merch product created. Opening product studio…');
   let createdProduct=null;
   if(createdId){

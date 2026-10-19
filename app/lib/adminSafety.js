@@ -39,9 +39,13 @@ export async function updateStockSafely(client, variant) {
     .eq('reserved_qty', variant.reserved_qty).select('id').maybeSingle();
   if (error) throw error;
   if (!data) throw new Error('Inventory changed while you were editing. Refresh and try again.');
+  const quantity = payload.stock_qty - Number(variant.originalStock);
+  // The ledger rejects zero-quantity movements. Threshold-only edits do not
+  // represent a stock movement and must not produce a misleading log failure.
+  if (quantity === 0) return {stock: payload.stock_qty, ledgerError: null};
   const ledger = await client.from('inventory_movements').insert({
     variant_id: variant.id, movement_type: 'adjustment',
-    quantity: payload.stock_qty - Number(variant.originalStock), note: 'Control room stock adjustment',
+    quantity, note: 'Control room stock adjustment',
   });
   return {stock: payload.stock_qty, ledgerError: ledger.error};
 }

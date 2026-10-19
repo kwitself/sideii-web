@@ -55,3 +55,14 @@ test('Stale stock edit cannot create an inventory movement',async()=>{
  await assert.rejects(updateStockSafely(client,{id:'v',stock_qty:8,reserved_qty:2,low_stock_threshold:1,originalStock:10}),/Inventory changed/);
  assert.ok(calls.some(c=>Array.isArray(c)&&c[0]==='reserved_qty'&&c[1]===2));
 });
+test('Threshold-only edits do not insert forbidden zero-quantity movements',async()=>{
+ const query={update(){return this},eq(){return this},select(){return this},async maybeSingle(){return {data:{id:'v'},error:null}}};
+ const client={from(table){assert.equal(table,'product_variants');return query}};
+ assert.deepEqual(await updateStockSafely(client,{id:'v',stock_qty:8,reserved_qty:2,low_stock_threshold:3,originalStock:8}),{stock:8,ledgerError:null});
+});
+test('Movement logging records the delta and preserves its failure for the UI',async()=>{
+ const failure={message:'Ledger unavailable'};
+ const query={update(){return this},eq(){return this},select(){return this},async maybeSingle(){return {data:{id:'v'},error:null}}};
+ const client={from(table){return table==='product_variants'?query:{async insert(payload){assert.equal(payload.quantity,-2);return {error:failure}}}}};
+ assert.deepEqual(await updateStockSafely(client,{id:'v',stock_qty:6,reserved_qty:2,low_stock_threshold:1,originalStock:8}),{stock:6,ledgerError:failure});
+});
