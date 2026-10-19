@@ -41,7 +41,10 @@ try{
    await bag.waitFor({state:'visible',timeout:15000});
    await bag.click();
    const drawer=page.locator('aside.globalBagDrawer[role="dialog"]');
-   await drawer.waitFor({state:'visible',timeout:10000});
+   // The closed drawer is translated off-screen, so Playwright can still deem
+   // it "visible". Wait for React's open/accessibility state after each action.
+   const openDrawer=page.locator('aside.globalBagDrawer.open[aria-hidden="false"]');
+   await openDrawer.waitFor({state:'visible',timeout:10000});
    assert.equal(await drawer.getAttribute('aria-hidden'),'false','Open bag must be accessible');
    assert.equal(await bag.count(),0,'Floating bag trigger should hide while drawer is open');
    // Keyboard Escape must close the dialog and restore usable focus.
@@ -50,7 +53,7 @@ try{
    assert.equal(await drawer.getAttribute('aria-hidden'),'true','Escape should dismiss cart');
    await bag.focus();
    await page.keyboard.press('Enter');
-   await drawer.waitFor({state:'visible',timeout:10000});
+   await openDrawer.waitFor({state:'visible',timeout:10000});
    assert.equal(await drawer.getAttribute('aria-hidden'),'false','Keyboard Enter should reopen cart');
    await page.locator('button.globalBagClose').click();
    await bag.waitFor({state:'visible',timeout:10000});
