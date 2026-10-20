@@ -42,6 +42,7 @@ jobs:
           if [ "$ready" -ne 1 ]; then tail -n 100 /tmp/sideii-browser-server.log; exit 1; fi
           node scripts/check-browser-smoke.mjs
           node scripts/check-admin-browser.mjs
+          node scripts/check-storefront-browser.mjs
       - name: Upload responsive browser evidence
         if: always()
         uses: actions/upload-artifact@v4

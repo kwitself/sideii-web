@@ -4,6 +4,8 @@ Base: `a947c2413b74c2e0ca38c0c84d0baca36a66e141` (`main`).
 Work branch: `audit/admin-quality-20261018`.
 Final save-flow follow-up: 19 October 2026.
 
+Storefront references were subsequently reviewed and addressed in the [20 October storefront follow-up](STOREFRONT_AUDIT_2026-10-20.md). Statements below about awaiting those references describe the original admin audit; the follow-up records the completed storefront work and its separate limits.
+
 ## Scope and boundaries
 
 This change follows the supplied technical work order and 18 admin screenshots. It preserves the Next.js/Supabase architecture and the existing monochrome visual identity. Storefront screenshots are expected separately; this change includes storefront regression checks, not a new storefront design.
