@@ -60,7 +60,7 @@ export default async function WearPage(){
       {products.length?<div className="wearGrid">{products.map((p,i)=><Link key={p.slug} href={'/store/'+p.slug} className="wearCard">
         <div className="wearVisual"><span className="wearCardIndex">{String(i+1).padStart(2,'0')}</span>{(p.mockups?.front||p.mockups?.back)?<MerchMockupPreview product={p} raster/>:p.cover?<img src={p.cover} alt={p.title}/>:<div className="wearPlaceholder">SIDE:II<br/>OBJECT {String(i+1).padStart(2,'0')}</div>}<small className="wearVisualTag">{String(p.merchCategory||'OBJECT').toUpperCase()}</small></div>
         <div className="wearCardMeta"><small>{p.catalogue} · {String(p.merchCategory||'MERCH').toUpperCase()}</small><h3>{p.title}</h3><span>{p.variants?.[0]?.price!=null?<Money value={p.variants[0].price}/>:'VIEW PRODUCT'}</span>{p.storefrontConfig?.wear?.edition_note&&<em>{p.storefrontConfig.wear.edition_note}</em>}{p.storefrontConfig?.wear?.show_support!==false&&p.storefrontConfig?.wear?.support_line&&<p>{p.storefrontConfig.wear.support_line}</p>}</div>
-      </Link>)}</div>:<div className="wearEmpty"><small>OBJECTS / IN PREPARATION</small><h3>The first SIDE:II objects will appear here when they are published from Control Room.</h3><Link href="/store">OPEN STORE →</Link></div>}
+      </Link>)}</div>:<div className="wearEmpty"><small>OBJECTS / IN PREPARATION</small><h3>The first SIDE:II objects will appear here when they are released.</h3><Link href="/store">OPEN STORE →</Link></div>}
     </section>
 
     <section className="wearSystem">

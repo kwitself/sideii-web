@@ -14,16 +14,16 @@ function sb(){
 const money=(n,c='TRY')=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:c,maximumFractionDigits:2}).format(Number(n||0));
 
 export default async function ImpactPage(){
- const client=sb(); let rows=[];
- if(client){const {data}=await client.rpc('get_public_impact_summary');rows=Array.isArray(data)?data:[]}
+ const client=sb(); let rows=[],unavailable=!client;
+ if(client){const {data,error}=await client.rpc('get_public_impact_summary');unavailable=!!error||!Array.isArray(data);rows=Array.isArray(data)?data:[]}
  const total=rows.reduce((s,x)=>s+Number(x.donated_total||0),0);
  const orders=rows.reduce((s,x)=>s+Number(x.contributing_orders||0),0);
  return <main className="impactPublicPage">
   <GlobalHeader/>
-  <section className="impactPublicHero shell"><span><T k="WEAR WHAT YOU SUPPORT / VERIFIED IMPACT"/></span><h1><T k="Support,"/><br/><i><T k="accounted for."/></i></h1><p>Only verified donation batches appear here. Individual customer identities are never published.</p><div className="impactPublicStats"><div><small>VERIFIED CONTRIBUTIONS</small><b>{money(total)}</b></div><div><small>CONTRIBUTING ORDERS</small><b>{orders}</b></div><div><small>ACTIVE CAMPAIGNS</small><b>{rows.length}</b></div></div></section>
+  <section className="impactPublicHero shell"><span><T k="WEAR WHAT YOU SUPPORT / VERIFIED IMPACT"/></span><h1><T k="Support,"/><br/><i><T k="accounted for."/></i></h1><p>Only verified donation batches appear here. Individual customer identities are never published.</p>{!unavailable&&<div className="impactPublicStats"><div><small>VERIFIED CONTRIBUTIONS</small><b>{money(total)}</b></div><div><small>CONTRIBUTING ORDERS</small><b>{orders}</b></div><div><small>VERIFIED CAMPAIGNS</small><b>{rows.length}</b></div></div>}</section>
   <section className="impactPublicList shell">
    <div className="impactPublicHead"><span><T k="CAMPAIGNS"/></span><p>Transparent totals from verified transfer records.</p></div>
-   {rows.length===0?<div className="impactPublicEmpty"><small>NO VERIFIED BATCHES YET</small><h2>The ledger is ready. Verified contributions will appear here automatically.</h2></div>:rows.map(r=><article key={r.campaign_id}><div><small>CAMPAIGN</small><h2>{r.campaign_name}</h2><p>{r.beneficiary_name}</p>{r.beneficiary_url&&<a href={r.beneficiary_url} target="_blank" rel="noreferrer">BENEFICIARY ↗</a>}</div><div className="impactPublicAmount"><small>VERIFIED</small><b>{money(r.donated_total,r.currency)}</b><span>{r.verified_batches} BATCH · {r.contributing_orders} ORDERS</span></div></article>)}
+   {unavailable?<div className="catalogueEmptyState" role="alert"><small>IMPACT / CONNECTION</small><h2>Contribution totals could not be loaded.</h2><p>Please try again in a moment.</p><a href="/impact">TRY AGAIN →</a></div>:rows.length===0?<div className="impactPublicEmpty"><small>NO VERIFIED BATCHES YET</small><h2>The ledger is ready. Verified contributions will appear here automatically.</h2></div>:rows.map(r=><article key={r.campaign_id}><div><small>CAMPAIGN</small><h2>{r.campaign_name}</h2><p>{r.beneficiary_name}</p>{r.beneficiary_url&&<a href={r.beneficiary_url} target="_blank" rel="noreferrer">BENEFICIARY ↗</a>}</div><div className="impactPublicAmount"><small>VERIFIED</small><b>{money(r.donated_total,r.currency)}</b><span>{r.verified_batches} BATCH · {r.contributing_orders} ORDERS</span></div></article>)}
   </section>
   <section className="impactPublicNote shell"><span><T k="HOW IT WORKS"/></span><p>Paid eligible order → contribution allocation → donation batch → transfer proof → verification → customer receipt.</p><Link href="/wear">WEAR WHAT YOU SUPPORT →</Link></section>
  </main>

@@ -36,7 +36,7 @@ const matchesSearch=(r,query)=>{
  return tokens.every(token=>all.includes(token));
 };
 
-export default function StoreClient({releases}){
+export default function StoreClient({releases,unavailable=false}){
  const {money:fmt,t}=useLocaleCurrency();
  const [filter,setFilter]=useState('all'),[formatFilter,setFormatFilter]=useState('all');
  const [search,setSearch]=useState(''),[availability,setAvailability]=useState('all'),[collectionFilter,setCollectionFilter]=useState('all'),[sortMode,setSortMode]=useState('newest');
@@ -51,7 +51,7 @@ export default function StoreClient({releases}){
  const [waitlistVariant,setWaitlistVariant]=useState(null),[waitlistEmail,setWaitlistEmail]=useState(''),[waitlistMessage,setWaitlistMessage]=useState(''),[waitlistBusy,setWaitlistBusy]=useState(false);
 
  useEffect(()=>{
-  const savedView=window.localStorage.getItem('sideii-store-view');
+  let savedView;try{savedView=window.localStorage.getItem('sideii-store-view')}catch{}
   if(savedView==='classic'||savedView==='editorial')setViewMode(savedView);
   const q=new URLSearchParams(window.location.search);
   const imprint=q.get('imprint');
@@ -73,7 +73,7 @@ export default function StoreClient({releases}){
  },[]);
 
  useEffect(()=>{
-  if(typeof window!=='undefined')window.localStorage.setItem('sideii-store-view',viewMode);
+  try{window.localStorage.setItem('sideii-store-view',viewMode)}catch{}
  },[viewMode]);
 
  useEffect(()=>{
@@ -106,7 +106,7 @@ export default function StoreClient({releases}){
    if(local.length)await supabase.from('customer_wishlist').upsert(local.map(x=>({...x,user_id:user.id})),{onConflict:'user_id,product_slug'});
   };
   load();
-  const {data:sub}=supabase?.auth.onAuthStateChange((event,s)=>{const u=s?.user||null;setWishlistUser(u);if(u)load();else if(event==='SIGNED_OUT'){setWishlist([]);writeWishlist([])}})||{data:{subscription:{unsubscribe(){}}}};
+  const {data:sub}=supabase?.auth.onAuthStateChange((event,s)=>{const u=s?.user||null;setWishlistUser(u);if(u)setTimeout(()=>{if(live)load()},0);else if(event==='SIGNED_OUT'){setWishlist([]);writeWishlist([])}})||{data:{subscription:{unsubscribe(){}}}};
   const sync=e=>setWishlist(e.detail||readWishlist());
   window.addEventListener('sideii-wishlist',sync);
   return()=>{live=false;sub.subscription.unsubscribe();window.removeEventListener('sideii-wishlist',sync)};
@@ -302,7 +302,8 @@ export default function StoreClient({releases}){
     </div>
    </article>})}
    </div>}
-   {filtered.length===0&&(filter==='lethargia'?<div className="storeNoResults storeNoResultsLethargia"><small>LETHARGIA / CATALOGUE IN PREPARATION</small><h3>No public editions yet.</h3><p>The first Lethargia releases will appear here automatically when they are made public in Control Room.</p><Link href="/imprints/lethargia">OPEN LETHARGIA RECORDS ↗</Link></div>:<div className="storeNoResults discoveryEmpty"><small>NO MATCHES</small><h3>Nothing fits this search yet.</h3><p>Try removing a filter or broadening the search terms.</p><button type="button" onClick={resetDiscovery}>RESET DISCOVERY</button></div>)}
+   {unavailable?<div className="storeNoResults discoveryEmpty" role="alert"><small>CATALOGUE / CONNECTION</small><h3>The catalogue could not be loaded.</h3><p>Please try again in a moment. Your saved bag is still available.</p><button type="button" onClick={()=>window.location.reload()}>TRY AGAIN</button></div>:filtered.length===0&&(uniqueReleases.every(r=>r.storefrontConfig?.visibility?.store===false)?<div className="storeNoResults discoveryEmpty"><small>CATALOGUE / IN PREPARATION</small><h3>The next objects are taking shape.</h3><p>New editions will appear here when they are ready. Explore the label or tell us about your own project.</p><div className="emptyActions"><Link href="/">MEET SIDE:II →</Link><Link href="/apply">SUBMIT A PROJECT →</Link></div></div>:<div className="storeNoResults discoveryEmpty"><small>NO MATCHES</small><h3>Nothing fits these filters.</h3><p>Try removing a filter or broadening the search terms.</p><button type="button" onClick={resetDiscovery}>RESET DISCOVERY</button></div>)}
+
   </section>
  </main>;
 }
