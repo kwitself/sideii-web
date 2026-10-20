@@ -72,7 +72,11 @@ try{
  await page.getByRole('button',{name:'Open admin navigation'}).click();await page.getByRole('link',{name:'Finance',exact:false}).last().waitFor({state:'visible'});await page.keyboard.press('Escape');
  assert.equal(await page.locator('.adminRail').getAttribute('inert'),'','Closed mobile navigation must be inert');
  await page.getByRole('button',{name:'RUN QA',exact:true}).first().click();const readiness=page.getByRole('dialog',{name:'Product readiness'});await readiness.waitFor();
- const focusable=readiness.getByRole('button');await focusable.first().focus();await page.keyboard.press('Shift+Tab');assert.ok(await focusable.last().evaluate(el=>el===document.activeElement),'Dialog must trap backwards Tab');await page.keyboard.press('Tab');assert.ok(await focusable.first().evaluate(el=>el===document.activeElement),'Dialog must cycle forwards Tab');
+ // Wait for the dialog's own initial-focus frame before testing its focus cycle.
+ // Manually focusing immediately after visibility can race that queued frame.
+ const focusable=readiness.getByRole('button');
+ await page.waitForFunction(()=>document.querySelector('.qaModal button')===document.activeElement);
+ await page.keyboard.press('Shift+Tab');assert.ok(await focusable.last().evaluate(el=>el===document.activeElement),'Dialog must trap backwards Tab');await page.keyboard.press('Tab');assert.ok(await focusable.first().evaluate(el=>el===document.activeElement),'Dialog must cycle forwards Tab');
  await page.keyboard.press('Escape');assert.equal(await page.getByRole('dialog',{name:'Product readiness'}).count(),0);
  await page.getByRole('button',{name:'EDIT',exact:true}).first().click();await page.getByRole('dialog',{name:'Edit Studio Edition'}).waitFor();await page.keyboard.press('Escape');assert.equal(await page.getByRole('dialog',{name:'Edit Studio Edition'}).count(),0);
  for(const width of widths){
