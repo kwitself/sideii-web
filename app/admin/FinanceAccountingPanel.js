@@ -1,5 +1,6 @@
 'use client';
 import {useEffect,useMemo,useState} from 'react';
+import {isQaFixture} from '../lib/adminSafety';
 import {supabase} from '../lib/supabase';
 const tr=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY'}).format(Number(n)||0);
 const financeGroups=[{name:'WORKSPACE',tabs:[['overview','OVERVIEW'],['profit','ORDER PROFIT'],['reports','REPORTS'],['cashflow','CASH FLOW'],['ledger','MOVEMENT LEDGER'],['parties','CURRENT ACCOUNTS'],['accounts','ACCOUNT CATALOG'],['forecast','CASH FORECAST'],['handoff','ACCOUNTANT HANDOFF'],['invoices','INVOICE DRAFTS']]},{name:'ACCOUNTING',tabs:[['vat','VAT'],['expenses','EXPENSES'],['costs','PRODUCT COSTS'],['artists','ARTIST ROYALTIES']]},{name:'PAYMENTS',tabs:[['reconcile','RECONCILIATION'],['settlements','SETTLEMENTS'],['refunds','REFUNDS']]},{name:'CONTROLS',tabs:[['audit','ORDER AUDIT'],['periods','PERIOD CLOSE'],['integrity','DATA INTEGRITY']]}];
@@ -7,6 +8,7 @@ const cats=['production','packaging','shipping','payment_fee','marketing','softw
 const netVat=(amount,rate,included)=>{const a=Number(amount)||0,r=(Number(rate)||0)/100;const net=included?a/(1+r):a;return {net,vat:net*r,gross:included?a:net*(1+r)}};
 const inputStyle={minHeight:40,background:'#0e0e0f',border:'1px solid #363638',padding:'9px 11px',color:'#e5e2de',width:'100%',minWidth:0};
 export default function FinanceAccountingPanel({products=[]}){
+ const [loadFailure,setLoadFailure]=useState(''),[dataNotice,setDataNotice]=useState('');
  const [data,setData]=useState({settings:{sales_vat_rate:0,shipping_vat_rate:0,prices_include_vat:true},expenses:[]});
  const [orders,setOrders]=useState([]),[costs,setCosts]=useState([]),[rules,setRules]=useState([]);
  const [loading,setLoading]=useState(true),[busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState('');
@@ -51,11 +53,12 @@ export default function FinanceAccountingPanel({products=[]}){
  const [payDraft,setPayDraft]=useState({royalty_rule_id:'',payment_date:new Date().toISOString().slice(0,10),amount:'',payment_method:'bank_transfer',reference:'',notes:''});
  const [costDraft,setCostDraft]=useState({product_id:'',unit_cost:'0',packaging_cost:'0',handling_cost:'0',notes:''});
  async function load(){
-  if(!supabase)return;
-  setLoading(true);setError('');
+  if(!supabase){setLoadFailure('Database connection is not configured.');setLoading(false);return;}
+  setLoading(true);setError('');setLoadFailure('');
+  try {
   const [f,o,c,r,ap,snap,audit,recon,settle,refundRows,periodRows,varianceRows,accrualRows,integrity,snapshotCostRows,allocationRows,vatCaptureRows,movementRows,partyRows,partyAllocationRows,partyReconcileRows,accountCatalogRows,invoiceRows]=await Promise.all([
    supabase.rpc('admin_finance_read'),
-   supabase.from('orders').select('id,order_no,created_at,payment_status,status,total,subtotal,shipping_total,support_total,currency,order_items(id,title,variant_id,quantity,line_total,support_amount)').order('created_at',{ascending:false}).limit(1000),
+   supabase.from('orders').select('id,order_no,created_at,payment_status,status,total,subtotal,shipping_total,support_total,currency,order_items(id,title,variant_id,quantity,line_total,support_amount,product_variants(products(slug,catalogue_no)))',{count:'exact'}).order('created_at',{ascending:false}).limit(1000),
    supabase.rpc('admin_list_product_costs'),
    supabase.rpc('admin_list_royalty_rules'),
    supabase.rpc('admin_finance_list_artist_payments'),
@@ -78,8 +81,13 @@ export default function FinanceAccountingPanel({products=[]}){
    supabase.rpc('admin_finance_account_catalog_read'),
    supabase.rpc('admin_finance_invoice_drafts_read')
   ]);
+  const failed=[f,o,c,r,ap,snap,audit,recon,settle,refundRows,periodRows,varianceRows,accrualRows,integrity,snapshotCostRows,allocationRows,vatCaptureRows,movementRows,partyRows,partyAllocationRows,partyReconcileRows,accountCatalogRows,invoiceRows].find(result=>result.error);
+  if(failed)throw failed.error;
+  if(!f.data?.settings)throw new Error('Finance settings could not be loaded.');
+  const excluded=(o.data||[]).filter(order=>order.currency!=='TRY'||(order.order_items||[]).some(item=>isQaFixture(item.product_variants?.products)));
+  setDataNotice([o.count>1000?'Order-based totals cover the latest 1,000 of '+o.count+' orders. Request a full ledger export before reconciliation.':'',excluded.length?excluded.length+' non-TRY or QA orders excluded from TRY estimates.':''].filter(Boolean).join(' '));
   if(f.error)setError('Finance: '+f.error.message);else setData(f.data);
-  if(o.error)setError(v=>v||'Orders: '+o.error.message);else setOrders(o.data||[]);
+  if(o.error)setError(v=>v||'Orders: '+o.error.message);else setOrders((o.data||[]).filter(order=>!excluded.includes(order)));
   if(c.error)setError(v=>v||'Costs: '+c.error.message);else setCosts(c.data||[]);
   if(r.error)setError(v=>v||'Royalties: '+r.error.message);else setRules(r.data||[]);
   if(ap.error)setError(v=>v||'Artist payments: '+ap.error.message);else setArtistPayments(ap.data||[]);
@@ -101,7 +109,8 @@ export default function FinanceAccountingPanel({products=[]}){
   if(partyReconcileRows.error)setError(v=>v||'Monthly review: '+partyReconcileRows.error.message);else setPartyReconciliations(partyReconcileRows.data||[]);
   if(accountCatalogRows.error)setError(v=>v||'Account catalog: '+accountCatalogRows.error.message);else setAccountCatalog(accountCatalogRows.data||[]);
   if(invoiceRows.error)setError(v=>v||'Invoice drafts: '+invoiceRows.error.message);else setInvoiceDrafts(invoiceRows.data||[]);
-  setLoading(false);
+  } catch(error){setLoadFailure(error?.message||'Finance data could not be loaded.');}
+  finally{setLoading(false);}
  }
  useEffect(()=>{load()},[]);
  const settings=data?.settings||{sales_vat_rate:0,shipping_vat_rate:0,prices_include_vat:true};
@@ -398,13 +407,15 @@ export default function FinanceAccountingPanel({products=[]}){
  const saveSettings=async()=>{setBusy(true);setError('');const {error}=await supabase.rpc('admin_finance_save_settings',{p_sales_vat_rate:Number(settings.sales_vat_rate),p_shipping_vat_rate:Number(settings.shipping_vat_rate),p_prices_include_vat:!!settings.prices_include_vat});if(error)setError(error.message);else{setMessage('VAT settings saved. Estimates recalculated.');await load()}setBusy(false)};
  const addExpense=async(e)=>{e.preventDefault();setBusy(true);setError('');const {error}=await supabase.rpc('admin_finance_add_expense',{p_expense_date:draft.expense_date,p_category:draft.category,p_description:draft.description,p_gross_amount:Number(draft.gross_amount),p_vat_rate:Number(draft.vat_rate),p_vat_included:draft.vat_included,p_deductible_vat:draft.deductible_vat,p_product_id:draft.product_id||null,p_reference:draft.reference||null});if(error)setError(error.message);else{setDraft(v=>({...v,description:'',gross_amount:'',reference:''}));setMessage('Expense recorded.');await load()}setBusy(false)};
  const deleteExpense=async(id)=>{if(!window.confirm('Delete this accounting entry?'))return;setBusy(true);const {error}=await supabase.rpc('admin_finance_delete_expense',{p_id:id});if(error)setError(error.message);else await load();setBusy(false)};
- const control=(label,children)=><label style={{display:'grid',gap:7,fontSize:10,letterSpacing:'.11em',color:'#aaa0a8'}}>{label}{children}</label>;
+ const control=(label,children)=><label style={{display:'grid',gap:7,fontSize:10,letterSpacing:'.11em',color:'#b8b8b8'}}>{label}{children}</label>;
  const field=(value,change,type='text',extra={})=><input style={inputStyle} type={type} value={value} onChange={e=>change(e.target.value)} {...extra}/>;
  const card=(label,value,sub,kind='money')=><article className="financeKpi"><span>{label}</span><strong>{kind==='count'?new Intl.NumberFormat('tr-TR',{maximumFractionDigits:0}).format(Number(value)||0):tr(value)}</strong>{sub&&<small>{sub}</small>}</article>;
+ if(loading||loadFailure)return <section className="adminSection financePanel" aria-busy={loading}><div className="sectionLabel"><span>18 / FINANCE & ACCOUNTING</span></div><div className="adminPanel financeBox" role={loadFailure?'alert':'status'}><h2>{loadFailure?'Finance data unavailable':'Loading finance…'}</h2><p>{loadFailure||'Reading accounting records and reconciliation checks.'}</p>{loadFailure&&<button type="button" className="saveButton" onClick={load}>RETRY</button>}</div></section>;
  return <section className="adminSection adminViewSection financePanel">
   <div className="sectionLabel"><span>18 / FINANCE & ACCOUNTING</span><p>VAT, operating costs, profitability and artist allocation · estimates</p></div>
   {error&&<p className="dbNotice" role="alert">{error}</p>}{message&&<p className="dbNotice" role="status">{message}</p>}
-  <div className="financeTop"><div><h2>Numbers, <em>with context.</em></h2><small>Prices and tax rates are configurable. Confirm tax classification and filings with your accountant.</small></div><select style={inputStyle} value={period} onChange={e=>setPeriod(e.target.value)}><option value="all">ALL AVAILABLE</option><option value="30">LAST 30 DAYS</option><option value="90">LAST 90 DAYS</option><option value="365">LAST 365 DAYS</option></select></div>
+  {dataNotice&&<p className="financeWarning" role="status">{dataNotice}</p>}
+  <div className="financeTop"><div><h2>Numbers, <em>with context.</em></h2><small>Prices and tax rates are configurable. Confirm tax classification and filings with your accountant.</small></div><select aria-label="Finance period" style={inputStyle} value={period} onChange={e=>setPeriod(e.target.value)}><option value="all">ALL AVAILABLE</option><option value="30">LAST 30 DAYS</option><option value="90">LAST 90 DAYS</option><option value="365">LAST 365 DAYS</option></select></div>
   <div className="financeHealth" role="status"><strong>ACCOUNTING READINESS</strong><span>{loading?'CHECKING DATA':Number(settings.sales_vat_rate)===0?'SALES VAT NOT CONFIGURED':'VAT RATE CONFIGURED'}</span><span>{costs.length===0?'NO PRODUCT COSTS RECORDED':costs.length+' PRODUCT COST RECORDS'}</span><span>{rules.filter(r=>r.active).length===0?'NO ACTIVE ARTIST RULES':rules.filter(r=>r.active).length+' ARTIST RULES'}</span><small>Figures are estimates using current rates and costs, not finalized statutory accounts.</small></div>
   {snapshotStatus&&<div className="financeHealth" role="status"><strong>ORDER COST / VAT SNAPSHOTS</strong><span>{snapshotStatus.captured} NEW ITEM RECORDS</span><span>{snapshotStatus.legacy_without_snapshot} HISTORICAL ITEMS NOT BACKFILLED</span><span>{snapshotStatus.cost_missing} MISSING COST</span><span>{snapshotStatus.vat_unconfigured} VAT NOT VERIFIED</span><small>Snapshot records are captured when new order items are inserted. Historic orders remain unchanged. Displayed profit estimates are still calculated separately from current settings.</small></div>}
   <nav className="financeNavGroups" aria-label="Finance sections">{financeGroups.map(group=><div className="financeNavGroup" key={group.name}><span className="financeNavGroupLabel">{group.name}</span><div className="financeNavButtons">{group.tabs.map(([id,label])=><button type="button" key={id} className={financeTab===id?'active':''} aria-current={financeTab===id?'page':undefined} onClick={()=>setFinanceTab(id)}>{label}</button>)}</div></div>)}</nav>
@@ -414,7 +425,7 @@ export default function FinanceAccountingPanel({products=[]}){
     {control('SALES VAT %',field(settings.sales_vat_rate,v=>setData(d=>({...d,settings:{...d.settings,sales_vat_rate:v}})),'number',{min:0,max:100,step:.1}))}
     {control('SHIPPING VAT %',field(settings.shipping_vat_rate,v=>setData(d=>({...d,settings:{...d.settings,shipping_vat_rate:v}})),'number',{min:0,max:100,step:.1}))}
     <label className="financeCheck"><input type="checkbox" checked={!!settings.prices_include_vat} onChange={e=>setData(d=>({...d,settings:{...d.settings,prices_include_vat:e.target.checked}}))}/> PRICES INCLUDE VAT</label>
-   </div><button className="saveButton" onClick={saveSettings} disabled={busy||loading}>SAVE VAT SETTINGS</button><div className="financeHeading"><h3>ORDER VAT SNAPSHOT REVIEW</h3><button type="button" onClick={exportVatReview}>EXPORT CSV ↓</button></div><p>Only complete, configured order-item snapshots display estimated VAT amounts. Historic missing snapshots remain unverified. Shipping VAT, discounts and invoices require independent review.</p><div className="financeKpis">{card('SNAPSHOT COMPLETE',vatReviewRows.filter(r=>r.complete).length)}{card('REVIEW REQUIRED',vatReviewRows.filter(r=>!r.complete).length)}</div><div className="financeAuditScroll"><table><thead><tr><th>ORDER</th><th>ITEM COVERAGE</th><th>EST. ITEM NET</th><th>EST. ITEM VAT</th><th>VAT BASIS</th></tr></thead><tbody>{vatReviewRows.map(r=><tr key={r.order.id}><td>#{r.order.order_no}<small>{String(r.order.created_at).slice(0,10)}</small></td><td>{r.s?.vat_verified_items??0}/{r.items}</td><td>{r.complete?tr(r.s.captured_item_net):'—'}</td><td>{r.complete?tr(r.s.captured_item_vat):'—'}</td><td>{r.reason}</td></tr>)}</tbody></table></div></section>}
+   </div><button className="saveButton" onClick={saveSettings} disabled={busy||loading}>SAVE VAT SETTINGS</button><div className="financeHeading"><h3>ORDER VAT SNAPSHOT REVIEW</h3><button type="button" onClick={exportVatReview}>EXPORT CSV ↓</button></div><p>Only complete, configured order-item snapshots display estimated VAT amounts. Historic missing snapshots remain unverified. Shipping VAT, discounts and invoices require independent review.</p><div className="financeKpis">{card('SNAPSHOT COMPLETE',vatReviewRows.filter(r=>r.complete).length,'','count')}{card('REVIEW REQUIRED',vatReviewRows.filter(r=>!r.complete).length,'','count')}</div><div className="financeAuditScroll"><table><thead><tr><th>ORDER</th><th>ITEM COVERAGE</th><th>EST. ITEM NET</th><th>EST. ITEM VAT</th><th>VAT BASIS</th></tr></thead><tbody>{vatReviewRows.map(r=><tr key={r.order.id}><td>#{r.order.order_no}<small>{String(r.order.created_at).slice(0,10)}</small></td><td>{r.s?.vat_verified_items??0}/{r.items}</td><td>{r.complete?tr(r.s.captured_item_net):'—'}</td><td>{r.complete?tr(r.s.captured_item_vat):'—'}</td><td>{r.reason}</td></tr>)}</tbody></table></div></section>}
    {financeTab==='expenses'&&<form className="adminPanel financeBox" onSubmit={addExpense}><h3>RECORD EXPENSE</h3><p>Expense VAT is deductible only when you explicitly mark it eligible.</p><div className="financeFields">
     {control('DATE',field(draft.expense_date,v=>setDraft(d=>({...d,expense_date:v})),'date',{required:true}))}
     {control('CATEGORY',<select style={inputStyle} value={draft.category} onChange={e=>setDraft(d=>({...d,category:e.target.value}))}>{cats.map(x=><option key={x} value={x}>{x.toUpperCase().replaceAll('_',' ')}</option>)}</select>)}

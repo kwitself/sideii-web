@@ -72,7 +72,7 @@ export default function GlobalHeader({homeHref='/',className=''}) {
         <Link href="/store" className="navStore">Store</Link>
         <Link href="/wear" className="navWear">Wear</Link>
         <div ref={exploreRef} className={"navExplore "+(exploreOpen?"isOpen":"")} onMouseLeave={()=>setExploreOpen(false)}>
-          <button type="button" aria-haspopup="true" aria-expanded={exploreOpen} onClick={()=>setExploreOpen(v=>!v)}>Explore <span>{exploreOpen?"−":"＋"}</span></button>
+          <button type="button" aria-haspopup="true" aria-expanded={exploreOpen} onClick={()=>setExploreOpen(v=>!v)}>Explore <span>{exploreOpen?"−":"+"}</span></button>
           <div className="navExploreMenu" onClick={()=>setExploreOpen(false)}>
             <Link href="/collections">Collections</Link>
             <Link href="/bundles">Bundles</Link>

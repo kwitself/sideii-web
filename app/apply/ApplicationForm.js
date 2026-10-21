@@ -28,7 +28,7 @@ export default function ApplicationForm(){
  const toggleService=value=>setForm(v=>({...v,services:v.services.includes(value)?v.services.filter(x=>x!==value):[...v.services,value]}));
 
  async function submit(e){
-  e.preventDefault();
+  e.preventDefault();if(busy)return;
   if(!form.services.length)return setMessage('Select at least one production type.');
   if(!supabase)return setMessage('Application service is unavailable.');
 
@@ -48,6 +48,7 @@ export default function ApplicationForm(){
    budget_note:form.budget_note.trim()||null
   };
 
+  try{
   const {data:applicationId,error}=await supabase.rpc('submit_production_application',{
    p_applicant_name:payload.applicant_name,
    p_applicant_email:payload.applicant_email,
@@ -72,7 +73,9 @@ export default function ApplicationForm(){
    });
   }catch{}
 
-  setBusy(false);setDone(true);
+  setDone(true);
+  }catch{setMessage('We could not confirm your application. Your details have been kept. Please try again.')}
+  finally{setBusy(false)}
  }
 
  if(done)return <div className="applicationSuccess">
@@ -86,9 +89,9 @@ export default function ApplicationForm(){
    <section className="applicationGroup">
     <div className="applicationGroupHead"><span>01</span><div><b>CONTACT</b><small>Who should we speak to?</small></div></div>
     <div className="applicationGrid two">
-      <label>NAME / CONTACT PERSON<input required value={form.applicant_name} onChange={e=>set('applicant_name',e.target.value)}/></label>
-      <label>EMAIL<input type="email" required value={form.applicant_email} onChange={e=>set('applicant_email',e.target.value)}/></label>
-      <label>PHONE<input value={form.applicant_phone} onChange={e=>set('applicant_phone',e.target.value)} placeholder="+90 ..."/></label>
+      <label>NAME / CONTACT PERSON<input autoComplete="name" required value={form.applicant_name} onChange={e=>set('applicant_name',e.target.value)}/></label>
+      <label>EMAIL<input type="email" autoComplete="email" required value={form.applicant_email} onChange={e=>set('applicant_email',e.target.value)}/></label>
+      <label>PHONE<input type="tel" autoComplete="tel" value={form.applicant_phone} onChange={e=>set('applicant_phone',e.target.value)} placeholder="+90 ..."/></label>
     </div>
    </section>
 
@@ -100,7 +103,7 @@ export default function ApplicationForm(){
     </div>
     <div className="applicationServices">
       <span>WHAT DO YOU WANT TO PRODUCE?</span>
-      <div>{serviceOptions.map(([value,label])=><button key={value} type="button" className={form.services.includes(value)?'active':''} onClick={()=>toggleService(value)}>{form.services.includes(value)?'✓ ':''}{label}</button>)}</div>
+      <div>{serviceOptions.map(([value,label])=><button key={value} type="button" aria-pressed={form.services.includes(value)} className={form.services.includes(value)?'active':''} onClick={()=>toggleService(value)}>{form.services.includes(value)?'✓ ':''}{label}</button>)}</div>
     </div>
    </section>
 
@@ -120,7 +123,7 @@ export default function ApplicationForm(){
     <label>BUDGET / DEADLINE NOTE<textarea value={form.budget_note} onChange={e=>set('budget_note',e.target.value)} placeholder="Optional — target budget, launch date or production deadline."/></label>
    </section>
 
-   {message&&<p className="applicationError">{message}</p>}
+   {message&&<p className="applicationError" role="alert">{message}</p>}
    <button className="applicationSubmit" disabled={busy}>{busy?'SENDING APPLICATION…':'SEND PRODUCTION APPLICATION →'}</button>
    <small className="applicationPrivacy">By submitting, you allow SIDE:II to contact you about this production request.</small>
  </form>;

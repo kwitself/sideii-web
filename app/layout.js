@@ -2,6 +2,8 @@ import {getPublicSiteUrl} from './lib/public-site-url';
 import './globals.css';
 import './physical-formats.css';
 import './cart-responsive.css';
+import './storefront-refinement.css';
+import StorefrontFooter from './components/StorefrontFooter';
 import GlobalBag from './components/GlobalBag';
 import GlobalAccount from './components/GlobalAccount';
 import {LocaleCurrencyProvider} from './components/LocaleCurrencyProvider';
@@ -50,7 +52,7 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body><LocaleCurrencyProvider><CommerceTelemetry/>{children}<GlobalAccount/><GlobalBag/></LocaleCurrencyProvider></body>
+      <body><LocaleCurrencyProvider><CommerceTelemetry/>{children}<StorefrontFooter/><GlobalAccount/><GlobalBag/></LocaleCurrencyProvider></body>
     </html>
   );
 }

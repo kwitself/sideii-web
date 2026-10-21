@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import {isAdminUser} from '../lib/adminSafety';
 import { supabase } from '../lib/supabase';
 
 export default function AdminGate({ children }) {
@@ -13,26 +14,36 @@ export default function AdminGate({ children }) {
 
   useEffect(() => {
     let active = true;
+    let verification = 0, refreshTimer;
     if (!supabase) {
       setMessage('Supabase environment variables are missing.');
       setLoading(false);
       return;
     }
 
+    const verify = () => {
+    const request = ++verification;
     supabase.auth.getUser().then(({ data, error }) => {
-      if (!active) return;
+      if (!active || request !== verification) return;
       setUser(error ? null : data?.user ?? null);
       setLoading(false);
-    });
+    }).catch(() => { if (active && request === verification) { setUser(null); setMessage('Session could not be verified. Please sign in again.'); setLoading(false); } });
+    };
+    verify();
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!active) return;
-      setUser(session?.user ?? null);
-      setLoading(false);
+      if (!session) { ++verification; setUser(null); setLoading(false); return; }
+      if (_event === 'INITIAL_SESSION') return;
+      setLoading(true);
+      clearTimeout(refreshTimer);
+      // Defer auth calls until Supabase releases its auth-state callback lock.
+      refreshTimer = setTimeout(verify, 0);
     });
 
     return () => {
       active = false;
+      clearTimeout(refreshTimer);
       listener.subscription.unsubscribe();
     };
   }, []);
@@ -42,20 +53,24 @@ export default function AdminGate({ children }) {
     if (!supabase) return;
     setSubmitting(true);
     setMessage('');
+    try {
     const { error } = await supabase.auth.signInWithPassword({
       email: email.trim(),
       password,
     });
     setSubmitting(false);
     if (error) setMessage(error.message);
+    } catch { setMessage('Sign in failed. Please try again.'); } finally { setSubmitting(false); }
   }
 
   async function logout() {
     if (!supabase) return;
     setSubmitting(true);
-    const { error } = await supabase.auth.signOut({ scope: 'local' });
-    setSubmitting(false);
-    if (error) setMessage(error.message);
+    try {
+      const { error } = await supabase.auth.signOut({ scope: 'local' });
+      if (error) setMessage(error.message);
+    } catch { setMessage('Sign out failed. Please try again.'); }
+    finally { setSubmitting(false); }
   }
 
   if (loading) {
@@ -73,6 +88,8 @@ export default function AdminGate({ children }) {
       <button className="saveButton" type="submit" disabled={submitting}>{submitting ? 'SIGNING IN…' : 'ENTER CONTROL ROOM →'}</button>
     </form></main>;
   }
+
+  if (!isAdminUser(user)) return <main className="adminAuth"><section className="authCard" role="alert"><span>SIDE:II / ADMINISTRATION</span><h1>Access <em>restricted.</em></h1><p>This account does not have administrator access.</p><button type="button" className="saveButton" onClick={logout} disabled={submitting}>SIGN OUT</button>{message&&<p>{message}</p>}</section></main>;
 
   return <>
     <div className="adminSession"><span>{user.email}</span><button type="button" onClick={logout} disabled={submitting}>SIGN OUT ↗</button></div>

@@ -10,7 +10,13 @@ import {useLocaleCurrency} from './LocaleCurrencyProvider';
 import PostPurchaseOffers from './PostPurchaseOffers';
 
 export default function GlobalAccount(){
- const drawerRef=useRef(null);
+ const pathname=usePathname();
+ if(pathname==='/admin'||pathname?.startsWith('/admin/'))return null;
+ return <StorefrontAccount/>;
+}
+function StorefrontAccount(){
+ const drawerRef=useRef(null),accountRequest=useRef(0);
+ const [accountSection,setAccountSection]=useState('profile'),[accountLoading,setAccountLoading]=useState(false),[accountError,setAccountError]=useState('');
  const {money,t}=useLocaleCurrency();
  const pathname=usePathname();
  const [open,setOpen]=useState(false),[session,setSession]=useState(null),[mode,setMode]=useState('signin');
@@ -28,7 +34,10 @@ export default function GlobalAccount(){
 
  async function loadAccount(user){
   if(!supabase||!user)return;
-  const [{data:p,error:profileError},{data:o},{data:w},{data:a},{data:col},{data:pass},{data:own},{data:summary},{data:credit},{data:creditHistory},{data:shares}]=await Promise.all([
+  const request=++accountRequest.current;
+  setAccountLoading(true);setAccountError('');
+  try{
+  const responses=await Promise.all([
    supabase.rpc('get_my_customer_account'),
    supabase.rpc('get_my_store_orders'),
    supabase.from('customer_wishlist').select('product_slug,title,catalogue,cover,is_merch').eq('user_id',user.id).order('created_at',{ascending:false}),
@@ -41,16 +50,21 @@ export default function GlobalAccount(){
    supabase.rpc('get_my_store_credit_history'),
    supabase.rpc('get_my_shared_lists')
   ]);
+  if(request!==accountRequest.current)return;
+  if(responses.some(result=>result.error))throw new Error('Account unavailable');
+  const [{data:p},{data:o},{data:w},{data:a},{data:col},{data:pass},{data:own},{data:summary},{data:credit},{data:creditHistory},{data:shares}]=responses;
   const row=Array.isArray(p)?p[0]:p;
   const next={full_name:row?.full_name||user.user_metadata?.full_name||'',phone:row?.phone||'',address_line:row?.address_line||'',country_code:row?.country_code||'TR',state_region:row?.state_region||'',city:row?.city||'',district:row?.district||'',postal_code:row?.postal_code||''};
-  if(profileError) setMessage(profileError.message);
   const local=readWishlist();
   const merged=[...(w||[])];
   for(const item of local)if(!merged.some(x=>x.product_slug===item.product_slug))merged.push(item);
   setWishlist(merged);writeWishlist(merged);
   if(local.length) await supabase.from('customer_wishlist').upsert(local.map(x=>({...x,user_id:user.id})),{onConflict:'user_id,product_slug'});
+  if(request!==accountRequest.current)return;
   setProfile(next);setOrders(Array.isArray(o)?o:[]);setAddresses(Array.isArray(a)?a:[]);setCollection(Array.isArray(col)?col:[]);setPassports(Array.isArray(pass)?pass:[]);setOwnerContent(Array.isArray(own)?own:[]);setCollectorSummary(Array.isArray(summary)?summary[0]||null:summary||null);setStoreCredit(Array.isArray(credit)?credit[0]||null:credit||null);setStoreCreditHistory(Array.isArray(creditHistory)?creditHistory:[]);setSharedLinks(Array.isArray(shares)?shares:[]);
   window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:{email:user.email||'',...next}}));
+  }catch{if(request===accountRequest.current)setAccountError('Your account details could not be loaded. Please try again.')}
+  finally{if(request===accountRequest.current)setAccountLoading(false)}
  }
 
  useEffect(()=>{
@@ -93,7 +107,7 @@ export default function GlobalAccount(){
  async function revokeSharedLink(token){if(!supabase||!session?.user)return;const {error}=await supabase.rpc('revoke_my_shared_list',{p_token:token});if(error){setMessage(error.message);return}setSharedLinks(x=>x.filter(v=>v.token!==token));setMessage('Share link revoked.');}
 
  useEffect(()=>{
-  const openAccount=()=>{setMessage('');setOpen(true)};
+  const openAccount=e=>{setMessage('');if(['profile','saved','collection','orders'].includes(e?.detail?.section))setAccountSection(e.detail.section);setOpen(true)};
   window.addEventListener('sideii-open-account',openAccount);
   return()=>window.removeEventListener('sideii-open-account',openAccount);
  },[]);
@@ -112,10 +126,10 @@ export default function GlobalAccount(){
   const {data:sub}=supabase.auth.onAuthStateChange((event,next)=>{
     if(!live)return;
     setSession(next||null);setMessage('');
-    if(event==='SIGNED_IN'&&next?.user) setTimeout(()=>loadAccount(next.user),0);
-    if(event==='SIGNED_OUT'){writeWishlist([]);setWishlist([]);setAddresses([]);setSelectedOrder(null);setCollectorLevel(null);setCollectorReward(null);setOrders([]);setCollection([]);setPassports([]);setOwnerContent([]);setCollectorSummary(null);setStoreCredit(null);setStoreCreditHistory([]);setSharedLinks([]);setProfile({full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:''});window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:null}))}
+    if(event==='SIGNED_IN'&&next?.user){const version=accountRequest.current;setTimeout(()=>{if(live&&version===accountRequest.current)loadAccount(next.user)},0)}
+    if(event==='SIGNED_OUT'){accountRequest.current++;setAccountLoading(false);setAccountError('');setAccountSection('profile');writeWishlist([]);setWishlist([]);setAddresses([]);setSelectedOrder(null);setCollectorLevel(null);setCollectorReward(null);setOrders([]);setCollection([]);setPassports([]);setOwnerContent([]);setCollectorSummary(null);setStoreCredit(null);setStoreCreditHistory([]);setSharedLinks([]);setProfile({full_name:'',phone:'',address_line:'',country_code:'TR',state_region:'',city:'',district:'',postal_code:''});window.dispatchEvent(new CustomEvent('sideii-account-profile',{detail:null}))}
   });
-  return()=>{live=false;sub.subscription.unsubscribe()};
+  return()=>{live=false;accountRequest.current++;sub.subscription.unsubscribe()};
  },[]);
 
  async function submitAuth(e){
@@ -265,7 +279,7 @@ export default function GlobalAccount(){
   const previousFocus=document.activeElement;
   document.body.style.overflow='hidden';
   const node=drawerRef.current;
-  const focusables=()=>node?[...node.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')]:[];
+  const focusables=()=>node?[...node.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')].filter(el=>el.getClientRects().length&&!el.closest('[hidden]')):[];
   requestAnimationFrame(()=>focusables()[0]?.focus());
   const onKey=e=>{
    if(e.key==='Escape'){if(digitalDownloadItem)return;if(selectedOrder){closeOrderDetail()}else setOpen(false);return}
@@ -283,7 +297,7 @@ export default function GlobalAccount(){
   {!open&&<button className="globalAccountTrigger" aria-haspopup="dialog" aria-expanded={open} aria-label={t('ACCOUNT')} onClick={()=>{setMessage('');setOpen(true)}}>{signedIn?initials:'ACCOUNT'}</button>}
   <aside ref={drawerRef} className={'globalAccountDrawer '+(open?'open':'')} role="dialog" aria-modal={open} aria-label={t('ACCOUNT')} aria-hidden={!open} inert={!open}>
    {digitalDownloadItem&&<div className="accountDigitalPanelOverlay" onMouseDown={e=>{if(e.target===e.currentTarget)closeDigitalPanel()}}><section ref={downloadPanelRef} className="accountDigitalPanel" role="dialog" aria-modal="true" aria-labelledby="accountDigitalPanelTitle"><div className="accountDigitalPanelTop"><span>SIDE:II / SECURE DELIVERY</span><button type="button" disabled={!!downloadBusyId} onClick={closeDigitalPanel} aria-label="Close digital download panel">CLOSE ×</button></div><div className="accountDigitalPanelArt" aria-hidden="true"><span>II</span><small>DIGITAL MASTER</small></div><div className="accountDigitalPanelContent"><small>YOUR DIGITAL EDITION</small><h2 id="accountDigitalPanelTitle">{digitalDownloadItem.title||'Digital Edition'}</h2><div className="accountDigitalPanelTags">{(Array.isArray(digitalDownloadItem.digital_formats)&&digitalDownloadItem.digital_formats.length?digitalDownloadItem.digital_formats:['DIGITAL FILES']).map(f=><span key={f}>{f}</span>)}<span>{digitalDownloadItem.audio_specs||'HIGH RESOLUTION AUDIO'}</span></div><div className="accountDigitalPanelRemaining"><span>DOWNLOADS LEFT</span><strong>{Math.max(0,Number(digitalDownloadItem.digital_download_remaining??0))} <small>/ {Number(digitalDownloadItem.digital_download_limit||5)}</small></strong></div><p>Secure delivery creates a single-use link only when you start. Your allowance decreases after the secure file is accessed, not when this screen opens.</p><div className="accountDigitalPanelSecurity">✧ SINGLE-USE SECURE LINK · VERIFIED ORDER</div>{downloadError&&<p className="accountDigitalPanelError" role="alert">{downloadError}</p>}{Number(digitalDownloadItem.digital_download_remaining??0)>0&&digitalDownloadItem.download_available?<button type="button" className="accountDigitalPanelStart" disabled={!!downloadBusyId} onClick={()=>downloadDigitalItem(digitalDownloadItem)}>{downloadBusyId?'PREPARING SECURE DOWNLOAD…':'START DOWNLOAD ↗'}</button>:<div className="accountDigitalPanelExhausted"><strong>DOWNLOAD LIMIT REACHED</strong><span>CONTACT SUPPORT</span></div>}<button type="button" className="accountDigitalPanelBack" disabled={!!downloadBusyId} onClick={closeDigitalPanel}>BACK TO ORDER</button></div></section></div>}
-   <button className="globalAccountClose" onClick={()=>setOpen(false)}>{t('CLOSE')} ×</button><span>{t('ACCOUNT')}</span>
+   <div className="storefrontDrawerHead"><span>{t('ACCOUNT')}</span><button className="globalAccountClose" onClick={()=>setOpen(false)}>{t('CLOSE')} ×</button></div>
    {!signedIn?<div className="accountAuth">
     <div className="accountTabs"><button className={mode==='signin'?'active':''} onClick={()=>setMode('signin')}>{t('SIGN IN')}</button><button className={mode==='signup'?'active':''} onClick={()=>setMode('signup')}>{t('CREATE ACCOUNT')}</button></div>
     <h3>{mode==='signup'?'Join SIDE:II.':'Welcome back.'}</h3>
@@ -297,17 +311,19 @@ export default function GlobalAccount(){
     </form>
    </div>:<div className="accountBody">
     <header className="accountIdentity"><b>{displayName}</b><small>{session.user.email}</small></header><nav className="accountQuickNav" aria-label="Account sections">
-     <button type="button" onClick={()=>drawerRef.current?.querySelector('.accountProfile')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})}>PROFILE</button>
-     <button type="button" onClick={()=>drawerRef.current?.querySelector('.accountCollection')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})}>COLLECTION</button>
-     <button type="button" onClick={()=>drawerRef.current?.querySelector('.accountOrders')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})}>ORDERS</button>
+     {['profile','saved','collection','orders'].map(section=><button key={section} type="button" aria-pressed={accountSection===section} aria-controls={'account-panel-'+section} onClick={()=>{setAccountSection(section);setSelectedOrder(null);setMessage('')}}>{section.toUpperCase()}</button>)}
     </nav>
+    {accountLoading&&<p className="accountLoadStatus" role="status">Loading your account…</p>}
+    {accountError&&<div className="accountLoadError" role="alert"><p>{accountError}</p><button type="button" onClick={()=>loadAccount(session.user)}>TRY AGAIN</button></div>}
+    {message&&<p className="accountMessage" role="status">{message}</p>}
+    <div id="account-panel-profile" hidden={accountSection!=='profile'||accountLoading||!!accountError}>
+
     <form className="accountProfile" onSubmit={saveProfile}>
      <label>{t('FULL NAME')}<input value={profile.full_name} onChange={e=>setProfile({...profile,full_name:e.target.value})}/></label>
      <label>PHONE<input value={profile.phone} onChange={e=>setProfile({...profile,phone:e.target.value})}/></label>
      <label>ADDRESS<textarea value={profile.address_line} onChange={e=>setProfile({...profile,address_line:e.target.value})}/></label>
      <GlobalAddressFields form={{...profile,country:profile.country_code}} setForm={next=>setProfile({...next,country_code:next.country||next.country_code||'TR'})}/>
      <label>POSTAL CODE<input value={profile.postal_code} onChange={e=>setProfile({...profile,postal_code:e.target.value})}/></label>
-     {message&&<p className="accountMessage">{message}</p>}
      <button className="accountPrimary" disabled={busy}>{busy?'SAVING…':'SAVE DETAILS'}</button>
     </form>
     <section className="accountAddressBook">
@@ -328,6 +344,7 @@ export default function GlobalAccount(){
         <div className="accountAddressButtons"><button type="button" onClick={()=>useAddress(a)}>USE</button><button type="button" onClick={()=>editAddress(a)}>EDIT</button><button type="button" onClick={()=>deleteAddress(a.id)}>REMOVE</button></div>
       </article>)}</div>
     </section>
+    </div><div id="account-panel-saved" hidden={accountSection!=='saved'||accountLoading||!!accountError}>
     <section className="accountSavedBag">
       <div className="accountSectionHead"><span>SAVED BAG</span><div><small>{savedCart.reduce((s,x)=>s+Number(x.qty||0),0)}</small>{savedCart.length>0&&<button type="button" className="accountShareMini" onClick={()=>shareAccountList('cart',savedCart)}>SHARE ↗</button>}</div></div>
       {savedCart.length===0?<p className="accountEmpty">Your bag is empty.</p>:<button type="button" className="accountSavedBagButton" onClick={()=>{setOpen(false);window.dispatchEvent(new Event('sideii-open-bag'))}}>
@@ -351,6 +368,7 @@ export default function GlobalAccount(){
         <div><button type="button" onClick={()=>copySharedLink(x.token)}>COPY</button><button type="button" onClick={()=>revokeSharedLink(x.token)}>REVOKE</button></div>
       </article>)}</div>}
     </section>
+    </div><div id="account-panel-collection" hidden={accountSection!=='collection'||accountLoading||!!accountError}>
     <section className="accountCollectorSummary">
       <div className="accountSectionHead"><span>{t('COLLECTOR PROFILE')}</span><small>{collectorSummary?collectorSummary.completion_percent+'%':'—'}</small></div>
       <div className="collectorSummaryGrid">
@@ -379,6 +397,7 @@ export default function GlobalAccount(){
       <div className="accountSectionHead"><span>{t('OWNER CONTENT')}</span><small>{ownerContent.length}</small></div>
       {ownerContent.length===0?<p className="accountEmpty">Exclusive release content will appear here when available.</p>:ownerContent.map(x=><article key={x.id}><div><b>{x.title}</b><small>{x.catalogue_no} · {String(x.content_type).toUpperCase()}</small>{x.note&&<p>{x.note}</p>}</div>{x.content_url&&<a href={x.content_url} target="_blank" rel="noreferrer">OPEN ↗</a>}</article>)}
     </section>
+    </div><div id="account-panel-orders" hidden={accountSection!=='orders'||accountLoading||!!accountError}>
     <section className="accountOrders"><div className="accountSectionHead"><span>{t('ORDER HISTORY')}</span><small>{orders.length}</small></div>
      {orders.length===0?<p className="accountEmpty">No orders yet.</p>:orders.map(o=><button type="button" className={'accountOrderRow '+(selectedOrder?.id===o.id?'selected':'')} key={o.id} onClick={()=>toggleOrder(o)}><div><b>#SII-{String(o.order_no).padStart(4,'0')}</b><small>{new Date(o.created_at).toLocaleDateString('tr-TR')} · {String(o.status).toUpperCase()}</small></div><strong>{money(o.total)}</strong>{o.tracking_number&&<em>{o.shipping_carrier||'CARRIER'} · {o.tracking_number}</em>}<span>VIEW →</span></button>)}
     </section>
@@ -412,6 +431,7 @@ export default function GlobalAccount(){
        {['pending','preparing','shipped','completed'].includes(selectedOrder.status)&&<><textarea maxLength="1000" placeholder="Optional reason / note" value={requestReason} onChange={e=>setRequestReason(e.target.value)}/><div>{selectedOrder.payment_status==='unpaid'&&['pending','preparing'].includes(selectedOrder.status)&&<button type="button" disabled={requestBusy} onClick={()=>requestOrderAction('cancel')}>REQUEST CANCELLATION</button>}{selectedOrder.payment_status==='paid'&&['pending','preparing'].includes(selectedOrder.status)&&<button type="button" disabled={requestBusy} onClick={()=>requestOrderAction('refund')}>REQUEST REFUND</button>}{selectedOrder.payment_status==='paid'&&['shipped','completed'].includes(selectedOrder.status)&&<button type="button" disabled={requestBusy} onClick={()=>requestOrderAction('return')}>REQUEST RETURN</button>}</div></>}
       </div>
      </section>}
+    </div>
     <button className="accountSignout" onClick={signOut}>{t('SIGN OUT')}</button>
    </div>}
   </aside>

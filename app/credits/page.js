@@ -1,3 +1,4 @@
+import CatalogueEmptyState from '../components/CatalogueEmptyState';
 import Link from 'next/link';
 import T from '../components/T';
 import {createClient} from '@supabase/supabase-js';
@@ -15,6 +16,6 @@ export default async function Credits(){
  return <main className="creditsPage">
   <GlobalHeader/>
   <section className="creditsHero shell"><span><T k="CATALOGUE / CREDITS"/></span><h1><T k="Who made"/><br/><i><T k="the object."/></i></h1><p>Production, mastering, artwork, photography and other credited work across SIDE:II releases.</p></section>
-  <section className="creditsList shell">{rows.length===0?<div className="creditsEmpty">NO STRUCTURED CREDITS YET.</div>:rows.map((x,i)=><Link key={x.person_name} href={'/credits/'+slugify(x.person_name)}><span>{String(i+1).padStart(2,'0')}</span><h2>{x.person_name}</h2><b>{x.credit_count} CREDIT{x.credit_count===1?'':'S'} →</b></Link>)}</section>
+  <section className="creditsList shell">{rows.length===0?<CatalogueEmptyState title="Every contribution has a place.">Explore the people behind the sound, artwork and production as release credits are added.</CatalogueEmptyState>:rows.map((x,i)=><Link key={x.person_name} href={'/credits/'+slugify(x.person_name)}><span>{String(i+1).padStart(2,'0')}</span><h2>{x.person_name}</h2><b>{x.credit_count} CREDIT{x.credit_count===1?'':'S'} →</b></Link>)}</section>
  </main>
 }

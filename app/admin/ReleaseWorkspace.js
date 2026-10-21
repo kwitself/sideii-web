@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import {isQaFixture} from '../lib/adminSafety';
 import { supabase } from '../lib/supabase';
 
 const statusMap = { DRAFT:'draft', 'IN PREPARATION':'draft', FORTHCOMING:'forthcoming', AVAILABLE:'active' };
@@ -8,8 +9,9 @@ const statusMap = { DRAFT:'draft', 'IN PREPARATION':'draft', FORTHCOMING:'forthc
 function slugify(value){return value.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
 
 export default function ReleaseWorkspace({onCreated}){
- const [form,setForm]=useState({catalogue_no:'SIDEII—003',title:'Third Edition',format:'CD',status:'DRAFT',price:'',stock:'',artist_project:'',description:'',imprint:'sideii',has_shrinkwrap:false,release_date:'',edition_details:'',credits:'',tracklist:'',product_origin:'own',original_label:'',original_catalogue_no:'',barcode:'',vinyl_size:'12 INCH',vinyl_speed:'33 RPM',vinyl_weight_g:'180',vinyl_color:'BLACK',digital_formats:['WAV','FLAC'],audio_specs:'24 BIT / 44.1 kHz'});
+ const [form,setForm]=useState({catalogue_no:'SIDEII—003',title:'',format:'CD',status:'DRAFT',price:'',stock:'',artist_project:'',description:'',imprint:'sideii',has_shrinkwrap:false,release_date:'',edition_details:'',credits:'',tracklist:'',product_origin:'own',original_label:'',original_catalogue_no:'',barcode:'',vinyl_size:'12 INCH',vinyl_speed:'33 RPM',vinyl_weight_g:'180',vinyl_color:'BLACK',digital_formats:['WAV','FLAC'],audio_specs:'24 BIT / 44.1 kHz'});
  const [artwork,setArtwork]=useState(null); const [artworkPreview,setArtworkPreview]=useState('');
+ const [createdDraftId,setCreatedDraftId]=useState(null);
  const [saving,setSaving]=useState(false); const [message,setMessage]=useState('');
  const set=(k,v)=>setForm(p=>({...p,[k]:v}));
 
@@ -27,20 +29,28 @@ export default function ReleaseWorkspace({onCreated}){
  async function save(draft=false){
   if(!supabase){setMessage('Supabase environment variables are missing.');return;}
   if(!form.catalogue_no.trim()||!form.title.trim()){setMessage('Catalogue no. and title are required.');return;} if(form.product_origin==='distributed'&&!form.original_label.trim()){setMessage('Original label is required for Selected / Distribution.');return;}
+  if(saving||createdDraftId)return;
+  if(form.price!==''&&(!Number.isFinite(Number(form.price))||Number(form.price)<0)){setMessage('Price must be a non-negative number.');return;}
+  if(form.stock!==''&&(!Number.isSafeInteger(Number(form.stock))||Number(form.stock)<0)){setMessage('Stock must be a non-negative whole number.');return;}
   setSaving(true);setMessage('');
+  try {
   const dbStatus=draft?'draft':(statusMap[form.status]||'draft');
   if(dbStatus==='active'||dbStatus==='forthcoming'){
+   if(isQaFixture({catalogue_no:form.catalogue_no})){setMessage('QA test fixtures must remain hidden. Save this product as a draft.');return;}
    if(!(Number(form.price)>0)){setSaving(false);setMessage('Add a positive sale price before publishing. Save as draft to continue setup.');return;}
+   if(dbStatus==='active'&&form.format!=='DIGITAL'&&(!Number.isSafeInteger(Number(form.stock))||Number(form.stock)<=0)){setSaving(false);setMessage('Add whole-number stock before publishing an available physical release.');return;}
+   if(form.format==='DIGITAL'){setSaving(false);setMessage('Save a draft, then upload the private delivery ZIP in the editor before publishing.');return;}
    if(!artwork){setSaving(false);setMessage('Add cover artwork before publishing. Save as draft to continue setup.');return;}
    if(!window.confirm('Publish this release publicly now? Choose Cancel and SAVE DRAFT if it is not ready.')){setSaving(false);return;}
   }
   const slugBase=slugify(`${form.catalogue_no}-${form.title}`)||`release-${Date.now()}`;
-  const {data:product,error:pErr}=await supabase.from('products').insert({catalogue_no:form.catalogue_no.trim(),slug:slugBase,title:form.title.trim(),artist_project:form.artist_project.trim()||null,description:form.description.trim()||null,imprint:form.imprint,has_shrinkwrap:form.has_shrinkwrap,release_date:form.release_date||null,credits:form.credits.trim()||null,tracklist:form.tracklist.split('\n').map(x=>x.trim()).filter(Boolean),status:dbStatus,is_public:false,product_origin:form.product_origin,original_label:form.product_origin==='distributed'?form.original_label.trim():null,original_catalogue_no:form.product_origin==='distributed'?(form.original_catalogue_no.trim()||null):null,barcode:form.barcode.trim()||null}).select('id').single();
+  const {data:product,error:pErr}=await supabase.from('products').insert({catalogue_no:form.catalogue_no.trim(),slug:slugBase,title:form.title.trim(),artist_project:form.artist_project.trim()||null,description:form.description.trim()||null,imprint:form.imprint,has_shrinkwrap:form.has_shrinkwrap,release_date:form.release_date||null,credits:form.credits.trim()||null,tracklist:form.tracklist.split('\n').map(x=>x.trim()).filter(Boolean),status:'draft',is_public:false,product_origin:form.product_origin,original_label:form.product_origin==='distributed'?form.original_label.trim():null,original_catalogue_no:form.product_origin==='distributed'?(form.original_catalogue_no.trim()||null):null,barcode:form.barcode.trim()||null}).select('id').single();
   if(pErr){setSaving(false);setMessage(`Product: ${pErr.message}`);return;}
+  setCreatedDraftId(product.id);
   const stock=Math.max(0,Number.parseInt(form.stock||'0',10)||0); const price=Math.max(0,Number.parseFloat(form.price||'0')||0);
   const sku=`${form.catalogue_no.trim()}-${form.format}`.replace(/\s+/g,'-');
   const fmt=form.format.toLowerCase(); const {error:vErr}=await supabase.from('product_variants').insert({product_id:product.id,sku,format:fmt,edition_name:form.title.trim(),price,currency:'TRY',manufactured_qty:fmt==='digital'?0:stock,stock_qty:fmt==='digital'?0:stock,reserved_qty:0,edition_details:form.edition_details.trim()||null,active:true,digital_formats:fmt==='digital'?form.digital_formats:[],audio_specs:fmt==='digital'?(form.audio_specs.trim()||null):null,vinyl_size:fmt==='vinyl'?form.vinyl_size:null,vinyl_speed:fmt==='vinyl'?form.vinyl_speed:null,vinyl_weight_g:fmt==='vinyl'?(parseInt(form.vinyl_weight_g,10)||null):null,vinyl_color:fmt==='vinyl'?(form.vinyl_color.trim()||null):null});
-  if(vErr){setSaving(false);setMessage(`Edition: ${vErr.message}`);return;}
+  if(vErr){setSaving(false);setMessage(`Draft saved, but edition failed: ${vErr.message}. Open the product editor to finish; do not create another copy.`);return;}
 
   let artworkWarning='';
   if(artwork){
@@ -54,12 +64,13 @@ export default function ReleaseWorkspace({onCreated}){
    }
   }
   if(!artworkWarning&&(dbStatus==='active'||dbStatus==='forthcoming')){
-   const {error:publishError}=await supabase.from('products').update({is_public:true}).eq('id',product.id);
+   const {error:publishError}=await supabase.from('products').update({status:dbStatus,is_public:true}).eq('id',product.id);
    if(publishError)artworkWarning=` Publishing failed: ${publishError.message}. Product remains hidden.`;
   }
   setSaving(false);
   setMessage((draft?'Draft saved.':'Release created.')+artworkWarning);
-  if(!artworkWarning){if(onCreated)await onCreated();setTimeout(()=>window.location.reload(),700);}
+  if(!artworkWarning){if(onCreated)await onCreated();}
+  } catch(error){setMessage(error.message||'Release creation failed. Check the product list before retrying.');} finally{setSaving(false);}
  }
 
  return <section id="new-release" className="adminSection releaseWorkspace"><div className="sectionLabel"><span>NEW / RELEASE WORKSPACE</span><p>Prepare the next physical object.</p></div><div className="releaseGrid"><div className="adminPanel releaseForm"><div className="formIntro"><span>DATABASE + STORAGE CONNECTED</span><h2>New <em>release.</em></h2><p>Release data and optional cover artwork are written to the selected live imprint catalogue.</p></div><div className="formGrid">
@@ -73,6 +84,6 @@ export default function ReleaseWorkspace({onCreated}){
  <label className="wideField"><span>TRACKLIST · ONE TRACK PER LINE</span><textarea rows="6" value={form.tracklist} onChange={e=>set('tracklist',e.target.value)} placeholder={'Track One\nTrack Two\nTrack Three'}/></label>
  <label className="wideField"><span>CREDITS</span><textarea rows="5" value={form.credits} onChange={e=>set('credits',e.target.value)} placeholder="Written by… · Recorded by… · Artwork by…"/></label>
  <label className="wideField"><span>SHORT DESCRIPTION</span><textarea rows="4" value={form.description} onChange={e=>set('description',e.target.value)} placeholder="Edition note, concept or production detail…"/></label></div>
- {message&&<p className="workspaceMessage">{message}</p>}<div className="formActions"><button type="button" className="ghostButton" disabled={saving} onClick={()=>save(true)}>SAVE DRAFT</button><button type="button" className="saveButton" disabled={saving} onClick={()=>save(false)}>{saving?'SAVING…':'CREATE RELEASE →'}</button></div></div>
+ {message&&<p className="workspaceMessage">{message}</p>}{createdDraftId&&<button type="button" className="ghostButton" disabled={saving} onClick={()=>onCreated?.()}>OPEN SAVED PRODUCT LIST →</button>}<div className="formActions"><button type="button" className="ghostButton" disabled={saving||!!createdDraftId} onClick={()=>save(true)}>SAVE DRAFT</button><button type="button" className="saveButton" disabled={saving||!!createdDraftId} onClick={()=>save(false)}>{saving?'SAVING…':'CREATE RELEASE →'}</button></div></div>
  <aside className="releasePreview"><span>LIVE PREVIEW</span><div className="previewObject"><div className={`previewSleeve ${artworkPreview?'hasArtwork':''} ${form.has_shrinkwrap?'shrinkwrap':''}`}>{artworkPreview?<img src={artworkPreview} alt="Artwork preview"/>:<><small>{form.catalogue_no||'SIDEII—003'}</small><strong>side:II</strong><b>{(form.catalogue_no.match(/\d+/)||['03'])[0].slice(-2)}</b><em>{(form.title||'NEW EDITION').toUpperCase()}</em></>}</div><div className="previewDisc"><i/></div></div><div className="previewMeta"><small>PHYSICAL OBJECT</small><h3>{form.title||'New Edition'}<br/><em>Edition.</em></h3><p>{form.format} · {form.status}{artwork?' · ARTWORK READY':''}</p></div></aside></div></section>;
 }

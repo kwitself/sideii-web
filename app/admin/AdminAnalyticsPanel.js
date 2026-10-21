@@ -1,9 +1,10 @@
 'use client';
 import {useEffect,useMemo,useState} from 'react';
+import {isQaFixture} from '../lib/adminSafety';
 import {supabase} from '../lib/supabase';
 
 const money=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:0}).format(Number(n||0));
-const WINDOWS=[['7','7D'],['30','30D'],['90','90D'],['365','YTD'],['all','ALL']];
+const WINDOWS=[['7','7D'],['30','30D'],['90','90D'],['365','365D'],['all','ALL']];
 
 function Sparkline({points=[]}){
  const vals=points.map(x=>Number(x.value||0)); const max=Math.max(1,...vals),min=Math.min(0,...vals);
@@ -17,19 +18,26 @@ function Bars({rows=[]}){
 }
 
 export default function AdminAnalyticsPanel({products=[]}){
- const [range,setRange]=useState('30'),[orders,setOrders]=useState([]),[costs,setCosts]=useState([]),[rules,setRules]=useState([]),[report,setReport]=useState([]),[busy,setBusy]=useState(false),[message,setMessage]=useState('');
+ const [range,setRange]=useState('30'),[orders,setOrders]=useState([]),[costs,setCosts]=useState([]),[rules,setRules]=useState([]),[report,setReport]=useState([]),[busy,setBusy]=useState(true),[message,setMessage]=useState('');
+ const [loadFailed,setLoadFailed]=useState(false),[dataNotice,setDataNotice]=useState('');
  const [ruleDraft,setRuleDraft]=useState({product_id:'',payee_name:'',share_percent:'50',active:true});
 
  async function load(){
-  setBusy(true);setMessage('');
-  const since=range==='all'?null:new Date(Date.now()-Number(range)*86400000).toISOString();
-  let oq=supabase.from('orders').select('id,total,subtotal,discount_total,shipping_total,support_total,payment_status,status,created_at,order_items(id,variant_id,quantity,line_total,support_amount,format)').order('created_at');
-  if(since)oq=oq.gte('created_at',since);
-  const [o,c,r,rr]=await Promise.all([oq,supabase.rpc('admin_list_product_costs'),supabase.rpc('admin_list_royalty_rules'),supabase.rpc('admin_royalty_report')]);
-  if(o.error)setMessage(o.error.message);else setOrders(o.data||[]);
-  if(!c.error)setCosts(c.data||[]); if(!r.error)setRules(r.data||[]); if(!rr.error)setReport(rr.data||[]);
-  setBusy(false);
+  setBusy(true);setMessage('');setLoadFailed(false);setDataNotice('');
+  try{
+   if(!supabase)throw new Error('Data connection is unavailable.');
+   const since=range==='all'?null:new Date(Date.now()-Number(range)*86400000).toISOString();
+   let oq=supabase.from('orders').select('id,total,subtotal,discount_total,shipping_total,support_total,currency,payment_status,status,created_at,order_items(id,variant_id,sku,quantity,line_total,support_amount,format,product_variants(products(slug,catalogue_no)))',{count:'exact'}).order('created_at',{ascending:false}).limit(1000);
+   if(since)oq=oq.gte('created_at',since);
+   const results=await Promise.all([oq,supabase.rpc('admin_list_product_costs'),supabase.rpc('admin_list_royalty_rules'),supabase.rpc('admin_royalty_report')]);
+   const failure=results.find(result=>result.error);if(failure)throw failure.error;
+   const [o,c,r,rr]=results;
+   const real=(o.data||[]).filter(o=>o.currency==='TRY'&&!(o.order_items||[]).some(i=>/^qa-/i.test(i.sku||'')||isQaFixture(i.product_variants?.products||{})));
+   setOrders(real);setCosts(c.data||[]);setRules(r.data||[]);setReport(rr.data||[]);
+   setDataNotice([(o.count||0)>1000?'Showing the latest 1,000 orders in this period.':'',real.length!==(o.data||[]).length?'QA fixtures and non-TRY orders excluded.':''].filter(Boolean).join(' '));
+  }catch(error){setMessage(error.message||'Analytics could not load.');setLoadFailed(true);}finally{setBusy(false);}
  }
+
  useEffect(()=>{load()},[range]);
 
  const variantMap=useMemo(()=>{const m={};products.forEach(p=>(p.product_variants||[]).forEach(v=>m[v.id]={...v,product:p}));return m},[products]);
@@ -38,11 +46,11 @@ export default function AdminAnalyticsPanel({products=[]}){
  const revenue=paid.reduce((s,o)=>s+Number(o.total||0),0),units=paid.flatMap(o=>o.order_items||[]).reduce((s,i)=>s+Number(i.quantity||0),0),supportTotal=paid.reduce((s,o)=>s+Number(o.support_total||0),0),supportOrders=paid.filter(o=>Number(o.support_total||0)>0).length;
  const aov=paid.length?revenue/paid.length:0;
  const cogs=paid.flatMap(o=>o.order_items||[]).reduce((s,i)=>{const p=variantMap[i.variant_id]?.product;return s+(p?Number(costMap[p.id]||0)*Number(i.quantity||0):0)},0);
- const grossProfit=Math.max(0,revenue-cogs);
+ const grossProfit=revenue-cogs;
  const productGross={}; const formatGross={}; const supportGross={};
  paid.flatMap(o=>o.order_items||[]).forEach(i=>{const p=variantMap[i.variant_id]?.product; if(p){productGross[p.id]=(productGross[p.id]||0)+Number(i.line_total||0);supportGross[p.id]=(supportGross[p.id]||0)+Number(i.support_amount||0)} const f=String(i.format||variantMap[i.variant_id]?.format||'other').toUpperCase();formatGross[f]=(formatGross[f]||0)+Number(i.line_total||0)});
  const artistRows=rules.filter(r=>r.active).map(r=>{const gross=Number(productGross[r.product_id]||0),cost=Number(costMap[r.product_id]||0);const qty=paid.flatMap(o=>o.order_items||[]).filter(i=>variantMap[i.variant_id]?.product?.id===r.product_id).reduce((s,i)=>s+Number(i.quantity||0),0);const profit=Math.max(0,gross-cost*qty);return {...r,gross,profit,artistShare:profit*Number(r.share_percent||0)/100,label:products.find(p=>p.id===r.product_id)?.title||'PRODUCT'}}).sort((a,b)=>b.artistShare-a.artistShare);
- const artistTotal=artistRows.reduce((s,x)=>s+x.artistShare,0),labelProfit=Math.max(0,grossProfit-artistTotal);
+ const artistTotal=artistRows.reduce((s,x)=>s+x.artistShare,0),labelProfit=grossProfit-artistTotal;
  const days=range==='all'?30:Number(range); const buckets=Math.min(days,30); const trend=Array.from({length:buckets},(_,idx)=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-(buckets-1-idx));const next=new Date(d);next.setDate(d.getDate()+1);return {label:d.toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit'}),value:paid.filter(o=>{const t=new Date(o.created_at);return t>=d&&t<next}).reduce((s,o)=>s+Number(o.total||0),0)}});
  const topProducts=Object.entries(productGross).map(([id,value])=>({label:products.find(p=>p.id===id)?.title||'Product',value,display:money(value)})).sort((a,b)=>b.value-a.value).slice(0,6);
  const formats=Object.entries(formatGross).map(([label,value])=>({label,value,display:money(value)})).sort((a,b)=>b.value-a.value);
@@ -54,18 +62,20 @@ export default function AdminAnalyticsPanel({products=[]}){
   if(error)setMessage(error.message);else{setRuleDraft({product_id:'',payee_name:'',share_percent:'50',active:true});setMessage('Artist profit-share rule saved.');await load()} setBusy(false);
  }
 
+ if(busy)return <p className="dbNotice" role="status">Loading analytics…</p>;
+ if(loadFailed)return <div className="dbNotice" role="alert">Analytics unavailable: {message} <button onClick={load}>RETRY</button></div>;
  return <section className="dashboardAnalytics">
   <div className="analyticsHead"><div><span>ANALYTICS / VALUE SPLIT</span><h2>What moves, <em>who it supports.</em></h2></div><div className="analyticsRange">{WINDOWS.map(([v,l])=><button key={v} className={range===v?'active':''} onClick={()=>setRange(v)}>{l}</button>)}</div></div>
-  {message&&<p className="dbNotice">{message}</p>}
+  {message&&<p className="dbNotice">{message}</p>}{dataNotice&&<p className="dbNotice">{dataNotice}</p>}<p className="analyticsScope">TRY estimates using current product costs. Revenue includes shipping and tax; use Finance for accounting and settlements.</p>
 
   <div className="analyticsShell">
    <div className="analyticsMain">
     <article className="adminPanel analyticsHero">
-     <header><div><span>REVENUE TREND</span><small>{range==='all'?'LAST 30 DAYS VISUAL':range+' DAY WINDOW'}</small></div><strong>{money(revenue)}</strong></header>
+     <header><div><span>REVENUE TREND</span><small>{'LAST '+buckets+' DAYS VISUAL'}</small></div><strong>{money(revenue)}</strong></header>
      <div className="analyticsHeroKpis">
       <div><span>ORDERS</span><b>{paid.length}</b></div>
       <div><span>AOV</span><b>{money(aov)}</b></div>
-      <div><span>GROSS PROFIT</span><b>{money(grossProfit)}</b></div>
+      <div><span>REVENUE LESS UNIT COSTS</span><b>{money(grossProfit)}</b></div>
       <div><span>ARTIST SHARE</span><b>{money(artistTotal)}</b></div>
       <div className="supportKpi"><span>WWYS SUPPORT</span><b>{money(supportTotal)}</b></div>
      </div>

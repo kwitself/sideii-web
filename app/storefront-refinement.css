@@ -1,0 +1,152 @@
+/* October 2026 screenshot follow-up. Public pages only; retain admin and imprint identity. */
+main:has(.globalSiteHeader){--store-ink:#e3e0d9;--store-muted:#aaa7a0;--store-line:#373737;color:var(--store-ink)}
+main:has(.globalSiteHeader) :is(a,button,input,select,textarea):focus-visible,.storefrontFooter a:focus-visible{outline:2px solid #e3e0d9!important;outline-offset:4px}
+main:has(.globalSiteHeader) :is(.storeHero,.wearHero,.artistsHero,.creditsHero,.collectionsHero,.bundlesHero,.timelineHero,.archiveHero,.wholesaleHero,.impactPublicHero,.applyHero,.policyHero){padding-top:clamp(52px,6vw,88px);padding-bottom:clamp(40px,5vw,64px)}
+main:has(.globalSiteHeader) :is(.storeHero,.wearHero,.artistsHero,.creditsHero,.collectionsHero,.bundlesHero,.timelineHero,.archiveHero,.wholesaleHero,.impactPublicHero,.applyHero,.policyHero) h1{font-size:clamp(46px,7vw,108px);line-height:.98;letter-spacing:-.045em;margin:24px 0}
+main:has(.globalSiteHeader) :is(.storeHero,.wearHero,.artistsHero,.creditsHero,.collectionsHero,.bundlesHero,.timelineHero,.archiveHero,.wholesaleHero,.impactPublicHero,.applyHero,.policyHero) h1 i{color:#a5a19a}
+main:has(.globalSiteHeader) :is(.storeHero,.wearHero,.artistsHero,.creditsHero,.collectionsHero,.bundlesHero,.timelineHero,.archiveHero,.wholesaleHero,.impactPublicHero,.applyHero,.policyHero)>p{max-width:680px;color:var(--store-muted);font-size:18px;line-height:1.65}
+main:has(.globalSiteHeader) :is(.storeHero,.wearHero,.artistsHero,.creditsHero,.collectionsHero,.bundlesHero,.timelineHero,.archiveHero,.wholesaleHero,.impactPublicHero,.applyHero,.policyHero)>span{font:11px/1.5 Arial,sans-serif;letter-spacing:.16em;color:#b1aea7}
+main:has(.globalSiteHeader) .globalSiteHeader{border-color:#333!important;backdrop-filter:none;background:#090909!important}
+main:has(.globalSiteHeader) .primaryNav :is(a,button){font-size:11px!important;letter-spacing:.08em;min-height:40px;color:#c0bdb6}
+main:has(.globalSiteHeader) .navExploreMenu{background:#111;border-color:#414141}
+main:has(.globalSiteHeader) .navExploreMenu a{display:flex;align-items:center}
+main:has(.globalSiteHeader) .mobileNavDrawer{background:#0d0d0d!important}
+main:has(.globalSiteHeader) .mobileNavDrawer :is(small,nav a>span){font-size:11px;color:#aaa}
+.globalAccountTrigger,.globalBagTrigger{font-size:10px!important;background:#101010!important;border-color:#444!important;color:#dfddd7!important;min-height:40px!important}
+/* Discovery and honest empty states. */
+main.storePage .storeCatalogue.shell{max-width:1440px}
+main.storePage :is(.storeDiscoveryTools,.storeDiscoveryControls,.storeSearchField){background:#101010!important;border-color:#383838!important;box-shadow:none!important}
+main.storePage :is(.storeDiscoveryTools,.storeFilters) :is(button,label,select,input,small,span){font-size:11px;line-height:1.5}
+main.storePage .storeDiscoveryTools :is(input,select){background:#0b0b0b!important;border-color:#444!important;color:#dedbd5!important;min-height:44px;font-size:14px}
+main.storePage :is(.storeDiscoveryMeta,.storeDiscoveryControls label>span,.storeSearchField>span){color:#b7b4ad;font-size:11px}
+main.storePage :is(.storeFilters,.storeViewToggle,.storeDiscoveryTools) button{min-height:40px;line-height:1.4}
+main.storePage :is(.storeCoverPlaceholder,.storeClassicPlaceholder){background:linear-gradient(145deg,#252525,#0c0c0c)!important;color:#aaa!important}
+main.storePage :is(.storeMobileFilterToggle,.storeActiveFilters button){background:#191919!important;border-color:#494949!important;color:#d4d0c8!important}
+main.storePage :is(.storeDiscoveryMeta span,.storeDiscoveryMeta button,.storeViewToggle>span,.storeEditorialLinks a){font-size:11px!important;color:#b9b5ae!important}
+main.storePage :is(.storeClassicMeta small,.storeClassicStock,.storeClassicAction a,.storeClassicAction button,.storeVariant span,.storeVariant button,.storeDiscoveryToggle span){font-size:11px!important;line-height:1.5!important}
+main:has(.globalSiteHeader) :is(.catalogueEmptyState,.storeNoResults){padding:36px!important;border:1px solid #373737!important;background:#101010!important;max-width:100%;box-sizing:border-box}
+main:has(.globalSiteHeader) :is(.catalogueEmptyState,.storeNoResults) small{color:#b4b0a9;font:11px/1.5 Arial,sans-serif;letter-spacing:.14em}
+main:has(.globalSiteHeader) :is(.catalogueEmptyState,.storeNoResults) :is(h2,h3){margin:16px 0;font:400 clamp(28px,3vw,44px)/1.12 Georgia,serif;letter-spacing:-.02em;color:#e3e0d9}
+main:has(.globalSiteHeader) :is(.catalogueEmptyState,.storeNoResults) p{margin:0 0 24px;max-width:650px;color:#aaa7a0;font:17px/1.65 Georgia,serif;letter-spacing:normal!important}
+main:has(.globalSiteHeader) :is(.catalogueEmptyState,.storeNoResults) :is(a,button){display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;border:1px solid #555;background:transparent;color:#e0ddd6;font:11px/1.5 Arial,sans-serif;letter-spacing:.08em;text-decoration:none;box-sizing:border-box}
+main:has(.globalSiteHeader) :is(.catalogueEmptyState,.storeNoResults) :is(a,button):hover{background:#252525;border-color:#b6b3ac}
+.emptyActions{display:flex;flex-wrap:wrap;gap:10px}
+main:is(.storePage,.artistsPage,.creditsPage,.collectionsPage,.bundlesPage,.timelinePage,.archivePage,.wholesalePage,.impactPublicPage,.trackingPage){min-height:calc(100svh - 250px)}
+main:has(.globalSiteHeader) :is(.artistsList,.creditsList,.collectionsList,.bundlesList,.timelineList,.archiveGrid,.impactPublicList){padding-top:44px;padding-bottom:64px}
+/* Forms and reading pages. */
+main:has(.globalSiteHeader) :is(.productionApplicationForm,.wholesaleForm,.trackingForm) label,
+main:has(.globalSiteHeader) :is(.applicationServices>span,.applicationGroupHead>span,.applicationGroupHead b,.wholesaleForm label>span,.policyLayout aside>span,.policySections article>span){font-size:11px;line-height:1.5;color:#bcb8b0;letter-spacing:.1em}
+main:has(.globalSiteHeader) :is(.productionApplicationForm,.wholesaleForm,.trackingForm) :is(input,textarea,select){font:16px/1.5 Arial,sans-serif;min-width:0;max-width:100%;min-height:48px;background:#101010;border-color:#494949;box-sizing:border-box}
+main:has(.globalSiteHeader) :is(.productionApplicationForm,.wholesaleForm,.trackingForm) button{font-size:11px;line-height:1.5;min-height:44px}
+main:has(.globalSiteHeader) :is(.applicationGroupHead small,.applicationPrivacy){font-size:13px;line-height:1.6;color:#aaa7a0}
+main:has(.globalSiteHeader) :is(.applicationError,.wholesaleForm>p){font-size:15px;line-height:1.6}
+main:has(.globalSiteHeader) :is(.applyIntro,.wholesaleBody) p{font-size:18px;line-height:1.7;color:#aaa7a0}
+main:has(.globalSiteHeader) .productionApplicationForm{max-width:100%;margin:0}
+main:has(.globalSiteHeader) .applyIntro{padding-top:56px;padding-bottom:56px;gap:48px}
+main:has(.globalSiteHeader) .applyIntro h2{font-size:clamp(36px,4vw,60px);line-height:1.1}
+main:has(.globalSiteHeader) .wholesaleBody{padding-top:52px;padding-bottom:64px;gap:48px}
+main:has(.globalSiteHeader) .policySections p{font-size:18px;line-height:1.8;color:#b7b3ac;max-width:72ch}
+main:has(.globalSiteHeader) .policyLayout aside a{font-size:11px;line-height:1.5;color:#c0bcb5;min-height:48px}
+main:has(.globalSiteHeader) .policyNote a{font-size:11px}
+main:has(.globalSiteHeader) .trackingShell{width:min(1280px,calc(100% - 48px));margin:64px auto 80px;gap:48px;padding-top:32px}
+main:has(.globalSiteHeader) .trackingIntro h1{font-size:clamp(48px,6vw,84px);line-height:1.02}
+main:has(.globalSiteHeader) .trackingIntro h1 em{color:#a5a19a}
+main:has(.globalSiteHeader) .trackingIntro p{font-size:18px;line-height:1.7;color:#b3afa8}
+main:has(.globalSiteHeader) :is(.trackingIntro span,.trackingResult span){font:11px/1.5 Arial,sans-serif;color:#b3afa8}
+main:has(.globalSiteHeader) .trackingForm{align-self:start;background:#111;border:1px solid #383838;padding:28px}
+main:has(.globalSiteHeader) .trackingResult{overflow-wrap:anywhere}
+main:has(.globalSiteHeader) .trackingResult p{font-size:16px;line-height:1.6}
+main:has(.globalSiteHeader) :is(.impactPublicHead p,.impactPublicNote p){color:#b3afa8;font-size:17px;line-height:1.7}
+main:has(.globalSiteHeader) :is(.impactPublicStats small,.impactPublicHead>span,.impactPublicNote>span){font-size:11px;line-height:1.5;color:#b3afa8}
+main:has(.globalSiteHeader) .impactPublicEmpty h2{font-size:clamp(28px,3vw,40px);line-height:1.2}
+main:has(.globalSiteHeader) :is(.lethEmpty,.wearEmpty) :is(p,small){font-size:16px;line-height:1.6}
+main:has(.globalSiteHeader) :is(.lethEmpty,.wearEmpty) small{font-size:11px}
+main:has(.globalSiteHeader) :is(.manifestoText p,.productionIntro p,.productionCard p,.wearIntro p,.lethAbout p){font-size:18px;line-height:1.7}
+main:has(.globalSiteHeader) :is(.footerNav a,.footerLogo small,.footerMeta span){font-size:11px!important;line-height:1.6!important;color:#b1ada5!important}
+main:has(.globalSiteHeader) .footerNav a{min-height:40px;display:flex;align-items:center}
+main:has(.globalSiteHeader) :is(.statement>div>p,.aboutCopy>p,.productionHead>p,.productionFlow p,.imprintContent>p,.wearManifest p,.wearObjectSystem p,.wearSupportModelInner>div>p,.wearSupportStats span){font-size:18px!important;line-height:1.65!important;color:#b7b3ab!important}
+main:has(.globalSiteHeader) :is(.eyebrow,.heroFoot span,.sectionHead>span,.capabilityStrip small,.aboutIndex,.productionHead>span,.productionFlow b,.wearHeroMeta small,.wearSectionHead>span,.wearManifest>span,.wearObjectSystem b,.wearSupportModelInner>span){font-size:11px!important;line-height:1.5!important;color:#aaa69e!important}
+/* Footer only for pages without an existing footer. */
+.storefrontFooter{width:min(1440px,calc(100% - 64px));margin:0 auto;padding:36px 0;display:grid;grid-template-columns:1fr 1fr;gap:28px;border-top:1px solid #373737;color:#aaa7a0}
+.storefrontFooter img{display:block;width:112px;height:auto}
+.storefrontFooter p{font:17px/1.6 Georgia,serif;margin:14px 0 0}
+.storefrontFooter nav{display:flex;align-content:start;justify-content:flex-end;flex-wrap:wrap;gap:4px 24px}
+.storefrontFooter nav a{display:flex;align-items:center;min-height:44px;font:12px/1.5 Arial,sans-serif;color:#d4d1ca;text-decoration:none}
+.storefrontFooter nav a:hover{text-decoration:underline;text-underline-offset:5px}
+.storefrontFooter>small{grid-column:1/-1;font:10px/1.6 Arial,sans-serif;letter-spacing:.13em;color:#aaa7a0}
+/* Shared drawers; explicit hidden panels keep forms mounted without focus leakage. */
+body :is(.globalAccountDrawer,.globalBagDrawer){width:min(520px,100vw)!important;height:100dvh!important;background:#101010!important;color:#e0ddd6!important;padding:0 28px 28px!important;border-color:#3a3a3a!important}
+body :is(.globalAccountDrawer,.globalBagDrawer) .storefrontDrawerHead{position:sticky;top:0;z-index:9;display:flex;align-items:center;justify-content:space-between;flex:0 0 auto;gap:16px;min-height:72px;margin:0 -2px 20px;padding:8px 2px;background:#101010;border-bottom:1px solid #414141;box-sizing:border-box}
+body :is(.globalAccountDrawer,.globalBagDrawer) .storefrontDrawerHead>span{font:11px/1.4 Arial,sans-serif;letter-spacing:.14em;color:#c5c1b9}
+body .storefrontDrawerHead :is(.globalAccountClose,.globalBagClose){position:static!important;float:none!important;inset:auto!important;transform:none!important;margin:0!important;font:11px/1.4 Arial,sans-serif!important;min-height:44px;min-width:76px;color:#e0ddd6!important;border:1px solid #555!important;background:#161616!important;cursor:pointer}
+body :is(.globalAccountDrawer,.globalBagDrawer) [hidden]{display:none!important}
+body :is(.globalAccountDrawer,.globalBagDrawer) :is(label,small){font-size:12px!important;line-height:1.5!important;color:#b3afa8}
+body :is(.globalAccountDrawer,.globalBagDrawer) :is(input:not([type=checkbox]),select,textarea){font-size:16px!important;line-height:1.5!important;min-height:46px!important;background:#151515!important;color:#e0ddd6!important;border-color:#4a4a4a!important;max-width:100%;box-sizing:border-box}
+body :is(.globalAccountDrawer,.globalBagDrawer) :is(button,a):focus-visible{outline:2px solid #e3e0d9!important;outline-offset:3px}
+body :is(.globalAccountDrawer,.globalBagDrawer) button{min-height:40px;font-size:11px;line-height:1.4}
+body .globalAccountDrawer .accountIdentity{margin:4px 0 24px}
+body .globalAccountDrawer .accountIdentity b{font-size:clamp(28px,4vw,38px);line-height:1.15;overflow-wrap:anywhere}
+body .globalAccountDrawer .accountIdentity small{overflow-wrap:anywhere}
+body .globalAccountDrawer .accountQuickNav{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:24px;padding:0 0 16px;background:transparent;border-color:#414141}
+body .globalAccountDrawer .accountQuickNav button{font-size:10px;letter-spacing:.04em;min-height:44px;background:#181818;color:#c4c0b8;border-color:#414141;padding:8px 3px}
+body .globalAccountDrawer .accountQuickNav button[aria-pressed=true]{background:#dfdcd4;color:#111;border-color:#dfdcd4}
+body .globalAccountDrawer .accountQuickNav button:hover{border-color:#bbb;background:#292929;color:#eee}
+body .globalAccountDrawer .accountQuickNav button[aria-pressed=true]:hover{background:#eee;color:#111}
+body .globalAccountDrawer :is(.accountSectionHead,.accountSectionHead span){font-size:11px;color:#c7c3bb;line-height:1.5}
+body .globalAccountDrawer :is(.accountEmpty,.accountMessage){font-size:15px!important;line-height:1.6!important;color:#b9b5ad}
+body .globalAccountDrawer :is(.accountAddressBook,.accountSavedBag,.accountWishlist,.accountSharedLinks,.accountCollectorSummary,.accountStoreCredit,.accountCollection,.accountOwnerContent,.accountOrders){margin-top:24px;border-color:#383838}
+body .globalAccountDrawer [id^=account-panel-]>section:first-child{margin-top:0}
+body .globalAccountDrawer :is(.accountSavedBagButton,.accountCollectorSummary,.accountStoreCredit,.accountOrderRow,.accountAddressList article){background:#151515!important;border-color:#393939!important}
+body .globalAccountDrawer .accountSignout{margin-top:28px!important;font-size:11px;min-height:44px}
+body .globalAccountDrawer .accountTabs button.active,body .globalAccountDrawer .accountPrimary{background:#dfdcd4!important;color:#111!important;border-color:#dfdcd4!important;font-size:11px!important}
+body .globalAccountDrawer .accountTabs button{font-size:11px!important;min-height:44px!important}
+body .globalAccountDrawer .accountTabs button:not(.active){background:#151515!important;color:#c8c4bc!important;border-color:#444!important}
+body .globalAccountDrawer .collectorSummaryGrid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;padding:12px 0!important}
+body .globalAccountDrawer .collectorSummaryGrid>div{min-width:0;padding:14px!important;background:#141414!important;border-color:#3d3d3d!important}
+body .globalAccountDrawer .collectorSummaryGrid span{font:10px/1.5 Arial,sans-serif!important;color:#b5b1a9!important;letter-spacing:.06em!important}
+body .globalAccountDrawer .collectorSummaryGrid b{font-size:24px!important;line-height:1.3!important;overflow-wrap:anywhere}
+body .globalAccountDrawer .collectorTierCard{grid-column:1/-1}
+body .globalAccountDrawer :is(.accountOrderRow>span,.accountShareMini,.accountAddressButtons button){font-size:11px!important;line-height:1.5!important;color:#c7c3bb}
+body .globalBagDrawer .globalBagItems{margin-top:0!important}
+body .globalBagDrawer .globalBagItemVisual{background:#181818!important;border-color:#404040!important}
+body .globalBagDrawer .globalBagItemVisual span{color:#bbb!important}
+body .globalBagDrawer .globalBagQty button{background:#181818!important;border-color:#555!important;color:#ddd!important;min-height:44px!important;min-width:44px!important}
+body .globalBagDrawer .globalBagQty button:hover:not(:disabled){background:#303030!important}
+body .globalBagDrawer .globalBagRemove{font-size:11px!important;color:#c9c5bd!important;min-width:72px;min-height:44px!important}
+body .globalBagDrawer.open>.globalBagCheckout{margin-top:24px!important;position:static!important;box-shadow:none!important;min-height:52px!important}
+body .globalBagDrawer .globalBagCheckout:disabled{opacity:.55;cursor:not-allowed}
+body .globalBagDrawer .promoBox{background:#151515!important;border-color:#393939!important;margin-top:20px!important}
+body .globalBagDrawer .promoLabel{font-size:11px;color:#bdb9b1}
+body .globalBagDrawer :is(.promoLabel>span,.promoEntry button){font-size:11px!important;color:#bbb7af}
+body .globalBagDrawer :is(.globalBagTotal,.cartShipping,.checkoutSummaryRow){font-size:12px;color:#ccc8c0}
+body .globalBagDrawer .globalCheckout :is(.checkoutInvoice,.checkoutGift,.checkoutStoreValue,.checkoutSummary){background:#151515!important;border-color:#393939!important}
+body .globalBagDrawer .globalCheckout .checkoutPolicyNote{font-size:13px!important;color:#b4b0a8}
+body :is(.quoteNotice,.accountLoadError){margin:20px 0 0;padding:18px;border:1px solid #74675b;background:#1a1815;color:#e0d8cb;font:15px/1.6 Arial,sans-serif}
+body :is(.quoteNotice,.accountLoadError) p{margin:0 0 12px}
+body :is(.quoteNotice,.accountLoadError) button{min-height:44px;padding:10px 14px;background:transparent;border:1px solid #8f8478;color:#eee7dc;font:11px/1.5 Arial,sans-serif;cursor:pointer;margin:0 8px 4px 0}
+body :is(.quoteStatus,.accountLoadStatus){font:14px/1.6 Arial,sans-serif;color:#bdb9b1;margin:18px 0}
+/* Reserve space for fixed shopping controls. */
+@media(min-width:901px){
+ main:has(.globalSiteHeader) .primaryNav{padding-right:190px!important;gap:22px!important}
+ body .globalAccountTrigger{width:82px!important;right:112px!important}
+}
+@media(max-width:900px){
+ main:has(.globalSiteHeader) .primaryNav{display:none!important}
+ main:has(.globalSiteHeader) .mobileMenuTrigger{display:flex!important;position:fixed!important;top:calc(11px + env(safe-area-inset-top,0px))!important;right:160px!important;width:48px!important;min-width:48px!important;height:40px!important;padding:0!important;justify-content:center!important}
+ body .globalAccountTrigger{right:80px!important;width:74px!important;min-width:74px!important;padding:0 5px!important}
+ body .globalBagTrigger{right:12px!important;width:64px!important;min-width:64px!important}
+ main:has(.globalSiteHeader) :is(.storeHero,.wearHero,.artistsHero,.creditsHero,.collectionsHero,.bundlesHero,.timelineHero,.archiveHero,.wholesaleHero,.impactPublicHero,.applyHero,.policyHero)>p{font-size:17px}
+ main:has(.globalSiteHeader) .trackingShell{gap:32px}
+}
+@media(max-width:760px){
+ main:has(.globalSiteHeader) :is(.catalogueEmptyState,.storeNoResults){padding:24px!important}
+ main:has(.globalSiteHeader) .trackingShell{width:calc(100% - 36px);margin:40px auto 56px;grid-template-columns:minmax(0,1fr)}
+ main:has(.globalSiteHeader) .trackingForm{padding:20px}
+ main:has(.globalSiteHeader) .applyIntro{gap:28px}
+ main:has(.globalSiteHeader) .policySections p{font-size:17px}
+ .storefrontFooter{width:calc(100% - 36px);grid-template-columns:1fr;padding:28px 0;gap:20px}
+ .storefrontFooter nav{justify-content:flex-start;gap:4px 20px}
+ body :is(.globalAccountDrawer,.globalBagDrawer){width:100vw!important;padding:0 18px calc(24px + env(safe-area-inset-bottom))!important}
+ body :is(.globalAccountDrawer,.globalBagDrawer) .storefrontDrawerHead{padding-top:calc(8px + env(safe-area-inset-top));min-height:68px}
+}
+@media(prefers-reduced-motion:reduce){main:has(.globalSiteHeader) :is(.catalogueEmptyState,.storeNoResults) :is(a,button){transition:none}}

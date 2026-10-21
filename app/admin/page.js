@@ -3,6 +3,7 @@ import AdminDashboard from './AdminDashboard';
 import AdminRail from './AdminRail';
 import './admin.css';
 import './admin-polish.css';
+import './admin-refinement.css';
 
 export default function AdminPage(){
  return <AdminGate><main className="adminApp"><AdminRail/><AdminDashboard/></main></AdminGate>;

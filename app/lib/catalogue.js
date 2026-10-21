@@ -52,14 +52,14 @@ export async function getLethargiaReleases(){
  const {data,error}=await sb.from('products').select(PRODUCT_SELECT).eq('imprint','lethargia').eq('is_public',true).or('product_type.is.null,product_type.neq.merch').in('status',['forthcoming','active']).order('created_at',{ascending:false});
  if(error)return []; return (data||[]).map((p,i)=>mapRelease(sb,p,i));
 }
-export async function getStoreReleases(){
- const sb=client(); if(!sb)return [];
+export async function getStoreCatalogue(){
+ const sb=client(); if(!sb)return {releases:[],unavailable:true};
  const [productsResult,membershipResult]=await Promise.all([
   sb.from('products').select(PRODUCT_SELECT).eq('is_public',true).in('status',['forthcoming','active']).order('created_at',{ascending:false}),
   sb.rpc('get_public_product_collection_memberships')
  ]);
  const {data,error}=productsResult;
- if(error)return [];
+ if(error||!Array.isArray(data))return {releases:[],unavailable:true};
  const memberships=membershipResult.error?[]:(Array.isArray(membershipResult.data)?membershipResult.data:[]);
  const collectionMap=new Map();
  for(const row of memberships){
@@ -67,8 +67,9 @@ export async function getStoreReleases(){
   if(!list.some(x=>x.slug===row.collection_slug))list.push({slug:row.collection_slug,name:row.collection_name});
   collectionMap.set(row.product_id,list);
  }
- return (data||[]).map((x,i)=>({...mapRelease(sb,x,i),collections:collectionMap.get(x.id)||[]}));
+ return {releases:(data||[]).map((x,i)=>({...mapRelease(sb,x,i),collections:collectionMap.get(x.id)||[]})),unavailable:false};
 }
+export async function getStoreReleases(){return (await getStoreCatalogue()).releases}
 export async function getHomepageSelectedReleases(){
  const sb=client(); if(!sb)return [];
  const {data,error}=await sb.from('products').select(PRODUCT_SELECT).eq('homepage_selected',true).eq('is_public',true).or('product_type.is.null,product_type.neq.merch').in('status',['forthcoming','active']).order('created_at',{ascending:false});

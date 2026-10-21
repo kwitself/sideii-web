@@ -32,6 +32,9 @@ jobs:
           node --check scripts/check-http-smoke.mjs
           node --check scripts/check-iyzilink-guards.mjs
           node --check scripts/check-catalogue-launch-guards.mjs
+          node --check scripts/check-browser-smoke.mjs
+          node --check scripts/check-admin-browser.mjs
+          node --check scripts/check-storefront-browser.mjs
       - name: Run all SIDE II safety checks
         id: qa
         run: npm run qa
