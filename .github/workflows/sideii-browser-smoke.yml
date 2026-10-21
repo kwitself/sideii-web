@@ -43,6 +43,7 @@ jobs:
           node scripts/check-browser-smoke.mjs
           node scripts/check-admin-browser.mjs
           node scripts/check-storefront-browser.mjs
+          node scripts/check-page-builder-browser.mjs
       - name: Upload responsive browser evidence
         if: always()
         uses: actions/upload-artifact@v4

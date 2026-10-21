@@ -1,4 +1,5 @@
-import Link from 'next/link';
+import PageCanvas from '../../components/builder/PageCanvas';
+import {getPublishedPage} from '../../lib/server/pageBuilderPublic';
 import {notFound} from 'next/navigation';
 import {getStoreProduct,getRelatedProducts,getProductBundles} from '../../lib/catalogue';
 import MerchProductClient from './MerchProductClient';
@@ -27,14 +28,14 @@ export default async function StoreProductPage({params}){
  if(!product||!product.isMerch)notFound();
  const schema=productSchema(product);
  const detail=product.storefrontConfig?.detail||{};
- const [related,bundles]=await Promise.all([
+ const [related,bundles,custom]=await Promise.all([
   detail.related===false?Promise.resolve([]):getRelatedProducts(product.id,6),
-  detail.related===false?Promise.resolve([]):getProductBundles(product.id,3)
+  detail.related===false?Promise.resolve([]):getProductBundles(product.id,3),
+  getPublishedPage('product')
  ]);
  return <main className="storePage merchDetailPage">
   {schema&&<script type="application/ld+json" dangerouslySetInnerHTML={{__html:jsonLd(schema)}}/>}
   <GlobalHeader/>
-  <MerchProductClient product={product}/>
-  {detail.related!==false&&<ProductDiscovery current={product} related={related} bundles={bundles}/>} 
+  {custom?<PageCanvas document={custom.document} products={[product,...related]} slots={{'product-hero':<MerchProductClient product={product}/>, 'product-related':detail.related!==false&&<ProductDiscovery current={product} related={related} bundles={bundles}/>}}/>:<><MerchProductClient product={product}/>{detail.related!==false&&<ProductDiscovery current={product} related={related} bundles={bundles}/>}</>}
  </main>
 }

@@ -36,7 +36,7 @@ const matchesSearch=(r,query)=>{
  return tokens.every(token=>all.includes(token));
 };
 
-export default function StoreClient({releases,unavailable=false}){
+export default function StoreClient({releases,unavailable=false,embedded=false}){
  const {money:fmt,t}=useLocaleCurrency();
  const [filter,setFilter]=useState('all'),[formatFilter,setFormatFilter]=useState('all');
  const [search,setSearch]=useState(''),[availability,setAvailability]=useState('all'),[collectionFilter,setCollectionFilter]=useState('all'),[sortMode,setSortMode]=useState('newest');
@@ -247,9 +247,10 @@ export default function StoreClient({releases,unavailable=false}){
   return digital?'DIGITAL DOWNLOAD':preorder?'PRE-ORDER':soldOut?'SOLD OUT':(v.stock??0)+' IN STOCK';
  };
 
- return <main className={"storePage "+(filter==="lethargia"?"storePageLethargia":"")}>
-  <GlobalHeader/>
-  <section className="storeHero shell"><span>STORE / CATALOGUE</span><h1>Available<br/><i>editions.</i></h1><p>Physical objects and digital masters from SIDE:II and its imprints.</p><div className="storeEditorialLinks"><Link className="storeWearEntry" href="/wear">{t('WEAR WHAT YOU SUPPORT')} →</Link><Link className="storeWearEntry" href="/collections">{t('COLLECTIONS')} →</Link><Link className="storeWearEntry" href="/bundles">{t('BUNDLES')} →</Link><Link className="storeWearEntry" href="/archive">{t('ARCHIVE')} →</Link></div></section>
+ const Wrapper=embedded?'div':'main';
+ return <Wrapper className={"storePage "+(filter==="lethargia"?"storePageLethargia":"")}>
+  {!embedded&&<GlobalHeader/>}
+  {!embedded&&<section className="storeHero shell"><span>STORE / CATALOGUE</span><h1>Available<br/><i>editions.</i></h1><p>Physical objects and digital masters from SIDE:II and its imprints.</p><div className="storeEditorialLinks"><Link className="storeWearEntry" href="/wear">{t('WEAR WHAT YOU SUPPORT')} →</Link><Link className="storeWearEntry" href="/collections">{t('COLLECTIONS')} →</Link><Link className="storeWearEntry" href="/bundles">{t('BUNDLES')} →</Link><Link className="storeWearEntry" href="/archive">{t('ARCHIVE')} →</Link></div></section>}
   <section className="storeFilters shell"><div>{[['all','ALL'],['sideii','SIDE:II'],['lethargia','LETHARGIA'],['selected','SELECTED']].map(([v,l])=><button key={v} className={filter===v?'active':''} onClick={()=>setFilter(v)}>{l}</button>)}</div><div>{[['all','ALL MEDIA'],['merch','MERCH'],['vinyl','VINYL'],['cd','CD'],['cassette','CASSETTE'],['digital','DIGITAL']].map(([v,l])=><button key={v} className={formatFilter===v?'active':''} onClick={()=>setFormatFilter(v)}>{l}</button>)}</div><div className="storeViewToggle" role="group" aria-label="Store view"><span>VIEW</span><button type="button" className={viewMode==='editorial'?'active':''} aria-pressed={viewMode==='editorial'} onClick={()=>setViewMode('editorial')}>EDITORIAL</button><button type="button" className={viewMode==='classic'?'active':''} aria-pressed={viewMode==='classic'} onClick={()=>setViewMode('classic')}>CLASSIC</button></div></section>
   <section className="storeDiscoveryTools shell">
    <div className="storeSearchField"><label htmlFor="sideii-store-search">SEARCH CATALOGUE</label><input id="sideii-store-search" type="search" list="store-search-suggestions" value={search} onChange={e=>{setSearch(e.target.value);if(e.target.value.trim()&&sortMode==='newest')setSortMode('relevance')}} placeholder="Title, artist, catalogue, SKU, colour, collection…"/><datalist id="store-search-suggestions">{searchSuggestions.map(x=><option value={x} key={x}/>)}</datalist>{search&&<button type="button" className="storeSearchClear" aria-label="Clear catalogue search" onClick={()=>{setSearch('');if(sortMode==='relevance')setSortMode('newest')}}>CLEAR ×</button>}</div>
@@ -305,5 +306,5 @@ export default function StoreClient({releases,unavailable=false}){
    {unavailable?<div className="storeNoResults discoveryEmpty" role="alert"><small>CATALOGUE / CONNECTION</small><h3>The catalogue could not be loaded.</h3><p>Please try again in a moment. Your saved bag is still available.</p><button type="button" onClick={()=>window.location.reload()}>TRY AGAIN</button></div>:filtered.length===0&&(uniqueReleases.every(r=>r.storefrontConfig?.visibility?.store===false)?<div className="storeNoResults discoveryEmpty"><small>CATALOGUE / IN PREPARATION</small><h3>The next objects are taking shape.</h3><p>New editions will appear here when they are ready. Explore the label or tell us about your own project.</p><div className="emptyActions"><Link href="/">MEET SIDE:II →</Link><Link href="/apply">SUBMIT A PROJECT →</Link></div></div>:<div className="storeNoResults discoveryEmpty"><small>NO MATCHES</small><h3>Nothing fits these filters.</h3><p>Try removing a filter or broadening the search terms.</p><button type="button" onClick={resetDiscovery}>RESET DISCOVERY</button></div>)}
 
   </section>
- </main>;
+ </Wrapper>;
 }

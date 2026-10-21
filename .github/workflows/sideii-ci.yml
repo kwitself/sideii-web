@@ -35,6 +35,7 @@ jobs:
           node --check scripts/check-browser-smoke.mjs
           node --check scripts/check-admin-browser.mjs
           node --check scripts/check-storefront-browser.mjs
+          node --check scripts/check-page-builder-browser.mjs
       - name: Run all SIDE II safety checks
         id: qa
         run: npm run qa

@@ -23,11 +23,13 @@ export default async function sitemap(){
 
  const sb=client();
  if(sb){
-  const [collections,artists,credits]=await Promise.all([
+  const [collections,artists,credits,builderPages]=await Promise.all([
    sb.rpc('get_public_collections'),
    sb.rpc('get_public_artist_names'),
-   sb.rpc('get_public_credit_people')
+   sb.rpc('get_public_credit_people'),
+   sb.from('site_builder_publications').select('page_key').like('page_key','page:%')
   ]);
+  for(const p of Array.isArray(builderPages.data)?builderPages.data:[])if(/^page:[a-z0-9]+(?:-[a-z0-9]+)*$/.test(p.page_key))dynamic.push('/pages/'+p.page_key.slice(5));
   for(const c of Array.isArray(collections.data)?collections.data:[])if(c?.slug)dynamic.push('/collections/'+c.slug);
   for(const a of Array.isArray(artists.data)?artists.data:[]){const slug=slugify(a?.artist_project);if(slug)dynamic.push('/artists/'+slug)}
   for(const c of Array.isArray(credits.data)?credits.data:[]){const slug=slugify(c?.person_name);if(slug)dynamic.push('/credits/'+slug)}

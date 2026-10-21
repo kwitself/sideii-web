@@ -83,6 +83,7 @@ export default function AdminRail(){
    <div className="adminRailMobileHead"><span>NAVIGATION</span><button type="button" onClick={()=>setMobileOpen(false)}>CLOSE ×</button></div>
    <Link href="/" className="adminBrand"><img src="/brand/sideii-logo-flat.png" alt="Side II"/><small>CONTROL ROOM</small></Link>
    <nav className="adminNav" aria-label="Administration">{items.map(([id,n,label])=><a key={id} aria-current={active===id?'page':undefined} className={active===id?'active':''} href={'#'+id} onClick={e=>go(e,id)}><i>{n}</i>{label}</a>)}</nav>
+   <Link href="/admin/editor" className="adminEditorLink" style={{display:'block',margin:'16px 20px',padding:'14px 12px',border:'1px solid #555',color:'#eee',fontSize:12,textDecoration:'none'}}>✎ Visual Studio ↗</Link>
    <div className="railFoot"><span>WORKSPACE</span><b><i/>ADMINISTRATION</b><small>MMXXVI / SIDE:II</small></div>
   </aside>
  </>;

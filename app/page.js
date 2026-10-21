@@ -4,10 +4,15 @@ import HomeSectionRail from './components/HomeSectionRail';
 import SelectedReleaseGrid from './components/SelectedReleaseGrid';
 import './catalogue.css';
 import GlobalHeader from './components/GlobalHeader';
+import {getPublishedPage} from './lib/server/pageBuilderPublic';
+import PageCanvas from './components/builder/PageCanvas';
+import StorefrontFooter from './components/StorefrontFooter';
 
 export const revalidate = 0;
 
 export default async function Home() {
+  const custom = await getPublishedPage('home');
+  if(custom){const products=await getDatabaseReleases();return <><main><GlobalHeader/><PageCanvas document={custom.document} products={products}/></main><StorefrontFooter force/></>}
   const releases = await getDatabaseReleases();
   const selected = await getHomepageSelectedReleases();
   const storeReleases = await getHomepageStoreReleases(3);

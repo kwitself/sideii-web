@@ -1,0 +1,159 @@
+import assert from 'node:assert/strict';
+import {createServer} from 'node:http';
+import {mkdirSync,writeFileSync} from 'node:fs';
+import {createRequire} from 'node:module';
+import {starterDocument} from '../app/lib/page-builder-templates.js';
+import {flattenNodes} from '../app/lib/page-builder.js';
+const require=createRequire(import.meta.url);
+let chromium;try{({chromium}=require('playwright'));}catch{({chromium}=require(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/playwright'));}
+const base=process.env.SIDEII_BASE_URL||'http://127.0.0.1:3000';
+assert.match(base,/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/);
+assert.equal(process.env.NEXT_PUBLIC_SUPABASE_URL,'http://127.0.0.1:54321');
+const out=(process.env.SIDEII_QA_OUTPUT||'/tmp/sideii-admin-qa')+'/builder';mkdirSync(out,{recursive:true});
+const admin={id:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',aud:'authenticated',email:'editor@example.invalid',app_metadata:{role:'admin'},user_metadata:{}};
+const customer={...admin,id:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',app_metadata:{role:'customer'},user_metadata:{role:'admin'}};
+const token=Buffer.from(JSON.stringify({alg:'HS256',typ:'JWT'})).toString('base64url')+'.'+Buffer.from(JSON.stringify({sub:admin.id,role:'authenticated',exp:4102444800})).toString('base64url')+'.test-signature';
+const session={access_token:token,refresh_token:'test-only',token_type:'bearer',expires_in:3600,expires_at:4102444800,user:admin};
+const pages=new Map(),publications=new Map(),revisions=[],blocks=[],writes=[],errors=[],assets=[];
+const pixel=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a1xkAAAAASUVORK5CYII=','base64');
+let failSave=false;
+const products=[{id:'11111111-1111-4111-8111-111111111111',catalogue_no:'SII-009',slug:'studio-edition',title:'Studio Edition',artist_project:'Independent Artist',product_type:'release',imprint:'sideii',status:'active',is_public:true,product_variants:[{id:'22222222-2222-4222-8222-222222222222',format:'cd',sku:'SII-009-CD',active:true,price:120,currency:'TRY',stock_qty:5,reserved_qty:0}]}];
+const mock=createServer(async(req,res)=>{
+  const url=new URL(req.url,'http://127.0.0.1:54321'),name=url.pathname.split('/').pop();
+  const send=(data,status=200)=>{res.writeHead(status,{'content-type':'application/json','access-control-allow-origin':'*','access-control-allow-headers':'*','access-control-allow-methods':'GET,POST,PATCH,DELETE,OPTIONS'});res.end(JSON.stringify(data));};
+  if(req.method==='OPTIONS')return send({});
+  if(url.pathname.startsWith('/auth/v1'))return send(name==='user'?(req.headers.authorization==='Bearer customer-token'?customer:admin):session);
+  let body={};if(req.method!=='GET'){const chunks=[];for await(const chunk of req)chunks.push(chunk);try{body=JSON.parse(Buffer.concat(chunks).toString());}catch{}}
+  if(url.pathname.startsWith('/storage/v1/object/list/'))return send(assets);
+  if(url.pathname.startsWith('/storage/v1/object/public/')){res.writeHead(200,{'content-type':'image/png','access-control-allow-origin':'*'});return res.end(pixel);}
+  if(url.pathname.startsWith('/storage/v1/object/site-builder-assets/')&&req.method==='POST'){assets.push({name,id:crypto.randomUUID()});return send({Key:'site-builder-assets/images/'+name,Id:crypto.randomUUID()});}
+  if(name==='products'){const slug=url.searchParams.get('slug');return send(slug?products.filter(p=>slug==='eq.'+p.slug):products);}
+  const pageKey=url.searchParams.get('page_key')?.replace(/^eq\./,'');
+  if(name==='site_builder_pages')return send(pageKey?(pages.has(pageKey)?[pages.get(pageKey)]:[]):[...pages.values()]);
+  if(name==='site_builder_publications')return send(pageKey?(publications.has(pageKey)?[publications.get(pageKey)]:[]):[...publications.values()]);
+  if(name==='site_builder_revisions'){const id=url.searchParams.get('id')?.replace(/^eq\./,'');return send(revisions.filter(row=>(!pageKey||row.page_key===pageKey)&&(!id||String(row.id)===id)).sort((a,b)=>b.version-a.version));}
+  if(name==='site_builder_blocks'){
+    if(req.method==='POST'){const row={id:crypto.randomUUID(),...body};blocks.push(row);return send(row);}
+    return send(blocks);
+  }
+  if(name==='save_site_builder_page'){
+    if(req.headers.authorization!=='Bearer '+token)return send({code:'42501',message:'Admin only'},403);
+    if(failSave)return send({code:'MOCK',message:'Offline fixture'},503);
+    const current=pages.get(body.p_key);
+    if(Number(current?.version||0)!==body.p_expected_version)return send({code:'40001',message:'Conflict'},409);
+    const page={page_key:body.p_key,title:body.p_title,draft_document:body.p_document,version:body.p_expected_version+1,updated_at:new Date().toISOString()};
+    pages.set(body.p_key,page);writes.push(body.p_action);
+    revisions.push({id:revisions.length+1,page_key:body.p_key,title:body.p_title,document:structuredClone(body.p_document),version:page.version,action:body.p_action,created_at:page.updated_at});
+    if(body.p_action==='publish')publications.set(body.p_key,{page_key:body.p_key,title:body.p_title,document:structuredClone(body.p_document),version:page.version,published_at:page.updated_at});
+    if(body.p_action==='unpublish')publications.delete(body.p_key);
+    return send({page,publishedVersion:publications.get(body.p_key)?.version??null,publishedAt:publications.get(body.p_key)?.published_at??null});
+  }
+  // No real orders, emails, payment providers, storage or production database.
+  if(req.method!=='GET'&&!url.pathname.includes('/rpc/get_'))return send({message:'Unexpected fixture write: '+name},403);
+  return send([]);
+});
+await new Promise(resolve=>mock.listen(54321,'127.0.0.1',resolve));
+const browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
+await context.addInitScript(s=>{localStorage.setItem('sb-127-auth-token',JSON.stringify(s));},session);
+await context.route('**/*',route=>{const host=new URL(route.request().url()).hostname;return ['127.0.0.1','localhost'].includes(host)?route.continue():route.abort();});
+const page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));
+const headers={Authorization:'Bearer '+token,'Content-Type':'application/json'};
+const request=async(body,auth=headers)=>{const response=await fetch(base+'/api/admin/page-builder',{method:body?'POST':'GET',headers:auth,...(body?{body:JSON.stringify(body)}:{})});return {status:response.status,data:await response.json()};};
+const save=async()=>{await page.getByRole('button',{name:'Taslağı kaydet',exact:true}).click();await page.getByText('Taslak kaydedildi.',{exact:true}).waitFor();};
+const publish=async()=>{await page.getByRole('button',{name:'Yayımla ↗',exact:true}).click();await page.getByRole('dialog').getByRole('button',{name:'Yayımla',exact:true}).click();await page.getByText('Sayfa yayımlandı.',{exact:true}).waitFor();};
+try{
+  assert.equal((await request(undefined,{})).status,401);
+  assert.equal((await request(undefined,{Authorization:'Bearer customer-token'})).status,403);
+  const invalid=starterDocument('home');invalid.children[0].style.backgroundColor='url(javascript:1)';
+  assert.equal((await request({key:'home',title:'Bad',document:invalid,expectedVersion:0,action:'publish'})).status,400);
+  assert.equal(pages.size,0);
+  console.log('PASS API rejects anonymous/customer sessions and invalid documents');
+  await page.goto(base+'/admin/editor?page=home');await page.getByRole('heading',{name:'Senin alanın.'}).waitFor();
+  await page.locator('.beCanvasFrame .pbRoot').waitFor();
+  assert.equal(await page.locator('.pbNode').count(),70);
+  await page.getByRole('button',{name:'Başlık',exact:true}).click();
+  await page.getByLabel('Metin',{exact:true}).fill('Builder acceptance edition');
+  await page.getByRole('button',{name:'Tasarım',exact:true}).click();
+  await page.locator('.pb-heading').getByText('Builder acceptance edition',{exact:true}).waitFor();
+  await page.getByRole('button',{name:'Geri al',exact:true}).click();
+  assert.equal(await page.locator('.pb-heading').getByText('Builder acceptance edition',{exact:true}).count(),0);
+  await page.getByRole('button',{name:'İleri al',exact:true}).click();
+  await page.locator('.pb-heading').getByText('Builder acceptance edition',{exact:true}).waitFor();
+  await page.getByRole('button',{name:'Sütunlar',exact:true}).click();
+  const columnId=await page.locator('.pb-columns.pbSelected').getAttribute('data-pb-id');
+  const columns=page.locator('[data-pb-id="'+columnId+'"]');
+  await page.getByRole('button',{name:'Metin',exact:true}).dragTo(columns.locator(':scope > .pbDropZone').last());
+  assert.equal(await columns.locator('.pb-text').count(),1);
+  console.log('PASS native drag/drop creates a nested block; undo/redo preserves content');
+  await page.getByRole('button',{name:'Görsel',exact:true}).click();
+  await page.getByRole('button',{name:'Görsel seç / yükle',exact:true}).click();
+  await page.getByRole('dialog').locator('input[type=file]').setInputFiles({name:'fixture.png',mimeType:'image/png',buffer:pixel});
+  await page.getByText('Görsel yüklendi. Sayfayı kaydetmeyi unutma.',{exact:true}).waitFor();assert.equal(assets.length,1);
+  await save();assert.equal(publications.size,0);assert.equal(pages.get('home').version,1);
+  const before=await (await fetch(base+'/')).text();assert.ok(!before.includes('Builder acceptance edition'));
+  await publish();assert.equal(publications.get('home').version,2);
+  const after=await (await fetch(base+'/')).text();assert.ok(after.includes('Builder acceptance edition'));
+  await page.screenshot({path:out+'/desktop-1440.png'});
+  console.log('PASS draft stays private; explicit publication appears in server-rendered homepage');
+  await page.getByRole('button',{name:'Mobil',exact:true}).click();
+  await page.screenshot({path:out+'/mobile-preview.png'});
+  assert.equal(await page.locator('.beCanvasFrame').evaluate(el=>Math.round(el.offsetWidth)),390);
+  await page.getByRole('button',{name:'Masaüstü',exact:true}).click();
+  await page.getByRole('button',{name:'Katmanlar',exact:true}).click();
+  await page.getByRole('button',{name:'SIDE:II / Hero',exact:true}).click();
+  await page.getByRole('button',{name:'Bölümü şablon olarak kaydet',exact:true}).click();
+  await page.getByRole('dialog').getByLabel('Şablon adı').fill('Reusable hero');
+  await page.getByRole('dialog').getByRole('button',{name:'Şablonu kaydet'}).click();
+  await page.getByText('Bölüm şablonu arşive kaydedildi.',{exact:true}).waitFor();assert.equal(blocks.length,1);
+  await page.getByRole('button',{name:'Ekle',exact:true}).click();
+  await page.getByRole('button',{name:'Reusable hero ＋',exact:true}).click();
+  assert.equal(await page.locator('.pbRoot').getByText('Music, in another form.',{exact:true}).count(),2);
+  await page.getByRole('button',{name:'Geri al',exact:true}).click();
+  // Concurrent editor: fail safely and retain local work.
+  await page.getByRole('button',{name:'Metin',exact:true}).click();
+  await page.getByLabel('Metin',{exact:true}).fill('Unpublished recovery content');
+  await page.getByRole('button',{name:'Tasarım',exact:true}).click();
+  pages.get('home').version++;
+  await page.getByRole('button',{name:'Taslağı kaydet',exact:true}).click();
+  await page.getByRole('alert').filter({hasText:'başka bir oturumda'}).waitFor();
+  assert.equal(publications.get('home').version,2);
+  await page.waitForFunction(()=>Object.keys(localStorage).some(k=>k.startsWith('sideii:builder:')&&localStorage[k].includes('Unpublished recovery content')));
+  page.once('dialog',dialog=>dialog.accept());await page.reload();
+  await page.getByRole('button',{name:'Çalışmayı kurtar',exact:true}).waitFor();
+  await page.getByRole('button',{name:'Çalışmayı kurtar',exact:true}).click();
+  await page.locator('.pb-text').getByText('Unpublished recovery content',{exact:true}).waitFor();
+  failSave=true;await page.getByRole('button',{name:'Taslağı kaydet',exact:true}).click();await page.getByRole('alert').filter({hasText:'kaydedilemedi'}).waitFor();
+  failSave=false;await save();assert.equal(publications.get('home').version,2);
+  console.log('PASS conflict/offline failure preserves edits; browser recovery saves against current version');
+  await page.getByRole('button',{name:'Geçmiş',exact:true}).click();
+  await page.locator('.beRevision').filter({hasText:'v1 · save'}).click();
+  await page.getByRole('dialog').getByRole('button',{name:'Taslağa geri yükle',exact:true}).click();
+  await page.getByText('Önceki sürüm taslak olarak geri yüklendi.',{exact:true}).waitFor();
+  assert.equal(flattenNodes(pages.get('home').draft_document).filter(n=>n.props.text==='Unpublished recovery content').length,0);
+  assert.equal(publications.get('home').version,2);
+  await page.getByRole('button',{name:'Yayını kaldır',exact:true}).click();await page.getByRole('dialog').getByRole('button',{name:'Yayını kaldır',exact:true}).click();
+  await page.getByText('Yayın kaldırıldı. Mevcut site şablonu devrede.',{exact:true}).waitFor();
+  assert.equal(publications.size,0);assert.ok(!(await (await fetch(base+'/')).text()).includes('Builder acceptance edition'));
+  console.log('PASS revision restore remains a draft; unpublish restores the original storefront');
+  for(const width of [320,390,768,1024,1920]){
+    await page.setViewportSize({width,height:900});
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1);assert.equal(overflow,false,'Editor overflow at '+width);
+    await page.screenshot({path:out+'/editor-'+width+'.png'});
+  }
+  await page.setViewportSize({width:1440,height:1000});
+  // APIs protect the required commerce blocks, and custom pages stay isolated.
+  const product=starterDocument('product');product.children=product.children.filter(n=>n.props.slot!=='product-hero');
+  assert.equal((await request({key:'product',title:'Product',document:product,expectedVersion:0,action:'publish'})).status,400);
+  assert.equal((await request({key:'page:campaign',title:'Campaign',document:starterDocument('page:campaign'),expectedVersion:0,action:'save'})).status,200);
+  assert.equal((await fetch(base+'/pages/campaign')).status,404);
+  assert.equal((await request({key:'page:campaign',title:'Campaign',document:starterDocument('page:campaign'),expectedVersion:1,action:'publish'})).status,200);
+  const custom=await fetch(base+'/pages/campaign');assert.equal(custom.status,200);assert.ok((await custom.text()).includes('A new perspective.'));
+  for(const key of ['store','product'])assert.equal((await request({key,title:key,document:starterDocument(key),expectedVersion:0,action:'publish'})).status,200);
+  await page.goto(base+'/store');await page.getByLabel('SEARCH CATALOGUE',{exact:true}).waitFor();
+  await page.goto(base+'/releases/studio-edition');await page.locator('.productHero').waitFor();
+  assert.equal((await page.locator('h1').allTextContents()).length,1);assert.ok((await page.locator('body').innerText()).includes('STUDIO'));
+  assert.deepEqual(errors,[]);
+  console.log('PASS custom pages, catalogue and product templates render; no browser errors');
+}catch(error){await page.screenshot({path:out+'/failure.png',fullPage:true});writeFileSync(out+'/failure.txt',await page.locator('body').innerText());throw error;}
+finally{writeFileSync(out+'/results.json',JSON.stringify({writes,errors,pages:[...pages.keys()]},null,2));await browser.close();await new Promise(resolve=>mock.close(resolve));}
