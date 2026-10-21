@@ -154,18 +154,18 @@ export function cloneNodeTree(original) {
 }
 export function flattenNodes(document) {return document.children.flatMap(node => [node, ...flattenNodes(node)]);}
 export function documentCss(document) {
-  const toCss = style => Object.entries(style).map(([key, value]) => {
+  const toCss = (style,type) => Object.entries(style).map(([key, value]) => {
     if (key === 'columns') return `grid-template-columns:repeat(${value},minmax(0,1fr))`;
     if (key === 'direction') return `flex-direction:${value}`;
     if (key === 'fontFamily') return `font-family:${FONT_VALUES[value]}`;
-    if (key === 'display') return `display:${value === 'hide' ? 'none' : 'revert'}!important`;
+    if (key === 'display') return `display:${value === 'hide' ? 'none' : type === 'columns' ? 'grid' : CONTAINERS.has(type) ? 'flex' : 'block'}!important`;
     const property = key.replace(/[A-Z]/g, c => '-' + c.toLowerCase());
     const unit = key === 'width' ? '%' : own(STYLE_FIELDS, key) && !['lineHeight', 'opacity'].includes(key) ? 'px' : '';
     return `${property}:${value}${unit}`;
   }).join(';');
   const nodes = flattenNodes(document);
   const selector = node => `.pbRoot [data-pb-id="${node.id}"]`;
-  return `.pbRoot{${toCss(document.theme)}}` + nodes.map(node => `${selector(node)}{${toCss(node.style)}}`).join('') +
-    `@container pbCanvas (max-width:900px){${nodes.map(node => `${selector(node)}{${toCss(node.tablet)}}`).join('')}}` +
-    `@container pbCanvas (max-width:600px){${nodes.map(node => `${selector(node)}{${toCss(node.mobile)}}`).join('')}}`;
+  return `.pbRoot{${toCss(document.theme)}}` + nodes.map(node => `${selector(node)}{${toCss(node.style,node.type)}}`).join('') +
+    `@container pbCanvas (max-width:900px){${nodes.map(node => `${selector(node)}{${toCss(node.tablet,node.type)}}`).join('')}}` +
+    `@container pbCanvas (max-width:600px){${nodes.map(node => `${selector(node)}{${toCss(node.mobile,node.type)}}`).join('')}}`;
 }

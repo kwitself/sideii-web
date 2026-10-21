@@ -2,7 +2,7 @@ import {CONTAINERS, documentCss, safeUrl, SLOT_LABELS, WIDGETS} from '../../lib/
 import './page-canvas.css';
 
 export default function PageCanvas({document, products = [], slots = {}, editing = false, previewOnly = false, selectedId, onSelect, onDropNode, onDragNode, onInsertAt}) {
-  const drop = (parentId, index, label) => editing && <button type="button" className="pbDropZone" aria-label={label || 'Buraya bileşen ekle'} onClick={() => onInsertAt?.(parentId, index)} onDragOver={event => {event.preventDefault(); event.stopPropagation(); event.currentTarget.classList.add('over');}} onDragLeave={event => event.currentTarget.classList.remove('over')} onDrop={event => {event.preventDefault(); event.stopPropagation(); event.currentTarget.classList.remove('over'); onDropNode?.(event, parentId, index);}}>＋</button>;
+  const drop = (parentId, index, label) => editing && <button type="button" className="pbDropZone" aria-label={label || 'Buraya bileşen ekle'} onClick={event => {event.preventDefault();event.stopPropagation();onInsertAt?.(parentId, index);}} onDragOver={event => {event.preventDefault(); event.stopPropagation(); event.currentTarget.classList.add('over');}} onDragLeave={event => event.currentTarget.classList.remove('over')} onDrop={event => {event.preventDefault(); event.stopPropagation(); event.currentTarget.classList.remove('over'); onDropNode?.(event, parentId, index);}}>＋</button>;
   const renderChildren = (children, parentId = null) => <>{children.map((node, index) => <div className="pbNodePosition" key={node.id}>{drop(parentId, index)}{renderNode(node)}</div>)}{drop(parentId, children.length)}</>;
   function renderNode(node) {
     const p = node.props; let body;

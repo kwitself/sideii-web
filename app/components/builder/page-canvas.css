@@ -2,3 +2,14 @@
 .pbCanvasEditing .pbEditable{outline:1px solid transparent;outline-offset:-1px;min-height:24px}.pbCanvasEditing .pbEditable:hover{outline-color:#7b7b83}.pbCanvasEditing .pbSelected{outline:2px solid #ececf0!important;outline-offset:-2px}.pbDragHandle{display:none;position:absolute;z-index:5;top:0;left:0;border:0;background:#d8d8df;color:#151519;font:11px Arial,sans-serif;padding:5px 9px;cursor:grab;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pbEditable:hover>.pbDragHandle,.pbSelected>.pbDragHandle,.pbDragHandle:focus-visible{display:block}.pbDropZone{position:relative;display:block;width:100%;height:12px;padding:0!important;border:0!important;background:transparent;color:transparent;font:12px Arial;z-index:3;transition:height .1s}.pbDropZone:hover,.pbDropZone:focus-visible,.pbDropZone.over{height:28px;background:#d7d7df22;color:#eee;outline:1px dashed #aaa}.pbCanvasEditing .pbRoot>.pbDropZone:last-child{height:64px;border:1px dashed #555!important;color:#aaa}.pbCanvasEditing .pb-native>*:not(.pbDragHandle){pointer-events:none}.pbCanvasEditing .pb-native a,.pbCanvasEditing .pb-native button,.pbCanvasEditing .pb-native input{user-select:none}.pbCanvasEditing video{pointer-events:none}
 @container pbCanvas (max-width:900px){.pbRoot .pbProducts{grid-template-columns:repeat(2,minmax(0,1fr))}.pbRoot .pb-section{padding-left:24px;padding-right:24px}}@container pbCanvas (max-width:600px){.pbRoot .pbProducts{grid-template-columns:1fr}.pbRoot .pb-section{padding-left:20px;padding-right:20px}.pbRoot .pb-native .shell{width:100%;max-width:100%}}
 @media(prefers-reduced-motion:reduce){.pbRoot *{transition:none!important;scroll-behavior:auto!important}}
+
+/* Insertion targets overlay the layout, so edit and preview share spacing. */
+.pbCanvasEditing .pbDropZone{position:absolute;top:-8px;left:0;height:16px;min-height:0;max-height:none;background:transparent;color:transparent;border-radius:0;z-index:4}
+.pbCanvasEditing .pbDropZone:hover,.pbCanvasEditing .pbDropZone:focus-visible,.pbCanvasEditing .pbDropZone.over{height:20px;min-height:0;background:#d7d7df22;color:#eee;outline:1px dashed #aaa}
+.pbCanvasEditing .pbNode>.pbDropZone:last-child{top:auto;bottom:0}
+.pbCanvasEditing .pbRoot>.pbDropZone:last-child{position:relative;top:auto;height:48px;min-height:48px}
+.pbCanvasEditing .pbDragHandle{min-height:20px;border-radius:0;background:#d8d8df;color:#151519;font:11px Arial,sans-serif;padding:5px 9px}
+.pbCanvasEditing .pbDragHandle:hover{background:#fff;color:#111}
+.pbCanvasEditing :is(.pb-section,.pb-columns,.pb-stack):not(:has(.pbNodePosition)){min-height:80px}
+
+.pbRoot .pbNode{border-style:solid;border-width:0;border-color:transparent}
