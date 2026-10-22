@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const hook=readFileSync('app/admin/useLocalFormDraft.js','utf8');
+const release=readFileSync('app/admin/ReleaseWorkspace.js','utf8');
+const merch=readFileSync('app/admin/MerchWorkspace.js','utf8');
+assert.ok(hook.includes('localStorage.getItem(key)'),'Restore local draft');
+assert.ok(hook.includes('localStorage.setItem(key,JSON.stringify(form))'),'Autosave edited fields');
+assert.ok(hook.includes('if(!restored.current||!ready)return'),'Do not overwrite draft before restoring');
+assert.ok(release.includes('sideii-admin-new-release-draft'));
+assert.ok(merch.includes('sideii-admin-new-merch-draft'));
+assert.ok(release.includes('draftReady')&&release.includes('Unsaved form restored'),'Protect restored catalogue number');
+assert.ok(release.includes('clearLocalDraft()')&&merch.includes('clearLocalDraft()'),'Clear after creation');
+console.log('Admin local draft autosave guards passed.');
