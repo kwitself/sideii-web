@@ -74,3 +74,22 @@ test('Custom pages cannot overwrite admin, payment or existing application route
   for(const key of ['admin','/admin','page:../admin','page:a/b','page:','page:UPPER'])assert.equal(validPageKey(key),false);
   for(const key of ['home','store','product','page:production'])assert.equal(validPageKey(key),true);
 });
+
+test('Original home sections validate editable fields and reject URL/field injection',()=>{
+  const doc=starterDocument('home');
+  assert.equal(doc.children.length,9);
+  const hero=doc.children[0];
+  for(const props of [{section:'__proto__'},{section:'unknown'},{...hero.props,logo:'javascript:alert(1)'},{...hero.props,linkHref:'//evil.test'},{...hero.props,html:'<script>'}])
+    assert.throws(()=>validateDocument(document([{...hero,props}])));
+  const minimal={...hero,props:{section:'releases'}};
+  const valid=validateDocument(document([minimal]));
+  assert.equal(valid.children[0].props.anchor,'releases');
+  assert.throws(()=>validateDocument(document([minimal,{...minimal,id:createNode('text').id}])));
+  assert.ok(validateDocument(document([cloneNodeTree(hero)]),'page:snippet'));
+  const styled={...hero,style:{fontSize:40,paddingTop:24}};
+  assert.match(documentCss(validateDocument(document([styled]))),/\[data-home-title\]\{font-size:40px\}/);
+});
+test('Legacy generic home drafts retain their content without conversion',()=>{
+  const legacy=document([createNode('section',{children:[createNode('heading',{props:{text:'My saved layout',level:'h1'}})]})]);
+  assert.deepEqual(validateDocument(legacy),legacy);
+});

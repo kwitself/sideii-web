@@ -1,3 +1,5 @@
+import {getBuilderHomepageContent} from '../../lib/server/homepage';
+import '../../catalogue.css';
 import './release-polish.css';
 import {Fragment} from 'react';
 import {releaseSections} from './ReleaseSections';
@@ -41,10 +43,11 @@ export default async function ReleasePage({ params }) {
     getPublishedPage('product')
   ]);
 
+  const homeData = await getBuilderHomepageContent(custom?.document);
   const slots=releaseSections({release,structuredCredits,pressKit,related,bundles});
   return <main className={'productPage '+(release.imprint==='lethargia'?'productPageLethargia':'productPageSideii')}>
     {schema&&<script type="application/ld+json" dangerouslySetInnerHTML={{__html:jsonLd(schema)}}/>}
     <GlobalHeader/>
-    {custom?<PageCanvas document={custom.document} products={[release,...related]} slots={slots}/>:Object.entries(slots).map(([name,section])=><Fragment key={name}>{section}</Fragment>)}
+    {custom?<PageCanvas document={custom.document} homeData={homeData} products={[release,...related]} slots={slots}/>:Object.entries(slots).map(([name,section])=><Fragment key={name}>{section}</Fragment>)}
   </main>;
 }

@@ -1,3 +1,4 @@
+import {HOME_SECTIONS, homeSectionProps} from './home-sections.js';
 // Shared document contract: the editor, API and public renderer use the same rules.
 export const SCHEMA_VERSION = 1;
 export const MAX_NODES = 300;
@@ -12,6 +13,7 @@ export const WIDGETS = {
   spacer: {label: 'Boşluk', icon: '↕'}, quote: {label: 'Alıntı', icon: '“'},
   video: {label: 'Video', icon: '▷'}, accordion: {label: 'Açılır içerik', icon: '≡'},
   products: {label: 'Ürün vitrini', icon: '◫'}, native: {label: 'Mağaza bileşeni', icon: 'II'},
+  siteSection: {label: 'Site bölümü', icon: 'II'},
 };
 export const NATIVE_SLOTS = {
   home: [], store: ['store-catalogue'],
@@ -79,13 +81,18 @@ export function validateDocument(input, pageKey = 'home', {publishing = false} =
     ids.add(node.id);
     if (typeof node.name !== 'string' || node.name.length > 100) fail('Bileşen adı en fazla 100 karakter olmalı.');
     if (!plain(node.props)) fail('Geçersiz bileşen ayarları.');
+    const homeSection = node.type === 'siteSection';
+    if (homeSection && !own(HOME_SECTIONS, node.props.section)) fail('Geçersiz site bölümü.');
+    const fields = homeSection ? HOME_SECTIONS[node.props.section].fields : {};
+    const allowedProps = homeSection ? ['section', 'anchor', ...Object.keys(fields)] : propsByType[node.type];
     const props = {};
-    for (const [key, value] of Object.entries(node.props)) {
-      if (!propsByType[node.type].includes(key)) fail('Desteklenmeyen bileşen ayarı.');
+    for (const [key, value] of Object.entries(homeSection ? {...homeSectionProps(node.props.section), ...node.props} : node.props)) {
+      if (!allowedProps.includes(key)) fail('Desteklenmeyen bileşen ayarı.');
       if (key === 'newTab') {if (typeof value !== 'boolean') fail('Geçersiz bağlantı hedefi.');}
       else if (key === 'limit') {if (!Number.isInteger(value) || value < 1 || value > 24) fail('Ürün sayısı 1–24 olmalı.');}
-      else if (typeof value !== 'string' || value.length > (key === 'text' ? 12000 : 2048)) fail('Geçersiz metin.');
+      else if (typeof value !== 'string' || value.length > (key === 'text' || fields[key]?.type === 'multiline' ? 12000 : 2048)) fail('Geçersiz metin.');
       if (['src', 'href', 'poster'].includes(key) && value && !safeUrl(value, key !== 'href')) fail('Güvenli bir HTTPS adresi veya site içi yol kullanın.');
+      if (['url', 'image'].includes(fields[key]?.type) && value && !safeUrl(value, fields[key].type === 'image')) fail('Güvenli bir HTTPS adresi veya site içi yol kullanın.');
       if (key === 'level' && !['h1', 'h2', 'h3', 'h4'].includes(value)) fail('Geçersiz başlık seviyesi.');
       if (key === 'anchor' && value && !/^[a-zA-Z][a-zA-Z0-9_-]{0,60}$/.test(value)) fail('Geçersiz bölüm bağlantısı.');
       if (key === 'anchor' && value) {if (anchors.has(value)) fail('Bölüm bağlantıları benzersiz olmalı.'); anchors.add(value);}
@@ -118,7 +125,7 @@ export function createNode(type, extra = {}) {
     image: {src: '', alt: '', href: ''}, button: {text: 'Keşfet →', href: '/store', newTab: false},
     video: {src: '', poster: ''}, quote: {text: 'Music, in another form.', author: 'SIDE:II'},
     accordion: {title: 'Başlık', text: 'Açılır bölüm içeriği.'}, products: {title: 'Selected editions', limit: 3, imprint: 'all'},
-    section: {anchor: ''}, native: {slot: ''},
+    section: {anchor: ''}, native: {slot: ''}, siteSection: homeSectionProps('hero'),
   };
   const styles = {section: {paddingTop: 64, paddingBottom: 64, paddingLeft: 32, paddingRight: 32}, columns: {columns: 2, gap: 24}, stack: {gap: 24}, heading: {fontSize: 48, lineHeight: 1.1}, text: {fontSize: 18, lineHeight: 1.65}, spacer: {minHeight: 48}, image: {objectFit: 'cover'}};
   return {id: newNodeId(), type, name: WIDGETS[type].label, props: {...defaults[type]}, style: {...styles[type]}, tablet: {}, mobile: type === 'columns' ? {columns: 1} : type === 'heading' ? {fontSize: 32} : {}, children: [], ...extra};
@@ -165,7 +172,15 @@ export function documentCss(document) {
   }).join(';');
   const nodes = flattenNodes(document);
   const selector = node => `.pbRoot [data-pb-id="${node.id}"]`;
-  return `.pbRoot{${toCss(document.theme)}}` + nodes.map(node => `${selector(node)}{${toCss(node.style,node.type)}}`).join('') +
-    `@container pbCanvas (max-width:900px){${nodes.map(node => `${selector(node)}{${toCss(node.tablet,node.type)}}`).join('')}}` +
-    `@container pbCanvas (max-width:600px){${nodes.map(node => `${selector(node)}{${toCss(node.mobile,node.type)}}`).join('')}}`;
+  const rule = (node, style) => {
+    if (node.type !== 'siteSection') return `${selector(node)}{${toCss(style,node.type)}}`;
+    const typography = ['fontSize','lineHeight','letterSpacing','fontFamily','fontWeight'];
+    const heading = Object.fromEntries(Object.entries(style).filter(([key]) => typography.includes(key)));
+    const layout = Object.fromEntries(Object.entries(style).filter(([key]) => !typography.includes(key)));
+    return `${selector(node)}{${toCss(layout,node.type)}}${selector(node)} [data-home-title]{${toCss(heading)}}` +
+      (style.color ? `${selector(node)} [data-home-field]{color:${style.color}}` : '');
+  };
+  return `.pbCanvas .pbRoot{${toCss(document.theme)}}` + nodes.map(node => rule(node,node.style)).join('') +
+    `@container pbCanvas (max-width:900px){${nodes.map(node => rule(node,node.tablet)).join('')}}` +
+    `@container pbCanvas (max-width:600px){${nodes.map(node => rule(node,node.mobile)).join('')}}`;
 }
