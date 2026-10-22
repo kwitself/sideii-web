@@ -34,11 +34,14 @@ export default function AdminRail(){
 
  useEffect(()=>{
   const fromHash=String(window.location.hash||'').replace('#','');
-  const initial=valid.has(fromHash)?fromHash:'overview';
+  const remembered=window.localStorage.getItem('sideii-admin-last-view');
+  const initial=valid.has(fromHash)?fromHash:valid.has(remembered)?remembered:'overview';
+  if(!valid.has(fromHash))history.replaceState(null,'','#'+initial);
+  window.localStorage.setItem('sideii-admin-last-view',initial);
   setActive(initial);
   window.dispatchEvent(new CustomEvent('sideii-admin-view',{detail:initial}));
-  const onView=e=>{const next=e?.detail;if(valid.has(next))setActive(next)};
-  const onHash=()=>{const next=String(window.location.hash||'').replace('#','');if(valid.has(next)){setActive(next);window.dispatchEvent(new CustomEvent('sideii-admin-view',{detail:next}))}};
+  const onView=e=>{const next=e?.detail;if(valid.has(next)){setActive(next);window.localStorage.setItem('sideii-admin-last-view',next)}};
+  const onHash=()=>{const next=String(window.location.hash||'').replace('#','');if(valid.has(next)){setActive(next);window.localStorage.setItem('sideii-admin-last-view',next);window.dispatchEvent(new CustomEvent('sideii-admin-view',{detail:next}))}};
   window.addEventListener('sideii-admin-view',onView);
   window.addEventListener('hashchange',onHash);
   document.body.classList.add('sideii-admin-page');
@@ -66,6 +69,7 @@ export default function AdminRail(){
  const go=(e,id)=>{
   e.preventDefault();
   setActive(id);
+  window.localStorage.setItem('sideii-admin-last-view',id);
   history.replaceState(null,'','#'+id);
   window.dispatchEvent(new CustomEvent('sideii-admin-view',{detail:id}));
   setMobileOpen(false);
