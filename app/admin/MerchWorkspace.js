@@ -2,11 +2,13 @@
 
 import {useEffect,useState} from 'react';
 import {supabase} from '../lib/supabase';
+import {useLocalFormDraft} from './useLocalFormDraft';
 
 const initial={title:'',category:'apparel',imprint:'sideii',description:'',status:'draft',price:'',stock:'',size:'',color:'BLACK',style:'',weight_g:'',sku:''};
 
 export default function MerchWorkspace({onCreated,onContinue}){
- const [form,setForm]=useState(initial),[saving,setSaving]=useState(false),[message,setMessage]=useState('');
+ const {form,setForm,notice:draftNotice,clear:clearLocalDraft}=useLocalFormDraft('sideii-admin-new-merch-draft',initial);
+ const [saving,setSaving]=useState(false),[message,setMessage]=useState('');
  const [imagePreview,setImagePreview]=useState('');
  useEffect(()=>()=>{if(imagePreview)URL.revokeObjectURL(imagePreview)},[imagePreview]);
  const set=(k,v)=>setForm(p=>({...p,[k]:v}));
@@ -27,7 +29,7 @@ export default function MerchWorkspace({onCreated,onContinue}){
    const {data}=await supabase.from('products').select('id,catalogue_no,slug,title,artist_project,description,imprint,artwork_path,gallery_images,status,is_public,product_origin,homepage_selected,hover_media_format,storefront_config,seo_config,commerce_config,product_type,merch_category,created_at,product_variants(id,sku,format,edition_name,price,currency,manufactured_qty,stock_qty,reserved_qty,active,option_size,option_color,option_style,weight_g,shipping_class,low_stock_threshold,preorder_enabled,preorder_limit,preorder_target,preorder_deadline,edition_numbering_enabled,edition_total)').eq('id',createdId).single();
    createdProduct=data||null;
   }
-  setForm(initial);setImagePreview('');if(onCreated)await onCreated();if(createdProduct&&onContinue)onContinue(createdProduct);
+  clearLocalDraft();setForm(initial);setImagePreview('');if(onCreated)await onCreated();if(createdProduct&&onContinue)onContinue(createdProduct);
   } catch(error){setMessage(error.message||'Could not create the product.');} finally{setSaving(false);}
  }
  return <section id="new-merch" className="adminSection merchWorkspace"><div className="sectionLabel"><span>NEW / MERCH WORKSPACE</span><p>Apparel, objects, patches and accessories.</p></div>
@@ -54,7 +56,7 @@ export default function MerchWorkspace({onCreated,onContinue}){
     <label className="wideField"><span>DESCRIPTION</span><textarea rows="4" value={form.description} onChange={e=>set('description',e.target.value)} placeholder="Material, print, dimensions or object details…"/></label>
    </div>
   </div>
-  {message&&<p className="workspaceMessage">{message}</p>}
+  {draftNotice&&<p className="workspaceMessage" role="status">{draftNotice}</p>}{message&&<p className="workspaceMessage">{message}</p>}
   <div className="formActions"><button type="button" className="saveButton" disabled={saving} onClick={save}>{saving?'CREATING…':'CREATE & CONTINUE →'}</button></div>
  </div></section>;
 }
