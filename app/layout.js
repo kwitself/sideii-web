@@ -8,6 +8,7 @@ import GlobalBag from './components/GlobalBag';
 import GlobalAccount from './components/GlobalAccount';
 import {LocaleCurrencyProvider} from './components/LocaleCurrencyProvider';
 import CommerceTelemetry from './components/CommerceTelemetry';
+import EditorLauncher from './components/builder/EditorLauncher';
 
 const validPublicSiteUrl=getPublicSiteUrl();
 const siteUrl=validPublicSiteUrl||'http://localhost:3000';
@@ -52,7 +53,7 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body><LocaleCurrencyProvider><CommerceTelemetry/>{children}<StorefrontFooter/><GlobalAccount/><GlobalBag/></LocaleCurrencyProvider></body>
+      <body><LocaleCurrencyProvider><CommerceTelemetry/>{children}<StorefrontFooter/><GlobalAccount/><GlobalBag/><EditorLauncher/></LocaleCurrencyProvider></body>
     </html>
   );
 }
