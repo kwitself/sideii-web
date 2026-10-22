@@ -112,12 +112,14 @@ export default function AdminDashboard(){
  useEffect(()=>{
   const allowed=new Set(['overview','products','preview','merchandising','orders','inventory','customers','commerce','catalogue','growth','impact','fulfillment','localization','settings','launch','seo','emails','finance']);
   const initial=String(window.location.hash||'').replace('#','');
-  if(allowed.has(initial))setActiveView(initial);
-  const onView=e=>{if(allowed.has(e?.detail))setActiveView(e.detail)};
+  const remembered=window.localStorage.getItem('sideii-admin-last-view');
+  const resolved=allowed.has(initial)?initial:allowed.has(remembered)?remembered:'overview';
+  setActiveView(resolved);
+  const onView=e=>{if(allowed.has(e?.detail)){setActiveView(e.detail);window.localStorage.setItem('sideii-admin-last-view',e.detail)}};
   window.addEventListener('sideii-admin-view',onView);
   return()=>window.removeEventListener('sideii-admin-view',onView);
  },[]);
- const openAdminView=(view,sub=null)=>{setActiveView(view);if(sub)setProductView(sub);history.replaceState(null,'','#'+view);window.dispatchEvent(new CustomEvent('sideii-admin-view',{detail:view}));window.scrollTo({top:0,behavior:'smooth'})};
+ const openAdminView=(view,sub=null)=>{setActiveView(view);window.localStorage.setItem('sideii-admin-last-view',view);if(sub)setProductView(sub);history.replaceState(null,'','#'+view);window.dispatchEvent(new CustomEvent('sideii-admin-view',{detail:view}));window.scrollTo({top:0,behavior:'smooth'})};
 
  const variants=useMemo(()=>products.flatMap(p=>(p.product_variants||[]).map(v=>({...v,product:p}))),[products]);
  const inventory=useMemo(()=>inventorySummary(variants),[variants]);
