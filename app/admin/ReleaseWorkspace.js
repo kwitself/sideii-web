@@ -3,13 +3,14 @@
 import { useEffect, useState } from 'react';
 import {isQaFixture} from '../lib/adminSafety';
 import { supabase } from '../lib/supabase';
+import {useLocalFormDraft} from './useLocalFormDraft';
 
 const statusMap = { DRAFT:'draft', 'IN PREPARATION':'draft', FORTHCOMING:'forthcoming', AVAILABLE:'active' };
 
 function slugify(value){return value.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
 
 export default function ReleaseWorkspace({onCreated}){
- const [form,setForm]=useState({catalogue_no:'SIDEII—003',title:'',format:'CD',status:'DRAFT',price:'',stock:'',artist_project:'',description:'',imprint:'sideii',has_shrinkwrap:false,release_date:'',edition_details:'',credits:'',tracklist:'',product_origin:'own',original_label:'',original_catalogue_no:'',barcode:'',vinyl_size:'12 INCH',vinyl_speed:'33 RPM',vinyl_weight_g:'180',vinyl_color:'BLACK',digital_formats:['WAV','FLAC'],audio_specs:'24 BIT / 44.1 kHz'});
+ const {form,setForm,notice:draftNotice,clear:clearLocalDraft}=useLocalFormDraft('sideii-admin-new-release-draft',{catalogue_no:'SIDEII—003',title:'',format:'CD',status:'DRAFT',price:'',stock:'',artist_project:'',description:'',imprint:'sideii',has_shrinkwrap:false,release_date:'',edition_details:'',credits:'',tracklist:'',product_origin:'own',original_label:'',original_catalogue_no:'',barcode:'',vinyl_size:'12 INCH',vinyl_speed:'33 RPM',vinyl_weight_g:'180',vinyl_color:'BLACK',digital_formats:['WAV','FLAC'],audio_specs:'24 BIT / 44.1 kHz'});
  const [artwork,setArtwork]=useState(null); const [artworkPreview,setArtworkPreview]=useState('');
  const [createdDraftId,setCreatedDraftId]=useState(null);
  const [saving,setSaving]=useState(false); const [message,setMessage]=useState('');
@@ -68,6 +69,7 @@ export default function ReleaseWorkspace({onCreated}){
    if(publishError)artworkWarning=` Publishing failed: ${publishError.message}. Product remains hidden.`;
   }
   setSaving(false);
+  clearLocalDraft();
   setMessage((draft?'Draft saved.':'Release created.')+artworkWarning);
   if(!artworkWarning){if(onCreated)await onCreated();}
   } catch(error){setMessage(error.message||'Release creation failed. Check the product list before retrying.');} finally{setSaving(false);}
@@ -84,6 +86,6 @@ export default function ReleaseWorkspace({onCreated}){
  <label className="wideField"><span>TRACKLIST · ONE TRACK PER LINE</span><textarea rows="6" value={form.tracklist} onChange={e=>set('tracklist',e.target.value)} placeholder={'Track One\nTrack Two\nTrack Three'}/></label>
  <label className="wideField"><span>CREDITS</span><textarea rows="5" value={form.credits} onChange={e=>set('credits',e.target.value)} placeholder="Written by… · Recorded by… · Artwork by…"/></label>
  <label className="wideField"><span>SHORT DESCRIPTION</span><textarea rows="4" value={form.description} onChange={e=>set('description',e.target.value)} placeholder="Edition note, concept or production detail…"/></label></div>
- {message&&<p className="workspaceMessage">{message}</p>}{createdDraftId&&<button type="button" className="ghostButton" disabled={saving} onClick={()=>onCreated?.()}>OPEN SAVED PRODUCT LIST →</button>}<div className="formActions"><button type="button" className="ghostButton" disabled={saving||!!createdDraftId} onClick={()=>save(true)}>SAVE DRAFT</button><button type="button" className="saveButton" disabled={saving||!!createdDraftId} onClick={()=>save(false)}>{saving?'SAVING…':'CREATE RELEASE →'}</button></div></div>
+ {draftNotice&&<p className="workspaceMessage" role="status">{draftNotice}</p>}{message&&<p className="workspaceMessage">{message}</p>}{createdDraftId&&<button type="button" className="ghostButton" disabled={saving} onClick={()=>onCreated?.()}>OPEN SAVED PRODUCT LIST →</button>}<div className="formActions"><button type="button" className="ghostButton" disabled={saving||!!createdDraftId} onClick={()=>save(true)}>SAVE DRAFT</button><button type="button" className="saveButton" disabled={saving||!!createdDraftId} onClick={()=>save(false)}>{saving?'SAVING…':'CREATE RELEASE →'}</button></div></div>
  <aside className="releasePreview"><span>LIVE PREVIEW</span><div className="previewObject"><div className={`previewSleeve ${artworkPreview?'hasArtwork':''} ${form.has_shrinkwrap?'shrinkwrap':''}`}>{artworkPreview?<img src={artworkPreview} alt="Artwork preview"/>:<><small>{form.catalogue_no||'SIDEII—003'}</small><strong>side:II</strong><b>{(form.catalogue_no.match(/\d+/)||['03'])[0].slice(-2)}</b><em>{(form.title||'NEW EDITION').toUpperCase()}</em></>}</div><div className="previewDisc"><i/></div></div><div className="previewMeta"><small>PHYSICAL OBJECT</small><h3>{form.title||'New Edition'}<br/><em>Edition.</em></h3><p>{form.format} · {form.status}{artwork?' · ARTWORK READY':''}</p></div></aside></div></section>;
 }
