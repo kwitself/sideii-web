@@ -10,13 +10,13 @@ const statusMap = { DRAFT:'draft', 'IN PREPARATION':'draft', FORTHCOMING:'forthc
 function slugify(value){return value.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
 
 export default function ReleaseWorkspace({onCreated}){
- const {form,setForm,notice:draftNotice,clear:clearLocalDraft}=useLocalFormDraft('sideii-admin-new-release-draft',{catalogue_no:'SIDEII—003',title:'',format:'CD',status:'DRAFT',price:'',stock:'',artist_project:'',description:'',imprint:'sideii',has_shrinkwrap:false,release_date:'',edition_details:'',credits:'',tracklist:'',product_origin:'own',original_label:'',original_catalogue_no:'',barcode:'',vinyl_size:'12 INCH',vinyl_speed:'33 RPM',vinyl_weight_g:'180',vinyl_color:'BLACK',digital_formats:['WAV','FLAC'],audio_specs:'24 BIT / 44.1 kHz'});
+ const {form,setForm,notice:draftNotice,ready:draftReady,clear:clearLocalDraft}=useLocalFormDraft('sideii-admin-new-release-draft',{catalogue_no:'SIDEII—003',title:'',format:'CD',status:'DRAFT',price:'',stock:'',artist_project:'',description:'',imprint:'sideii',has_shrinkwrap:false,release_date:'',edition_details:'',credits:'',tracklist:'',product_origin:'own',original_label:'',original_catalogue_no:'',barcode:'',vinyl_size:'12 INCH',vinyl_speed:'33 RPM',vinyl_weight_g:'180',vinyl_color:'BLACK',digital_formats:['WAV','FLAC'],audio_specs:'24 BIT / 44.1 kHz'});
  const [artwork,setArtwork]=useState(null); const [artworkPreview,setArtworkPreview]=useState('');
  const [createdDraftId,setCreatedDraftId]=useState(null);
  const [saving,setSaving]=useState(false); const [message,setMessage]=useState('');
  const set=(k,v)=>setForm(p=>({...p,[k]:v}));
 
- useEffect(()=>{let live=true;(async()=>{if(!supabase||form.product_origin==='distributed')return;const {data}=await supabase.rpc('suggest_catalogue_no',{p_imprint:form.imprint});if(live&&data)set('catalogue_no',data)})();return()=>{live=false};},[form.imprint,form.product_origin]);
+ useEffect(()=>{let live=true;(async()=>{if(!draftReady||!supabase||form.product_origin==='distributed'||(draftNotice&&draftNotice.startsWith('Unsaved form restored')))return;const {data}=await supabase.rpc('suggest_catalogue_no',{p_imprint:form.imprint});if(live&&data)set('catalogue_no',data)})();return()=>{live=false};},[form.imprint,form.product_origin,draftReady,draftNotice]);
  useEffect(()=>()=>{if(artworkPreview)URL.revokeObjectURL(artworkPreview)},[artworkPreview]);
 
  function chooseArtwork(file){
