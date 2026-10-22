@@ -65,7 +65,7 @@ const mock=createServer(async(req,res)=>{
 await new Promise(resolve=>mock.listen(54321,'127.0.0.1',resolve));
 const browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
 const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
-await context.addInitScript(s=>{localStorage.setItem('sb-127-auth-token',JSON.stringify(s));},session);
+await context.addInitScript(s=>{if(window.top===window&&!localStorage.getItem('sb-127-auth-token'))localStorage.setItem('sb-127-auth-token',JSON.stringify(s));},session);
 await context.route('**/*',route=>{const host=new URL(route.request().url()).hostname;return ['127.0.0.1','localhost'].includes(host)?route.continue():route.abort();});
 const page=await context.newPage();
 const canvas=page.frameLocator('iframe[title="Site önizlemesi"]');page.on('pageerror',error=>errors.push(error.message));
@@ -83,7 +83,9 @@ try{
   await page.goto(base+'/admin/editor?page=home');await page.getByRole('heading',{name:'Senin alanın.'}).waitFor();
   await canvas.locator('.pbRoot').waitFor();
   assert.equal(await canvas.locator('.pbNode').count(),9);
-  const live=await context.newPage();
+  const publicContext=await browser.newContext({reducedMotion:'reduce'});
+  await publicContext.route('**/*',route=>['127.0.0.1','localhost'].includes(new URL(route.request().url()).hostname)?route.continue():route.abort());
+  const live=await publicContext.newPage();
   const measure=body=>{
     const doc=body.ownerDocument,view=doc.defaultView;
     const selectors=['.globalSiteHeader','.hero','.heroLogo','.tagline','.capabilityStrip','.statement','.statement > p','#releases .sectionHead h2','.imprint','.homeLethargiaLogo','.about','.productionHead h2','.editionObjects','.storeTitle h2','.footerInner'];
@@ -111,7 +113,7 @@ try{
     await live.screenshot({path:out+'/home-'+width+'.png',fullPage:true});
     await page.screenshot({path:out+'/preview-'+width+'.png'});
   }
-  await live.close();
+  await publicContext.close();
   await page.getByRole('button',{name:'Masaüstü',exact:true}).click();
   await canvas.locator('.tagline').click();
   await page.getByRole('textbox',{name:'Slogan',exact:true}).fill('An edited physical edition.');
