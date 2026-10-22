@@ -9,4 +9,7 @@ for(const [name,source] of [['rail',rail],['dashboard',dashboard]]){
  assert.ok(source.includes('valid.has(fromHash)')||source.includes('allowed.has(initial)'),name+': explicit deep links take priority');
 }
 assert.ok(rail.includes("history.replaceState(null,'','#'+initial)"),'Rail restores URL hash when missing');
-console.log('Admin last-section persistence source checks passed.');
+assert.ok(dashboard.includes("localStorage.getItem('sideii-admin-products-tab')"),'Restores Products subtab');
+assert.ok(dashboard.includes("localStorage.setItem('sideii-admin-products-tab'"),'Persists Products subtab');
+for(const view of ['all','release','merch'])assert.ok(dashboard.includes("selectProductView('"+view+"')"),'Can select '+view);
+console.log('Admin main-section and Products subtab persistence source checks passed.');
