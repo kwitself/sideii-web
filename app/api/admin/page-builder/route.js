@@ -30,6 +30,7 @@ export async function POST(request) {
     const auth = await builderAdmin(request); if (auth.error) return builderResponse({error: auth.error}, auth.status);
     let body;
     try {body = await boundedJson(request);} catch (error) {return builderResponse({error: error.message}, 400);}
+    if (!body || typeof body !== 'object' || Array.isArray(body)) return builderResponse({error: 'JSON nesnesi gerekiyor.'}, 400);
     const {key, action, expectedVersion} = body;
     if (!validPageKey(key) || !['save','publish','unpublish','restore'].includes(action) || !Number.isSafeInteger(expectedVersion) || expectedVersion < 0) return builderResponse({error: 'Geçersiz işlem.'}, 400);
     let title = body.title, input = body.document;

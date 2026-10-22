@@ -4,7 +4,7 @@ export async function builderAdmin(request) {
   if (!/^Bearer \S+$/.test(authorization)) return {error: 'Oturum açmanız gerekiyor.', status: 401};
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL, key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key) return {error: 'Veritabanı bağlantısı yapılandırılmamış.', status: 503};
-  const client = createClient(url, key, {global: {headers: {Authorization: authorization}}, auth: {persistSession: false, autoRefreshToken: false, detectSessionInUrl: false}});
+  const client = createClient(url, key, {global: {headers: {Authorization: authorization}, fetch: (input, init) => fetch(input, {...init, cache: 'no-store', signal: init?.signal ? AbortSignal.any([init.signal, AbortSignal.timeout(12000)]) : AbortSignal.timeout(12000)})}, auth: {persistSession: false, autoRefreshToken: false, detectSessionInUrl: false}});
   const {data, error} = await client.auth.getUser();
   if (error || !data?.user) return {error: 'Oturum süresi dolmuş. Yeniden giriş yapın.', status: 401};
   if (data.user.app_metadata?.role !== 'admin') return {error: 'Yönetici yetkisi gerekiyor.', status: 403};

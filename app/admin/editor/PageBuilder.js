@@ -22,7 +22,9 @@ async function api(path = '', body) {
   if (!supabase) throw new Error('Veritabanı bağlantısı yok.');
   const {data, error} = await supabase.auth.getSession();
   if (error || !data.session?.access_token) throw new Error('Oturum süresi dolmuş. Yeniden giriş yapın.');
-  const response = await fetch('/api/admin/page-builder' + path, {method: body ? 'POST' : 'GET', cache: 'no-store', headers: {Authorization: 'Bearer ' + data.session.access_token, ...(body ? {'Content-Type':'application/json'} : {})}, ...(body ? {body: JSON.stringify(body)} : {})});
+  let response;
+  try {response = await fetch('/api/admin/page-builder' + path, {method: body ? 'POST' : 'GET', cache: 'no-store', signal: AbortSignal.timeout(30000), headers: {Authorization: 'Bearer ' + data.session.access_token, ...(body ? {'Content-Type':'application/json'} : {})}, ...(body ? {body: JSON.stringify(body)} : {})});}
+  catch {throw new Error('Bağlantı yanıt vermedi. Çalışman bu tarayıcıda korunuyor; yeniden denemeden önce güncel sürümü kontrol et.');}
   let result; try {result = await response.json();} catch {throw new Error('Sunucu yanıtı okunamadı. Çalışman bu tarayıcıda korunuyor.');}
   if (!response.ok) {const failure = new Error(result.error || 'İşlem tamamlanamadı.'); failure.status = response.status; throw failure;}
   return result;
@@ -73,7 +75,8 @@ export default function PageBuilder({products = [], slots = {}}) {
     finally {if(request === loadSequence.current) {setLoading(false);operationRef.current=false;}}
   };
   function historyReplace(pageKey) {window.history.replaceState(null,'','/admin/editor?page=' + encodeURIComponent(pageKey));}
-  useEffect(() => {const initial = new URLSearchParams(window.location.search).get('page'); load(initial || 'home'); documentBody(true); if(window.innerWidth<=1000){setLeftOpen(false);setRightOpen(false);} return () => {documentBody(false);};}, []);
+  useEffect(() => {const initial = new URLSearchParams(window.location.search).get('page'); load(initial || 'home'); documentBody(true); return () => {documentBody(false);};}, []);
+  useEffect(() => {const narrow = window.matchMedia('(max-width: 1000px)'); const update = () => {setLeftOpen(!narrow.matches);setRightOpen(!narrow.matches);};update();narrow.addEventListener('change',update);return()=>narrow.removeEventListener('change',update);}, []);
   useEffect(()=>{if(!canvasRef.current)return;const observer=new ResizeObserver(entries=>setStageWidth(entries[0].contentRect.width));observer.observe(canvasRef.current);return()=>observer.disconnect();},[]);
   function documentBody(active) {window.document.body.classList.toggle('sideii-builder-page',active);}
   useEffect(() => {
@@ -96,7 +99,7 @@ export default function PageBuilder({products = [], slots = {}}) {
     try {
       if(action !== 'restore') validateDocument(snapshot.document,snapshot.key,{publishing:action==='publish'});
       const result = await api('',{key:snapshot.key,title:snapshot.title,document:snapshot.document,expectedVersion:snapshot.version,action,...extra});
-      accept(result,snapshot.key); clearRecovery(snapshot.key); setRecovery(null); setNotice(messages[action]);
+      accept(result,snapshot.key); clearRecovery(snapshot.key); setRecovery(null); setNotice(action==='unpublish'&&snapshot.key.startsWith('page:')?'Yayın kaldırıldı. Sayfa ziyaretçilere kapatıldı.':messages[action]);
       setPages(current => {const entry={page_key:snapshot.key,title:result.page.title};return current.some(p=>p.page_key===snapshot.key)?current.map(p=>p.page_key===snapshot.key?entry:p):[...current,entry];});
       if(panel==='history') api('?key='+encodeURIComponent(snapshot.key)+'&history=1').then(list=>setRevisions(list.revisions)).catch(()=>setNotice(messages[action]+' Geçmişi yenilemek için tekrar aç.'));
     } catch(failure) {setError(failure.message); if(failure.status===409) setNotice('Yerel değişikliklerin korunuyor. JSON dışa aktar seçeneğini kullanabilirsin.');}
@@ -120,7 +123,7 @@ export default function PageBuilder({products = [], slots = {}}) {
       if(insertAt) ({parentId,index}=insertAt);
       else if(selected && CONTAINERS.has(selected.type)) parentId=selected.id;
       else if(selected) {const location=findLocation(document,selected.id);parentId=location.parentId;index=location.index+1;}
-      change(insertNode(document,node,parentId,index));setSelected(node.id);setInsertAt(null);
+      change(insertNode(document,node,parentId,index));select(node.id);
     } catch(failure) {setError(failure.message);}
   };
   const beginDrag = (event,payload) => {dragRef.current=payload;event.dataTransfer.setData(MIME,JSON.stringify(payload));event.dataTransfer.effectAllowed=payload.id?'move':'copy';};

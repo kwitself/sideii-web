@@ -73,7 +73,7 @@ try{
   await page.locator('.beCanvasFrame .pbRoot').waitFor();
   assert.equal(await page.locator('.pbNode').count(),70);
   await page.getByRole('button',{name:'Başlık',exact:true}).click();
-  await page.getByLabel('Metin',{exact:true}).fill('Builder acceptance edition');
+  await page.getByRole('textbox',{name:'Metin',exact:true}).fill('Builder acceptance edition');
   await page.getByRole('button',{name:'Tasarım',exact:true}).click();
   await page.locator('.pb-heading').getByText('Builder acceptance edition',{exact:true}).waitFor();
   await page.getByRole('button',{name:'Geri al',exact:true}).click();
@@ -94,9 +94,11 @@ try{
   const before=await (await fetch(base+'/')).text();assert.ok(!before.includes('Builder acceptance edition'));
   await publish();assert.equal(publications.get('home').version,2);
   const after=await (await fetch(base+'/')).text();assert.ok(after.includes('Builder acceptance edition'));
+  await page.locator('.beStage').evaluate(el=>el.scrollTo({top:0,left:0}));
   await page.screenshot({path:out+'/desktop-1440.png'});
   console.log('PASS draft stays private; explicit publication appears in server-rendered homepage');
   await page.getByRole('button',{name:'Mobil',exact:true}).click();
+  await page.waitForFunction(()=>Math.round(document.querySelector('.beCanvasFrame').offsetWidth)===390);
   await page.screenshot({path:out+'/mobile-preview.png'});
   assert.equal(await page.locator('.beCanvasFrame').evaluate(el=>Math.round(el.offsetWidth)),390);
   await page.getByRole('button',{name:'Masaüstü',exact:true}).click();
@@ -112,7 +114,7 @@ try{
   await page.getByRole('button',{name:'Geri al',exact:true}).click();
   // Concurrent editor: fail safely and retain local work.
   await page.getByRole('button',{name:'Metin',exact:true}).click();
-  await page.getByLabel('Metin',{exact:true}).fill('Unpublished recovery content');
+  await page.getByRole('textbox',{name:'Metin',exact:true}).fill('Unpublished recovery content');
   await page.getByRole('button',{name:'Tasarım',exact:true}).click();
   pages.get('home').version++;
   await page.getByRole('button',{name:'Taslağı kaydet',exact:true}).click();
