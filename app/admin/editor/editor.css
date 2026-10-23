@@ -5,5 +5,6 @@
 
 .beApp .beSaveBlock{display:block;margin:12px 16px 0;width:calc(100% - 32px);font-size:10px}.beStageLabel>div{white-space:nowrap}
 
-.beCanvasFrame{border:0;outline:1px solid #37373f}
+.beCanvasViewport{margin:0 auto;overflow:hidden;outline:1px solid #37373f;box-shadow:0 18px 80px #0006}
+.beCanvasFrame{border:0;outline:0;transform-origin:top left;transition:none}
 .bePreviewIframe{display:block;width:100%;border:0;background:#09090a}

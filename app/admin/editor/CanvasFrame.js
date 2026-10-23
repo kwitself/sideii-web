@@ -28,5 +28,5 @@ export default function CanvasFrame({children, height}) {
     observer.observe(source.head,{childList:true,subtree:true,characterData:true});
     return () => {observer.disconnect();for (const copy of copies.values()) copy.remove();};
   }, [target]);
-  return <iframe ref={frame} title="Site önizlemesi" className="bePreviewIframe" style={{height}} srcDoc={FRAME_DOCUMENT} onLoad={() => setTarget(frame.current?.contentDocument?.getElementById('canvas-root') || null)}>{target && createPortal(children,target)}</iframe>;
+  return <iframe ref={frame} title="Site önizlemesi" className="bePreviewIframe" style={{height}} srcDoc={FRAME_DOCUMENT} onLoad={() => setTarget(frame.current?.contentDocument?.getElementById('canvas-root') || null)}>{target && createPortal(<main>{children}</main>,target)}</iframe>;
 }

@@ -120,7 +120,7 @@ try{
   await page.getByRole('button',{name:'Tasarım',exact:true}).click();
   await canvas.getByText('An edited physical edition.',{exact:true}).waitFor();
   await page.getByRole('button',{name:'Geri al',exact:true}).click();
-  await canvas.getByText('Music, in another form.',{exact:true}).waitFor();
+  await canvas.locator('.tagline').filter({hasText:'Music, in another form.'}).waitFor();
   await canvas.locator('.heroLogo img').click();
   assert.equal(await page.getByRole('textbox',{name:'Logo',exact:true}).inputValue(),'/brand/sideii-logo-silver.png');
   await page.getByRole('button',{name:'Sayfa teması',exact:true}).click();
@@ -169,7 +169,7 @@ try{
   await page.getByText('Bölüm şablonu arşive kaydedildi.',{exact:true}).waitFor();assert.equal(blocks.length,1);
   await page.getByRole('button',{name:'Ekle',exact:true}).click();
   await page.getByRole('button',{name:'Reusable hero ＋',exact:true}).click();
-  assert.equal(await canvas.locator('.pbRoot').getByText('Music, in another form.',{exact:true}).count(),2);
+  assert.equal(await canvas.locator('.tagline').filter({hasText:'Music, in another form.'}).count(),2);
   await page.getByRole('button',{name:'Geri al',exact:true}).click();
   // Concurrent editor: fail safely and retain local work.
   await page.getByRole('button',{name:'Metin',exact:true}).click();
