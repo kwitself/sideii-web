@@ -20,11 +20,13 @@ The canvas runs in an isolated iframe at 1200 × 900, 820 × 1024 or 390 × 844.
 
 Existing generic drafts and publications are preserved. To replace an older home draft, optionally export its JSON, then select **Gerçek site düzenini yükle** and confirm **Şablonu yükle**. Undo restores the previous in-memory layout. Save remains private and publication remains explicit. No database migration is needed for the original-section widgets.
 
+The store starter uses the owner's published store v1 from 23 October 2026, including its uploaded image, responsive styles and **Keşfet →** button. The image is bundled at `/defaults/store-20261023.jpg`. This same document is the public store fallback and the editor's **Başlangıç şablonu**, so resetting the draft or removing a later publication returns to this baseline. Later saved drafts and publications continue to take precedence.
+
 ## Save and publish
 
 `Taslağı kaydet` saves only the private draft. `Yayımla` confirms and atomically saves/publishes the document. Public pages load only the separate publication table. Saving a later draft does not change the live version.
 
-The last 50 server revisions are available in History. Restoring a revision creates a new draft revision; publishing is a separate action. Unpublishing home/store/product reactivates the existing JSX storefront. Unpublishing a custom page makes it return 404.
+The last 50 server revisions are available in History. Restoring a revision creates a new draft revision; publishing is a separate action. Unpublishing home/store reactivates their project default documents; product returns to its existing JSX storefront. Unpublishing a custom page makes it return 404.
 
 Writes carry an expected version. An editor in another tab cannot silently overwrite a newer version: the API returns HTTP 409 and preserves local changes for export/recovery. Concurrent first creation also uses this check.
 

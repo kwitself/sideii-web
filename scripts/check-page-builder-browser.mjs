@@ -226,8 +226,23 @@ try{
   assert.equal((await fetch(base+'/pages/campaign')).status,404);
   assert.equal((await request({key:'page:campaign',title:'Campaign',document:starterDocument('page:campaign'),expectedVersion:1,action:'publish'})).status,200);
   const custom=await fetch(base+'/pages/campaign');assert.equal(custom.status,200);assert.ok((await custom.text()).includes('A new perspective.'));
+  const checkStoreDefault=async()=>{
+    await page.goto(base+'/store');
+    await page.getByLabel('SEARCH CATALOGUE',{exact:true}).waitFor();
+    const image=page.locator('img[src="/defaults/store-20261023.jpg"]');
+    await image.scrollIntoViewIfNeeded();await image.evaluate(img=>img.decode());
+    assert.equal(await page.getByRole('link',{name:'Keşfet →',exact:true}).getAttribute('href'),'/store');
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);
+  };
+  await checkStoreDefault();
+  await page.screenshot({path:out+'/store-default-desktop.png',fullPage:true});
   for(const key of ['store','product'])assert.equal((await request({key,title:key,document:starterDocument(key),expectedVersion:0,action:'publish'})).status,200);
   await page.goto(base+'/store');await page.getByLabel('SEARCH CATALOGUE',{exact:true}).waitFor();
+  assert.equal((await request({key:'store',title:'Store',document:starterDocument('store'),expectedVersion:1,action:'unpublish'})).status,200);
+  await page.setViewportSize({width:390,height:844});await checkStoreDefault();
+  await page.screenshot({path:out+'/store-default-mobile.png',fullPage:true});
+  await page.setViewportSize({width:1440,height:1000});
+  console.log('PASS store default preserves owner artwork, link and catalogue before publication and after unpublish');
   await page.goto(base+'/releases/studio-edition');await page.locator('.productHero').waitFor();
   assert.equal((await page.locator('h1').allTextContents()).length,1);assert.ok((await page.locator('body').innerText()).includes('STUDIO'));
   assert.deepEqual(errors,[]);
