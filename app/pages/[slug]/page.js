@@ -1,3 +1,5 @@
+import {getBuilderHomepageContent} from '../../lib/server/homepage';
+import '../../catalogue.css';
 import {notFound} from 'next/navigation';
 import {getPublishedPage} from '../../lib/server/pageBuilderPublic';
 import {getStoreCatalogue} from '../../lib/catalogue';
@@ -12,6 +14,6 @@ export async function generateMetadata({params}) {
 export default async function CustomPage({params}) {
   const {slug} = await params, page = await getPublishedPage('page:' + slug);
   if (!page) notFound();
-  const catalogue = await getStoreCatalogue();
-  return <><main><GlobalHeader/><PageCanvas document={page.document} products={catalogue.releases}/></main><StorefrontFooter force/></>;
+  const [catalogue,homeData] = await Promise.all([getStoreCatalogue(),getBuilderHomepageContent(page.document)]);
+  return <><main><GlobalHeader/><PageCanvas document={page.document} homeData={homeData} products={catalogue.releases}/></main><StorefrontFooter force/></>;
 }

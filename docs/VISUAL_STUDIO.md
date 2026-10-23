@@ -12,6 +12,14 @@ Open **Admin → Visual Studio** or `/admin/editor`. A verified admin also sees 
 - Image uploads accept JPG, PNG, WebP, AVIF and GIF, up to 10 MB. Assets have public URLs; draft text and layouts remain private. Existing assets can be reused.
 - Undo/redo keeps the last 60 in-memory document changes. JSON export/import transfers complete layouts. Unsaved changes have a user-scoped browser recovery copy; a warning appears after reloading.
 
+## Original homepage
+
+The home starter renders the site's original nine sections: hero, capabilities, manifesto, selected releases, imprint, about, production, store and closing. The live site and editor share their markup, styles and catalogue-selection rules. Click an original text or logo to open its field in the inspector. Section typography controls affect its main heading; spacing, colours and responsive overrides remain available.
+
+The canvas runs in an isolated iframe at 1200 × 900, 820 × 1024 or 390 × 844. Storefront media queries and viewport units use that device size, independently of the admin window. Fit scales the viewport without changing its layout. Navigation is inert while editing; open the actual site separately to follow links.
+
+Existing generic drafts and publications are preserved. To replace an older home draft, optionally export its JSON, then select **Gerçek site düzenini yükle** and confirm **Şablonu yükle**. Undo restores the previous in-memory layout. Save remains private and publication remains explicit. No database migration is needed for the original-section widgets.
+
 ## Save and publish
 
 `Taslağı kaydet` saves only the private draft. `Yayımla` confirms and atomically saves/publishes the document. Public pages load only the separate publication table. Saving a later draft does not change the live version.
