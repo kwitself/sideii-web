@@ -1,5 +1,6 @@
-import {createNode, SCHEMA_VERSION} from './page-builder.js';
+import {createNode, cloneDocument, SCHEMA_VERSION} from './page-builder.js';
 import {HOME_SECTIONS, HOME_SECTION_ORDER, homeSectionProps} from './home-sections.js';
+import {STORE_DEFAULT_DOCUMENT} from './store-default.js';
 export const homeSectionNode = section => createNode('siteSection', {name: HOME_SECTIONS[section].label, props: homeSectionProps(section)});
 const node = (type, props = {}, style = {}, children = []) => {const n = createNode(type); return {...n, props: {...n.props, ...props}, style: {...n.style, ...style}, children};};
 const text = value => node('text', {text: value});
@@ -8,10 +9,7 @@ const section = (name, children, style = {}) => ({...node('section', {}, {maxWid
 const eyebrow = value => node('text', {text: value}, {fontSize: 11, letterSpacing: 3, color: '#a6a6aa'});
 const document = children => ({schemaVersion: SCHEMA_VERSION, theme: {backgroundColor: '#09090a', color: '#eeeef0', fontFamily: 'sans'}, children});
 export function starterDocument(key = 'home') {
-  if (key === 'store') return document([
-    section('Mağaza başlığı', [eyebrow('STORE / CATALOGUE'), heading('Available\neditions.'), text('Physical objects and digital masters from SIDE:II and its imprints.')]),
-    node('native', {slot: 'store-catalogue'}),
-  ]);
+  if (key === 'store') return cloneDocument(STORE_DEFAULT_DOCUMENT);
   if (key === 'product') return document(['product-hero', 'product-imprint', 'product-gallery', 'product-listen', 'product-tracks', 'product-note', 'product-related'].map(slot => node('native', {slot})));
   if (key !== 'home') return document([section('Karşılama', [eyebrow('SIDE:II / INDEPENDENT'), heading('A new perspective.'), text('Music, artwork and physical form.'), node('button', {text: 'EXPLORE THE STORE →', href: '/store'})])]);
   return {schemaVersion: SCHEMA_VERSION, theme: {}, children: HOME_SECTION_ORDER.map(homeSectionNode)};
