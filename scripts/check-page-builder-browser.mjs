@@ -4,6 +4,7 @@ import {mkdirSync,writeFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 import {starterDocument} from '../app/lib/page-builder-templates.js';
 import {flattenNodes,createNode} from '../app/lib/page-builder.js';
+import {checkBuilderDesignTools} from './check-builder-design-tools.mjs';
 const require=createRequire(import.meta.url);
 let chromium;try{({chromium}=require('playwright'));}catch{({chromium}=require(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/playwright'));}
 const base=process.env.SIDEII_BASE_URL||'http://127.0.0.1:3000';
@@ -245,6 +246,7 @@ try{
   console.log('PASS store default preserves owner artwork, link and catalogue before publication and after unpublish');
   await page.goto(base+'/releases/studio-edition');await page.locator('.productHero').waitFor();
   assert.equal((await page.locator('h1').allTextContents()).length,1);assert.ok((await page.locator('body').innerText()).includes('STUDIO'));
+  await checkBuilderDesignTools({page,canvas,browser,base,out,request,save,publish,pages});
   assert.deepEqual(errors,[]);
   console.log('PASS custom pages, catalogue and product templates render; no browser errors');
 }catch(error){await page.screenshot({path:out+'/failure.png',fullPage:true});writeFileSync(out+'/failure.txt',await page.locator('body').innerText());throw error;}

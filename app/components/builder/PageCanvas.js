@@ -3,6 +3,7 @@ import HomeSection from '../home/HomeSection';
 import HomeFooter from '../home/HomeFooter';
 import HomeSectionRail from '../HomeSectionRail';
 import GlobalHeader from '../GlobalHeader';
+import './builder-fonts.css';
 import './page-canvas.css';
 
 export default function PageCanvas({document, products = [], homeData = {}, pageKey, slots = {}, editing = false, previewOnly = false, selectedId, onSelect, onDropNode, onDragNode, onInsertAt}) {
