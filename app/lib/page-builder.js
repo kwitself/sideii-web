@@ -1,4 +1,6 @@
 import {HOME_SECTIONS, homeSectionProps} from './home-sections.js';
+import {FONT_CATALOG, FONT_VALUES} from './builder-fonts.js';
+export {FONT_VALUES} from './builder-fonts.js';
 // Shared document contract: the editor, API and public renderer use the same rules.
 export const SCHEMA_VERSION = 1;
 export const MAX_NODES = 300;
@@ -23,17 +25,26 @@ export const SLOT_LABELS = {'store-catalogue': 'Katalog ve filtreler', 'product-
 export const STYLE_FIELDS = {
   paddingTop: [0, 240], paddingRight: [0, 160], paddingBottom: [0, 240], paddingLeft: [0, 160],
   marginTop: [-100, 240], marginBottom: [-100, 240], gap: [0, 160],
-  fontSize: [10, 180], lineHeight: [0.8, 3], letterSpacing: [-5, 30],
+  fontSize: [10, 180], lineHeight: [0.8, 3], letterSpacing: [-5, 30], wordSpacing: [-5, 30],
   minHeight: [0, 1200], maxWidth: [100, 2400], width: [10, 100],
   borderRadius: [0, 200], borderWidth: [0, 12], opacity: [0, 1], columns: [1, 6],
+  mediaHeight: [40, 1200], gradientAngle: [0, 360],
 };
 export const STYLE_ENUMS = {
   textAlign: ['left', 'center', 'right'], alignItems: ['stretch', 'flex-start', 'center', 'flex-end'],
   justifyContent: ['flex-start', 'center', 'flex-end', 'space-between'],
-  direction: ['column', 'row'], fontFamily: ['sans', 'serif', 'mono'], fontWeight: ['300', '400', '500', '600', '700', '800'],
+  direction: ['column', 'row'], fontFamily: FONT_CATALOG.map(font => font.id), fontWeight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
   objectFit: ['cover', 'contain'], display: ['show', 'hide'],
+  fontStyle: ['normal', 'italic'], textDecoration: ['none', 'underline', 'line-through'],
+  textTransform: ['none', 'uppercase', 'lowercase', 'capitalize'],
+  objectPosition: ['center', 'top', 'bottom', 'left', 'right', 'left top', 'right top', 'left bottom', 'right bottom'],
+  aspectRatio: ['auto', '1:1', '4:3', '3:4', '16:9', '9:16', '3:2', '2:3', '21:9'],
+  backgroundType: ['solid', 'gradient'], borderStyle: ['solid', 'dashed', 'dotted', 'double'],
+  boxShadow: ['none', 'soft', 'medium', 'strong', 'glow'],
 };
-export const FONT_VALUES = {sans: 'Arial,Helvetica,sans-serif', serif: 'Georgia,serif', mono: 'monospace'};
+const SHADOW_VALUES = {none: 'none', soft: '0 4px 16px #00000026', medium: '0 12px 32px #00000059', strong: '0 24px 64px #00000080', glow: '0 0 36px #ffffff26'};
+const TYPOGRAPHY_FIELDS = ['fontSize', 'lineHeight', 'letterSpacing', 'wordSpacing', 'fontFamily', 'fontWeight', 'fontStyle', 'textDecoration', 'textTransform', 'textAlign'];
+const MEDIA_FIELDS = ['mediaHeight', 'aspectRatio', 'objectFit', 'objectPosition'];
 const propsByType = {
   section: ['anchor'], columns: [], stack: [], heading: ['text', 'level'], text: ['text'],
   image: ['src', 'alt', 'href'], button: ['text', 'href', 'newTab'], divider: [], spacer: [],
@@ -63,7 +74,7 @@ export function validateStyle(style = {}) {
       if (typeof value !== 'number' || !Number.isFinite(value) || value < min || value > max || key === 'columns' && !Number.isInteger(value)) fail('Geçersiz stil: ' + key);
     } else if (own(STYLE_ENUMS, key)) {
       if (!STYLE_ENUMS[key].includes(value)) fail('Geçersiz stil: ' + key);
-    } else if (['color', 'backgroundColor', 'borderColor'].includes(key)) {
+    } else if (['color', 'backgroundColor', 'borderColor', 'gradientColor'].includes(key)) {
       if (typeof value !== 'string' || !/^(#[a-fA-F0-9]{6}|transparent)$/.test(value)) fail('Geçersiz renk.');
     } else fail('Desteklenmeyen stil: ' + key);
     result[key] = value;
@@ -160,27 +171,65 @@ export function cloneNodeTree(original) {
   renew(duplicate); return duplicate;
 }
 export function flattenNodes(document) {return document.children.flatMap(node => [node, ...flattenNodes(node)]);}
+export function inheritedNodeStyle(document, id, device = 'desktop') {
+  // Only inheritable properties flow from a parent. Backgrounds, borders and
+  // dimensions belong to their own box; device overrides do inherit those.
+  const inheritedFields = new Set([...TYPOGRAPHY_FIELDS.filter(key => key !== 'textDecoration'), 'color']);
+  const pick = style => Object.fromEntries(Object.entries(style).filter(([key]) => inheritedFields.has(key)));
+  const walk = (children, parent) => {
+    for (const node of children) {
+      const previous = device === 'desktop' ? {} : {...node.style, ...(device === 'mobile' ? node.tablet : {})};
+      if (node.id === id) return {...parent, ...previous};
+      const effective = {...node.style, ...(device !== 'desktop' ? node.tablet : {}), ...(device === 'mobile' ? node.mobile : {})};
+      const found = walk(node.children, {...parent, ...pick(effective)});
+      if (found) return found;
+    }
+    return null;
+  };
+  return walk(document.children, pick(document.theme)) || {};
+}
 export function documentCss(document) {
-  const toCss = (style,type) => Object.entries(style).map(([key, value]) => {
-    if (key === 'columns') return `grid-template-columns:repeat(${value},minmax(0,1fr))`;
-    if (key === 'direction') return `flex-direction:${value}`;
-    if (key === 'fontFamily') return `font-family:${FONT_VALUES[value]}`;
-    if (key === 'display') return `display:${value === 'hide' ? 'none' : type === 'columns' ? 'grid' : CONTAINERS.has(type) ? 'flex' : 'block'}!important`;
-    const property = key.replace(/[A-Z]/g, c => '-' + c.toLowerCase());
-    const unit = key === 'width' ? '%' : own(STYLE_FIELDS, key) && !['lineHeight', 'opacity'].includes(key) ? 'px' : '';
-    return `${property}:${value}${unit}`;
-  }).join(';');
+  const toCss = (style, type, effective = style) => {
+    const declarations = Object.entries(style).map(([key, value]) => {
+      if (key === 'columns') return `grid-template-columns:repeat(${value},minmax(0,1fr))`;
+      if (key === 'direction') return `flex-direction:${value}`;
+      if (key === 'fontFamily') return `font-family:${FONT_VALUES[value]}`;
+      if (key === 'boxShadow') return `box-shadow:${SHADOW_VALUES[value]}`;
+      if (key === 'mediaHeight') return `height:${value}px`;
+      if (key === 'aspectRatio') return `aspect-ratio:${value.replace(':', ' / ')}`;
+      if (['backgroundType', 'gradientColor', 'gradientAngle'].includes(key)) return '';
+      if (key === 'display') return `display:${value === 'hide' ? 'none' : type === 'columns' ? 'grid' : CONTAINERS.has(type) ? 'flex' : 'block'}!important`;
+      const property = key.replace(/[A-Z]/g, c => '-' + c.toLowerCase());
+      const unit = key === 'width' ? '%' : own(STYLE_FIELDS, key) && !['lineHeight', 'opacity'].includes(key) ? 'px' : '';
+      return `${property}:${value}${unit}`;
+    }).filter(Boolean);
+    // Rebuild composite backgrounds from the effective device cascade. A mobile
+    // end-colour change must retain the desktop start colour and gradient angle.
+    if (['backgroundType', 'backgroundColor', 'gradientColor', 'gradientAngle'].some(key => own(style, key))) {
+      declarations.push(effective.backgroundType === 'gradient'
+        ? `background-image:linear-gradient(${effective.gradientAngle ?? 135}deg,${effective.backgroundColor || '#171719'},${effective.gradientColor || '#38383e'})`
+        : 'background-image:none');
+    }
+    return declarations.join(';');
+  };
   const nodes = flattenNodes(document);
   const selector = node => `.pbRoot [data-pb-id="${node.id}"]`;
-  const rule = (node, style) => {
-    if (node.type !== 'siteSection') return `${selector(node)}{${toCss(style,node.type)}}`;
-    const typography = ['fontSize','lineHeight','letterSpacing','fontFamily','fontWeight'];
-    const heading = Object.fromEntries(Object.entries(style).filter(([key]) => typography.includes(key)));
-    const layout = Object.fromEntries(Object.entries(style).filter(([key]) => !typography.includes(key)));
-    return `${selector(node)}{${toCss(layout,node.type)}}${selector(node)} [data-home-title]{${toCss(heading)}}` +
+  const rule = (node, style, effective = style) => {
+    if (['image', 'video'].includes(node.type)) {
+      const media = Object.fromEntries(Object.entries(style).filter(([key]) => MEDIA_FIELDS.includes(key)));
+      const layout = Object.fromEntries(Object.entries(style).filter(([key]) => !MEDIA_FIELDS.includes(key)));
+      return `${selector(node)}{${toCss(layout,node.type,effective)}}${selector(node)} :is(img,video){${toCss(media)}}`;
+    }
+    if (node.type !== 'siteSection') return `${selector(node)}{${toCss(style,node.type,effective)}}`;
+    const heading = Object.fromEntries(Object.entries(style).filter(([key]) => TYPOGRAPHY_FIELDS.includes(key)));
+    const layout = Object.fromEntries(Object.entries(style).filter(([key]) => !TYPOGRAPHY_FIELDS.includes(key)));
+    return `${selector(node)}{${toCss(layout,node.type,effective)}}${selector(node)} [data-home-title]{${toCss(heading)}}` +
       (style.color ? `${selector(node)} [data-home-field]{color:${style.color}}` : '');
   };
-  return `.pbCanvas .pbRoot{${toCss(document.theme)}}` + nodes.map(node => rule(node,node.style)).join('') +
-    `@container pbCanvas (max-width:900px){${nodes.map(node => rule(node,node.tablet)).join('')}}` +
-    `@container pbCanvas (max-width:600px){${nodes.map(node => rule(node,node.mobile)).join('')}}`;
+  // The native home design has explicit font declarations; a page font is an
+  // intentional override, with per-section typography still taking precedence.
+  const homeFont = document.theme.fontFamily ? `.pbRoot .pb-siteSection [data-home-field]{font-family:${FONT_VALUES[document.theme.fontFamily]}}` : '';
+  return `.pbCanvas .pbRoot{${toCss(document.theme)}}${homeFont}` + nodes.map(node => rule(node,node.style)).join('') +
+    `@container pbCanvas (max-width:900px){${nodes.map(node => rule(node,node.tablet,{...node.style,...node.tablet})).join('')}}` +
+    `@container pbCanvas (max-width:600px){${nodes.map(node => rule(node,node.mobile,{...node.style,...node.tablet,...node.mobile})).join('')}}`;
 }

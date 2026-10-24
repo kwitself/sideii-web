@@ -12,6 +12,18 @@ Open **Admin → Visual Studio** or `/admin/editor`. A verified admin also sees 
 - Image uploads accept JPG, PNG, WebP, AVIF and GIF, up to 10 MB. Assets have public URLs; draft text and layouts remain private. Existing assets can be reused.
 - Undo/redo keeps the last 60 in-memory document changes. JSON export/import transfers complete layouts. Unsaved changes have a user-scoped browser recovery copy; a warning appears after reloading.
 
+## Fonts and design controls
+
+Open a component's **Tasarım → Tipografi** panel. **Yazı tipi seç** opens a searchable, categorized font catalogue with live previews and a Turkish character sample. The 15 choices include the original Arial/Georgia/monospace options and 12 bundled variable families: Inter, Manrope, DM Sans, Space Grotesk, Montserrat, Oswald, Playfair Display, Lora, Cormorant Garamond, Roboto Slab, Bodoni Moda and JetBrains Mono. **Sayfa teması** sets a page font; component and device overrides take precedence. Native home sections apply component typography to their main heading.
+
+Six **Hazır metin stili** presets apply typography in one undoable step, with sizes adapted to the active device. Font weight, italic, underline/strike-through, letter case, line height, letter/word spacing and alignment can also be set independently. Text remains plain text; these controls format a complete component, not an HTML fragment or a selection of individual words.
+
+Image/video controls offer natural or fixed aspect ratios, cover/contain, a fixed height and nine focal positions. A fixed height takes precedence over the aspect ratio. Backgrounds support solid colours or two-colour gradients with an angle; tablet/mobile changes inherit the previous device's other gradient values. Colours accept HEX, palette swatches or transparency. Borders have solid/dashed/dotted/double styles, radius and width; five shadow choices include an explicit no-shadow option.
+
+**Stili kopyala / Stili yapıştır** copies all three device style sets between components while preserving content, IDs, children and links. Pasting replaces the target's style sets; Undo restores them. The style clipboard lasts for the current editor session. **Sıfırla** clears only the active device's overrides. Empty inputs inherit the larger device's value; mobile inherits tablet, then desktop.
+
+Fonts are served from `/fonts/builder/` without a visitor request to Google and are fetched by the browser only when used (opening the font catalogue also loads its previews). `sources.json` pins the upstream revision, original and compressed hashes, weights and licenses. The complete normal variable fonts use lossless WOFF2 compression; italic is browser-synthesized. No runtime font API, extra app dependency or database migration is required. Existing font IDs and documents remain valid.
+
 ## Original homepage
 
 The home starter renders the site's original nine sections: hero, capabilities, manifesto, selected releases, imprint, about, production, store and closing. The live site and editor share their markup, styles and catalogue-selection rules. Click an original text or logo to open its field in the inspector. Section typography controls affect its main heading; spacing, colours and responsive overrides remain available.
@@ -49,5 +61,6 @@ Documents are limited to 300 nodes, eight nesting levels and 400 KB. URL, style,
 - `node --test tests/page-builder.test.mjs`: nesting, moves, cycles, copies, size, URLs, styles and commerce guards.
 - `tests/page-builder-postgres.sql`: isolated PostgreSQL tests of RLS, customer/anonymous denial, draft isolation, version conflicts, restoration and revision retention. **Never run this fixture on a real project.** CI provides the disposable database.
 - `scripts/check-page-builder-browser.mjs`: Chromium end-to-end tests with an isolated local Supabase fixture, real Next API handlers, media upload, drag/drop, undo/redo, drafts, publication, conflicts, offline recovery, restoration, custom routes and responsive screenshots. No production writes occur.
+- `scripts/check-builder-design-tools.mjs` runs inside that suite: all 12 bundled fonts must decode as real FontFace entries, new styles survive save/reload/publication, and editor/public rendering agrees at 1200/820/390 px. Copy/paste, undo, device resets, gradients and image focal points are exercised through the UI.
 
 Run the existing Node, QA, production build and browser suites as regression gates. Published catalogue data is not required to open the editor: empty commerce previews describe their purpose until products exist.

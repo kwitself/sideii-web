@@ -1,0 +1,13 @@
+/* Self-hosted variable fonts. Sources and licenses: /fonts/builder/sources.json. */
+@font-face{font-family:"PB Inter";src:url("/fonts/builder/inter-13b4cddc57.woff2") format("woff2");font-style:normal;font-weight:100 900;font-display:swap}
+@font-face{font-family:"PB Manrope";src:url("/fonts/builder/manrope-30b83738ad.woff2") format("woff2");font-style:normal;font-weight:200 800;font-display:swap}
+@font-face{font-family:"PB DM Sans";src:url("/fonts/builder/dm-sans-40c3837c53.woff2") format("woff2");font-style:normal;font-weight:100 1000;font-display:swap}
+@font-face{font-family:"PB Space Grotesk";src:url("/fonts/builder/space-grotesk-8e085aa438.woff2") format("woff2");font-style:normal;font-weight:300 700;font-display:swap}
+@font-face{font-family:"PB Montserrat";src:url("/fonts/builder/montserrat-6e712eafc1.woff2") format("woff2");font-style:normal;font-weight:100 900;font-display:swap}
+@font-face{font-family:"PB Oswald";src:url("/fonts/builder/oswald-6bbc262410.woff2") format("woff2");font-style:normal;font-weight:200 700;font-display:swap}
+@font-face{font-family:"PB Playfair Display";src:url("/fonts/builder/playfair-display-4297e9ec39.woff2") format("woff2");font-style:normal;font-weight:400 900;font-display:swap}
+@font-face{font-family:"PB Lora";src:url("/fonts/builder/lora-7c514f026f.woff2") format("woff2");font-style:normal;font-weight:400 700;font-display:swap}
+@font-face{font-family:"PB Cormorant Garamond";src:url("/fonts/builder/cormorant-garamond-1c7136dcfe.woff2") format("woff2");font-style:normal;font-weight:300 700;font-display:swap}
+@font-face{font-family:"PB Roboto Slab";src:url("/fonts/builder/roboto-slab-a85880785a.woff2") format("woff2");font-style:normal;font-weight:100 900;font-display:swap}
+@font-face{font-family:"PB Bodoni Moda";src:url("/fonts/builder/bodoni-moda-99846cc37b.woff2") format("woff2");font-style:normal;font-weight:400 900;font-display:swap}
+@font-face{font-family:"PB JetBrains Mono";src:url("/fonts/builder/jetbrains-mono-7b7f341919.woff2") format("woff2");font-style:normal;font-weight:100 800;font-display:swap}

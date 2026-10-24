@@ -1,0 +1,198 @@
+{
+  "upstreamCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+  "conversion": "Lossless WOFF2 compression of the complete original normal variable font. No glyph subsetting, outline, naming or axis edits. Italic is browser-synthesized.",
+  "fonts": [
+    {
+      "id": "inter",
+      "family": "Inter",
+      "file": "inter-13b4cddc57.woff2",
+      "weight": [
+        100,
+        900
+      ],
+      "source": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/inter/Inter%5Bopsz%2Cwght%5D.ttf",
+      "sourceSha256": "29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031",
+      "sha256": "13b4cddc57045d40b411008e61588c8f81aa0bd72fe884624831a0ff9c4d159a",
+      "bytes": 350460,
+      "license": "licenses/inter.txt",
+      "licenseType": "OFL-1.1",
+      "copyright": "Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter)"
+    },
+    {
+      "id": "manrope",
+      "family": "Manrope",
+      "file": "manrope-30b83738ad.woff2",
+      "weight": [
+        200,
+        800
+      ],
+      "source": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/manrope/Manrope%5Bwght%5D.ttf",
+      "sourceSha256": "3ae11c49db0455a3cc33e37d380f20fdb8c7f8b41dc07625c177e3d87a9d6ae6",
+      "sha256": "30b83738add8c9edd9e3450b98036a9a8fb5668d0cbd4eb0ce5fe6761197f21f",
+      "bytes": 53892,
+      "license": "licenses/manrope.txt",
+      "licenseType": "OFL-1.1",
+      "copyright": "Copyright 2019 The Manrope Project Authors (https://github.com/googlefonts/manrope)"
+    },
+    {
+      "id": "dm-sans",
+      "family": "DM Sans",
+      "file": "dm-sans-40c3837c53.woff2",
+      "weight": [
+        100,
+        1000
+      ],
+      "source": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/dmsans/DMSans%5Bopsz%2Cwght%5D.ttf",
+      "sourceSha256": "8cd08d97e89c24d0aa92edd2f0f4c8ee6195eee9b7c9f154865a58b02f0c1c0d",
+      "sha256": "40c3837c53c103a38fbce7faaa590b76edd61a8ede14672eb1e2f7eab0e0c6a4",
+      "bytes": 88820,
+      "license": "licenses/dm-sans.txt",
+      "licenseType": "OFL-1.1",
+      "copyright": "Copyright 2014 The DM Sans Project Authors (https://github.com/googlefonts/dm-fonts)"
+    },
+    {
+      "id": "space-grotesk",
+      "family": "Space Grotesk",
+      "file": "space-grotesk-8e085aa438.woff2",
+      "weight": [
+        300,
+        700
+      ],
+      "source": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/spacegrotesk/SpaceGrotesk%5Bwght%5D.ttf",
+      "sourceSha256": "acad6de1fc93436f5c0f1f4137751ef04f1aea3063e7036535970ffcfbd79f72",
+      "sha256": "8e085aa438094f11487a836652edd5c054fa6a96f63fc7c282105ee3a4b08c07",
+      "bytes": 49256,
+      "license": "licenses/space-grotesk.txt",
+      "licenseType": "OFL-1.1",
+      "copyright": "Copyright 2020 The Space Grotesk Project Authors (https://github.com/floriankarsten/space-grotesk)"
+    },
+    {
+      "id": "montserrat",
+      "family": "Montserrat",
+      "file": "montserrat-6e712eafc1.woff2",
+      "weight": [
+        100,
+        900
+      ],
+      "source": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/montserrat/Montserrat%5Bwght%5D.ttf",
+      "sourceSha256": "0f7b311b2f3279e4eef9b2f968bcdbab6e28f4daeb1f049f4f278a902bcd82f7",
+      "sha256": "6e712eafc11f23dc2b0651c0849c1a331aa81a3a4499ba61ef5091e5c123c796",
+      "bytes": 215968,
+      "license": "licenses/montserrat.txt",
+      "licenseType": "OFL-1.1",
+      "copyright": "Copyright 2011 The Montserrat Project Authors (https://github.com/JulietaUla/Montserrat)"
+    },
+    {
+      "id": "oswald",
+      "family": "Oswald",
+      "file": "oswald-6bbc262410.woff2",
+      "weight": [
+        200,
+        700
+      ],
+      "source": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/oswald/Oswald%5Bwght%5D.ttf",
+      "sourceSha256": "5b38c246e255a12f5712d640d56bcced0472466fc68983d2d0410ec0457c2817",
+      "sha256": "6bbc262410618b85e3d3154309cad8346a9e3c3085a61d04b3710a4cf2831f4d",
+      "bytes": 72104,
+      "license": "licenses/oswald.txt",
+      "licenseType": "OFL-1.1",
+      "copyright": "Copyright 2016 The Oswald Project Authors (https://github.com/googlefonts/OswaldFont)"
+    },
+    {
+      "id": "playfair-display",
+      "family": "Playfair Display",
+      "file": "playfair-display-4297e9ec39.woff2",
+      "weight": [
+        400,
+        900
+      ],
+      "source": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/playfairdisplay/PlayfairDisplay%5Bwght%5D.ttf",
+      "sourceSha256": "c40f2293766a503bc70cce9e512ef844a4ccb7cbcde792fe2ea31d191917d8d6",
+      "sha256": "4297e9ec39f1b8157623d048fb99eab03c90e482669599e8fc662ee178994c49",
+      "bytes": 106440,
+      "license": "licenses/playfair-display.txt",
+      "licenseType": "OFL-1.1",
+      "copyright": "Copyright 2017 The Playfair Display Project Authors (https://github.com/clauseggers/Playfair-Display), with Reserved Font Name \"Playfair Display\"."
+    },
+    {
+      "id": "lora",
+      "family": "Lora",
+      "file": "lora-7c514f026f.woff2",
+      "weight": [
+        400,
+        700
+      ],
+      "source": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/lora/Lora%5Bwght%5D.ttf",
+      "sourceSha256": "822a6621ccbe8d97d20ac88c1c41f5615c9c2c202eaa75f272cd452aac6475a7",
+      "sha256": "7c514f026f03de1b0fc344c0c0f0df141fcf16b6f9ab672db191908ba740dab6",
+      "bytes": 85096,
+      "license": "licenses/lora.txt",
+      "licenseType": "OFL-1.1",
+      "copyright": "Copyright 2011 The Lora Project Authors (https://github.com/cyrealtype/Lora-Cyrillic), with Reserved Font Name \"Lora\"."
+    },
+    {
+      "id": "cormorant-garamond",
+      "family": "Cormorant Garamond",
+      "file": "cormorant-garamond-1c7136dcfe.woff2",
+      "weight": [
+        300,
+        700
+      ],
+      "source": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/cormorantgaramond/CormorantGaramond%5Bwght%5D.ttf",
+      "sourceSha256": "b20b7d9626dd956b2c5e558692ad328b1f19e3275e2782db4fa07670d83f35e0",
+      "sha256": "1c7136dcfe2ba0c22bd2e4ab48467813cb6dd7b5728a73920dd9eb6452b8a558",
+      "bytes": 209428,
+      "license": "licenses/cormorant-garamond.txt",
+      "licenseType": "OFL-1.1",
+      "copyright": "Copyright 2015 The Cormorant Project Authors (github.com/CatharsisFonts/Cormorant)"
+    },
+    {
+      "id": "roboto-slab",
+      "family": "Roboto Slab",
+      "file": "roboto-slab-a85880785a.woff2",
+      "weight": [
+        100,
+        900
+      ],
+      "source": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/apache/robotoslab/RobotoSlab%5Bwght%5D.ttf",
+      "sourceSha256": "786ae192477447d33c6672c3055fba7cbfe45184c9a79e77a14f15716ca05b16",
+      "sha256": "a85880785a54d41536259b2736492fba35dc3f258c327a5431ca998ce5f85fed",
+      "bytes": 118296,
+      "license": "licenses/roboto-slab.txt",
+      "licenseType": "Apache-2.0",
+      "copyright": "Copyright 2018 The Roboto Slab Project Authors (https://github.com/googlefonts/robotoslab)"
+    },
+    {
+      "id": "bodoni-moda",
+      "family": "Bodoni Moda",
+      "file": "bodoni-moda-99846cc37b.woff2",
+      "weight": [
+        400,
+        900
+      ],
+      "source": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/bodonimoda/BodoniModa%5Bopsz%2Cwght%5D.ttf",
+      "sourceSha256": "550f5e34ee0a828d7941b1fe9bc58b34e5260d3f33a61532e6d0a0114e79a5cf",
+      "sha256": "99846cc37bb4b3f43db103b15e259f333df784dd6252331f327d2cea7ceea6fb",
+      "bytes": 74372,
+      "license": "licenses/bodoni-moda.txt",
+      "licenseType": "OFL-1.1",
+      "copyright": "Copyright 2020 The Bodoni Moda Project Authors (https://github.com/indestructible-type/Bodoni)"
+    },
+    {
+      "id": "jetbrains-mono",
+      "family": "JetBrains Mono",
+      "file": "jetbrains-mono-7b7f341919.woff2",
+      "weight": [
+        100,
+        800
+      ],
+      "source": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/jetbrainsmono/JetBrainsMono%5Bwght%5D.ttf",
+      "sourceSha256": "48715a42ec242c21e9f02692891e147d022299a52e48d5e413e1a942193ffeda",
+      "sha256": "7b7f3419196f675a973d30cb70078749120caddea86c8547ebf54a8db2ca13af",
+      "bytes": 71736,
+      "license": "licenses/jetbrains-mono.txt",
+      "licenseType": "OFL-1.1",
+      "copyright": "Copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono)"
+    }
+  ]
+}

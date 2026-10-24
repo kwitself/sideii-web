@@ -12,7 +12,7 @@
 .pbCanvasEditing .pbDragHandle:hover{background:#fff;color:#111}
 .pbCanvasEditing :is(.pb-section,.pb-columns,.pb-stack):not(:has(.pbNodePosition)){min-height:80px}
 
-.pbRoot .pbNode:not(.pb-siteSection){border-style:solid;border-width:0;border-color:transparent}
+.pbRoot :where(.pbNode:not(.pb-siteSection)){border-style:solid;border-width:0;border-color:transparent}
 
 /* Native site sections retain the storefront's dimensions, borders and typography. */
 .pbRoot.pbHome{background:transparent;color:inherit;font-family:inherit}
@@ -23,3 +23,9 @@
 .pbCanvasEditing .pbNodePosition>.pbDragHandle:hover{display:block}
 .pbCanvasEditing .pb-siteSection [data-home-field]{cursor:text}
 .pbCanvasEditing .pb-siteSection img[data-home-field]{cursor:pointer}
+
+/* Editable typography is inherited by the text, not reset by its HTML tag. */
+.pbRoot :is(.pb-heading h1,.pb-heading h2,.pb-heading h3,.pb-heading h4,.pb-text p){text-transform:inherit;word-spacing:inherit}
+.pbRoot :is(.pb-image,.pb-video){overflow:hidden}
+.pbRoot :is(.pb-image img,.pb-video video){border-radius:inherit;object-position:inherit}
+.pbRoot .pb-video video{object-fit:inherit}
