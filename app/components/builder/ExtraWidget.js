@@ -1,0 +1,14 @@
+'use client';
+import {useEffect,useState} from 'react';
+function Countdown({date,done}) {const [now,setNow]=useState(null);useEffect(()=>{setNow(Date.now());const timer=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(timer);},[date]);const seconds=Math.max(0,Math.ceil((Date.parse(date)-now)/1000));if(!date)return <p>Tarih seçilmedi.</p>;if(now===null)return <p>—</p>;if(!seconds)return <p role="status">{done}</p>;return <div className="pbCountdownDigits">{[[Math.floor(seconds/86400),'Gün'],[Math.floor(seconds/3600)%24,'Saat'],[Math.floor(seconds/60)%60,'Dakika'],[seconds%60,'Saniye']].map(([n,l])=><span key={l}><b>{String(n).padStart(2,'0')}</b><small>{l}</small></span>)}</div>;}
+const dateText=date=>date?new Intl.DateTimeFormat('tr-TR',{timeZone:'Europe/Istanbul',dateStyle:'medium',timeStyle:'short'}).format(new Date(date)):'';
+export default function ExtraWidget({node,products=[]}) {
+  const p=node.props;
+  if(node.type==='album'){const product=products.find(x=>x.slug===p.slug);return product?<a className="pbAlbum" href={(product.isMerch?'/store/':'/releases/')+product.slug}>{product.cover&&<img src={product.cover} alt={product.title} loading="lazy"/>}<div><small>{p.label}</small><h2>{product.title}</h2><p>{product.artist}</p><span>{product.catalogue} · {product.format}</span></div></a>:<p className="pbEmptyCatalogue">Albüm seç veya yayımlanmış ürün ekle.</p>;}
+  if(node.type==='artist')return <article className="pbArtist">{p.image&&<img src={p.image} alt={p.title} loading="lazy"/>}<div><h2>{p.title}</h2><p>{p.text}</p>{p.href&&<a className="pbButton" href={p.href}>Sanatçıyı keşfet ↗</a>}</div></article>;
+  if(node.type==='audio')return <div className="pbAudio">{p.cover&&<img src={p.cover} alt="" loading="lazy"/>}<h2>{p.title}</h2>{p.src?<audio controls preload="none" src={p.src} aria-label={p.title}/>:<p>Ses dosyası adresi ekle.</p>}</div>;
+  if(node.type==='events')return <div className="pbEvents"><h2>{p.title}</h2>{p.items.map((event,i)=><article key={i}><time dateTime={event.date}>{dateText(event.date)}</time><div><h3>{event.title}</h3><p>{event.location}</p></div>{event.href&&<a href={event.href}>Detay / bilet ↗</a>}</article>)}</div>;
+  if(node.type==='countdown')return <div className="pbCountdown"><h2>{p.title}</h2><Countdown date={p.date} done={p.done}/>{p.date&&<time dateTime={p.date}>{dateText(p.date)} · İstanbul</time>}{p.href&&<a className="pbButton" href={p.href}>Keşfet ↗</a>}</div>;
+  if(node.type==='gallery')return <div><h2>{p.title}</h2><div className={'pbGallery pbGallery-'+p.layout}>{p.items.map((item,i)=><figure key={i}>{item.src&&<a href={item.src} target="_blank" rel="noreferrer"><img src={item.src} alt={item.alt} loading="lazy"/></a>}{item.alt&&<figcaption>{item.alt}</figcaption>}</figure>)}</div></div>;
+  return null;
+}

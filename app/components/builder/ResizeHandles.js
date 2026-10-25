@@ -1,0 +1,15 @@
+'use client';
+import {useRef,useState} from 'react';
+const limits={width:[10,100],mediaHeight:[40,1200],paddingBottom:[0,240],columnSplit:[10,90]};
+const labels={width:'Genişliği ayarla',mediaHeight:'Yüksekliği ayarla',paddingBottom:'Alt boşluğu ayarla',columnSplit:'Sütun oranını ayarla'};
+export default function ResizeHandles({node,device,onCommit}) {
+  const drag=useRef(null),[guide,setGuide]=useState('');
+  const effective={...node.style,...(device!=='desktop'?node.tablet:{}),...(device==='mobile'?node.mobile:{})};
+  const fields=['width',...(['image','video'].includes(node.type)?['mediaHeight']:[]),...(['section','stack','columns'].includes(node.type)?['paddingBottom']:[]),...(node.type==='columns'&&effective.columns===2?['columnSplit']:[])];
+  const target=button=>button.closest('.pbNodePosition').querySelector('[data-pb-id]');
+  const initial=(key,el)=>effective[key]??(key==='width'?100:key==='columnSplit'?50:key==='mediaHeight'?el.querySelector('img,video')?.getBoundingClientRect().height||200:0);
+  function start(e,key){e.preventDefault();e.stopPropagation();const el=target(e.currentTarget),media=el.querySelector('img,video'),styled=key==='mediaHeight'?media||el:el;drag.current={key,start:initial(key,el),x:e.clientX,y:e.clientY,width:el.parentElement.getBoundingClientRect().width,el:styled,css:styled.getAttribute('style'),value:null};e.currentTarget.setPointerCapture(e.pointerId);}
+  function move(e){const d=drag.current;if(!d)return;const horizontal=['width','columnSplit'].includes(d.key);let value=d.start+(horizontal?(e.clientX-d.x)/d.width*100:e.clientY-d.y);const [min,max]=limits[d.key];value=Math.round(Math.min(max,Math.max(min,value)));if(horizontal&&!e.shiftKey){const snap=[25,33,50,67,75,100].find(v=>Math.abs(v-value)<2);if(snap)value=snap;}d.value=value;d.el.style[d.key==='columnSplit'?'gridTemplateColumns':d.key]=d.key==='columnSplit'?value+'fr '+(100-value)+'fr':value+(d.key==='width'?'%':'px');setGuide(value+(horizontal?'%':'px'));}
+  function finish(cancel=false){const d=drag.current;if(!d)return;if(d.css==null)d.el.removeAttribute('style');else d.el.setAttribute('style',d.css);drag.current=null;setGuide('');if(!cancel&&d.value!=null)onCommit({[d.key]:d.value});}
+  return <div className="pbResizeControls">{fields.map(key=><button key={key} className={'pbResizeHandle pbResize-'+key} type="button" aria-label={labels[key]} title={labels[key]+' · ok tuşları / Shift'} onPointerDown={e=>start(e,key)} onPointerMove={move} onPointerUp={()=>finish()} onPointerCancel={()=>finish(true)} onLostPointerCapture={()=>finish(true)} onClick={e=>{e.stopPropagation();e.preventDefault();}} onKeyDown={e=>{e.stopPropagation();if(e.key==='Escape'){finish(true);return;}if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const [min,max]=limits[key],direction=['ArrowRight','ArrowDown'].includes(e.key)?1:-1;onCommit({[key]:Math.min(max,Math.max(min,Math.round(initial(key,target(e.currentTarget)))+direction*(e.shiftKey?10:1)))});}}>↔</button>)}{guide&&<output className="pbResizeGuide">{guide}</output>}</div>;
+}

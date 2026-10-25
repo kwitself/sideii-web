@@ -1,3 +1,8 @@
+import {safeUrl} from './builder-url.js';
+export {safeUrl} from './builder-url.js';
+import {validFontId, fontFamily, validateSiteSettings, validateSeo} from './builder-design.js';
+import {validateRuns} from './builder-rich-text.js';
+import {EXTRA_WIDGETS, widgetDefaults, validateWidgetProps} from './builder-widgets.js';
 import {HOME_SECTIONS, homeSectionProps} from './home-sections.js';
 import {FONT_CATALOG, FONT_VALUES} from './builder-fonts.js';
 export {FONT_VALUES} from './builder-fonts.js';
@@ -8,6 +13,7 @@ export const MAX_DEPTH = 8;
 export const MAX_DOCUMENT_BYTES = 400000;
 export const CONTAINERS = new Set(['section', 'columns', 'stack']);
 export const WIDGETS = {
+  ...EXTRA_WIDGETS,
   section: {label: 'Bölüm', icon: '▱'}, columns: {label: 'Sütunlar', icon: '▥'},
   stack: {label: 'Kapsayıcı', icon: '▤'}, heading: {label: 'Başlık', icon: 'H'},
   text: {label: 'Metin', icon: '¶'}, image: {label: 'Görsel', icon: '▧'},
@@ -28,7 +34,7 @@ export const STYLE_FIELDS = {
   fontSize: [10, 180], lineHeight: [0.8, 3], letterSpacing: [-5, 30], wordSpacing: [-5, 30],
   minHeight: [0, 1200], maxWidth: [100, 2400], width: [10, 100],
   borderRadius: [0, 200], borderWidth: [0, 12], opacity: [0, 1], columns: [1, 6],
-  mediaHeight: [40, 1200], gradientAngle: [0, 360],
+  columnSplit: [10, 90], mediaHeight: [40, 1200], gradientAngle: [0, 360],
 };
 export const STYLE_ENUMS = {
   textAlign: ['left', 'center', 'right'], alignItems: ['stretch', 'flex-start', 'center', 'flex-end'],
@@ -49,21 +55,14 @@ const propsByType = {
   section: ['anchor'], columns: [], stack: [], heading: ['text', 'level'], text: ['text'],
   image: ['src', 'alt', 'href'], button: ['text', 'href', 'newTab'], divider: [], spacer: [],
   quote: ['text', 'author'], video: ['src', 'poster'], accordion: ['title', 'text'],
-  products: ['title', 'limit', 'imprint'], native: ['slot'],
+  products: ['title', 'limit', 'imprint', 'layout'], native: ['slot'],
 };
 const plain = value => !!value && typeof value === 'object' && !Array.isArray(value) && Object.getPrototypeOf(value) !== null;
 const own = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 const fail = message => {throw new Error(message);};
 export const cloneDocument = value => JSON.parse(JSON.stringify(value));
 export function newNodeId() {return 'n' + globalThis.crypto.randomUUID().replaceAll('-', '');}
-export function safeUrl(value, media = false) {
-  if (typeof value !== 'string' || value.length > 2048 || /[\u0000-\u0020<>"'`\\]/.test(value)) return '';
-  if (value.startsWith('/') && !value.startsWith('//')) return value;
-  if (!media && /^#[a-zA-Z0-9_-]+$/.test(value)) return value;
-  if (!media && /^(mailto:[^@\s]+@[^@\s]+|tel:\+?[0-9()-]+)$/.test(value)) return value;
-  try {const url = new URL(value); const protocol = url.protocol === 'https:' || url.protocol === 'http:' && ['127.0.0.1','localhost'].includes(url.hostname); return protocol && !url.username && !url.password ? value : '';} catch {return '';}
-}
-export function validPageKey(key) {return ['home', 'store', 'product'].includes(key) || /^page:[a-z0-9]+(?:-[a-z0-9]+)*$/.test(key) && key.length <= 85;}
+export function validPageKey(key) {return ['home', 'store', 'product', 'site'].includes(key) || /^(?:page|block):[a-z0-9]+(?:-[a-z0-9]+)*$/.test(key) && key.length <= 85;}
 export function pagePath(key) {return key === 'home' ? '/' : key === 'store' ? '/store' : key === 'product' ? '/store' : '/pages/' + key.slice(5);}
 export function validateStyle(style = {}) {
   if (!plain(style)) fail('Geçersiz stil verisi.');
@@ -73,7 +72,7 @@ export function validateStyle(style = {}) {
       const [min, max] = STYLE_FIELDS[key];
       if (typeof value !== 'number' || !Number.isFinite(value) || value < min || value > max || key === 'columns' && !Number.isInteger(value)) fail('Geçersiz stil: ' + key);
     } else if (own(STYLE_ENUMS, key)) {
-      if (!STYLE_ENUMS[key].includes(value)) fail('Geçersiz stil: ' + key);
+      if (!(key === 'fontFamily' ? validFontId(value) : STYLE_ENUMS[key].includes(value))) fail('Geçersiz stil: ' + key);
     } else if (['color', 'backgroundColor', 'borderColor', 'gradientColor'].includes(key)) {
       if (typeof value !== 'string' || !/^(#[a-fA-F0-9]{6}|transparent)$/.test(value)) fail('Geçersiz renk.');
     } else fail('Desteklenmeyen stil: ' + key);
@@ -95,15 +94,17 @@ export function validateDocument(input, pageKey = 'home', {publishing = false} =
     const homeSection = node.type === 'siteSection';
     if (homeSection && !own(HOME_SECTIONS, node.props.section)) fail('Geçersiz site bölümü.');
     const fields = homeSection ? HOME_SECTIONS[node.props.section].fields : {};
-    const allowedProps = homeSection ? ['section', 'anchor', ...Object.keys(fields)] : propsByType[node.type];
-    const props = {};
-    for (const [key, value] of Object.entries(homeSection ? {...homeSectionProps(node.props.section), ...node.props} : node.props)) {
+    const extra = Object.hasOwn(EXTRA_WIDGETS, node.type);
+    const allowedProps = extra ? [] : homeSection ? ['section', 'anchor', ...Object.keys(fields)] : propsByType[node.type];
+    const props = extra ? validateWidgetProps(node.type, node.props, pageKey) : {};
+    for (const [key, value] of Object.entries(extra ? {} : homeSection ? {...homeSectionProps(node.props.section), ...node.props} : node.props)) {
       if (!allowedProps.includes(key)) fail('Desteklenmeyen bileşen ayarı.');
       if (key === 'newTab') {if (typeof value !== 'boolean') fail('Geçersiz bağlantı hedefi.');}
       else if (key === 'limit') {if (!Number.isInteger(value) || value < 1 || value > 24) fail('Ürün sayısı 1–24 olmalı.');}
       else if (typeof value !== 'string' || value.length > (key === 'text' || fields[key]?.type === 'multiline' ? 12000 : 2048)) fail('Geçersiz metin.');
       if (['src', 'href', 'poster'].includes(key) && value && !safeUrl(value, key !== 'href')) fail('Güvenli bir HTTPS adresi veya site içi yol kullanın.');
       if (['url', 'image'].includes(fields[key]?.type) && value && !safeUrl(value, fields[key].type === 'image')) fail('Güvenli bir HTTPS adresi veya site içi yol kullanın.');
+      if (key === 'layout' && !['grid','rail','feature'].includes(value)) fail('Geçersiz vitrin düzeni.');
       if (key === 'level' && !['h1', 'h2', 'h3', 'h4'].includes(value)) fail('Geçersiz başlık seviyesi.');
       if (key === 'anchor' && value && !/^[a-zA-Z][a-zA-Z0-9_-]{0,60}$/.test(value)) fail('Geçersiz bölüm bağlantısı.');
       if (key === 'anchor' && value) {if (anchors.has(value)) fail('Bölüm bağlantıları benzersiz olmalı.'); anchors.add(value);}
@@ -119,15 +120,23 @@ export function validateDocument(input, pageKey = 'home', {publishing = false} =
       if (publishing && ['store-catalogue', 'product-hero'].includes(props.slot) && invisible) fail('Satın alma ve katalog bileşenleri gizlenemez.');
     }
     if (!Array.isArray(node.children) || !CONTAINERS.has(node.type) && node.children.length) fail('Bileşen içeriği geçersiz.');
-    return {id: node.id, type: node.type, name: node.name, props, style, tablet, mobile, children: node.children.map(child => walk(child, depth + 1, invisible))};
+    const richText = {};
+    for (const [key, runs] of Object.entries(node.richText || {})) {
+      const allowed = homeSection ? ['text','multiline'].includes(fields[key]?.type) : ['heading','text','button','quote','accordion'].includes(node.type) && ['text','title'].includes(key);
+      if (!allowed || typeof props[key] !== 'string') fail('Bu alan metin biçimlendirmesini desteklemiyor.');
+      richText[key] = validateRuns(runs, props[key], !homeSection && node.type !== 'button');
+    }
+    return {...(Object.keys(richText).length ? {richText} : {}), id: node.id, type: node.type, name: node.name, props, style, tablet, mobile, children: node.children.map(child => walk(child, depth + 1, invisible))};
   };
   const theme = validateStyle(input.theme || {});
   const children = input.children.map(node => walk(node, 1, theme.display === 'hide' || theme.opacity === 0));
   if (publishing) {
-    if (!children.length) fail('Boş sayfa yayımlanamaz.');
+    if (!children.length && pageKey !== 'site') fail('Boş sayfa yayımlanamaz.');
     if (pageKey === 'store' && !slots.has('store-catalogue') || pageKey === 'product' && !slots.has('product-hero')) fail('Katalog / satın alma bileşenini sayfaya ekleyin.');
   }
-  return {schemaVersion: SCHEMA_VERSION, theme, children};
+  if (pageKey === 'site' && children.length) fail('Site ayarlarına bileşen eklenemez.');
+  if (input.site && pageKey !== 'site') fail('Site ayarları yalnızca ortak tasarım sayfasında kullanılabilir.');
+  return {schemaVersion: SCHEMA_VERSION, theme, children, ...(input.seo ? {seo:validateSeo(input.seo)} : {}), ...(pageKey === 'site' ? {site:validateSiteSettings(input.site)} : {})};
 }
 export function createNode(type, extra = {}) {
   if (!own(WIDGETS, type)) fail('Bilinmeyen bileşen.');
@@ -139,7 +148,7 @@ export function createNode(type, extra = {}) {
     section: {anchor: ''}, native: {slot: ''}, siteSection: homeSectionProps('hero'),
   };
   const styles = {section: {paddingTop: 64, paddingBottom: 64, paddingLeft: 32, paddingRight: 32}, columns: {columns: 2, gap: 24}, stack: {gap: 24}, heading: {fontSize: 48, lineHeight: 1.1}, text: {fontSize: 18, lineHeight: 1.65}, spacer: {minHeight: 48}, image: {objectFit: 'cover'}};
-  return {id: newNodeId(), type, name: WIDGETS[type].label, props: {...defaults[type]}, style: {...styles[type]}, tablet: {}, mobile: type === 'columns' ? {columns: 1} : type === 'heading' ? {fontSize: 32} : {}, children: [], ...extra};
+  return {id: newNodeId(), type, name: WIDGETS[type].label, props: {...defaults[type], ...widgetDefaults(type)}, style: {...styles[type]}, tablet: {}, mobile: type === 'columns' ? {columns: 1} : type === 'heading' ? {fontSize: 32} : {}, children: [], ...extra};
 }
 export function findNode(document, id) {for (const node of document.children) {if (node.id === id) return node; const match = findNode(node, id); if (match) return match;} return null;}
 export function findLocation(document, id, parentId = null) {for (let index = 0; index < document.children.length; index++) {const node = document.children[index]; if (node.id === id) return {parentId, index}; const match = findLocation(node, id, node.id); if (match) return match;} return null;}
@@ -188,12 +197,14 @@ export function inheritedNodeStyle(document, id, device = 'desktop') {
   };
   return walk(document.children, pick(document.theme)) || {};
 }
-export function documentCss(document) {
+export function documentCss(document, scope = '') {
+  const root = scope ? '.pbRoot[data-pb-scope="' + scope + '"]' : '.pbRoot';
   const toCss = (style, type, effective = style) => {
     const declarations = Object.entries(style).map(([key, value]) => {
+      if (key === 'columnSplit') return effective.columns === 2 ? `grid-template-columns:${value}fr ${100-value}fr` : '';
       if (key === 'columns') return `grid-template-columns:repeat(${value},minmax(0,1fr))`;
       if (key === 'direction') return `flex-direction:${value}`;
-      if (key === 'fontFamily') return `font-family:${FONT_VALUES[value]}`;
+      if (key === 'fontFamily') return `font-family:${fontFamily(value)}`;
       if (key === 'boxShadow') return `box-shadow:${SHADOW_VALUES[value]}`;
       if (key === 'mediaHeight') return `height:${value}px`;
       if (key === 'aspectRatio') return `aspect-ratio:${value.replace(':', ' / ')}`;
@@ -213,7 +224,7 @@ export function documentCss(document) {
     return declarations.join(';');
   };
   const nodes = flattenNodes(document);
-  const selector = node => `.pbRoot [data-pb-id="${node.id}"]`;
+  const selector = node => `${root} [data-pb-id="${node.id}"]`;
   const rule = (node, style, effective = style) => {
     if (['image', 'video'].includes(node.type)) {
       const media = Object.fromEntries(Object.entries(style).filter(([key]) => MEDIA_FIELDS.includes(key)));
@@ -228,8 +239,11 @@ export function documentCss(document) {
   };
   // The native home design has explicit font declarations; a page font is an
   // intentional override, with per-section typography still taking precedence.
-  const homeFont = document.theme.fontFamily ? `.pbRoot .pb-siteSection [data-home-field]{font-family:${FONT_VALUES[document.theme.fontFamily]}}` : '';
-  return `.pbCanvas .pbRoot{${toCss(document.theme)}}${homeFont}` + nodes.map(node => rule(node,node.style)).join('') +
+  const homeFont = document.theme.fontFamily ? `${root} .pb-siteSection [data-home-field]{font-family:${fontFamily(document.theme.fontFamily)}}` : '';
+  return `.pbCanvas ${root}{${toCss(document.theme)}}${homeFont}` + nodes.map(node => rule(node,node.style)).join('') +
     `@container pbCanvas (max-width:900px){${nodes.map(node => rule(node,node.tablet,{...node.style,...node.tablet})).join('')}}` +
     `@container pbCanvas (max-width:600px){${nodes.map(node => rule(node,node.mobile,{...node.style,...node.tablet,...node.mobile})).join('')}}`;
 }
+
+export function sharedKeys(document) {return [...new Set(flattenNodes(document).filter(n=>n.type==='shared').map(n=>n.props.key))];}
+export function scopeSharedDocument(document, instance) {const copy=cloneDocument(document);for(const node of flattenNodes(copy)){node.id=instance+'_'+node.id;if(node.props.anchor)node.props.anchor=instance+'_'+node.props.anchor;}return copy;}

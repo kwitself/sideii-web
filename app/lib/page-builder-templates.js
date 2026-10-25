@@ -1,3 +1,4 @@
+import {defaultSiteSettings} from './builder-design.js';
 import {createNode, cloneDocument, SCHEMA_VERSION} from './page-builder.js';
 import {HOME_SECTIONS, HOME_SECTION_ORDER, homeSectionProps} from './home-sections.js';
 import {STORE_DEFAULT_DOCUMENT} from './store-default.js';
@@ -9,6 +10,8 @@ const section = (name, children, style = {}) => ({...node('section', {}, {maxWid
 const eyebrow = value => node('text', {text: value}, {fontSize: 11, letterSpacing: 3, color: '#a6a6aa'});
 const document = children => ({schemaVersion: SCHEMA_VERSION, theme: {backgroundColor: '#09090a', color: '#eeeef0', fontFamily: 'sans'}, children});
 export function starterDocument(key = 'home') {
+  if (key === 'site') return {schemaVersion:1,theme:{},children:[],site:defaultSiteSettings()};
+  if (key.startsWith('block:')) return {schemaVersion:1,theme:{},children:[section('Ortak bölüm',[heading('Ortak içerik',48)])]};
   if (key === 'store') return cloneDocument(STORE_DEFAULT_DOCUMENT);
   if (key === 'product') return document(['product-hero', 'product-imprint', 'product-gallery', 'product-listen', 'product-tracks', 'product-note', 'product-related'].map(slot => node('native', {slot})));
   if (key !== 'home') return document([section('Karşılama', [eyebrow('SIDE:II / INDEPENDENT'), heading('A new perspective.'), text('Music, artwork and physical form.'), node('button', {text: 'EXPLORE THE STORE →', href: '/store'})])]);
