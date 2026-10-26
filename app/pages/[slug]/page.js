@@ -1,3 +1,4 @@
+import {builderMetadata} from '../../lib/builder-design';
 import {getBuilderHomepageContent} from '../../lib/server/homepage';
 import '../../catalogue.css';
 import {notFound} from 'next/navigation';
@@ -9,11 +10,11 @@ import StorefrontFooter from '../../components/StorefrontFooter';
 export const revalidate = 0;
 export async function generateMetadata({params}) {
   const {slug} = await params, page = await getPublishedPage('page:' + slug);
-  return page ? {title: page.title, alternates: {canonical: '/pages/' + slug}} : {title: 'Page not found', robots: {index: false, follow: false}};
+  return page ? builderMetadata(page.document,{title: page.title, alternates: {canonical: '/pages/' + slug}}) : {title: 'Page not found', robots: {index: false, follow: false}};
 }
 export default async function CustomPage({params}) {
   const {slug} = await params, page = await getPublishedPage('page:' + slug);
   if (!page) notFound();
-  const [catalogue,homeData] = await Promise.all([getStoreCatalogue(),getBuilderHomepageContent(page.document)]);
-  return <><main><GlobalHeader/><PageCanvas document={page.document} homeData={homeData} products={catalogue.releases}/></main><StorefrontFooter force/></>;
+  const [catalogue,homeData] = await Promise.all([getStoreCatalogue(),getBuilderHomepageContent(page.document,page.sharedDocuments)]);
+  return <><main><GlobalHeader/><PageCanvas sharedDocuments={page?.sharedDocuments} document={page.document} homeData={homeData} products={catalogue.releases}/></main><StorefrontFooter force/></>;
 }

@@ -1,3 +1,5 @@
+import {getPublishedPage} from './lib/server/pageBuilderPublic';
+import SiteDesignProvider from './components/builder/SiteDesignProvider';
 import {getPublicSiteUrl} from './lib/public-site-url';
 import './globals.css';
 import './physical-formats.css';
@@ -50,10 +52,11 @@ export const viewport = {
   colorScheme: 'dark',
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const site=await getPublishedPage('site');
   return (
     <html lang="en">
-      <body><LocaleCurrencyProvider><CommerceTelemetry/>{children}<StorefrontFooter/><GlobalAccount/><GlobalBag/><EditorLauncher/></LocaleCurrencyProvider></body>
+      <body><SiteDesignProvider settings={site?.document.site}><LocaleCurrencyProvider><CommerceTelemetry/>{children}<StorefrontFooter/><GlobalAccount/><GlobalBag/><EditorLauncher/></LocaleCurrencyProvider></SiteDesignProvider></body>
     </html>
   );
 }

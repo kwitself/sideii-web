@@ -1,0 +1,3 @@
+'use client';
+import {useSiteDesign} from './SiteDesignProvider';
+export default function ConfiguredFooter({children}) {const {footer:f}=useSiteDesign();if(!f.custom)return children;return <footer className="storefrontFooter pbConfiguredFooter"><div>{f.logo&&<a href="/"><img src={f.logo} alt="SIDE:II"/></a>}<p>{f.description}</p></div><nav aria-label="Footer navigation">{f.links.map((l,i)=><a key={i} href={l.href}>{l.label}</a>)}</nav><nav aria-label="Social links">{f.social.map((l,i)=><a key={i} href={l.href} target="_blank" rel="noopener noreferrer">{l.label} ↗</a>)}</nav><small>{f.copyright}</small></footer>;}

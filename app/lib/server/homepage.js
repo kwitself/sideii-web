@@ -2,8 +2,8 @@ import {getDatabaseReleases, getHomepageSelectedReleases, getHomepageStoreReleas
 
 import {flattenNodes} from '../page-builder';
 
-export async function getBuilderHomepageContent(document) {
-  return document && flattenNodes(document).some(node => node.type === 'siteSection') ? getHomepageContent() : {};
+export async function getBuilderHomepageContent(document,sharedDocuments={}) {
+  return document && [document,...Object.values(sharedDocuments)].some(doc=>flattenNodes(doc).some(node => node.type === 'siteSection')) ? getHomepageContent() : {};
 }
 
 export async function getHomepageContent() {

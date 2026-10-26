@@ -4,6 +4,7 @@ import {mkdirSync,writeFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 import {starterDocument} from '../app/lib/page-builder-templates.js';
 import {flattenNodes,createNode} from '../app/lib/page-builder.js';
+import {checkStudioPlus} from './check-studio-plus.mjs';
 import {checkBuilderDesignTools} from './check-builder-design-tools.mjs';
 const require=createRequire(import.meta.url);
 let chromium;try{({chromium}=require('playwright'));}catch{({chromium}=require(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/playwright'));}
@@ -15,8 +16,9 @@ const admin={id:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',aud:'authenticated',email
 const customer={...admin,id:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',app_metadata:{role:'customer'},user_metadata:{role:'admin'}};
 const token=Buffer.from(JSON.stringify({alg:'HS256',typ:'JWT'})).toString('base64url')+'.'+Buffer.from(JSON.stringify({sub:admin.id,role:'authenticated',exp:4102444800})).toString('base64url')+'.test-signature';
 const session={access_token:token,refresh_token:'test-only',token_type:'bearer',expires_in:3600,expires_at:4102444800,user:admin};
+const assetInfo=new Map(),schedules=new Map(),fontFiles=new Map();
 const pages=new Map(),publications=new Map(),revisions=[],blocks=[],writes=[],errors=[],assets=[];
-const pixel=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a1xkAAAAASUVORK5CYII=','base64');
+const pixel=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGMoUTP+DwADrAHNywzrzwAAAABJRU5ErkJggg==','base64');
 let failSave=false;
 const measurements=[];
 const products=[{id:'11111111-1111-4111-8111-111111111111',catalogue_no:'SII-009',slug:'studio-edition',title:'Studio Edition',artist_project:'Independent Artist',product_type:'release',imprint:'sideii',status:'active',is_public:true,product_variants:[{id:'22222222-2222-4222-8222-222222222222',format:'cd',sku:'SII-009-CD',active:true,price:120,currency:'TRY',stock_qty:5,reserved_qty:0}]}];
@@ -26,7 +28,11 @@ const mock=createServer(async(req,res)=>{
   const send=(data,status=200)=>{res.writeHead(status,{'content-type':'application/json','access-control-allow-origin':'*','access-control-allow-headers':'*','access-control-allow-methods':'GET,POST,PATCH,DELETE,OPTIONS'});res.end(JSON.stringify(data));};
   if(req.method==='OPTIONS')return send({});
   if(url.pathname.startsWith('/auth/v1'))return send(name==='user'?(req.headers.authorization==='Bearer customer-token'?customer:admin):session);
-  let body={};if(req.method!=='GET'){const chunks=[];for await(const chunk of req)chunks.push(chunk);try{body=JSON.parse(Buffer.concat(chunks).toString());}catch{}}
+  let body={},raw=Buffer.alloc(0);if(req.method!=='GET'){const chunks=[];for await(const chunk of req)chunks.push(chunk);raw=Buffer.concat(chunks);try{body=JSON.parse(raw.toString());}catch{}}
+  if(url.pathname.startsWith('/storage/v1/object/site-builder-fonts/')&&req.method==='POST'){fontFiles.set(name,raw);return send({Key:'site-builder-fonts/'+name,Id:crypto.randomUUID()});}
+  if(url.pathname.startsWith('/storage/v1/object/public/site-builder-fonts/')){res.writeHead(200,{'content-type':'font/woff2','access-control-allow-origin':'*'});return res.end(fontFiles.get(name));}
+  if(name==='site_builder_assets'){if(req.method==='POST'){assetInfo.set(body.path,{...body,created_at:new Date().toISOString()});return send({});}let rows=[...assetInfo.values()];const q=url.searchParams.get('name')?.slice(6).replaceAll('%','').replaceAll('\\',''),folder=url.searchParams.get('folder')?.slice(3);if(q)rows=rows.filter(x=>x.name.toLowerCase().includes(q.toLowerCase()));if(folder!==undefined)rows=rows.filter(x=>x.folder===folder);return send(rows.slice(Number(url.searchParams.get('offset')||0),Number(url.searchParams.get('offset')||0)+Number(url.searchParams.get('limit')||49)));}
+  if(name==='site_builder_asset_folders')return send([...new Set([...assetInfo.values()].map(x=>x.folder))].map(folder=>({folder})));
   if(url.pathname.startsWith('/storage/v1/object/list/'))return send(assets);
   if(url.pathname.startsWith('/storage/v1/object/public/')){res.writeHead(200,{'content-type':'image/png','access-control-allow-origin':'*'});return res.end(pixel);}
   if(url.pathname.startsWith('/storage/v1/object/site-builder-assets/')&&req.method==='POST'){assets.push({name,id:crypto.randomUUID()});return send({Key:'site-builder-assets/images/'+name,Id:crypto.randomUUID()});}
@@ -40,6 +46,7 @@ const mock=createServer(async(req,res)=>{
     return send(rows);
   }
   const pageKey=url.searchParams.get('page_key')?.replace(/^eq\./,'');
+  if(name==='site_builder_schedules'){let rows=pageKey?(schedules.has(pageKey)?[schedules.get(pageKey)]:[]):[...schedules.values()];const due=url.searchParams.get('publish_at');if(due?.startsWith('lte.'))rows=rows.filter(p=>Date.parse(p.publish_at)<=Date.parse(due.slice(4)));return send(rows);}
   if(name==='site_builder_pages')return send(pageKey?(pages.has(pageKey)?[pages.get(pageKey)]:[]):[...pages.values()]);
   if(name==='site_builder_publications')return send(pageKey?(publications.has(pageKey)?[publications.get(pageKey)]:[]):[...publications.values()]);
   if(name==='site_builder_revisions'){const id=url.searchParams.get('id')?.replace(/^eq\./,'');return send(revisions.filter(row=>(!pageKey||row.page_key===pageKey)&&(!id||String(row.id)===id)).sort((a,b)=>b.version-a.version));}
@@ -47,16 +54,19 @@ const mock=createServer(async(req,res)=>{
     if(req.method==='POST'){const row={id:crypto.randomUUID(),...body};blocks.push(row);return send(row);}
     return send(blocks);
   }
-  if(name==='save_site_builder_page'){
+  if(name==='save_site_builder_page'||name==='schedule_site_builder_page'){
     if(req.headers.authorization!=='Bearer '+token)return send({code:'42501',message:'Admin only'},403);
     if(failSave)return send({code:'MOCK',message:'Offline fixture'},503);
     const current=pages.get(body.p_key);
+    const due=schedules.get(body.p_key);if(due&&Date.parse(due.publish_at)<=Date.now()){publications.set(body.p_key,{...due,published_at:due.publish_at});schedules.delete(body.p_key);}
     if(Number(current?.version||0)!==body.p_expected_version)return send({code:'40001',message:'Conflict'},409);
     const page={page_key:body.p_key,title:body.p_title,draft_document:body.p_document,version:body.p_expected_version+1,updated_at:new Date().toISOString()};
     pages.set(body.p_key,page);writes.push(body.p_action);
     revisions.push({id:revisions.length+1,page_key:body.p_key,title:body.p_title,document:structuredClone(body.p_document),version:page.version,action:body.p_action,created_at:page.updated_at});
     if(body.p_action==='publish')publications.set(body.p_key,{page_key:body.p_key,title:body.p_title,document:structuredClone(body.p_document),version:page.version,published_at:page.updated_at});
     if(body.p_action==='unpublish')publications.delete(body.p_key);
+    if(['publish','unpublish'].includes(body.p_action))schedules.delete(body.p_key);
+    if(name==='schedule_site_builder_page'){if(body.p_publish_at)schedules.set(body.p_key,{page_key:body.p_key,title:body.p_title,document:structuredClone(body.p_document),version:page.version,publish_at:body.p_publish_at});else schedules.delete(body.p_key);}
     return send({page,publishedVersion:publications.get(body.p_key)?.version??null,publishedAt:publications.get(body.p_key)?.published_at??null});
   }
   // No real orders, emails, payment providers, storage or production database.
@@ -75,6 +85,7 @@ const request=async(body,auth=headers)=>{const response=await fetch(base+'/api/a
 const save=async()=>{await page.getByRole('button',{name:'Taslağı kaydet',exact:true}).click();await page.getByText('Taslak kaydedildi.',{exact:true}).waitFor();};
 const publish=async()=>{await page.getByRole('button',{name:'Yayımla ↗',exact:true}).click();await page.getByRole('dialog').getByRole('button',{name:'Yayımla',exact:true}).click();await page.getByText('Sayfa yayımlandı.',{exact:true}).waitFor();};
 try{
+  if(!process.env.SIDEII_STUDIO_PLUS_ONLY){
   assert.equal((await request(undefined,{})).status,401);
   assert.equal((await request(undefined,{Authorization:'Bearer customer-token'})).status,403);
   const invalid=starterDocument('home');invalid.children[0].style.backgroundColor='url(javascript:1)';
@@ -148,7 +159,7 @@ try{
   await page.getByRole('button',{name:'Görsel',exact:true}).click();
   await page.getByRole('button',{name:'Görsel seç / yükle',exact:true}).click();
   await page.getByRole('dialog').locator('input[type=file]').setInputFiles({name:'fixture.png',mimeType:'image/png',buffer:pixel});
-  await page.getByText('Görsel yüklendi. Sayfayı kaydetmeyi unutma.',{exact:true}).waitFor();assert.equal(assets.length,1);
+  await page.getByText(/Görsel yüklendi/,{exact:true}).waitFor();assert.equal(assets.length,1);
   await save();assert.equal(publications.size,0);assert.equal(pages.get('home').version,1);
   const before=await (await fetch(base+'/')).text();assert.ok(!before.includes('Builder acceptance edition'));
   await publish();assert.equal(publications.get('home').version,2);
@@ -247,6 +258,8 @@ try{
   await page.goto(base+'/releases/studio-edition');await page.locator('.productHero').waitFor();
   assert.equal((await page.locator('h1').allTextContents()).length,1);assert.ok((await page.locator('body').innerText()).includes('STUDIO'));
   await checkBuilderDesignTools({page,canvas,browser,base,out,request,save,publish,pages});
+  }
+  await checkStudioPlus({page,canvas,browser,base,out,request,save,publish,pages,schedules,assetInfo});
   assert.deepEqual(errors,[]);
   console.log('PASS custom pages, catalogue and product templates render; no browser errors');
 }catch(error){await page.screenshot({path:out+'/failure.png',fullPage:true});writeFileSync(out+'/failure.txt',await page.locator('body').innerText());throw error;}

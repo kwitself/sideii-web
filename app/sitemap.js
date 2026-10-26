@@ -1,8 +1,9 @@
+import {effectivePublication} from './lib/builder-publication';
 import {getPublicSiteUrl} from './lib/public-site-url';
 import {createClient} from '@supabase/supabase-js';
 import {getArchiveReleases,getStoreReleases} from './lib/catalogue';
 
-export const revalidate=3600;
+export const revalidate=0;
 
 function slugify(s){
  return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
@@ -23,13 +24,17 @@ export default async function sitemap(){
 
  const sb=client();
  if(sb){
-  const [collections,artists,credits,builderPages]=await Promise.all([
+  const [collections,artists,credits,builderPages,scheduled]=await Promise.all([
    sb.rpc('get_public_collections'),
    sb.rpc('get_public_artist_names'),
    sb.rpc('get_public_credit_people'),
-   sb.from('site_builder_publications').select('page_key').like('page_key','page:%')
+   sb.from('site_builder_publications').select('page_key,document,version'),
+   sb.from('site_builder_schedules').select('page_key,document,version,publish_at').lte('publish_at',new Date().toISOString())
   ]);
-  for(const p of Array.isArray(builderPages.data)?builderPages.data:[])if(/^page:[a-z0-9]+(?:-[a-z0-9]+)*$/.test(p.page_key))dynamic.push('/pages/'+p.page_key.slice(5));
+  const published=new Map((builderPages.data||[]).map(p=>[p.page_key,p]));
+  for(const p of scheduled.data||[])published.set(p.page_key,effectivePublication(published.get(p.page_key),p));
+  if(published.get('product')?.document?.seo?.noindex)for(let i=dynamic.length-1;i>=0;i--)if(/^\/(releases|store)\//.test(dynamic[i]))dynamic.splice(i,1);
+  for(const p of published.values()){if(p.document?.seo?.noindex){if(p.page_key==='home')staticRoutes.splice(staticRoutes.indexOf('/'),1);if(p.page_key==='store')staticRoutes.splice(staticRoutes.indexOf('/store'),1);continue;}if(/^page:[a-z0-9]+(?:-[a-z0-9]+)*$/.test(p.page_key))dynamic.push('/pages/'+p.page_key.slice(5));}
   for(const c of Array.isArray(collections.data)?collections.data:[])if(c?.slug)dynamic.push('/collections/'+c.slug);
   for(const a of Array.isArray(artists.data)?artists.data:[]){const slug=slugify(a?.artist_project);if(slug)dynamic.push('/artists/'+slug)}
   for(const c of Array.isArray(credits.data)?credits.data:[]){const slug=slugify(c?.person_name);if(slug)dynamic.push('/credits/'+slug)}

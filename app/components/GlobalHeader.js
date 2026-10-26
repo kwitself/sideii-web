@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import {useSiteDesign} from './builder/SiteDesignProvider';
 import {useEffect,useRef,useState} from 'react';
 
 const MOBILE_LINKS=[
@@ -22,11 +23,14 @@ const MOBILE_LINKS=[
 ];
 
 export default function GlobalHeader({homeHref='/',className=''}) {
+  const {header:settings}=useSiteDesign();
+  const custom=settings.custom;
   const [mobileOpen,setMobileOpen]=useState(false);
   const [exploreOpen,setExploreOpen]=useState(false);
   const mobileDrawerRef=useRef(null),mobileTriggerRef=useRef(null),exploreRef=useRef(null);
 
   useEffect(()=>{
+    const document=mobileTriggerRef.current?.ownerDocument||window.document,view=document.defaultView;
     if(!mobileOpen){
       document.body.classList.remove('sideii-mobile-nav-open');
       return;
@@ -44,30 +48,31 @@ export default function GlobalHeader({homeHref='/',className=''}) {
     const prev=document.body.style.overflow;
     document.body.style.overflow='hidden';
     document.body.classList.add('sideii-mobile-nav-open');
-    window.addEventListener('keydown',onKey);
+    view.addEventListener('keydown',onKey);
     return()=>{
       document.body.style.overflow=prev;
       document.body.classList.remove('sideii-mobile-nav-open');
-      window.removeEventListener('keydown',onKey);
+      view.removeEventListener('keydown',onKey);
       requestAnimationFrame(()=>{if(previousFocus?.isConnected)previousFocus.focus()});
     };
   },[mobileOpen]);
 
   useEffect(()=>{
     if(!exploreOpen)return;
+    const document=exploreRef.current.ownerDocument,view=document.defaultView;
     const close=e=>{if(e.key==='Escape'){setExploreOpen(false);exploreRef.current?.querySelector('button')?.focus()}else if(e.type==='pointerdown'&&!exploreRef.current?.contains(e.target))setExploreOpen(false)};
-    window.addEventListener('keydown',close);document.addEventListener('pointerdown',close);
-    return()=>{window.removeEventListener('keydown',close);document.removeEventListener('pointerdown',close)};
+    view.addEventListener('keydown',close);document.addEventListener('pointerdown',close);
+    return()=>{view.removeEventListener('keydown',close);document.removeEventListener('pointerdown',close)};
   },[exploreOpen]);
 
   return <>
-    <header className={'nav globalSiteHeader shell '+className}>
+    <header className={'nav globalSiteHeader shell '+className+(custom&&settings.sticky?' pbHeaderSticky':'')}>
       <Link className="brand" href={homeHref} aria-label="SIDE:II home">
-        <img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/>
+        <img src={custom?settings.logo:"/brand/sideii-logo-flat.png"} alt="SIDE:II"/>
       </Link>
 
       <nav className="primaryNav" aria-label="Primary navigation">
-        <Link href="/#releases" className="navReleases">Releases</Link>
+        {custom?<>{settings.links.filter(l=>l.placement==='primary').map((l,i)=><Link key={i} href={l.href}>{l.label}</Link>)}{settings.links.some(l=>l.placement==='more')&&<div ref={exploreRef} className={'navExplore '+(exploreOpen?'isOpen':'')}><button type="button" aria-expanded={exploreOpen} onClick={()=>setExploreOpen(v=>!v)}>Explore {exploreOpen?'−':'+'}</button><div className="navExploreMenu">{settings.links.filter(l=>l.placement==='more').map((l,i)=><Link key={i} href={l.href} onClick={()=>setExploreOpen(false)}>{l.label}</Link>)}</div></div>}</>:<>        <Link href="/#releases" className="navReleases">Releases</Link>
         <Link href="/#imprints" className="navImprints">Imprints</Link>
         <Link href="/store" className="navStore">Store</Link>
         <Link href="/wear" className="navWear">Wear</Link>
@@ -86,7 +91,7 @@ export default function GlobalHeader({homeHref='/',className=''}) {
             <Link href="/track-order">Track Order</Link>
           </div>
         </div>
-        <Link href="/apply" className="navApply">Apply</Link>
+        <Link href="/apply" className="navApply">Apply</Link></>}
       </nav>
 
       <button
@@ -97,9 +102,10 @@ export default function GlobalHeader({homeHref='/',className=''}) {
         aria-expanded={mobileOpen}
         onClick={()=>setMobileOpen(true)}
       >
-        <span>MENU</span><i>≡</i>
+        <span>{custom?settings.mobileLabel:"MENU"}</span><i>≡</i>
       </button>
     </header>
+    {custom&&settings.announcement&&(settings.announcementHref?<a className="pbAnnouncement" href={settings.announcementHref}>{settings.announcement}</a>:<div className="pbAnnouncement">{settings.announcement}</div>)}
 
     <button
       type="button"
@@ -111,13 +117,13 @@ export default function GlobalHeader({homeHref='/',className=''}) {
     <aside ref={mobileDrawerRef} className={'mobileNavDrawer '+(mobileOpen?'open':'')} aria-hidden={!mobileOpen} inert={!mobileOpen} role="dialog" aria-modal={mobileOpen} aria-label="Mobile navigation">
       <div className="mobileNavHead">
         <Link href={homeHref} onClick={()=>setMobileOpen(false)} aria-label="SIDE:II home">
-          <img src="/brand/sideii-logo-flat.png" alt="SIDE:II"/>
+          <img src={custom?settings.logo:"/brand/sideii-logo-flat.png"} alt="SIDE:II"/>
         </Link>
         <button type="button" onClick={()=>setMobileOpen(false)}>CLOSE ×</button>
       </div>
-      <div className="mobileNavIndex">NAVIGATION</div>
+      <div className="mobileNavIndex">{custom?settings.mobileLabel:"NAVIGATION"}</div>
       <nav aria-label="Mobile navigation">
-        {MOBILE_LINKS.map(([label,href],i)=><Link key={href} href={href} onClick={()=>setMobileOpen(false)}>
+        {(custom?settings.links.map(l=>[l.label,l.href]):MOBILE_LINKS).map(([label,href],i)=><Link key={i} href={href} onClick={()=>setMobileOpen(false)}>
           <span>{String(i+1).padStart(2,'0')}</span><b>{label}</b><i>↗</i>
         </Link>)}
       </nav>

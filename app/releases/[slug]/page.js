@@ -1,3 +1,4 @@
+import {builderMetadata} from '../../lib/builder-design';
 import {getBuilderHomepageContent} from '../../lib/server/homepage';
 import '../../catalogue.css';
 import './release-polish.css';
@@ -20,13 +21,13 @@ export async function generateMetadata({ params }) {
   const title=seo.title||`${release.catalogue} · ${release.title}`;
   const description=seo.description||`${release.artist} — ${release.title}. ${release.formatDetail}.`;
   const ogImage=seo.og_image||('/api/share-card/release/'+encodeURIComponent(slug)+'?preset=link');
-  return {
+  return builderMetadata((await getPublishedPage('product'))?.document,{
     title,
     description,
     alternates:{canonical:seo.canonical||('/releases/'+slug)},
     openGraph:{title,description,url:seo.canonical||('/releases/'+slug),images:ogImage?[ogImage]:[]},
     twitter:{card:'summary_large_image',title,description,images:ogImage?[ogImage]:[]},
-  };
+  }, release);
 }
 
 export default async function ReleasePage({ params }) {
@@ -43,11 +44,11 @@ export default async function ReleasePage({ params }) {
     getPublishedPage('product')
   ]);
 
-  const homeData = await getBuilderHomepageContent(custom?.document);
+  const homeData = await getBuilderHomepageContent(custom?.document,custom?.sharedDocuments);
   const slots=releaseSections({release,structuredCredits,pressKit,related,bundles});
   return <main className={'productPage '+(release.imprint==='lethargia'?'productPageLethargia':'productPageSideii')}>
     {schema&&<script type="application/ld+json" dangerouslySetInnerHTML={{__html:jsonLd(schema)}}/>}
     <GlobalHeader/>
-    {custom?<PageCanvas document={custom.document} homeData={homeData} products={[release,...related]} slots={slots}/>:Object.entries(slots).map(([name,section])=><Fragment key={name}>{section}</Fragment>)}
+    {custom?<PageCanvas sharedDocuments={custom?.sharedDocuments} document={custom.document} homeData={homeData} products={[release,...related]} slots={slots}/>:Object.entries(slots).map(([name,section])=><Fragment key={name}>{section}</Fragment>)}
   </main>;
 }

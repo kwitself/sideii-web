@@ -1,3 +1,4 @@
+import {builderMetadata} from '../../lib/builder-design';
 import {getBuilderHomepageContent} from '../../lib/server/homepage';
 import '../../catalogue.css';
 import PageCanvas from '../../components/builder/PageCanvas';
@@ -21,7 +22,7 @@ export async function generateMetadata({params}){
  const title=seo.title||`${product.title} — SIDE:II Store`;
  const description=seo.description||product.lead;
  const ogImage=seo.og_image||('/api/share-card/store/'+encodeURIComponent(slug)+'?preset=link');
- return {title,description,alternates:{canonical:seo.canonical||('/store/'+slug)},openGraph:{title,description,url:seo.canonical||('/store/'+slug),images:ogImage?[ogImage]:[]},twitter:{card:'summary_large_image',title,description,images:ogImage?[ogImage]:[]}};
+ return builderMetadata((await getPublishedPage('product'))?.document,{title,description,alternates:{canonical:seo.canonical||('/store/'+slug)},openGraph:{title,description,url:seo.canonical||('/store/'+slug),images:ogImage?[ogImage]:[]},twitter:{card:'summary_large_image',title,description,images:ogImage?[ogImage]:[]}}, product);
 }
 
 export default async function StoreProductPage({params}){
@@ -35,10 +36,10 @@ export default async function StoreProductPage({params}){
   detail.related===false?Promise.resolve([]):getProductBundles(product.id,3),
   getPublishedPage('product')
  ]);
- const homeData = await getBuilderHomepageContent(custom?.document);
+ const homeData = await getBuilderHomepageContent(custom?.document,custom?.sharedDocuments);
  return <main className="storePage merchDetailPage">
   {schema&&<script type="application/ld+json" dangerouslySetInnerHTML={{__html:jsonLd(schema)}}/>}
   <GlobalHeader/>
-  {custom?<PageCanvas document={custom.document} homeData={homeData} products={[product,...related]} slots={{'product-hero':<MerchProductClient product={product}/>, 'product-related':detail.related!==false&&<ProductDiscovery current={product} related={related} bundles={bundles}/>}}/>:<><MerchProductClient product={product}/>{detail.related!==false&&<ProductDiscovery current={product} related={related} bundles={bundles}/>}</>}
+  {custom?<PageCanvas sharedDocuments={custom?.sharedDocuments} document={custom.document} homeData={homeData} products={[product,...related]} slots={{'product-hero':<MerchProductClient product={product}/>, 'product-related':detail.related!==false&&<ProductDiscovery current={product} related={related} bundles={bundles}/>}}/>:<><MerchProductClient product={product}/>{detail.related!==false&&<ProductDiscovery current={product} related={related} bundles={bundles}/>}</>}
  </main>
 }

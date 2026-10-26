@@ -42,6 +42,10 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:testonly@127.0.0.1:5432/sideii_qa
         run: psql "$DATABASE_URL" -X -v ON_ERROR_STOP=1 -f tests/page-builder-postgres.sql
+      - name: Verify scheduled snapshots, shared references and media RLS
+        env:
+          DATABASE_URL: postgresql://postgres:testonly@127.0.0.1:5432/sideii_qa
+        run: psql "$DATABASE_URL" -X -v ON_ERROR_STOP=1 -f tests/studio-plus-postgres.sql
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
