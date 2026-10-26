@@ -134,6 +134,8 @@ export function validateDocument(input, pageKey = 'home', {publishing = false} =
     if (!children.length && pageKey !== 'site') fail('Boş sayfa yayımlanamaz.');
     if (pageKey === 'store' && !slots.has('store-catalogue') || pageKey === 'product' && !slots.has('product-hero')) fail('Katalog / satın alma bileşenini sayfaya ekleyin.');
   }
+  if (pageKey.startsWith('block:') && count>60) fail('Ortak bölüm en fazla 60 bileşen içerebilir.');
+  if (flattenNodes({children}).filter(n=>n.type==='shared').length>20) fail('Bir sayfada en fazla 20 ortak bölüm kullanılabilir.');
   if (pageKey === 'site' && children.length) fail('Site ayarlarına bileşen eklenemez.');
   if (input.site && pageKey !== 'site') fail('Site ayarları yalnızca ortak tasarım sayfasında kullanılabilir.');
   return {schemaVersion: SCHEMA_VERSION, theme, children, ...(input.seo ? {seo:validateSeo(input.seo)} : {}), ...(pageKey === 'site' ? {site:validateSiteSettings(input.site)} : {})};

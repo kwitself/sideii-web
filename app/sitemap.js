@@ -33,7 +33,8 @@ export default async function sitemap(){
   ]);
   const published=new Map((builderPages.data||[]).map(p=>[p.page_key,p]));
   for(const p of scheduled.data||[])published.set(p.page_key,effectivePublication(published.get(p.page_key),p));
-  for(const p of published.values()){if(p.document?.seo?.noindex){if(p.page_key==='home')staticRoutes.splice(staticRoutes.indexOf('/'),1);if(p.page_key==='store')staticRoutes.splice(staticRoutes.indexOf('/store'),1);if(p.page_key==='product')dynamic.length=0;continue;}if(/^page:[a-z0-9]+(?:-[a-z0-9]+)*$/.test(p.page_key))dynamic.push('/pages/'+p.page_key.slice(5));}
+  if(published.get('product')?.document?.seo?.noindex)for(let i=dynamic.length-1;i>=0;i--)if(/^\/(releases|store)\//.test(dynamic[i]))dynamic.splice(i,1);
+  for(const p of published.values()){if(p.document?.seo?.noindex){if(p.page_key==='home')staticRoutes.splice(staticRoutes.indexOf('/'),1);if(p.page_key==='store')staticRoutes.splice(staticRoutes.indexOf('/store'),1);continue;}if(/^page:[a-z0-9]+(?:-[a-z0-9]+)*$/.test(p.page_key))dynamic.push('/pages/'+p.page_key.slice(5));}
   for(const c of Array.isArray(collections.data)?collections.data:[])if(c?.slug)dynamic.push('/collections/'+c.slug);
   for(const a of Array.isArray(artists.data)?artists.data:[]){const slug=slugify(a?.artist_project);if(slug)dynamic.push('/artists/'+slug)}
   for(const c of Array.isArray(credits.data)?credits.data:[]){const slug=slugify(c?.person_name);if(slug)dynamic.push('/credits/'+slug)}

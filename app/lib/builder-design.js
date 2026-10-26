@@ -44,9 +44,10 @@ export function customFontCss(site) {return (site?.fonts||[]).map(f=>'@font-face
 export function siteDesignCss(site) {
   const d=site?.design||{}, rules=[];
   const rule=(selector,value)=>{if(value)rules.push(selector+'{'+value+'}');};
-  rule('body',[(d.bodyFont?'font-family:'+fontFamily(d.bodyFont):''),(d.backgroundColor?'background:'+d.backgroundColor:''),(d.textColor?'color:'+d.textColor:'')].filter(Boolean).join(';'));
+  rule('body,.pbRoot',[(d.bodyFont?'font-family:'+fontFamily(d.bodyFont):''),(d.backgroundColor?'background:'+d.backgroundColor:''),(d.textColor?'color:'+d.textColor:'')].filter(Boolean).join(';'));
   if(d.bodyFont)rule('main p,main [data-home-field],.storefrontFooter,.globalSiteHeader','font-family:'+fontFamily(d.bodyFont));
-  rule('main :is(h1,h2,h3,h4),main [data-home-title]',[(d.headingFont?'font-family:'+fontFamily(d.headingFont):''),(d.headingColor?'color:'+d.headingColor:'')].filter(Boolean).join(';'));
+  rule('main :is(h1,h2,h3,h4),main [data-home-title],.pbRoot .pb-heading',[(d.headingFont?'font-family:'+fontFamily(d.headingFont):''),(d.headingColor?'color:'+d.headingColor:'')].filter(Boolean).join(';'));
+  if(d.textColor)rule('main p,main [data-home-field]','color:'+d.textColor);
   if(d.accentColor)rule('main :is(h1,h2,h3) :is(i,em),main a:not([class])','color:'+d.accentColor);
   rule('.pbButton,.imprintExplore,.storeEntry,.productionCta a,.productButton,.merchBuyRow button',[(d.buttonColor?'background:'+d.buttonColor:''),(d.buttonTextColor?'color:'+d.buttonTextColor:''),(d.buttonRadius!=null?'border-radius:'+d.buttonRadius+'px':''),(d.buttonPadding!=null?'padding:'+d.buttonPadding+'px '+d.buttonPadding*2+'px':'')].filter(Boolean).join(';'));
   if(d.contentWidth)rule('.shell,.pbRoot>.pbNodePosition>.pb-section','max-width:'+d.contentWidth+'px');
