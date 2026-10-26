@@ -149,8 +149,8 @@ export function createNode(type, extra = {}) {
     accordion: {title: 'Başlık', text: 'Açılır bölüm içeriği.'}, products: {title: 'Selected editions', limit: 3, imprint: 'all'},
     section: {anchor: ''}, native: {slot: ''}, siteSection: homeSectionProps('hero'),
   };
-  const styles = {section: {paddingTop: 64, paddingBottom: 64, paddingLeft: 32, paddingRight: 32}, columns: {columns: 2, gap: 24}, stack: {gap: 24}, heading: {fontSize: 48, lineHeight: 1.1}, text: {fontSize: 18, lineHeight: 1.65}, spacer: {minHeight: 48}, image: {objectFit: 'cover'}};
-  return {id: newNodeId(), type, name: WIDGETS[type].label, props: {...defaults[type], ...widgetDefaults(type)}, style: {...styles[type]}, tablet: {}, mobile: type === 'columns' ? {columns: 1} : type === 'heading' ? {fontSize: 32} : {}, children: [], ...extra};
+  const styles = {columns: {columns: 2}, spacer: {minHeight: 48}, image: {objectFit: 'cover'}};
+  return {id: newNodeId(), type, name: WIDGETS[type].label, props: {...defaults[type], ...widgetDefaults(type)}, style: {...styles[type]}, tablet: {}, mobile: type === 'columns' ? {columns: 1} : {}, children: [], ...extra};
 }
 export function findNode(document, id) {for (const node of document.children) {if (node.id === id) return node; const match = findNode(node, id); if (match) return match;} return null;}
 export function findLocation(document, id, parentId = null) {for (let index = 0; index < document.children.length; index++) {const node = document.children[index]; if (node.id === id) return {parentId, index}; const match = findLocation(node, id, node.id); if (match) return match;} return null;}
@@ -227,7 +227,10 @@ export function documentCss(document, scope = '') {
   };
   const nodes = flattenNodes(document);
   const selector = node => `${root} [data-pb-id="${node.id}"]`;
-  const rule = (node, style, effective = style) => {
+  // An explicit font/colour on a page or container must also reach widget
+  // headings, whose default appearance otherwise follows the site's heading role.
+  const tokens = style => Object.entries({fontFamily:'font',color:'color',fontSize:'size',fontWeight:'weight',lineHeight:'leading',letterSpacing:'tracking'}).filter(([key])=>own(style,key)).map(([key,name])=>`--pb-override-${name}:${key==='fontFamily'?fontFamily(style[key]):style[key]+(['fontSize','letterSpacing'].includes(key)?'px':'')}`).join(';');
+  const nodeRule = (node, style, effective = style) => {
     if (['image', 'video'].includes(node.type)) {
       const media = Object.fromEntries(Object.entries(style).filter(([key]) => MEDIA_FIELDS.includes(key)));
       const layout = Object.fromEntries(Object.entries(style).filter(([key]) => !MEDIA_FIELDS.includes(key)));
@@ -239,10 +242,11 @@ export function documentCss(document, scope = '') {
     return `${selector(node)}{${toCss(layout,node.type,effective)}}${selector(node)} [data-home-title]{${toCss(heading)}}` +
       (style.color ? `${selector(node)} [data-home-field]{color:${style.color}}` : '');
   };
+  const rule = (node,style,effective=style) => nodeRule(node,style,effective)+(tokens(style)?`${selector(node)}{${tokens(style)}}`:'');
   // The native home design has explicit font declarations; a page font is an
   // intentional override, with per-section typography still taking precedence.
   const homeFont = document.theme.fontFamily ? `${root} .pb-siteSection [data-home-field]{font-family:${fontFamily(document.theme.fontFamily)}}${root} .pb-siteSection [data-home-title]{font-family:${fontFamily(document.theme.fontFamily)}}${root} .pb-siteSection [data-home-title] [data-home-field]{font-family:inherit}` : '';
-  return `.pbCanvas ${root}{${toCss(document.theme)}}${homeFont}` + nodes.map(node => rule(node,node.style)).join('') +
+  return `.pbCanvas ${root}{${toCss(document.theme)}}${tokens(document.theme)?`${root}{${tokens(document.theme)}}`:''}${homeFont}` + nodes.map(node => rule(node,node.style)).join('') +
     `@container pbCanvas (max-width:900px){${nodes.map(node => rule(node,node.tablet,{...node.style,...node.tablet})).join('')}}` +
     `@container pbCanvas (max-width:600px){${nodes.map(node => rule(node,node.mobile,{...node.style,...node.tablet,...node.mobile})).join('')}}`;
 }
