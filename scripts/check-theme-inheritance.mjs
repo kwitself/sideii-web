@@ -22,6 +22,7 @@ export async function checkThemeInheritance({page,canvas,browser,base,out,reques
     assert.equal(await page.getByRole('button',{name:/^Temadan al/}).getAttribute('aria-pressed'),'true');
     await page.getByRole('button',{name:/^Inter Sans/}).click();assert.match((await look(head())).font,/PB Inter/);
     await page.getByRole('button',{name:'Yazı tipi sıfırla',exact:true}).click();assert.match((await look(head())).font,/Georgia/);
+    const sectionBox=canvas.locator('[data-pb-id="'+section.id+'"]');await sectionBox.focus();await sectionBox.press('Enter');await canvas.getByRole('button',{name:'Alt boşluğu ayarla'}).focus();await page.keyboard.press('ArrowDown');assert.equal(await sectionBox.evaluate(el=>el.ownerDocument.defaultView.getComputedStyle(el).paddingBottom),'113px');await page.getByRole('button',{name:'Geri al',exact:true}).click();assert.equal(await sectionBox.evaluate(el=>el.ownerDocument.defaultView.getComputedStyle(el).paddingBottom),'112px');
     await publish();assert.equal(findNode(pages.get(key).draft_document,heading.id).style.fontFamily,undefined);
     await live.goto(base+'/pages/theme-defaults');assert.deepEqual(await look(live.locator('[data-pb-id="'+heading.id+'"] h2')),await look(head()));
     assert.equal((await look(live.locator('[data-pb-id="'+text.id+'"] p'))).color,await live.locator('main').first().evaluate(el=>getComputedStyle(el).color));
