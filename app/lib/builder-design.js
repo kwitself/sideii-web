@@ -43,11 +43,14 @@ export function validateSiteSettings(input=defaultSiteSettings()) {
 export function customFontCss(site) {return (site?.fonts||[]).map(f=>'@font-face{font-family:"'+f.id+'";src:url("'+f.url+'");font-display:swap;font-style:normal;font-weight:100 900}').join('');}
 export function siteDesignCss(site) {
   const d=site?.design||{}, rules=[];
+  // Native headings contain editable spans; body styles must not override
+  // their inherited heading font or colour.
+  const bodyText='main p:not(:where([data-home-title],[data-home-title] *)),main [data-home-section] [data-home-field]:not(:where(h1,h2,h3,h4,[data-home-title],[data-home-title] *))';
   const rule=(selector,value)=>{if(value)rules.push(selector+'{'+value+'}');};
   rule('body,.pbRoot',[(d.bodyFont?'font-family:'+fontFamily(d.bodyFont):''),(d.backgroundColor?'background:'+d.backgroundColor:''),(d.textColor?'color:'+d.textColor:'')].filter(Boolean).join(';'));
-  if(d.bodyFont)rule('main p,main [data-home-field],.storefrontFooter,.globalSiteHeader','font-family:'+fontFamily(d.bodyFont));
+  if(d.bodyFont)rule(bodyText+',.storefrontFooter,.globalSiteHeader','font-family:'+fontFamily(d.bodyFont));
   rule('main :is(h1,h2,h3,h4),main [data-home-title],.pbRoot .pb-heading',[(d.headingFont?'font-family:'+fontFamily(d.headingFont):''),(d.headingColor?'color:'+d.headingColor:'')].filter(Boolean).join(';'));
-  if(d.textColor)rule('main p,main [data-home-field]','color:'+d.textColor);
+  if(d.textColor)rule(bodyText,'color:'+d.textColor);
   if(d.accentColor)rule('main :is(h1,h2,h3) :is(i,em),main a:not([class])','color:'+d.accentColor);
   rule('.pbButton,.imprintExplore,.storeEntry,.productionCta a,.productButton,.merchBuyRow button',[(d.buttonColor?'background:'+d.buttonColor:''),(d.buttonTextColor?'color:'+d.buttonTextColor:''),(d.buttonRadius!=null?'border-radius:'+d.buttonRadius+'px':''),(d.buttonPadding!=null?'padding:'+d.buttonPadding+'px '+d.buttonPadding*2+'px':'')].filter(Boolean).join(';'));
   if(d.contentWidth)rule('.shell,.pbRoot>.pbNodePosition>.pb-section','max-width:'+d.contentWidth+'px');

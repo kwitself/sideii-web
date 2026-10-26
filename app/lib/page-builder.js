@@ -241,7 +241,7 @@ export function documentCss(document, scope = '') {
   };
   // The native home design has explicit font declarations; a page font is an
   // intentional override, with per-section typography still taking precedence.
-  const homeFont = document.theme.fontFamily ? `${root} .pb-siteSection [data-home-field]{font-family:${fontFamily(document.theme.fontFamily)}}` : '';
+  const homeFont = document.theme.fontFamily ? `${root} .pb-siteSection [data-home-field]{font-family:${fontFamily(document.theme.fontFamily)}}${root} .pb-siteSection [data-home-title]{font-family:${fontFamily(document.theme.fontFamily)}}${root} .pb-siteSection [data-home-title] [data-home-field]{font-family:inherit}` : '';
   return `.pbCanvas ${root}{${toCss(document.theme)}}${homeFont}` + nodes.map(node => rule(node,node.style)).join('') +
     `@container pbCanvas (max-width:900px){${nodes.map(node => rule(node,node.tablet,{...node.style,...node.tablet})).join('')}}` +
     `@container pbCanvas (max-width:600px){${nodes.map(node => rule(node,node.mobile,{...node.style,...node.tablet,...node.mobile})).join('')}}`;

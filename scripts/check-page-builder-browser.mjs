@@ -18,7 +18,7 @@ const token=Buffer.from(JSON.stringify({alg:'HS256',typ:'JWT'})).toString('base6
 const session={access_token:token,refresh_token:'test-only',token_type:'bearer',expires_in:3600,expires_at:4102444800,user:admin};
 const assetInfo=new Map(),schedules=new Map(),fontFiles=new Map();
 const pages=new Map(),publications=new Map(),revisions=[],blocks=[],writes=[],errors=[],assets=[];
-const pixel=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a1xkAAAAASUVORK5CYII=','base64');
+const pixel=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGMoUTP+DwADrAHNywzrzwAAAABJRU5ErkJggg==','base64');
 let failSave=false;
 const measurements=[];
 const products=[{id:'11111111-1111-4111-8111-111111111111',catalogue_no:'SII-009',slug:'studio-edition',title:'Studio Edition',artist_project:'Independent Artist',product_type:'release',imprint:'sideii',status:'active',is_public:true,product_variants:[{id:'22222222-2222-4222-8222-222222222222',format:'cd',sku:'SII-009-CD',active:true,price:120,currency:'TRY',stock_qty:5,reserved_qty:0}]}];

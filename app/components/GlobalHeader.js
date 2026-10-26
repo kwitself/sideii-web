@@ -66,7 +66,6 @@ export default function GlobalHeader({homeHref='/',className=''}) {
   },[exploreOpen]);
 
   return <>
-    {custom&&settings.announcement&&(settings.announcementHref?<a className="pbAnnouncement" href={settings.announcementHref}>{settings.announcement}</a>:<div className="pbAnnouncement">{settings.announcement}</div>)}
     <header className={'nav globalSiteHeader shell '+className+(custom&&settings.sticky?' pbHeaderSticky':'')}>
       <Link className="brand" href={homeHref} aria-label="SIDE:II home">
         <img src={custom?settings.logo:"/brand/sideii-logo-flat.png"} alt="SIDE:II"/>
@@ -106,6 +105,7 @@ export default function GlobalHeader({homeHref='/',className=''}) {
         <span>{custom?settings.mobileLabel:"MENU"}</span><i>≡</i>
       </button>
     </header>
+    {custom&&settings.announcement&&(settings.announcementHref?<a className="pbAnnouncement" href={settings.announcementHref}>{settings.announcement}</a>:<div className="pbAnnouncement">{settings.announcement}</div>)}
 
     <button
       type="button"
@@ -121,7 +121,7 @@ export default function GlobalHeader({homeHref='/',className=''}) {
         </Link>
         <button type="button" onClick={()=>setMobileOpen(false)}>CLOSE ×</button>
       </div>
-      <div className="mobileNavIndex">NAVIGATION</div>
+      <div className="mobileNavIndex">{custom?settings.mobileLabel:"NAVIGATION"}</div>
       <nav aria-label="Mobile navigation">
         {(custom?settings.links.map(l=>[l.label,l.href]):MOBILE_LINKS).map(([label,href],i)=><Link key={i} href={href} onClick={()=>setMobileOpen(false)}>
           <span>{String(i+1).padStart(2,'0')}</span><b>{label}</b><i>↗</i>
