@@ -6,6 +6,8 @@ import {TYPOGRAPHY_PRESETS, typographyPreset} from '../../lib/builder-fonts';
 import WidgetFields from './WidgetFields';
 import {EXTRA_WIDGETS} from '../../lib/builder-widgets';
 import FontPicker from './FontPicker';
+import {useSiteDesign} from '../../components/builder/SiteDesignProvider';
+import {SITE_THEME_DEFAULTS,themeFontId} from '../../lib/builder-design';
 
 export {default as BufferedField} from './BufferedField';
 import BufferedField from './BufferedField';
@@ -13,9 +15,10 @@ const labels = {columnSplit:'Sol sütun oranı (%)',paddingTop: 'Üst iç boşlu
 const enumLabels = {textAlign: 'Metin hizası', alignItems: 'Yatay hizalama', justifyContent: 'Dağılım', direction: 'Yön', fontWeight: 'Kalınlık', objectFit: 'Görsel yerleşimi', display: 'Görünürlük', fontStyle: 'Yazı eğimi', textDecoration: 'Metin çizgisi', textTransform: 'Büyük / küçük harf', aspectRatio: 'En / boy oranı', backgroundType: 'Zemin türü', borderStyle: 'Çerçeve türü', boxShadow: 'Gölge'};
 const values = {left: 'Sol', center: 'Orta', right: 'Sağ', stretch: 'Uzat', 'flex-start': 'Başlangıç', 'flex-end': 'Son', 'space-between': 'Aralıklı', row: 'Yatay', column: 'Dikey', cover: 'Kırp ve doldur', contain: 'Tamamını sığdır', show: 'Göster', hide: 'Gizle', normal: 'Normal', italic: 'İtalik', none: 'Yok', underline: 'Altı çizili', 'line-through': 'Üstü çizili', uppercase: 'BÜYÜK HARF', lowercase: 'küçük harf', capitalize: 'Baş Harfler', auto: 'Doğal oran', solid: 'Düz', gradient: 'Degrade', dashed: 'Kesikli', dotted: 'Noktalı', double: 'Çift çizgi', soft: 'Hafif', medium: 'Orta', strong: 'Güçlü', glow: 'Işıltı'};
 const colorLabels = {color: 'Yazı rengi', backgroundColor: 'Zemin rengi', borderColor: 'Çerçeve rengi', gradientColor: 'Degrade bitiş rengi'};
-const palette = ['#09090a', '#171719', '#38383e', '#85858e', '#eeeef0', '#ffffff', '#742633'];
+const palette = ['#09090a', '#101012', '#302f33', '#a9a19d', '#e3e0d9', '#ffffff', '#742633'];
 const focalPoints = [['left top','Sol üst'],['top','Üst'],['right top','Sağ üst'],['left','Sol'],['center','Orta'],['right','Sağ'],['left bottom','Sol alt'],['bottom','Alt'],['right bottom','Sağ alt']];
 export default function Inspector({node, document, device, focusField, onUpdate, onTheme, onAsset, onError, products=[], pages=[], onOpenShared}) {
+  const site=useSiteDesign();
   const [tab, setTab] = useState('content');
   const contentRef = useRef(null);
   useEffect(() => {if(focusField) setTab('content');}, [focusField]);
@@ -27,7 +30,7 @@ export default function Inspector({node, document, device, focusField, onUpdate,
   const prop = (key, value) => {const richText={...node.richText};delete richText[key];onUpdate({props:{...node.props,[key]:value},richText});};
   const styleKey = device === 'desktop' ? 'style' : device;
   const style = node?.[styleKey] || document.theme;
-  const inherited = node ? inheritedNodeStyle(document,node.id,device) : {};
+  const inherited = {fontFamily:themeFontId(node,site),color:site.design.textColor||SITE_THEME_DEFAULTS.textColor,...(!node?{backgroundColor:site.design.backgroundColor||SITE_THEME_DEFAULTS.backgroundColor}:{}),...(node?inheritedNodeStyle(document,node.id,device):{})};
   const effective = {...inherited, ...style};
   const setStyles = patch => {
     const next = {...style}; for (const [key, value] of Object.entries(patch)) {if (value === '') delete next[key]; else next[key] = value;}

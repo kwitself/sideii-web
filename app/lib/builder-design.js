@@ -9,6 +9,13 @@ const text = (v, max=2048) => {if(typeof v !== 'string' || v.length > max) fail(
 const url = v => {text(v);if(v && !safeUrl(v)) fail();return v;};
 export const DESIGN_NUMBERS = {buttonRadius:[0,100],buttonPadding:[4,48],sectionSpacing:[0,200],contentWidth:[600,2000]};
 export const DESIGN_COLORS = ['backgroundColor','textColor','headingColor','accentColor','buttonColor','buttonTextColor'];
+// Match the existing SIDE:II storefront; these are fallbacks, never saved overrides.
+export const SITE_THEME_DEFAULTS = {bodyFont:'sans',headingFont:'serif',backgroundColor:'#09090a',textColor:'#e3e0d9',headingColor:'#e3e0d9',accentColor:'#742633',buttonColor:'#09090a',buttonTextColor:'#e3e0d9',buttonRadius:0,buttonPadding:14,sectionSpacing:112,contentWidth:1440};
+export function themeFontId(node,site) {
+  const heading=['heading','siteSection','quote','accordion','products','album','artist','audio','events','countdown','gallery'].includes(node?.type);
+  const key=heading?'headingFont':'bodyFont';
+  return site?.design?.[key]||SITE_THEME_DEFAULTS[key];
+}
 export function defaultSiteSettings() {
   return {design:{},fonts:[],header:{custom:false,logo:'/brand/sideii-logo-flat.png',announcement:'',announcementHref:'',mobileLabel:'MENU',sticky:false,links:[['Releases','/#releases'],['Imprints','/#imprints'],['Store','/store'],['Wear','/wear'],['Apply','/apply']].map(([label,href])=>({label,href,placement:'primary'}))},footer:{custom:false,logo:'/brand/sideii-logo-flat.png',description:'Music, in another form.',copyright:'© SIDE:II',links:[{label:'Store',href:'/store'},{label:'Policies',href:'/policies'}],social:[]}};
 }
@@ -47,14 +54,16 @@ export function siteDesignCss(site) {
   // their inherited heading font or colour.
   const bodyText='main p:not(:where([data-home-title],[data-home-title] *)),main [data-home-section] [data-home-field]:not(:where(h1,h2,h3,h4,[data-home-title],[data-home-title] *))';
   const rule=(selector,value)=>{if(value)rules.push(selector+'{'+value+'}');};
+  const tokens={bodyFont:'body-font',headingFont:'heading-font',textColor:'text',headingColor:'heading',accentColor:'accent',buttonColor:'button-background',buttonTextColor:'button-text',buttonRadius:'button-radius',buttonPadding:'button-padding',sectionSpacing:'section-spacing',contentWidth:'content-width'};
+  rule(':root',Object.entries(tokens).filter(([key])=>d[key]!=null).map(([key,name])=>'--pb-site-'+name+':'+(key.endsWith('Font')?fontFamily(d[key]):d[key]+(typeof d[key]==='number'?'px':''))).join(';'));
   rule('body,.pbRoot',[(d.bodyFont?'font-family:'+fontFamily(d.bodyFont):''),(d.backgroundColor?'background:'+d.backgroundColor:''),(d.textColor?'color:'+d.textColor:'')].filter(Boolean).join(';'));
-  if(d.bodyFont)rule(bodyText+',.storefrontFooter,.globalSiteHeader','font-family:'+fontFamily(d.bodyFont));
-  rule('main :is(h1,h2,h3,h4),main [data-home-title],.pbRoot .pb-heading',[(d.headingFont?'font-family:'+fontFamily(d.headingFont):''),(d.headingColor?'color:'+d.headingColor:'')].filter(Boolean).join(';'));
-  if(d.textColor)rule(bodyText,'color:'+d.textColor);
+  if(d.bodyFont)rule(bodyText+',.storefrontFooter,.globalSiteHeader','font-family:var(--pb-override-font,'+fontFamily(d.bodyFont)+')');
+  rule('main :is(h1,h2,h3,h4),main [data-home-title],.pbRoot .pb-heading',[(d.headingFont?'font-family:var(--pb-override-font,'+fontFamily(d.headingFont)+')':''),(d.headingColor?'color:var(--pb-override-color,'+d.headingColor+')':'')].filter(Boolean).join(';'));
+  if(d.textColor)rule(bodyText,'color:var(--pb-override-color,'+d.textColor+')');
   if(d.accentColor)rule('main :is(h1,h2,h3) :is(i,em),main a:not([class])','color:'+d.accentColor);
   rule('.pbButton,.imprintExplore,.storeEntry,.productionCta a,.productButton,.merchBuyRow button',[(d.buttonColor?'background:'+d.buttonColor:''),(d.buttonTextColor?'color:'+d.buttonTextColor:''),(d.buttonRadius!=null?'border-radius:'+d.buttonRadius+'px':''),(d.buttonPadding!=null?'padding:'+d.buttonPadding+'px '+d.buttonPadding*2+'px':'')].filter(Boolean).join(';'));
-  if(d.contentWidth)rule('.shell,.pbRoot>.pbNodePosition>.pb-section','max-width:'+d.contentWidth+'px');
-  if(d.sectionSpacing!=null)rule('main section[data-home-section],.pbRoot>.pbNodePosition>.pb-section','padding-top:'+d.sectionSpacing+'px;padding-bottom:'+d.sectionSpacing+'px');
+  if(d.contentWidth)rule('.shell','max-width:'+d.contentWidth+'px');
+  if(d.sectionSpacing!=null)rule('main section[data-home-section]','padding-top:'+d.sectionSpacing+'px;padding-bottom:'+d.sectionSpacing+'px');
   return rules.join('');
 }
 export function validateSeo(seo) {
