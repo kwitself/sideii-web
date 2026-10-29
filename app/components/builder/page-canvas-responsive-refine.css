@@ -192,3 +192,40 @@
   .pbRoot .pbEventInfo h3{font-size:var(--pb-override-size,clamp(19px,5.3vw,25px))}
   .pbRoot .pbAudioInfo h2{font-size:var(--pb-override-size,clamp(21px,5.5vw,32px))}
 }
+
+
+/* PRO 1–2–3: catalog-driven additions share SIDE:II's monochrome editorial UI. */
+.pbRoot :is(.pbDiscography,.pbTracklist,.pbTabsWidget){width:100%;padding-block:clamp(28px,4vw,64px);border-top:1px solid var(--pb-polish-rule-strong)}
+.pbRoot :is(.pbDiscography,.pbTracklist,.pbTabsWidget) .pbWidgetHeading h2{font-size:var(--pb-override-size,clamp(30px,3vw,50px))}
+.pbRoot .pbDiscographyGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:clamp(16px,2vw,30px);align-items:start}
+.pbRoot .pbDiscographyGrid>a{min-width:0;display:block;text-decoration:none;color:inherit;transition:transform .22s ease}
+.pbRoot .pbDiscographyGrid>a:hover{transform:translateY(-4px)}
+.pbRoot .pbDiscographyCover{aspect-ratio:1;display:grid;place-items:center;overflow:hidden;background:var(--pb-polish-surface);border:1px solid var(--pb-polish-rule)}
+.pbRoot .pbDiscographyCover img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+.pbRoot .pbDiscographyGrid>a:hover img{transform:scale(1.035)}
+.pbRoot .pbDiscographyGrid>a:focus-visible{outline:2px solid currentColor;outline-offset:5px}
+.pbRoot .pbDiscographyGrid small{display:block;margin:15px 0 7px;color:var(--pb-polish-muted);letter-spacing:.15em;font-size:10px}
+.pbRoot .pbDiscographyGrid h3{margin:0;font:500 clamp(17px,1.6vw,24px)/1.2 var(--pb-site-heading-font,Georgia,serif);overflow-wrap:anywhere}
+.pbRoot .pbDiscographyGrid p{color:var(--pb-polish-muted);font-size:12px}
+.pbRoot .pbTracklist ol{padding:0;margin:0;list-style:none;border-top:1px solid var(--pb-polish-rule)}
+.pbRoot .pbTracklist li{display:grid;grid-template-columns:46px minmax(0,1fr) auto;align-items:start;gap:16px;padding:21px 10px;border-bottom:1px solid var(--pb-polish-rule)}
+.pbRoot .pbTrackIndex{font-size:11px;letter-spacing:.13em;color:var(--pb-polish-muted)}
+.pbRoot .pbTracklist h3{font:500 clamp(17px,1.8vw,26px)/1.3 var(--pb-site-heading-font,Georgia,serif);margin:0}
+.pbRoot .pbTracklist time{font-size:12px;color:var(--pb-polish-muted)}
+.pbRoot .pbTracklist audio{display:block;width:min(100%,470px);margin-top:14px}
+.pbRoot .pbTabsBar{display:flex;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--pb-polish-rule);padding-bottom:12px}
+.pbRoot .pbTabsBar button{border:1px solid transparent;border-radius:0;padding:12px 17px;min-height:44px;color:var(--pb-polish-muted);background:transparent;cursor:pointer;font:600 11px/1.3 var(--pb-site-body-font,Arial,sans-serif);letter-spacing:.1em;text-transform:uppercase}
+.pbRoot .pbTabsBar button[aria-selected="true"]{color:inherit;border-color:var(--pb-polish-rule-strong);background:var(--pb-polish-surface)}
+.pbRoot .pbTabsBar button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+.pbRoot .pbTabsPanel{padding:clamp(20px,3vw,40px) 4px;max-width:76ch;min-height:100px}
+.pbRoot .pbTabsPanel p{white-space:pre-wrap;line-height:1.7;overflow-wrap:anywhere}
+@container pbCanvas (max-width:600px){
+ .pbRoot .pbDiscographyGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+ .pbRoot .pbDiscographyGrid h3{font-size:17px}
+ .pbRoot .pbTracklist li{grid-template-columns:28px minmax(0,1fr) auto;gap:9px;padding:16px 2px}
+ .pbRoot .pbTracklist audio{width:100%}
+ .pbRoot .pbTabsBar{gap:3px}
+ .pbRoot .pbTabsBar button{padding:10px 11px;font-size:10px}
+}
+@container pbCanvas (max-width:360px){.pbRoot .pbDiscographyGrid{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.pbRoot .pbDiscographyGrid>a,.pbRoot .pbDiscographyCover img{transition:none!important;transform:none!important}}

@@ -81,3 +81,24 @@
 .beShortcutList kbd{display:inline-block;white-space:nowrap;min-width:130px;border:1px solid #56525c;border-radius:3px;padding:6px 9px;background:#202024;color:#f2eff4;font:11px/1.4 Arial,sans-serif}
 @media(max-width:600px){.beShortcutList p{flex-wrap:wrap}.beShortcutList kbd{min-width:0}}
 @media(prefers-reduced-motion:reduce){.beAuditIssue{transition:none}}
+
+
+/* One-tap device-local responsive layouts, no hard-coded site palette. */
+.beProLayoutPresets{padding:13px 10px;margin:0 0 15px;border:1px solid #3e3d45;background:#19191d}
+.beProLayoutPresets>small{display:block;margin-bottom:11px;font:600 10px/1.3 Arial,sans-serif;letter-spacing:.14em;color:#aaa8b0}
+.beProLayoutPresets>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:8px}
+.beApp .beProLayoutPresets button{min-width:0;min-height:36px;border:1px solid #4a4850;color:#e2dfe5;background:#25242a;font:11px/1.4 Arial,sans-serif;padding:8px 4px}
+.beApp .beProLayoutPresets button:hover{border-color:#aaa6ae;background:#333139}
+.beApp .beProLayoutPresets button:focus-visible{outline:2px solid #eee;outline-offset:2px}
+.beProLayoutPresets .beHint{margin:10px 0 0;font-size:10px}
+
+
+/* Editor-only noninteractive column/center guides, never published. */
+.beCanvasFrame.isGuided{position:relative;isolation:isolate}
+.beCanvasFrame.isGuided::after{
+  content:"";position:absolute;inset:0;z-index:15;pointer-events:none;
+  background:
+    linear-gradient(90deg,transparent calc(50% - .5px),#e8e6e633 50%,transparent calc(50% + .5px)),
+    linear-gradient(90deg,transparent 6%,#d1ced13b 6.1%,transparent 6.2%,transparent 93.8%,#d1ced13b 93.9%,transparent 94%);
+}
+.beStageLabel button[aria-pressed="true"]{border-color:#aaa6ae;background:#343238;color:#fff}

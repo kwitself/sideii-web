@@ -2,6 +2,19 @@
 
 Open **Admin → Visual Studio** or `/admin/editor`. A verified admin also sees **Sayfayı düzenle** on the home, store, release, merch and custom pages. Customers never receive draft data.
 
+## Visual Studio Pro 1–2–3 — Combined editorial and responsive enhancements
+
+Three additional premium native Visual Studio widgets are available in the insert/search panel:
+- **Diskografi:** a responsive, catalogue-driven display of public releases with imprint filtering and count selection. Prices and stock continue to come from their existing product records.
+- **İnteraktif tracklist:** editorial track rows with optional per-track audio preview, duration and reorder/delete controls.
+- **Sekmeli içerik:** accessible, interactive tab strip for biography, credits, edition information and other editorial copy.
+
+All three widgets follow the same document schema, URL validation, inline store/catalogue permissions, global typography and black/grey styling as existing widgets. They render through the same public and editor paths.
+
+**Responsive Studio:** the Inspector's Design panel has compact, balanced and wide layout presets and one-tap left/center/right alignment. These write only the selected device's style fields, preserve explicit typography and can be undone or reset. The canvas's **Kılavuzlar** toggle displays non-interactive center and gutter reference lines. The guides are editor-only and never persist in saved documents.
+
+The container layout contract remains responsive and flow-based. Absolute free positioning and arbitrary coordinates are intentionally not enabled, because they break mobile/checkout templates. Existing drag/drop ordering, resize handles, grid/column settings and device overrides remain intact.
+
 ## Visual Studio Pro UX — bundled workflow upgrade
 
 The editor now includes a read-only **Denetim** tab that checks component readiness (missing images/audio/video, unsupplied gallery media, album selections, event dates and button links) and jumps to the relevant component without editing its data. Warnings are advisory: publication and versioning rules are unchanged.
