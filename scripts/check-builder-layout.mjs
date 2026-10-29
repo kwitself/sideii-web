@@ -30,6 +30,7 @@ export async function checkBuilderLayout({page, canvas, browser, base, out, requ
     if (CONTAINERS.has(type)) node.children = [createNode('text'), createNode('text')];
     if (type === 'album') node.props.slug = 'lethargia-edition';
     if (type === 'artist') node.props.image = '/brand/sideii-logo-silver.png';
+    if (type === 'image') node.props.src = '/brand/sideii-logo-silver.png';
     if (type === 'audio') node.props.cover = '/brand/sideii-logo-silver.png';
     if (type === 'shared') node.props.key = 'block:qa-layout';
     if (type === 'countdown') node.props.date = '2099-01-01T00:00:00Z';
@@ -110,6 +111,28 @@ export async function checkBuilderLayout({page, canvas, browser, base, out, requ
     await live.setViewportSize({width: 2160, height: 1000});
     await check(live, 2160);
     console.log('PASS all addon types centred with responsive gutters/gaps; nested and shared layouts avoid doubled spacing; editor/public parity');
+    // Identity assets should never be cropped as if they were portraits.
+    // The standalone logo has a restrained size only while its dimensions
+    // are inherited (the stored media overrides remain authoritative).
+    await live.setViewportSize({width:390,height:900});
+    const identityImage = widgets.find(node=>node.type==='image');
+    const identityArtist = widgets.find(node=>node.type==='artist');
+    const identityGallery = widgets.find(node=>node.type==='gallery');
+    const logo = live.locator(selector(identityImage)+' img');
+    assert.equal(await live.locator(selector(identityImage)).getAttribute('data-pb-logo-default'),'true');
+    assert((await box(logo)).width <= 276,'Mobile brand mark should not fill the entire frame');
+    assert.equal(await live.locator(selector(identityArtist)+' .pbArtistArtwork img').evaluate(el=>getComputedStyle(el).objectFit),'contain','Artist logo must retain its full letterforms');
+    assert.equal(await live.locator(selector(identityGallery)+' .pbGalleryMedia img').evaluate(el=>getComputedStyle(el).objectFit),'contain','Gallery logo must not be cropped');
+    const mobileGrid = await live.locator(selector(identityGallery)+' .pbGallery-grid').evaluate(el=>getComputedStyle(el).gridTemplateColumns);
+    assert.equal(mobileGrid.trim().split(/\s+/).length,2,'Mobile grid gallery defaults to two compact columns');
+    assert.equal(await live.locator(selector(widgets.find(n=>n.type==='countdown'))).count(),1,'Each countdown renders only once');
+    const blankVideo = widgets.find(node=>node.type==='video');
+    assert.equal(await live.locator(selector(blankVideo)+' .pbMediaEmpty').count(),1,'Unconfigured public video has a clear empty state');
+    assert(await live.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Refined mobile media must not overflow');
+    await live.setViewportSize({width:1200,height:900});
+    assert((await box(logo)).width <= 441,'Desktop brand mark is editorially sized');
+    console.log('PASS identity logo/artist/gallery preserve artwork, compact mobile grid, single countdown and video empty state');
+
     // Editorial polish belongs to the shared renderer. Verify real pointer
     // motion, keyboard focus, reduced motion and native commerce isolation.
     const motionContext = await browser.newContext({viewport:{width:1200,height:900},reducedMotion:'no-preference'});
