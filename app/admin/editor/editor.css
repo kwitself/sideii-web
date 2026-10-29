@@ -91,3 +91,14 @@
 .beApp .beProLayoutPresets button:hover{border-color:#aaa6ae;background:#333139}
 .beApp .beProLayoutPresets button:focus-visible{outline:2px solid #eee;outline-offset:2px}
 .beProLayoutPresets .beHint{margin:10px 0 0;font-size:10px}
+
+
+/* Editor-only noninteractive column/center guides, never published. */
+.beCanvasFrame.isGuided{position:relative;isolation:isolate}
+.beCanvasFrame.isGuided::after{
+  content:"";position:absolute;inset:0;z-index:15;pointer-events:none;
+  background:
+    linear-gradient(90deg,transparent calc(50% - .5px),#e8e6e633 50%,transparent calc(50% + .5px)),
+    linear-gradient(90deg,transparent 6%,#d1ced13b 6.1%,transparent 6.2%,transparent 93.8%,#d1ced13b 93.9%,transparent 94%);
+}
+.beStageLabel button[aria-pressed="true"]{border-color:#aaa6ae;background:#343238;color:#fff}
