@@ -144,6 +144,17 @@ try{
   await publicContext.close();
   await page.getByRole('button',{name:'Masaüstü',exact:true}).click();
   await canvas.locator('.tagline').click();
+  const selectionBar=page.getByRole('region',{name:'Seçili bileşen hızlı işlemleri'});
+  await selectionBar.waitFor();
+  await selectionBar.getByRole('button',{name:'Katmanda göster'}).click();
+  await page.getByRole('button',{name:'Katmanlar',exact:true}).getAttribute('aria-pressed').then(value=>assert.equal(value,'true'));
+  assert.equal(await page.locator('.beLayer.selected').count(),1,'Selected layer is identified');
+  await selectionBar.getByRole('button',{name:'Ayarları aç'}).click();
+  await page.getByRole('complementary',{name:'Bileşen ayarları'}).waitFor();
+  await selectionBar.getByRole('button',{name:'Seçimi kaldır'}).click();
+  assert.equal(await selectionBar.count(),0,'Selection toolbar closes after clear');
+  console.log('PASS selected widget layer/inspector navigation and clear selection');
+  await canvas.locator('.tagline').click();
   await page.getByRole('textbox',{name:'Slogan',exact:true}).fill('An edited physical edition.');
   await page.getByRole('button',{name:'Tasarım',exact:true}).click();
   await canvas.getByText('An edited physical edition.',{exact:true}).waitFor();
