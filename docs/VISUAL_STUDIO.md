@@ -2,6 +2,10 @@
 
 Open **Admin → Visual Studio** or `/admin/editor`. A verified admin also sees **Sayfayı düzenle** on the home, store, release, merch and custom pages. Customers never receive draft data.
 
+## Visual Studio Pro UX — Selection workflow
+
+The selected-component action row in the existing right inspector now includes **Katmanda göster**. It opens the layer tree and scrolls/focuses the selected entry without modifying the saved document. Existing selection, settings, undo and drag-and-drop interactions are preserved. No new overlay is inserted into the canvas, so inline text double-click editing retains its existing event behaviour.
+
 ## Visual Studio Pro UX — Sprint 01
 
 The left **Ekle** panel now includes an instant, Turkish-aware component search. Enter part of a widget label or its internal type to filter only the standard add-on components; the result counter and empty-state message make it clear whether matches exist. Clear the query to restore the standard list, including native commerce slots, saved sections and templates. Using the search does not modify any page document, draft, or publication.

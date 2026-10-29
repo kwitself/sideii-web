@@ -59,3 +59,6 @@
 .beBlockSearchCount{margin:5px 0 14px;color:#929099;font:11px/1.4 Arial,sans-serif}
 .beBlockSearchEmpty{margin:6px 0 22px;padding:18px 12px;border:1px dashed #48454c;text-align:center;color:#bab7c0;font:12px/1.6 Arial,sans-serif}
 @media(max-width:760px){.beBlockSearch{margin-top:15px}.beApp .beBlockSearch input{min-height:44px}}
+
+
+.beApp .beNodeActions button:first-child{flex:1 1 100%;min-height:34px;border-color:#66636b}

@@ -144,6 +144,12 @@ try{
   await publicContext.close();
   await page.getByRole('button',{name:'Masaüstü',exact:true}).click();
   await canvas.locator('.tagline').click();
+  await page.getByRole('complementary',{name:'Bileşen ayarları'}).getByRole('button',{name:'Katmanda göster'}).click();
+  assert.equal(await page.getByRole('button',{name:'Katmanlar',exact:true}).getAttribute('aria-pressed'),'true');
+  assert.equal(await page.locator('.beLayer.selected').count(),1,'Selected layer is highlighted');
+  await page.getByRole('button',{name:'Ekle',exact:true}).click();
+  console.log('PASS inspector layer jump preserves selection and edit controls');
+  await canvas.locator('.tagline').click();
   await page.getByRole('textbox',{name:'Slogan',exact:true}).fill('An edited physical edition.');
   await page.getByRole('button',{name:'Tasarım',exact:true}).click();
   await canvas.getByText('An edited physical edition.',{exact:true}).waitFor();
