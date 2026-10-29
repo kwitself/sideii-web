@@ -2,6 +2,12 @@
 
 Open **Admin → Visual Studio** or `/admin/editor`. A verified admin also sees **Sayfayı düzenle** on the home, store, release, merch and custom pages. Customers never receive draft data.
 
+## Visual Studio Pro UX — Sprint 01
+
+The left **Ekle** panel now includes an instant, Turkish-aware component search. Enter part of a widget label or its internal type to filter only the standard add-on components; the result counter and empty-state message make it clear whether matches exist. Clear the query to restore the standard list, including native commerce slots, saved sections and templates. Using the search does not modify any page document, draft, or publication.
+
+While the Visual Studio window has focus, **Ctrl+K** (or **⌘K** on macOS) opens the blocks panel and focuses the search field. Existing keyboard undo, redo and save shortcuts are retained. The search input is a native accessible `type=search` control; Escape clears an active query. The feature uses existing state and styling with no extra dependency or migration.
+
 ## Editing
 
 - Choose **Ortak tasarım ve menüler**, Home, Store, Product template, a shared section, or create a custom `/pages/<slug>` page.

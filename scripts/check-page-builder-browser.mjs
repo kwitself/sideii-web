@@ -96,6 +96,19 @@ try{
   assert.equal(pages.size,0);
   console.log('PASS API rejects anonymous/customer sessions and invalid documents');
   await page.goto(base+'/admin/editor?page=home');await page.getByRole('heading',{name:'Senin alanın.'}).waitFor();
+  // Component discovery is instant, keyboard accessible, and never touches the draft.
+  const blockSearch=page.getByRole('searchbox',{name:'Bileşen ara'});
+  await blockSearch.fill('galeri');
+  assert.equal(await page.getByRole('button',{name:'Galeri',exact:true}).count(),1);
+  assert.equal(await page.getByRole('button',{name:'Albüm kartı',exact:true}).count(),0);
+  await blockSearch.fill('hiçbireşleşmeolmayan');
+  await page.getByText('Eşleşen bileşen bulunamadı.').waitFor();
+  await blockSearch.fill('');
+  await page.getByRole('button',{name:'Albüm kartı',exact:true}).waitFor();
+  await page.locator('.beStageLabel button').first().focus();
+  await page.keyboard.press('Control+k');
+  assert.equal(await blockSearch.evaluate(el=>document.activeElement===el),true,'Ctrl+K must focus component search');
+  console.log('PASS searchable component library, empty results and keyboard quick access');
   await canvas.locator('.pbRoot').waitFor();
   assert.equal(await canvas.locator('.pbNode').count(),9);
   const publicContext=await browser.newContext({reducedMotion:'reduce'});
