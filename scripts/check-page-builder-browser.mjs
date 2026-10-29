@@ -154,6 +154,7 @@ try{
   await selectionBar.getByRole('button',{name:'Seçimi kaldır'}).click();
   assert.equal(await selectionBar.count(),0,'Selection toolbar closes after clear');
   console.log('PASS selected widget layer/inspector navigation and clear selection');
+  await page.getByRole('button',{name:'Ekle',exact:true}).click();
   await canvas.locator('.tagline').click();
   await page.getByRole('textbox',{name:'Slogan',exact:true}).fill('An edited physical edition.');
   await page.getByRole('button',{name:'Tasarım',exact:true}).click();
