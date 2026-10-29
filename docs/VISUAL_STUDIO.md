@@ -1,3 +1,7 @@
+## Studio canvas & quality workflow
+
+The Layers panel supports **Tümünü seç** for all draft nodes, plus undoable **Sıkı / Normal / Ferah** bulk gap presets for the active desktop/tablet/mobile breakpoint. Bulk alignment remains available. The content **Denetim** panel now filters all findings, warnings only, mobile-specific items or missing-content items. The controls do not publish or modify live data. Canvas guides, breakpoint presets and version history remain available. This is not yet freeform positioning or screenshot-diff regression.
+
 ## Visual Studio — next-level music storytelling
 
 The insert library now includes **Release timeline** (editorial chronological cards with year, title, description and optional link) and **Merchandise vitrini** (catalogue-driven merchandise cards with label filter and item count). Both use the existing client/server document validator, established inherited typography, responsive shared gallery/card styles and public renderer. Timeline entries can be reordered from the Inspector. Merchandise links open original product detail pages; product pricing, stock and checkout continue to be managed by the store.
