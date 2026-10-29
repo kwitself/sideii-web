@@ -16,6 +16,8 @@ export function auditPage(document, {products=[]}={}) {
       if(node.type==='countdown'&&!p.date)report('Geri sayım tarihi belirtilmemiş.');
       if(node.type==='discography'&&!products.some(product=>p.imprint==='all'||product.imprint===p.imprint))report('Filtreye uygun katalog kaydı bulunamadı.','info');
       if(node.type==='tracklist'&&!p.items?.length)report('Parça listesi boş.','info');
+      if(node.type==='timeline'&&!p.items?.length)report('Release timeline boş.','info');
+      if(node.type==='merch'&&!products.some(product=>product.isMerch&&(p.imprint==='all'||product.imprint===p.imprint)))report('Seçilen label için merchandise ürünü yok.','info');
       if(node.type==='tabs'&&!p.items?.length)report('Sekme içeriği boş.','info');
       for(const device of ['style','tablet','mobile']){
         const st=node[device]||{};
