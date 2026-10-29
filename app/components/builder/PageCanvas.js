@@ -23,7 +23,9 @@ export default function PageCanvas({document, products = [], homeData = {}, page
     className: 'pbNode pb-' + node.type + (editing ? ' pbEditable' : '') + (selectedId === node.id && editing ? ' pbSelected' : ''),
     // Brand identity marks have a restrained default footprint. Explicit media
     // dimensions and fit controls always disable this heuristic.
-    'data-pb-logo-default': node.type==='image' && /^\\/brand\\/[a-zA-Z0-9/_-]+\\.(png|webp|svg)$/i.test(node.props.src||'')
+    'data-pb-logo-default': node.type==='image'
+      && node.props.src?.startsWith('/brand/')
+      && ['.png','.webp','.svg'].some(ext=>node.props.src.toLowerCase().endsWith(ext))
       && ![node.style,node.tablet,node.mobile].some(style =>
         ['width','maxWidth','mediaHeight','aspectRatio','objectPosition'].some(field=>style?.[field]!==undefined)
         || style?.objectFit==='contain')
