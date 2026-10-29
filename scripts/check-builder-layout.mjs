@@ -45,7 +45,8 @@ export async function checkBuilderLayout({page, canvas, browser, base, out, requ
       const b = await box(scope.locator(selector(node)));
       near(b.left, width - b.right, node.type + ' centred at ' + width);
       assert(b.left >= gutter - 1, node.type + ' needs an outer gutter at ' + width + ', got ' + b.left);
-      assert(b.width <= 1441, node.type + ' exceeds the site content width');
+      if (width < 1600) assert(b.width <= 1441, node.type + ' exceeds the site content width');
+      else assert(b.width <= width, node.type + ' overflows the wide screen');
       if (['album', 'artist'].includes(node.type)) {
         const cover = scope.locator(selector(node) + ' img');
         const picture = await box(cover);
@@ -88,6 +89,23 @@ export async function checkBuilderLayout({page, canvas, browser, base, out, requ
       }
       assert(await live.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
       await live.locator(selector(widgets[0])).screenshot({path: out + '/layout-album-' + width + '.png'});
+    }
+    // At wide viewports, Studio addons align with the effective native
+    // homepage shell content edges instead of remaining in a 1440px island.
+    for (const width of [1600, 1920, 2160, 2400]) {
+      await live.setViewportSize({width, height: 1000});
+      const shell = await live.locator('.pbRoot.pbHome .hero.shell').evaluate(el => {
+        const rect = el.getBoundingClientRect(), style = getComputedStyle(el);
+        return {left: rect.left + parseFloat(style.paddingLeft), right: rect.right - parseFloat(style.paddingRight)};
+      });
+      for (const type of ['button', 'album', 'artist', 'gallery', 'products']) {
+        const widget = widgets.find(node => node.type === type);
+        const item = await box(live.locator(selector(widget)));
+        near(item.left, shell.left, type + ' aligns with native shell left at ' + width);
+        near(item.right, shell.right, type + ' aligns with native shell right at ' + width);
+      }
+      assert(await live.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+        'Wide homepage must not scroll horizontally at ' + width);
     }
     await live.setViewportSize({width: 2160, height: 1000});
     await check(live, 2160);
