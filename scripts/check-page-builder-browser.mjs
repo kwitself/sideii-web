@@ -239,8 +239,23 @@ try{
   assert.equal((await request({key:'product',title:'Product',document:product,expectedVersion:0,action:'publish'})).status,400);
   assert.equal((await request({key:'page:campaign',title:'Campaign',document:starterDocument('page:campaign'),expectedVersion:0,action:'save'})).status,200);
   assert.equal((await fetch(base+'/pages/campaign')).status,404);
+  // An unpublished custom page must be previewable in the authenticated
+  // editor without offering a dead public "Siteyi aç" link.
+  await page.goto(base+'/admin/editor?page=page%3Acampaign');
+  await page.locator('.beStatusbar').getByText('Özel taslak').waitFor();
+  assert.equal(await page.locator('.beStatusbar').getByRole('link',{name:'Siteyi aç ↗'}).count(),0);
+  await page.locator('.beStatusbar').getByRole('button',{name:'Taslağı önizle ↗'}).click();
+  await page.locator('.beWorkspace.isPreview').waitFor();
+  assert.equal(await canvas.getByText('A new perspective.').count(),1);
+  await page.locator('.beStatusbar').getByRole('button',{name:'Düzenlemeye dön'}).click();
+  await page.locator('.beWorkspace:not(.isPreview)').waitFor();
+  assert.equal((await fetch(base+'/pages/campaign')).status,404);
   assert.equal((await request({key:'page:campaign',title:'Campaign',document:starterDocument('page:campaign'),expectedVersion:1,action:'publish'})).status,200);
+  await page.reload();
+  await page.locator('.beStatusbar').getByRole('link',{name:'Siteyi aç ↗'}).waitFor();
+  assert.equal(await page.locator('.beStatusbar').getByRole('link',{name:'Siteyi aç ↗'}).getAttribute('href'),'/pages/campaign');
   const custom=await fetch(base+'/pages/campaign');assert.equal(custom.status,200);assert.ok((await custom.text()).includes('A new perspective.'));
+  console.log('PASS private custom draft previews in editor without 404; public link appears only after publishing');
   const checkStoreDefault=async()=>{
     await page.goto(base+'/store');
     await page.getByLabel('SEARCH CATALOGUE',{exact:true}).waitFor();
