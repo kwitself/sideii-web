@@ -4,9 +4,7 @@ Open **Admin → Visual Studio** or `/admin/editor`. A verified admin also sees 
 
 ## Visual Studio Pro UX — Selection workflow
 
-Selecting an element on the live editing canvas exposes a compact context bar above the canvas. **Katmanda göster** opens the layer tree, scrolls the selected row into view and focuses its button. **Ayarları aç** opens its inspector; **Seçimi kaldır** clears the selection. These controls support narrow screens by keeping only the relevant side panel open. The context bar appears only in editing mode, never in preview or public pages.
-
-All actions are client-side navigation: they do not alter the document, save a draft or publish. The existing undo, layer drag-and-drop and direct canvas selection are unchanged.
+The selected-component action row in the existing right inspector now includes **Katmanda göster**. It opens the layer tree and scrolls/focuses the selected entry without modifying the saved document. Existing selection, settings, undo and drag-and-drop interactions are preserved. No new overlay is inserted into the canvas, so inline text double-click editing retains its existing event behaviour.
 
 ## Visual Studio Pro UX — Sprint 01
 
