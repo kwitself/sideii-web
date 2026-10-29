@@ -1,3 +1,11 @@
+## Visual Studio Pro 2.0 — unified safety and bulk editing
+
+The Layers panel now supports checkbox multi-selection and one-click Left/Center/Right bulk alignment. The update writes responsive style fields for **only the currently selected device**, is a single undoable document edit, and does not change checkout functionality or page content automatically. Clear selection resets the batch.
+
+The advisory publication audit checks newly added discography, tracklist and tabs blocks, and warns on unusually large mobile media heights or text sizing. The publish confirmation includes the count of advisory warnings and informational items; it never silently publishes, and does not block publishing on content warnings. Existing draft–live diff and version restore remain available.
+
+The implementation retains flow/grid-based positioning, preserving mobile stability. Truly arbitrary absolute positioning, graphic diff snapshots and general drag-box multi-selection are not part of this update.
+
 # SIDE:II Visual Studio
 
 Open **Admin → Visual Studio** or `/admin/editor`. A verified admin also sees **Sayfayı düzenle** on the home, store, release, merch and custom pages. Customers never receive draft data.
