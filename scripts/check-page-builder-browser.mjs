@@ -255,6 +255,10 @@ try{
   assert.equal((await fetch(base+'/pages/campaign')).status,404);
   assert.equal((await request({key:'page:campaign',title:'Campaign',document:starterDocument('page:campaign'),expectedVersion:1,action:'publish'})).status,200);
   await page.reload();
+  await page.waitForFunction(() =>
+    document.querySelector('select[aria-label="Düzenlenen sayfa"]')?.value === 'page:campaign' &&
+    document.querySelector('.beStatusbar')?.textContent?.includes('Yayında v2')
+  );
   await page.locator('.beStatusbar').getByRole('link',{name:'Siteyi aç ↗'}).waitFor();
   assert.equal(await page.locator('.beStatusbar').getByRole('link',{name:'Siteyi aç ↗'}).getAttribute('href'),'/pages/campaign');
   const custom=await fetch(base+'/pages/campaign');assert.equal(custom.status,200);assert.ok((await custom.text()).includes('A new perspective.'));
