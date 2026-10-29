@@ -242,7 +242,10 @@ try{
   // An unpublished custom page must be previewable in the authenticated
   // editor without offering a dead public "Siteyi aç" link.
   await page.goto(base+'/admin/editor?page=page%3Acampaign');
-  await page.locator('.beStatusbar').getByText('Özel taslak').waitFor();
+  await page.waitForFunction(() =>
+    document.querySelector('select[aria-label="Düzenlenen sayfa"]')?.value === 'page:campaign' &&
+    document.querySelector('.beStatusbar')?.textContent?.includes('Taslak v1')
+  );
   assert.equal(await page.locator('.beStatusbar').getByRole('link',{name:'Siteyi aç ↗'}).count(),0);
   await page.locator('.beStatusbar').getByRole('button',{name:'Taslağı önizle ↗'}).click();
   await page.locator('.beWorkspace.isPreview').waitFor();
