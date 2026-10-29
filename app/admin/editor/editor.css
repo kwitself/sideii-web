@@ -79,3 +79,6 @@
   .beApp .beSelectionBar button{min-height:38px}
 }
 @media(prefers-reduced-motion:reduce){.beSelectionBar *{scroll-behavior:auto!important}}
+
+.beSelectionBarSlot{min-height:62px;display:flex;align-items:flex-start}
+@media(max-width:760px){.beSelectionBarSlot{min-height:112px}}
