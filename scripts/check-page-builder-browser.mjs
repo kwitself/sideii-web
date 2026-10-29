@@ -109,6 +109,20 @@ try{
   await page.keyboard.press('Control+k');
   assert.equal(await blockSearch.evaluate(el=>document.activeElement===el),true,'Ctrl+K must focus component search');
   console.log('PASS searchable component library, empty results and keyboard quick access');
+  // Batch UX: audit navigation and keyboard actions must remain private edits.
+  await page.getByRole('button',{name:'Denetim',exact:false}).click();
+  await page.getByRole('heading',{name:'İçerik kontrolü'}).waitFor();
+  assert.equal(await page.locator('.beAuditPanel').count(),1,'Advisory audit panel is available');
+  await page.getByRole('button',{name:'Ekle',exact:true}).click();
+  await page.getByRole('button',{name:'Klavye kısayolları'}).click();
+  await page.getByRole('dialog',{name:'Visual Studio kısayolları'}).waitFor();
+  await page.getByRole('button',{name:'Pencereyi kapat'}).click();
+  await page.getByRole('button',{name:'Mobil',exact:true}).click();
+  await page.locator('.beStageLabel').getByText('390').waitFor();
+  await page.keyboard.press('Alt+1');
+  await page.locator('.beStageLabel').getByText('1200').waitFor();
+  console.log('PASS audit panel, shortcut guide and device keyboard switch');
+
   await canvas.locator('.pbRoot').waitFor();
   assert.equal(await canvas.locator('.pbNode').count(),9);
   const publicContext=await browser.newContext({reducedMotion:'reduce'});
