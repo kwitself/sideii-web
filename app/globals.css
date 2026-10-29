@@ -7401,3 +7401,22 @@ body>.releaseGalleryLightbox .releaseGalleryLightboxBar button{position:relative
 .globalAccountDrawer .accountOrders{
  scroll-margin-top:20px!important;
 }
+
+
+/* Admin-only page editor action lives opposite locale/currency controls.
+   Do not overlap the language panel, including when it is expanded. */
+.sideiiEditPage{
+  position:fixed;left:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));
+  z-index:140;display:inline-flex;align-items:center;justify-content:center;
+  min-height:36px;max-width:calc(100vw - 36px);padding:10px 14px;
+  border:1px solid #4b4a4f;border-radius:2px;background:#171719;
+  color:#eee;text-decoration:none;font:11px/1.2 Arial,sans-serif;
+  box-shadow:0 4px 30px #0007;transition:border-color .2s ease,background-color .2s ease;
+}
+.sideiiEditPage:hover{border-color:#aba8ac;background:#252529}
+.sideiiEditPage:focus-visible{outline:2px solid #eee;outline-offset:3px}
+@media(max-width:600px){
+  .sideiiEditPage{left:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));
+    max-width:calc(100vw - 125px);min-height:36px;padding:9px 11px;font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){.sideiiEditPage{transition:none}}
