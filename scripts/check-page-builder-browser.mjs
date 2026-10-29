@@ -6,6 +6,7 @@ import {starterDocument} from '../app/lib/page-builder-templates.js';
 import {flattenNodes,createNode} from '../app/lib/page-builder.js';
 import {checkThemeInheritance} from './check-theme-inheritance.mjs';
 import {checkBuilderCatalogue} from './check-builder-catalogue.mjs';
+import {checkBuilderLayout} from './check-builder-layout.mjs';
 import {checkStudioPlus} from './check-studio-plus.mjs';
 import {checkBuilderDesignTools} from './check-builder-design-tools.mjs';
 const require=createRequire(import.meta.url);
@@ -87,7 +88,7 @@ const request=async(body,auth=headers)=>{const response=await fetch(base+'/api/a
 const save=async()=>{await page.getByRole('button',{name:'Taslağı kaydet',exact:true}).click();await page.getByText('Taslak kaydedildi.',{exact:true}).waitFor();};
 const publish=async()=>{await page.getByRole('button',{name:'Yayımla ↗',exact:true}).click();await page.getByRole('dialog').getByRole('button',{name:'Yayımla',exact:true}).click();await page.getByText('Sayfa yayımlandı.',{exact:true}).waitFor();};
 try{
-  if(!process.env.SIDEII_STUDIO_PLUS_ONLY&&!process.env.SIDEII_THEME_ONLY&&!process.env.SIDEII_CATALOGUE_ONLY){
+  if(!process.env.SIDEII_STUDIO_PLUS_ONLY&&!process.env.SIDEII_THEME_ONLY&&!process.env.SIDEII_CATALOGUE_ONLY&&!process.env.SIDEII_LAYOUT_ONLY){
   assert.equal((await request(undefined,{})).status,401);
   assert.equal((await request(undefined,{Authorization:'Bearer customer-token'})).status,403);
   const invalid=starterDocument('home');invalid.children[0].style.backgroundColor='url(javascript:1)';
@@ -261,11 +262,12 @@ try{
   assert.equal((await page.locator('h1').allTextContents()).length,1);assert.ok((await page.locator('body').innerText()).includes('STUDIO'));
   await checkBuilderDesignTools({page,canvas,browser,base,out,request,save,publish,pages});
   }
-  if(!process.env.SIDEII_CATALOGUE_ONLY){
+  if(!process.env.SIDEII_CATALOGUE_ONLY&&!process.env.SIDEII_LAYOUT_ONLY){
     await checkThemeInheritance({page,canvas,browser,base,out,request,save,publish,pages});
     if(!process.env.SIDEII_THEME_ONLY)await checkStudioPlus({page,canvas,browser,base,out,request,save,publish,pages,schedules,assetInfo});
   }
-  if(!process.env.SIDEII_THEME_ONLY)await checkBuilderCatalogue({page,canvas,browser,base,out,request,publish,pages,publications,products});
+  if(!process.env.SIDEII_THEME_ONLY&&!process.env.SIDEII_LAYOUT_ONLY)await checkBuilderCatalogue({page,canvas,browser,base,out,request,publish,pages,publications,products});
+  if(!process.env.SIDEII_THEME_ONLY&&!process.env.SIDEII_CATALOGUE_ONLY&&!process.env.SIDEII_STUDIO_PLUS_ONLY)await checkBuilderLayout({page,canvas,browser,base,out,request,publish,pages,publications,products});
   assert.deepEqual(errors,[]);
   console.log('PASS custom pages, catalogue and product templates render; no browser errors');
 }catch(error){await page.screenshot({path:out+'/failure.png',fullPage:true});writeFileSync(out+'/failure.txt',await page.locator('body').innerText());throw error;}

@@ -73,3 +73,21 @@
   .pbRoot .pb-section{padding:var(--pb-site-section-spacing,78px) 20px}
   .pbRoot .pb-heading{font-size:var(--pb-override-size,32px)}
 }
+
+/* Standalone blocks share a centred content frame and breathing room.
+   Container children already use their parent's gap; native site sections
+   keep their own full-width layout. No defaults are written to saved pages. */
+.pbRoot{--pb-flow-gutter:32px;--pb-flow-space:24px}
+.pbRoot>.pbFlowItem{display:flow-root}
+.pbRoot:not([data-pb-scope])>.pbNodePosition.pbFlowItem{
+  width:calc(100% - var(--pb-flow-gutter)*2);
+  max-width:var(--pb-site-content-width,1440px);
+  margin-inline:auto;
+}
+:where(.pbRoot>.pbFlowItem)>.pbNode{margin-top:var(--pb-flow-space);margin-bottom:var(--pb-flow-space)}
+:where(.pbRoot>.pbFlowItem)>.pbNode:where(:not(.pb-section,.pb-stack,.pb-columns)){display:flow-root}
+/* Shared blocks use the outer frame once, with spacing only between children. */
+:where(.pbRoot[data-pb-scope]>.pbFlowItem:first-child)>.pbNode{margin-top:0}
+:where(.pbRoot[data-pb-scope]>.pbFlowItem:last-child)>.pbNode{margin-bottom:0}
+@container pbCanvas (max-width:900px){.pbRoot{--pb-flow-gutter:24px}}
+@container pbCanvas (max-width:600px){.pbRoot{--pb-flow-gutter:20px;--pb-flow-space:16px}}
