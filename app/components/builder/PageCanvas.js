@@ -12,6 +12,7 @@ import GlobalHeader from '../GlobalHeader';
 import './builder-fonts.css';
 import './page-canvas.css';
 import './page-canvas-polish.css';
+import './page-canvas-responsive-refine.css';
 
 export default function PageCanvas({document, products = [], homeData = {}, pageKey, slots = {}, editing = false, previewOnly = false, selectedId, onSelect, onDropNode, onDragNode, onInsertAt, onInlineCommit, onResize, device='desktop', dragging=false, sharedDocuments={}, scope=''}) {
   const drop = (parentId, index, label) => editing && <button type="button" className="pbDropZone" aria-label={label || 'Buraya bileşen ekle'} onClick={event => {event.preventDefault();event.stopPropagation();onInsertAt?.(parentId, index);}} onDragOver={event => {event.preventDefault(); event.stopPropagation(); event.currentTarget.classList.add('over');}} onDragLeave={event => event.currentTarget.classList.remove('over')} onDrop={event => {event.preventDefault(); event.stopPropagation(); event.currentTarget.classList.remove('over'); onDropNode?.(event, parentId, index);}}>＋</button>;
@@ -20,6 +21,15 @@ export default function PageCanvas({document, products = [], homeData = {}, page
   const attributes = node => ({
     'data-pb-id': node.id, 'data-pb-type': node.type,
     className: 'pbNode pb-' + node.type + (editing ? ' pbEditable' : '') + (selectedId === node.id && editing ? ' pbSelected' : ''),
+    // Brand identity marks have a restrained default footprint. Explicit media
+    // dimensions and fit controls always disable this heuristic.
+    'data-pb-logo-default': node.type==='image'
+      && node.props.src?.startsWith('/brand/')
+      && ['.png','.webp','.svg'].some(ext=>node.props.src.toLowerCase().endsWith(ext))
+      && ![node.style,node.tablet,node.mobile].some(style =>
+        ['width','maxWidth','mediaHeight','aspectRatio','objectPosition'].some(field=>style?.[field]!==undefined)
+        || style?.objectFit==='contain')
+      ? 'true' : undefined,
     tabIndex: editing ? 0 : undefined, 'aria-label': editing ? node.name : undefined,
     onClickCapture: editing ? event => {
       // Stop Next Link before it can navigate the admin's router from the portal.
@@ -47,7 +57,11 @@ export default function PageCanvas({document, products = [], homeData = {}, page
     else if (node.type === 'divider') body = <hr/>;
     else if (node.type === 'spacer') body = null;
     else if (node.type === 'quote') body = <blockquote><p>{inline('text')}</p>{p.author && <cite>{p.author}</cite>}</blockquote>;
-    else if (node.type === 'video') body = safeUrl(p.src, true) ? <video src={p.src} poster={safeUrl(p.poster, true) || undefined} controls preload="metadata" playsInline/> : <div className="pbImagePlaceholder">{editing ? 'HTTPS video adresi ekle (MP4 / WebM)' : ''}</div>;
+    else if (node.type === 'video') body = safeUrl(p.src, true)
+      ? <video src={p.src} poster={safeUrl(p.poster, true) || undefined} controls preload="metadata" playsInline/>
+      : editing
+        ? <div className="pbImagePlaceholder">HTTPS video adresi ekle (MP4 / WebM)</div>
+        : <div className="pbMediaEmpty"><span>VIDEO / PREVIEW</span><small>Video bağlantısı henüz eklenmedi.</small></div>;
     else if (node.type === 'accordion') body = <details open={editing || undefined}><summary>{inline('title')}</summary><p>{inline('text')}</p></details>;
     else if (node.type === 'native') body = <div inert={editing || previewOnly}>{slots[p.slot] || (editing || previewOnly ? <div className="pbNativePlaceholder"><b>{SLOT_LABELS[p.slot]}</b><p>Bu bileşen yayımlanan sayfada gerçek ürün verileriyle çalışır.</p></div> : null)}</div>;
     else if (node.type === 'products') {

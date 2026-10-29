@@ -48,6 +48,14 @@ Optional upload optimization reduces still images to at most 2,400 px and uses W
 
 New widgets: a real catalogue album card, artist card, native audio player (no autoplay), event list (up to 30), countdown, and gallery (up to 24 images; grid, masonry or horizontal rail). Product vitrines support grid, horizontal rail and featured-first layouts. Prices, availability and purchase behavior continue to come from catalogue data. Dates are entered in the browser's local time zone and stored with an explicit offset/UTC; visitor date labels use Europe/Istanbul.
 
+## Identity artwork and responsive presentation
+
+The add-on editorial refinement in `app/components/builder/page-canvas-responsive-refine.css` is shared by the public site and Visual Studio. Logos/wordmarks sourced from the site's `/brand/` directory display fully rather than being cropped as photographs in artist and gallery widgets. A standalone brand image adopts an editorially restrained width and height only while its image dimensions are uncustomized; explicit width/max-width, media height, aspect ratio, focal point or contain-fit overrides remain authoritative.
+
+Small-screen grid galleries default to two compact columns; masonry, rail and normal album photographs keep their own layout/crop behaviour. Buttons have a slightly clearer default type scale, while user font settings take precedence. Unconfigured videos show an intentional empty-state label instead of an unexplained blank block in the published view; the media-entry prompt remains in editing mode. No stored content, database schema, theme settings or catalogue/shop logic is modified.
+
+The Chromium fixture checks identity artwork cropping, mobile grid density, a single countdown, custom responsive bounds and scroll overflow. Hover animations remain pointer-aware, keyboard focus stays visible, and reduced-motion preferences are respected.
+
 ## SEO, publication review and scheduling
 
 **Yayın ve SEO** edits page title, description, sharing image and noindex. Product templates support `{title}` and `{artist}` placeholders. Blank values retain existing metadata/canonical behavior. Noindex pages are omitted from the sitemap. Review lists additions, removals, content/order changes and design/SEO changes before publication.

@@ -1,0 +1,99 @@
+/* SIDE:II / responsive identity-media refinement.
+   No fixed theme colours/fonts and no changes to saved JSON. Brand assets
+   are identity art, not photographs: show their complete letterforms. */
+
+/* Keep brand artwork in a deliberate frame, not a cropped portrait. */
+.pbRoot .pbArtistArtwork:has(>img[src^="/brand/"]){
+  display:grid;place-items:center;aspect-ratio:4/5;
+  padding:clamp(24px,4vw,70px);
+  background:radial-gradient(ellipse at 50% 40%,color-mix(in srgb,currentColor 5%,transparent),transparent 70%),var(--pb-polish-surface);
+}
+.pbRoot .pbArtistArtwork:has(>img[src^="/brand/"])>img{
+  width:100%;height:100%;aspect-ratio:auto;
+  max-height:100%;object-fit:contain;
+}
+
+/* Grid/rail/masonry galleries keep their respective layout contracts. */
+.pbRoot .pbGallery .pbGalleryMedia:has(>img[src^="/brand/"]){
+  display:grid;place-items:center;aspect-ratio:4/3;
+  padding:clamp(12px,3vw,42px);
+  background:radial-gradient(ellipse at 50% 50%,color-mix(in srgb,currentColor 5%,transparent),transparent 72%),var(--pb-polish-surface);
+}
+.pbRoot .pbGallery .pbGalleryMedia:has(>img[src^="/brand/"])>img{
+  display:block;width:100%;height:100%;aspect-ratio:auto;
+  max-width:100%;max-height:100%;object-fit:contain;
+}
+.pbRoot .pbGallery-masonry .pbGalleryMedia:has(>img[src^="/brand/"]){aspect-ratio:4/3}
+
+/* A standalone identity mark needs breathing room, not a 1400px wordmark. */
+.pbRoot .pb-image[data-pb-logo-default="true"]{
+  display:grid;justify-items:center;overflow:visible;
+}
+.pbRoot .pb-image[data-pb-logo-default="true"]>a,
+.pbRoot .pb-image[data-pb-logo-default="true"]>img{
+  width:min(100%,780px);max-width:100%;margin-inline:auto;
+}
+.pbRoot .pb-image[data-pb-logo-default="true"]>a{
+  display:grid;place-items:center;min-width:0;min-height:clamp(180px,25vw,340px);
+  border-block:1px solid var(--pb-polish-rule);
+  background:radial-gradient(ellipse at center,color-mix(in srgb,currentColor 4%,transparent),transparent 75%);
+  padding:clamp(22px,4vw,54px);
+}
+.pbRoot .pb-image[data-pb-logo-default="true"] img{
+  display:block;width:100%;max-width:440px;max-height:235px;height:auto;
+  margin-inline:auto;object-fit:contain;object-position:center;
+}
+.pbRoot .pb-image[data-pb-logo-default="true"]>img{max-width:440px;max-height:235px}
+.pbRoot .pbAudioArtwork:has(>img[src^="/brand/"])>img{
+  object-fit:contain;padding:clamp(12px,1.6vw,20px);
+}
+
+/* Better editorial scale for the default action without touching overrides. */
+.pbRoot .pbButton{
+  font-size:var(--pb-override-size,12px);
+  font-weight:var(--pb-override-weight,500);
+  min-height:48px;
+}
+.pbRoot :is(.pbArtistCopy h2,.pbAlbumCopy h2){
+  overflow-wrap:break-word;word-break:normal;
+}
+.pbRoot .pbMediaEmpty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:180px;padding:28px;gap:12px;
+  color:var(--pb-polish-muted);text-align:center;
+  border:1px solid var(--pb-polish-rule);
+  background:var(--pb-polish-surface);
+}
+.pbRoot .pbMediaEmpty span{
+  font:500 11px/1.4 var(--pb-site-body-font,Arial,sans-serif);
+  letter-spacing:.2em;
+}
+.pbRoot .pbMediaEmpty small{
+  max-width:45ch;font:12px/1.5 var(--pb-site-body-font,Arial,sans-serif)
+}
+@container pbCanvas (max-width:600px){
+  .pbRoot .pbGallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .pbRoot .pbGallery-grid .pbGalleryMedia:has(>img[src^="/brand/"]){
+    aspect-ratio:1;padding:12px
+  }
+  .pbRoot .pbGallery-grid figure figcaption{font-size:11px;line-height:1.4}
+  .pbRoot .pbArtistArtwork:has(>img[src^="/brand/"]){
+    aspect-ratio:1;padding:clamp(20px,6vw,40px)
+  }
+  .pbRoot .pb-image[data-pb-logo-default="true"]>a{
+    min-height:170px;padding:20px 16px
+  }
+  .pbRoot .pb-image[data-pb-logo-default="true"] img{
+    max-width:275px;max-height:150px
+  }
+  .pbRoot .pbArtistCopy h2{font-size:var(--pb-override-size,clamp(28px,7.8vw,40px))}
+  .pbRoot .pbEventsList article{padding-block:16px}
+  .pbRoot .pbMediaEmpty{min-height:135px;padding:18px}
+}
+@media(prefers-reduced-motion:reduce){
+  .pbRoot .pb-image[data-pb-logo-default="true"] img,
+  .pbRoot .pbGallery .pbGalleryMedia:has(>img[src^="/brand/"])>img,
+  .pbRoot .pbArtistArtwork:has(>img[src^="/brand/"])>img{
+    animation:none!important;transition:none!important;transform:none!important
+  }
+}
