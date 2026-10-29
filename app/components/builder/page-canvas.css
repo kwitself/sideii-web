@@ -91,3 +91,20 @@
 :where(.pbRoot[data-pb-scope]>.pbFlowItem:last-child)>.pbNode{margin-bottom:0}
 @container pbCanvas (max-width:900px){.pbRoot{--pb-flow-gutter:24px}}
 @container pbCanvas (max-width:600px){.pbRoot{--pb-flow-gutter:20px;--pb-flow-space:16px}}
+
+/* On wide homepages the storefront's .shell is fluid (up to 1920/2160px)
+   while standalone Studio widgets previously stopped at 1440px. Match
+   the *content edge* of native sections, including their inner padding,
+   without changing saved widths, nested layouts or other page types. */
+@container pbCanvas (min-width:1600px) {
+  .pbRoot.pbHome:not([data-pb-scope]) > .pbNodePosition.pbFlowItem {
+    width:calc(min(calc(100% - clamp(96px,6vw,160px)),1920px) - clamp(30px,2vw,48px) - clamp(30px,2vw,48px));
+    max-width:min(var(--pb-site-content-width,10000px),calc(1920px - clamp(30px,2vw,48px) - clamp(30px,2vw,48px)));
+  }
+}
+@container pbCanvas (min-width:2200px) {
+  .pbRoot.pbHome:not([data-pb-scope]) > .pbNodePosition.pbFlowItem {
+    width:calc(min(calc(100% - 180px),2160px) - clamp(30px,2vw,48px) - clamp(30px,2vw,48px));
+    max-width:min(var(--pb-site-content-width,10000px),calc(2160px - clamp(30px,2vw,48px) - clamp(30px,2vw,48px)));
+  }
+}
