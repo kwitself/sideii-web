@@ -135,7 +135,7 @@ export default function PageBuilder({products = [], slots = {}, homeData = {}}) 
     setPreview(false);setLeftOpen(true);setPanel('layers');
     if(window.innerWidth<=1000)setRightOpen(false);
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      const el=document.querySelector('.beLayer.selected');
+      const el=window.document.querySelector('.beLayer.selected');
       el?.scrollIntoView({block:'nearest',behavior:'smooth'});
       el?.querySelector('button')?.focus({preventScroll:true});
     }));
