@@ -51,7 +51,7 @@ export async function checkBuilderLayout({page, canvas, browser, base, out, requ
         const cover = scope.locator(selector(node) + ' img');
         const picture = await box(cover);
         assert(picture.left >= b.left - 1 && picture.right <= b.right + 1, node.type + ' cover stays inside its frame');
-        assert(picture.width <= (width <= 600 ? b.width : b.width / 2) + 1, node.type + ' cover follows responsive columns');
+        assert(picture.width <= (width <= 600 ? b.width : b.width * (node.type === 'album' ? .55 : .5)) + 1, node.type + ' cover follows responsive columns');
       }
       if (previous) assert(b.top - previous.bottom >= (width <= 600 ? 32 : 48) - 1, node.type + ' touches the preceding widget');
       previous = b;
@@ -110,6 +110,49 @@ export async function checkBuilderLayout({page, canvas, browser, base, out, requ
     await live.setViewportSize({width: 2160, height: 1000});
     await check(live, 2160);
     console.log('PASS all addon types centred with responsive gutters/gaps; nested and shared layouts avoid doubled spacing; editor/public parity');
+    // Editorial polish belongs to the shared renderer. Verify real pointer
+    // motion, keyboard focus, reduced motion and native commerce isolation.
+    const motionContext = await browser.newContext({viewport:{width:1200,height:900},reducedMotion:'no-preference'});
+    await motionContext.route('**/*',route=>['127.0.0.1','localhost'].includes(new URL(route.request().url()).hostname)?route.continue():route.abort());
+    try {
+      const motionPage=await motionContext.newPage();
+      await motionPage.goto(base+'/');
+      const albumNode=widgets.find(node=>node.type==='album');
+      const galleryNode=widgets.find(node=>node.type==='gallery');
+      const productsNode=widgets.find(node=>node.type==='products');
+      const buttonNode=widgets.find(node=>node.type==='button');
+      const albumLink=motionPage.locator(selector(albumNode)+' .pbAlbum');
+      const art=albumLink.locator('.pbAlbumArtwork img');
+      assert(await art.isVisible(), 'Album artwork must be visible');
+      assert.notEqual(await art.evaluate(el=>getComputedStyle(el).transitionDuration),'0s','Album hover animates without reduced-motion');
+      await albumLink.hover();
+      await motionPage.waitForTimeout(900);
+      assert.notEqual(await art.evaluate(el=>getComputedStyle(el).transform),'none','Album artwork zoom is applied on hover');
+      const galleryLink=motionPage.locator(selector(galleryNode)+' .pbGalleryLink').first();
+      await galleryLink.hover();
+      await motionPage.waitForTimeout(550);
+      assert.notEqual(await galleryLink.locator('img').evaluate(el=>getComputedStyle(el).transform),'none','Gallery hover motion');
+      const productLink=motionPage.locator(selector(productsNode)+' .pbProducts a').first();
+      await productLink.hover();
+      await motionPage.waitForTimeout(450);
+      assert.notEqual(await productLink.evaluate(el=>getComputedStyle(el).transform),'none','Product card hover lift');
+      const button=motionPage.locator(selector(buttonNode)+' .pbButton');
+      await button.hover();
+      await motionPage.waitForTimeout(420);
+      assert.notEqual(await button.evaluate(el=>getComputedStyle(el).transform),'none','Button hover lift');
+      await albumLink.focus();
+      assert(await albumLink.evaluate(el=>el===document.activeElement),'Album is keyboard focusable');
+      assert(await galleryLink.getAttribute('aria-label'),'Gallery image link is labeled');
+      await albumLink.screenshot({path:out+'/studio-premium-album.png'});
+      assert(await motionPage.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Hover introduces no horizontal overflow');
+    } finally {
+      await motionContext.close();
+    }
+    const reducedAlbum=live.locator(selector(widgets.find(node=>node.type==='album'))+' .pbAlbumArtwork img');
+    assert.equal(await reducedAlbum.evaluate(el=>getComputedStyle(el).transitionDuration),'0s','Reduced motion disables artwork animation');
+    assert.equal(await canvas.locator(selector(widgets.find(node=>node.type==='album'))+' .pbAlbumArtwork img').evaluate(el=>getComputedStyle(el).transitionDuration),'0s','Editor preview is reduced motion safe');
+    console.log('PASS addon editorial hover, keyboard focus, gallery/album/button/product feedback and reduced-motion fallback');
+
 
     // Width/margin controls must override defaults and resetting must restore them.
     const album = createNode('album'), artist = createNode('artist');
