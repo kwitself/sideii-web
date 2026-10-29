@@ -1,3 +1,9 @@
+## Visual Studio — next-level music storytelling
+
+The insert library now includes **Release timeline** (editorial chronological cards with year, title, description and optional link) and **Merchandise vitrini** (catalogue-driven merchandise cards with label filter and item count). Both use the existing client/server document validator, established inherited typography, responsive shared gallery/card styles and public renderer. Timeline entries can be reordered from the Inspector. Merchandise links open original product detail pages; product pricing, stock and checkout continue to be managed by the store.
+
+The prepublish advisory audit includes empty timeline entries and label filters with no matching merchandise. The implementation does not edit live pages, seed sample products, or run migrations. True arbitrary canvas positioning and automated screenshot comparison require independent visual regression tooling and are not claimed as implemented.
+
 ## Visual Studio Pro 2.0 — unified safety and bulk editing
 
 The Layers panel now supports checkbox multi-selection and one-click Left/Center/Right bulk alignment. The update writes responsive style fields for **only the currently selected device**, is a single undoable document edit, and does not change checkout functionality or page content automatically. Clear selection resets the batch.
