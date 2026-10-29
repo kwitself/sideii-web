@@ -229,3 +229,15 @@
 }
 @container pbCanvas (max-width:360px){.pbRoot .pbDiscographyGrid{grid-template-columns:minmax(0,1fr)}}
 @media(prefers-reduced-motion:reduce){.pbRoot .pbDiscographyGrid>a,.pbRoot .pbDiscographyCover img{transition:none!important;transform:none!important}}
+
+
+/* Next-level editorial timeline and merchandise; share established discography cards. */
+.pbRoot .pbMerch,.pbRoot .pbTimeline{padding-block:clamp(30px,4vw,66px);border-top:1px solid var(--pb-polish-rule-strong);width:100%}
+.pbRoot .pbTimeline ol{list-style:none;padding:0;margin:0;border-top:1px solid var(--pb-polish-rule)}
+.pbRoot .pbTimeline li{display:grid;grid-template-columns:minmax(60px,120px) minmax(0,1fr);gap:clamp(20px,3vw,50px);padding:clamp(20px,3vw,34px) 0;border-bottom:1px solid var(--pb-polish-rule)}
+.pbRoot .pbTimeline time{font-size:clamp(12px,1.2vw,16px);letter-spacing:.07em;color:var(--pb-polish-muted)}
+.pbRoot .pbTimeline h3{font:500 clamp(21px,2.4vw,37px)/1.15 var(--pb-site-heading-font,Georgia,serif);margin:0 0 9px;overflow-wrap:anywhere}
+.pbRoot .pbTimeline p{max-width:68ch;line-height:1.7;white-space:pre-wrap}
+.pbRoot .pbTimeline a{display:inline-block;margin-top:15px;color:inherit;text-underline-offset:4px;font-size:11px;letter-spacing:.14em}
+.pbRoot .pbTimeline a:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+@container pbCanvas (max-width:600px){.pbRoot .pbTimeline li{grid-template-columns:60px minmax(0,1fr);gap:15px}}
