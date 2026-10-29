@@ -123,19 +123,16 @@
   margin-bottom:clamp(23px,3vw,40px);
 }
 .pbRoot .pbWidgetHeading>small{order:-1}
-.pbRoot .pb-products .pbProducts-grid,
-.pbRoot .pb-products .pbProducts-feature{
+.pbRoot .pb-products .pbProducts-grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),280px));
   justify-content:center;
   gap:clamp(17px,2.4vw,32px);
 }
-.pbRoot .pb-products .pbProducts-grid>a,
-.pbRoot .pb-products .pbProducts-feature>a{
+.pbRoot .pb-products .pbProducts-grid>a>a{
   width:100%;height:100%;
   display:flex;flex-direction:column;
 }
-.pbRoot .pb-products .pbProducts-feature>a:first-child{grid-column:auto}
 .pbRoot .pbProducts h3{
   font-size:var(--pb-override-size,clamp(19px,1.55vw,26px));
   line-height:1.15;
