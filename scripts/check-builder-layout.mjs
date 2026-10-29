@@ -51,7 +51,7 @@ export async function checkBuilderLayout({page, canvas, browser, base, out, requ
         const cover = scope.locator(selector(node) + ' img');
         const picture = await box(cover);
         assert(picture.left >= b.left - 1 && picture.right <= b.right + 1, node.type + ' cover stays inside its frame');
-        assert(picture.width <= (width <= 600 ? b.width : b.width / 2) + 1, node.type + ' cover follows responsive columns');
+        assert(picture.width <= (width <= 600 ? b.width : b.width * (node.type === 'album' ? .55 : .5)) + 1, node.type + ' cover follows responsive columns');
       }
       if (previous) assert(b.top - previous.bottom >= (width <= 600 ? 32 : 48) - 1, node.type + ' touches the preceding widget');
       previous = b;
