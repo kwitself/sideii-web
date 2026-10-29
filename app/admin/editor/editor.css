@@ -80,5 +80,6 @@
 }
 @media(prefers-reduced-motion:reduce){.beSelectionBar *{scroll-behavior:auto!important}}
 
-.beSelectionBarSlot{min-height:62px;display:flex;align-items:flex-start}
-@media(max-width:760px){.beSelectionBarSlot{min-height:112px}}
+
+/* Context actions stay outside the canvas to preserve inline double-click editing. */
+.beApp>.beSelectionBar{margin:0;width:100%;max-width:none;border-inline:0;border-top:0;justify-content:flex-start}
