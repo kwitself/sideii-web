@@ -1,5 +1,6 @@
 import {builderMetadata} from '../../lib/builder-design';
 import {getBuilderHomepageContent} from '../../lib/server/homepage';
+import {getBuilderProducts} from '../../lib/server/builderCatalogue';
 import '../../catalogue.css';
 import './release-polish.css';
 import {Fragment} from 'react';
@@ -44,11 +45,14 @@ export default async function ReleasePage({ params }) {
     getPublishedPage('product')
   ]);
 
-  const homeData = await getBuilderHomepageContent(custom?.document,custom?.sharedDocuments);
+  const [homeData, products] = await Promise.all([
+    getBuilderHomepageContent(custom?.document,custom?.sharedDocuments),
+    getBuilderProducts(custom?.document,custom?.sharedDocuments,[release,...related]),
+  ]);
   const slots=releaseSections({release,structuredCredits,pressKit,related,bundles});
   return <main className={'productPage '+(release.imprint==='lethargia'?'productPageLethargia':'productPageSideii')}>
     {schema&&<script type="application/ld+json" dangerouslySetInnerHTML={{__html:jsonLd(schema)}}/>}
     <GlobalHeader/>
-    {custom?<PageCanvas sharedDocuments={custom?.sharedDocuments} document={custom.document} homeData={homeData} products={[release,...related]} slots={slots}/>:Object.entries(slots).map(([name,section])=><Fragment key={name}>{section}</Fragment>)}
+    {custom?<PageCanvas sharedDocuments={custom?.sharedDocuments} document={custom.document} homeData={homeData} products={products} slots={slots}/>:Object.entries(slots).map(([name,section])=><Fragment key={name}>{section}</Fragment>)}
   </main>;
 }
