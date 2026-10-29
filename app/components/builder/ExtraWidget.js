@@ -15,8 +15,20 @@ function Countdown({date,done}) {
 }
 const dateText=date=>date?new Intl.DateTimeFormat('tr-TR',{timeZone:'Europe/Istanbul',dateStyle:'medium',timeStyle:'short'}).format(new Date(date)):'';
 
+function TabsWidget({items}) {
+  const [current,setCurrent]=useState(0);
+  const active=Math.min(current,Math.max(0,items.length-1));
+  if(!items.length)return <p className="pbWidgetEmpty">Sekme içeriği ekle.</p>;
+  return <div className="pbTabs"><div role="tablist" aria-label="İçerik sekmeleri" className="pbTabsBar">{items.map((item,i)=><button key={i} role="tab" type="button" id={'tab-'+i} aria-selected={i===active} onClick={()=>setCurrent(i)}>{item.label||'Sekme '+(i+1)}</button>)}</div><div role="tabpanel" aria-label={items[active].label||'Sekme içeriği'} className="pbTabsPanel"><p>{items[active].text}</p></div></div>;
+}
 export default function ExtraWidget({node,products=[]}) {
   const p=node.props;
+  if(node.type==='discography'){
+    const items=products.filter(x=>p.imprint==='all'||x.imprint===p.imprint).slice(0,Number(p.limit)||6);
+    return <section className="pbDiscography"><div className="pbWidgetHeading"><small>SIDE:II / DISCOGRAPHY</small><h2>{p.title}</h2></div><div className="pbDiscographyGrid">{items.map(product=><a key={product.slug} href={(product.isMerch?'/store/':'/releases/')+product.slug}><div className="pbDiscographyCover">{product.cover?<img src={product.cover} alt={product.title} loading="lazy"/>:<span className="pbMediaMissing">{product.catalogue||'EDITION'}</span>}</div><small>{product.catalogue||'CATALOGUE'}</small><h3>{product.title}</h3><p>{product.artist}</p></a>)}</div>{!items.length&&<p className="pbWidgetEmpty">Yayımlanmış albümler burada görünecek.</p>}</section>;
+  }
+  if(node.type==='tracklist')return <section className="pbTracklist"><div className="pbWidgetHeading"><small>TRACKS / LISTEN</small><h2>{p.title}</h2></div><ol>{p.items.map((item,i)=><li key={i}><span className="pbTrackIndex">{String(i+1).padStart(2,'0')}</span><div><h3>{item.title}</h3>{item.src&&<audio controls preload="none" src={item.src} aria-label={item.title}/>}</div><time>{item.duration||'—'}</time></li>)}</ol>{!p.items.length&&<p className="pbWidgetEmpty">Parça listesi ekleyerek başlayabilirsin.</p>}</section>;
+  if(node.type==='tabs')return <section className="pbTabsWidget"><div className="pbWidgetHeading"><small>EXPLORE / DETAILS</small><h2>{p.title}</h2></div><TabsWidget items={p.items}/></section>;
   if(node.type==='album'){
     const product=products.find(x=>x.slug===p.slug);
     if(!product)return <p className="pbEmptyCatalogue">Albüm seç veya yayımlanmış ürün ekle.</p>;
