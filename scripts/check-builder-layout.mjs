@@ -132,6 +132,29 @@ export async function checkBuilderLayout({page, canvas, browser, base, out, requ
     await live.setViewportSize({width:1200,height:900});
     assert((await box(logo)).width <= 441,'Desktop brand mark is editorially sized');
     console.log('PASS identity logo/artist/gallery preserve artwork, compact mobile grid, single countdown and video empty state');
+    // All standalone editorial headings must start on the same content edge;
+    // grid cards must stay centred when the catalogue contains few items.
+    await live.setViewportSize({width:1200,height:900});
+    const productNode=widgets.find(node=>node.type==='products');
+    const galleryNodeForRhythm=widgets.find(node=>node.type==='gallery');
+    const eventNode=widgets.find(node=>node.type==='events');
+    const productFrame=await box(live.locator(selector(productNode)));
+    const productHeading=await box(live.locator(selector(productNode)+' > h2'));
+    const galleryHeading=await box(live.locator(selector(galleryNodeForRhythm)+' .pbWidgetHeading h2'));
+    const eventHeading=await box(live.locator(selector(eventNode)+' .pbWidgetHeading h2'));
+    near(productHeading.left,productFrame.left,'Product heading shares left edge');
+    near(galleryHeading.left,(await box(live.locator(selector(galleryNodeForRhythm)))).left,'Gallery heading shares left edge');
+    near(eventHeading.left,(await box(live.locator(selector(eventNode)))).left,'Events heading shares left edge');
+    const cards=live.locator(selector(productNode)+' .pbProducts-grid > a');
+    if(await cards.count()>=1){
+      const all=await cards.evaluateAll(els=>els.map(el=>{const r=el.getBoundingClientRect();return {left:r.left,right:r.right,width:r.width}}));
+      assert(all.every(x=>x.width<=281),'Product cards retain editorial max-width');
+      const groupLeft=Math.min(...all.map(x=>x.left)),groupRight=Math.max(...all.map(x=>x.right));
+      assert(Math.abs((productFrame.left+productFrame.right)-(groupLeft+groupRight))<45,'Product grid balances content within its frame');
+    }
+    assert(await live.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Editorial rhythm must not overflow desktop');
+    console.log('PASS editorial heading edges, product grid size and centred composition');
+
 
     // Editorial polish belongs to the shared renderer. Verify real pointer
     // motion, keyboard focus, reduced motion and native commerce isolation.
