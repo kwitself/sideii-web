@@ -52,7 +52,7 @@ export default function PageBuilder({products = [], slots = {}, homeData = {}}) 
     !['native','siteSection',...(key.startsWith('block:')?['shared']:[])].includes(type) &&
     (meta.label+' '+type).toLocaleLowerCase('tr').includes(blockQuery.trim().toLocaleLowerCase('tr'))
   );
-  const [stageWidth,setStageWidth]=useState(900),[fit,setFit]=useState(true);
+  const [stageWidth,setStageWidth]=useState(900),[fit,setFit]=useState(true),[guides,setGuides]=useState(false);
   const [newPage,setNewPage] = useState(false), [newSlug,setNewSlug] = useState(''), [newTitle,setNewTitle] = useState('');
   const [recovery,setRecovery] = useState(null), [userId,setUserId] = useState(''), [insertAt,setInsertAt] = useState(null);
   const importRef = useRef(null), canvasRef = useRef(null), liveRef = useRef(null), operationRef = useRef(false), loadSequence = useRef(0), dragRef = useRef(null);
