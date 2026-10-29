@@ -62,3 +62,22 @@
 
 
 .beApp .beNodeActions button:first-child{flex:1 1 100%;min-height:34px;border-color:#66636b}
+
+
+/* Visual Studio Pro UX — audit, shortcuts and selection context */
+.beAuditPanel h2{font-size:21px;line-height:1.2;margin:12px 0}
+.beAuditSummary{border-block:1px solid #45434b;padding:13px 0;margin:15px 0 18px;font:600 12px/1.4 Arial,sans-serif;color:#ece9ed}
+.beAuditIssue{display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:left;width:100%;padding:15px 13px;margin:9px 0;border:1px solid #44434a;background:#1a191d;color:#e9e6ea;transition:background .2s ease,border-color .2s ease}
+.beAuditIssue:hover{background:#252329;border-color:#77737c}
+.beAuditIssue:focus-visible{outline:2px solid #f0ecf1;outline-offset:2px}
+.beAuditIssue>span{font:10px/1.5 Arial,sans-serif;letter-spacing:.05em;color:#b4b0b8}
+.beAuditIssue>strong{font:500 13px/1.55 Arial,sans-serif}
+.beAuditIssue>small{font:11px/1.4 Arial,sans-serif;color:#bcb7c3}
+.beSelectionInfo{display:flex;flex-direction:column;gap:5px;width:100%;border-bottom:1px solid #45424a;padding:10px 0 13px;margin-bottom:7px;min-width:0}
+.beSelectionInfo b{font:600 13px/1.4 Arial,sans-serif;white-space:normal;overflow-wrap:anywhere}
+.beSelectionInfo small{font:11px/1.3 Arial,sans-serif;color:#a6a2ab}
+.beShortcutList{display:grid;gap:6px}
+.beShortcutList p{display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid #39373e;margin:0;padding:10px 0;font:12px/1.5 Arial,sans-serif}
+.beShortcutList kbd{display:inline-block;white-space:nowrap;min-width:130px;border:1px solid #56525c;border-radius:3px;padding:6px 9px;background:#202024;color:#f2eff4;font:11px/1.4 Arial,sans-serif}
+@media(max-width:600px){.beShortcutList p{flex-wrap:wrap}.beShortcutList kbd{min-width:0}}
+@media(prefers-reduced-motion:reduce){.beAuditIssue{transition:none}}

@@ -2,6 +2,12 @@
 
 Open **Admin → Visual Studio** or `/admin/editor`. A verified admin also sees **Sayfayı düzenle** on the home, store, release, merch and custom pages. Customers never receive draft data.
 
+## Visual Studio Pro UX — bundled workflow upgrade
+
+The editor now includes a read-only **Denetim** tab that checks component readiness (missing images/audio/video, unsupplied gallery media, album selections, event dates and button links) and jumps to the relevant component without editing its data. Warnings are advisory: publication and versioning rules are unchanged.
+
+The right-side inspector shows the selected component's name, type and sibling position. Existing **Katmanda göster** remains available. Keyboard shortcuts include Ctrl/Cmd+D to duplicate the selected widget, Delete/Backspace to request removal confirmation, Alt+1/2/3 for desktop/tablet/mobile views, Ctrl/Cmd+Shift+P to toggle preview and '?' for the built-in shortcuts guide. All shortcuts defer to input/textarea/select/contentEditable fields. The draft and storefront remain unchanged until the user explicitly saves/publishes.
+
 ## Visual Studio Pro UX — Selection workflow
 
 The selected-component action row in the existing right inspector now includes **Katmanda göster**. It opens the layer tree and scrolls/focuses the selected entry without modifying the saved document. Existing selection, settings, undo and drag-and-drop interactions are preserved. No new overlay is inserted into the canvas, so inline text double-click editing retains its existing event behaviour.
