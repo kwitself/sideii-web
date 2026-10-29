@@ -56,6 +56,12 @@ Small-screen grid galleries default to two compact columns; masonry, rail and no
 
 The Chromium fixture checks identity artwork cropping, mobile grid density, a single countdown, custom responsive bounds and scroll overflow. Hover animations remain pointer-aware, keyboard focus stays visible, and reduced-motion preferences are respected.
 
+## Editorial rhythm II — presentation-only refinements
+
+Visual Studio's scoped responsive stylesheet now gives catalogue grids a balanced centred composition with a modest card width, while leaving curated `featured` and horizontally scrolling `rail` layouts unchanged. Product, gallery and event headings share a left-aligned editorial rhythm; event rows receive improved typography and spacing and audio card headings have more controlled sizing. The small-screen default remains one product card per row, without changing the already compact gallery behaviour.
+
+These are CSS defaults only: no page documents or data are rewritten. Theme font and size overrides continue to use `--pb-override-*` variables, and native store/checkout components are not targeted. The browser layout fixture checks alignment, product card sizing, and absence of horizontal scrolling.
+
 ## SEO, publication review and scheduling
 
 **Yayın ve SEO** edits page title, description, sharing image and noindex. Product templates support `{title}` and `{artist}` placeholders. Blank values retain existing metadata/canonical behavior. Noindex pages are omitted from the sitemap. Review lists additions, removals, content/order changes and design/SEO changes before publication.
