@@ -225,7 +225,7 @@ export default function PageBuilder({products = [], slots = {}, homeData = {}}) 
     try{const result=await api('',{key:blockKey,title:selected.name,document:doc,expectedVersion:0,action:'save'});accept(result,blockKey);setPages(old=>[...old,{page_key:blockKey,title:result.page.title}]);historyReplace(blockKey);setNotice('Ortak bölüm taslağı oluşturuldu. Yayımladıktan sonra diğer sayfalara Ortak bölüm bileşeniyle ekleyebilirsin.');}
     catch(e){setError(e.message);}finally{operationRef.current=false;setBusy(false);}
   };
-  const publishConfirm=()=>setConfirm({title:'Sayfayı yayımla',text:title+' ziyaretçilere gösterilecek.',diff:publicationDiff(publishedDocument,document),button:'Yayımla',run:()=>save('publish')});
+  const publishConfirm=()=>setConfirm({title:'Sayfayı yayımla',text:title+' ziyaretçilere gösterilecek. Yayın öncesi denetimde '+issueWarnings+' uyarı ve '+(auditIssues.length-issueWarnings)+' bilgi notu var. Uyarılar yayını otomatik engellemez.',diff:publicationDiff(publishedDocument,document),button:'Yayımla',run:()=>save('publish')});
   const createPage = () => {
     if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(newSlug)||newSlug.length>80||!newTitle.trim()) {setError('Sayfa adı ve küçük harf/rakam/tire içeren bir adres gir.');return;}
     const pageKey='page:'+newSlug;
