@@ -102,3 +102,12 @@
     linear-gradient(90deg,transparent 6%,#d1ced13b 6.1%,transparent 6.2%,transparent 93.8%,#d1ced13b 93.9%,transparent 94%);
 }
 .beStageLabel button[aria-pressed="true"]{border-color:#aaa6ae;background:#343238;color:#fff}
+
+
+/* Pro 2.0: safe layer-based multi-selection */
+.beBatchBar{display:flex;gap:5px;align-items:center;flex-wrap:wrap;border-bottom:1px solid #45434b;padding:12px 10px;margin-bottom:8px}
+.beBatchBar strong{font-size:11px;margin-right:auto}
+.beApp .beBatchBar button{font-size:10px;padding:7px 8px;min-height:30px}
+.beApp .beBatchBar button:disabled{opacity:.4;cursor:not-allowed}
+.beLayer.multiSelected{box-shadow:inset 3px 0 #d4d1d8;background:#35333a}
+.beLayerMulti{width:17px;height:17px;min-width:17px;accent-color:#d4d1d8;cursor:pointer;margin:0 8px 0 0}

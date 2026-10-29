@@ -14,6 +14,15 @@ export function auditPage(document, {products=[]}={}) {
       if(node.type==='gallery'&&(!p.items?.length||p.items.some(item=>!item.src)))report('Galeri görselleri eksik.');
       if(node.type==='events'&&!p.items?.length)report('Etkinlik listesi boş.','info');
       if(node.type==='countdown'&&!p.date)report('Geri sayım tarihi belirtilmemiş.');
+      if(node.type==='discography'&&!products.some(product=>p.imprint==='all'||product.imprint===p.imprint))report('Filtreye uygun katalog kaydı bulunamadı.','info');
+      if(node.type==='tracklist'&&!p.items?.length)report('Parça listesi boş.','info');
+      if(node.type==='tabs'&&!p.items?.length)report('Sekme içeriği boş.','info');
+      for(const device of ['style','tablet','mobile']){
+        const st=node[device]||{};
+        if(st.width>100)report(device+' genişliği taşabilir.');
+        if(st.mediaHeight>600&&device==='mobile')report('Mobilde medya yüksekliği çok büyük olabilir.','info');
+        if(st.fontSize>60&&device==='mobile')report('Mobil yazı boyutu kontrol edilmeli.','info');
+      }
       if(node.type==='shared'&&!p.key)report('Ortak bölüm seçilmemiş.');
       if(node.type==='button'&&!p.href)report('Buton bağlantısı belirtilmemiş.');
       walk(node.children,[...path,node.name||node.type]);
