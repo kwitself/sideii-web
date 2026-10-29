@@ -11,6 +11,7 @@ import HomeSectionRail from '../HomeSectionRail';
 import GlobalHeader from '../GlobalHeader';
 import './builder-fonts.css';
 import './page-canvas.css';
+import './page-canvas-polish.css';
 
 export default function PageCanvas({document, products = [], homeData = {}, pageKey, slots = {}, editing = false, previewOnly = false, selectedId, onSelect, onDropNode, onDragNode, onInsertAt, onInlineCommit, onResize, device='desktop', dragging=false, sharedDocuments={}, scope=''}) {
   const drop = (parentId, index, label) => editing && <button type="button" className="pbDropZone" aria-label={label || 'Buraya bileşen ekle'} onClick={event => {event.preventDefault();event.stopPropagation();onInsertAt?.(parentId, index);}} onDragOver={event => {event.preventDefault(); event.stopPropagation(); event.currentTarget.classList.add('over');}} onDragLeave={event => event.currentTarget.classList.remove('over')} onDrop={event => {event.preventDefault(); event.stopPropagation(); event.currentTarget.classList.remove('over'); onDropNode?.(event, parentId, index);}}>＋</button>;
