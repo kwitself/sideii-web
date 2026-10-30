@@ -1,3 +1,7 @@
+## Studio stabilization — audit and viewport checks
+
+Audit filters now use explicit issue categories rather than incidental lowercase keyword matching; mobile findings are selectable even with Turkish descriptions. Viewport scanning skips zero-area/hidden elements, and the most recent scan findings are associated with the device and page measured so stale findings from another page or breakpoint are not shown as current. Measurements are advisory and do not publish automatically.
+
 ## Visual Studio consolidated canvas workflow (October 2026)
 
 Added **Shift-click** on the canvas to toggle multi-selection, interoperable with Layer checkboxes and device-scoped bulk alignment/spacing. A **Taşma tara** button measures the current iframe viewport and checks each rendered builder node's bounding rectangle against its current width. Findings link back to components from the Denetim panel. This is a measured current-viewport inspection; it does not scan every device automatically or replace screenshot-based regression.
