@@ -37,7 +37,7 @@ export default function PageCanvas({document, products = [], homeData = {}, page
       const owner = event.target.closest('[data-pb-id]');
       if (owner !== event.currentTarget) return;
       event.stopPropagation();event.preventDefault();
-      onSelect?.(node.id, event.target.closest('[data-home-field]')?.dataset.homeField);
+      onSelect?.(node.id, event.target.closest('[data-home-field]')?.dataset.homeField, event.shiftKey);
     } : undefined,
     onKeyDown: editing ? event => {if (event.key === 'Enter' && event.target === event.currentTarget) {event.preventDefault();onSelect?.(node.id);}} : undefined,
   });
