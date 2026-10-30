@@ -1,3 +1,9 @@
+## Visual Studio consolidated canvas workflow (October 2026)
+
+Added **Shift-click** on the canvas to toggle multi-selection, interoperable with Layer checkboxes and device-scoped bulk alignment/spacing. A **Taşma tara** button measures the current iframe viewport and checks each rendered builder node's bounding rectangle against its current width. Findings link back to components from the Denetim panel. This is a measured current-viewport inspection; it does not scan every device automatically or replace screenshot-based regression.
+
+**Taslak / canlı** opens a side-by-side workflow entry point with the existing semantic publication diff and explicit draft preview/live-page actions. It does not claim or implement pixel-by-pixel screenshot diff. Existing no-publish-until-confirmation, undo/redo, catalogue and checkout flows remain in force.
+
 ## Studio canvas & quality workflow
 
 The Layers panel supports **Tümünü seç** for all draft nodes, plus undoable **Sıkı / Normal / Ferah** bulk gap presets for the active desktop/tablet/mobile breakpoint. Bulk alignment remains available. The content **Denetim** panel now filters all findings, warnings only, mobile-specific items or missing-content items. The controls do not publish or modify live data. Canvas guides, breakpoint presets and version history remain available. This is not yet freeform positioning or screenshot-diff regression.

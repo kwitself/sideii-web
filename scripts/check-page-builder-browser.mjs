@@ -122,6 +122,13 @@ try{
   await page.keyboard.press('Alt+1');
   await page.locator('.beStageLabel').getByText('1200').waitFor();
   console.log('PASS audit panel, shortcut guide and device keyboard switch');
+  await page.getByRole('button',{name:'Taslak / canlı'}).click();
+  await page.getByRole('dialog',{name:'Taslak / canlı karşılaştırması'}).waitFor();
+  await page.getByRole('button',{name:'Pencereyi kapat'}).click();
+  await page.getByRole('button',{name:'Taşma tara'}).click();
+  await page.getByText(/(?:görünümünde|görünümde).*taşma/).first().waitFor();
+  console.log('PASS draft/live comparison and measured viewport inspection');
+
 
   await canvas.locator('.pbRoot').waitFor();
   assert.equal(await canvas.locator('.pbNode').count(),9);

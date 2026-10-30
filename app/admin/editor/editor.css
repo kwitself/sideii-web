@@ -111,3 +111,17 @@
 .beApp .beBatchBar button:disabled{opacity:.4;cursor:not-allowed}
 .beLayer.multiSelected{box-shadow:inset 3px 0 #d4d1d8;background:#35333a}
 .beLayerMulti{width:17px;height:17px;min-width:17px;accent-color:#d4d1d8;cursor:pointer;margin:0 8px 0 0}
+
+
+/* Consolidated Studio: comparison and measured viewport warnings. */
+.beCompare{display:grid;gap:14px}
+.beCompare>p{line-height:1.65}
+.beCompareLinks{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.beCompareLinks>a,.beCompareLinks>button{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:10px 16px;border:1px solid #6c6871;color:#f4f2f5;background:#29282d;font:12px/1.4 Arial,sans-serif;text-decoration:none}
+.beCompareLinks>a:focus-visible,.beCompareLinks>button:focus-visible{outline:2px solid #eee;outline-offset:3px}
+.beCompare ul{margin:0;padding-left:20px;max-height:360px;overflow:auto;font-size:12px;line-height:1.8}
+.beViewportFindings{border:1px solid #56505a;padding:14px;margin-block:12px}
+.beViewportFindings h3{font:600 13px/1.3 Arial,sans-serif;margin:0 0 10px}
+.beViewportFindings button{display:block;width:100%;padding:10px;text-align:left;background:#26242b;border:1px solid #55515b;margin-top:5px;color:inherit;font-size:12px}
+.beViewportFindings button:focus-visible{outline:2px solid white;outline-offset:2px}
+@media(max-width:650px){.beCompareLinks{flex-direction:column;align-items:stretch}}
