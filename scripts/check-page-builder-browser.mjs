@@ -128,6 +128,12 @@ try{
   await page.getByRole('button',{name:'Taşma tara'}).click();
   await page.getByText(/(?:görünümünde|görünümde).*taşma/).first().waitFor();
   console.log('PASS draft/live comparison and measured viewport inspection');
+  await page.getByRole('button',{name:'Izgara',exact:true}).click();
+  await page.locator('.beCanvasFrame.hasGrid').waitFor();
+  await page.getByRole('button',{name:'Izgarayı kapat'}).click();
+  assert.equal(await page.locator('.beCanvasFrame.hasGrid').count(),0,'Editor-only grid is toggleable');
+  console.log('PASS final release canvas overlay controls');
+
 
 
   await canvas.locator('.pbRoot').waitFor();
