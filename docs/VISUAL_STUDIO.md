@@ -1,3 +1,11 @@
+## Visual Studio Final Release — stabilized baseline
+
+The finalization bundle adds an editor-only 12-column grid toggle and safe Layer multi-selection duplication. Selecting nested parents and children avoids duplicate parent/child copies; native commerce slots are intentionally not clonable. Batch actions remain undoable and do not auto-publish.
+
+Acceptance requirements: Next.js production build, CI and browser smoke must all pass before merging. Existing editor features include iframe viewport preview, explicit draft/publish flow, recoverable local drafts, version history, breakpoint-specific styles, visual guides, catalogue-driven music widgets, viewport overflow scan and structural draft/live comparison.
+
+**Scope clarification:** This is the stable editor baseline, not feature parity with Photoshop, Figma or Elementor. Arbitrary absolute positioning, actual rubber-band selection, and pixel-by-pixel snapshot diffs are intentionally excluded until separately engineered and tested. Human acceptance on real private content and payment-provider sandbox validation remain separate release criteria for the overall commerce product.
+
 ## Studio stabilization — audit and viewport checks
 
 Audit filters now use explicit issue categories rather than incidental lowercase keyword matching; mobile findings are selectable even with Turkish descriptions. Viewport scanning skips zero-area/hidden elements, and the most recent scan findings are associated with the device and page measured so stale findings from another page or breakpoint are not shown as current. Measurements are advisory and do not publish automatically.
