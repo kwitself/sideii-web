@@ -126,7 +126,7 @@ try{
   await page.getByRole('dialog',{name:'Taslak / canlı karşılaştırması'}).waitFor();
   await page.getByRole('button',{name:'Pencereyi kapat'}).click();
   await page.getByRole('button',{name:'Taşma tara'}).click();
-  await page.getByRole('status').filter({hasText:/görünümünde/}).first().waitFor();
+  await page.getByText(/(?:görünümünde|görünümde).*taşma/).first().waitFor();
   console.log('PASS draft/live comparison and measured viewport inspection');
 
 
