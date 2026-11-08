@@ -6,7 +6,8 @@ const STORAGE_KEY = "side-productions-entry-v1";
 export default function SideProductionsReturn() {
   const [active, setActive] = useState(false);
   const [arriving, setArriving] = useState(false);
-  const [leaving, setLeaving] = useState(false);\n  const [arrivalExit, setArrivalExit] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  const [arrivalExit, setArrivalExit] = useState(false);
 
   useEffect(() => {
     const url = new URL(window.location.href);
