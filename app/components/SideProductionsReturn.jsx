@@ -65,7 +65,7 @@ export default function SideProductionsReturn() {
         @media(prefers-reduced-motion:reduce){.side-return-panel,.side-return-btn{transition:none!important}}
       `}</style>
       {active && !leaving && <button type="button" className="side-return-btn" onClick={goBack} aria-label="Back to SIDE Productions">← BACK TO SIDE:PRODUCTIONS</button>}
-      {(arriving || leaving) && <div aria-hidden="true" className={`side-return-panel ${leaving ? "side-leaving" : "side-arriving"}`}><span>SIDE:PRODUCTIONS</span></div>}
+      {(arriving || leaving) && <div aria-hidden="true" className={`side-return-panel ${leaving ? "side-leaving" : "side-arriving"} ${arrivalExit ? "side-arrived" : ""}`}><span>SIDE:PRODUCTIONS</span></div>}
     </>
   );
 }
