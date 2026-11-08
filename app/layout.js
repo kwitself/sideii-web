@@ -1,3 +1,4 @@
+import SideProductionsReturn from './components/SideProductionsReturn';
 import {getPublishedPage} from './lib/server/pageBuilderPublic';
 import SiteDesignProvider from './components/builder/SiteDesignProvider';
 import {getPublicSiteUrl} from './lib/public-site-url';
@@ -56,7 +57,7 @@ export default async function RootLayout({ children }) {
   const site=await getPublishedPage('site');
   return (
     <html lang="en">
-      <body><SiteDesignProvider settings={site?.document.site}><LocaleCurrencyProvider><CommerceTelemetry/>{children}<StorefrontFooter/><GlobalAccount/><GlobalBag/><EditorLauncher/></LocaleCurrencyProvider></SiteDesignProvider></body>
+      <body><SiteDesignProvider settings={site?.document.site}><LocaleCurrencyProvider><CommerceTelemetry/><SideProductionsReturn/>{children}<StorefrontFooter/><GlobalAccount/><GlobalBag/><EditorLauncher/></LocaleCurrencyProvider></SiteDesignProvider></body>
     </html>
   );
 }
